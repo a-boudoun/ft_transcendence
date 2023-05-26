@@ -14,4 +14,4 @@ export default function SingButton(){
             Sign in with intra
        </button>
   )
-}
+    }
