@@ -11,7 +11,7 @@ module.exports = {
         'ping-pong': "url('/img/ping-pong.gif')",
       },
       colors:{
-        'drak-gray': '384259',
+        'dark-gray': '#384259',
         'light-gray': '#5B6375',
         'red': '#FF2763',
         'blue': '#7AC7C4', 
