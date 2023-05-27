@@ -1,5 +1,5 @@
-import "./globals.css";
-import NavBar  from "./(login)/conponents/NavBar/NavBar";
+import "../globals.css";
+import NavBar  from "./conponents/NavBar/NavBar";
 
 export const metadata = {
   title: 'Next.js',
@@ -13,10 +13,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html className="h-full w-full" lang="en">
-      <body className="h-full w-full text-center">
+    <>
+        <NavBar />
         {children}
-      </body>
-    </html>
+    </>
   )
 }
