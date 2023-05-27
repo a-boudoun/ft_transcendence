@@ -7,7 +7,6 @@ import MenuDropDown from './MenuDropDown';
 import AccountDropDown from './AccountDropDown';
 import NavLink from './NavLink';
 
-
 const Left = () => {
   return (
     <div className='ml-[1rem]'>
