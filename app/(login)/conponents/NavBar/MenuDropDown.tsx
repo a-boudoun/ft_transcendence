@@ -18,7 +18,6 @@ const MenuDropDown = () => {
           </button>
           {
               isOpen && (<div className='flex flex-col justify-around  absolute top-[56px] right-0 w-[56px]'>
-                            <NavLink route={'/home'} src={'/icons/search.svg'} alt={'home'} setIsOpen={setIsOpen}/>
                             <NavLink route={'/home'} src={'/icons/home.svg'} alt={'home'} setIsOpen={setIsOpen}/>
                             <NavLink route={'/leaderboard'} src={'/icons/leaderboard.svg'} alt={'leaderboard'} setIsOpen={setIsOpen}/>
                             <NavLink route={'/game'} src={'/icons/game.svg'} alt={'game'} setIsOpen={setIsOpen}/>
