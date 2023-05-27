@@ -16,14 +16,6 @@ module.exports = {
         'red': '#FF2763',
         'blue': '#7AC7C4', 
     },
-    screens:{
-      'sm': {'max': '639px', 
-              'min': '320px'
-            },
-      'md': {'max': '1024px', 
-                'min': '640px'
-            },
-    }
   },
   plugins: [],
   }

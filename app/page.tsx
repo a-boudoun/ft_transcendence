@@ -4,12 +4,12 @@ import Button from './conponents/singButton'
 
 export default function Home() {
   return (
-    <main className="grid place-content-center h-full w-full bg-ping-pong bg-cover text-base">
-        <section className="flex flex-col items-center bg-light-gray/60 rounded-[50px] py-[8rem] px-[9rem]
-                        md:py-[6rem] md:px-[6rem] sm:py-[5rem] sm:px-[3rem]">
-            <h1 className="text-red text-[7rem] leading-[121px] font-normal tracking-wides">
+    <main className="grid place-content-center h-screen w-h-screen bg-ping-pong bg-cover text-base">
+        <section className="flex flex-col items-center bg-light-gray/60 rounded-[50px] py-[5.5rem] px-[2.25rem]
+                    md:py-[7.5rem] md:px-[5.25rem] lg:px-[9rem] lg:py-[7.25rem] ">
+            <h1 className="text-red text-[6rem] leading-[120px] font-normal md:text-[8rem]">
                 Ping
-              <span className="text-blue md:block md:mt-[40px] sm:block sm:mt-[20px]"> Pong</span>
+              <span className="block text-blue mt-[1rem] md:mt-[3rem] lg:inline"> Pong</span>
             </h1>
             <Button />
         </section>
