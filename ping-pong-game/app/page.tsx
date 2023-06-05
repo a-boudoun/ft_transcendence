@@ -73,7 +73,7 @@ export default function Home(){
 			}
 		  });
 		
-		  const ball = Bodies.circle(300, 200, 13, {
+		  const ball = Bodies.circle(300, 200, 15, {
 			restitution: 1, // Make the ball fully elastic
     		friction: 0, // Remove friction
     		frictionAir: 0, // Remove air friction
@@ -82,7 +82,7 @@ export default function Home(){
 			  fillStyle: '#FFB26B'
 			}
 		  });
-		  Matter.Body.setVelocity(ball, { x: 10, y: 5 }); // Set the ball moving speed
+		  Matter.Body.setVelocity(ball, { x: 15, y: 5 }); // Set the ball moving speed
 		
 		  World.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
 		
