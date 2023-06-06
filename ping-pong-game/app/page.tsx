@@ -1,20 +1,14 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import Matter from "matter-js";
-
+import {Engine, Render, World, Body} from "matter-js";
+import { drawRect, drawCircle } from "../utils/draw";
 
 export default function Home(){
-
+	
 	const canvasRef = useRef(null);
-
-
+	
 	useEffect(() => {
-		let Engine = Matter.Engine,
-			Render = Matter.Render,
-			World = Matter.World,
-			Bodies = Matter.Bodies;
-
 		let engine = Engine.create({
 			gravity:{
 				x:0,
@@ -34,60 +28,21 @@ export default function Home(){
 					background: "#FF6000",
 				}
 			});
-		const floor = Bodies.rectangle(400, 600, 800, 20, {
-			isStatic: true,
-			render: {
-			  fillStyle: '#4C3D3D'
-			}
-		  });
 
-		const ceiling = Bodies.rectangle(400, 0, 800, 20, {
-			isStatic: true,
-			render: {
-			  fillStyle: '#4C3D3D'
-			}
-		  });
-
-		const rightBoard = Bodies.rectangle(750, 300, 20, 150, {
-			isStatic: true,
-			render: {
-			  fillStyle: '#4C3D3D'
-			}
-		  });
-		const leftBoard = Bodies.rectangle(50, 300, 20, 150, {
-			isStatic: true,
-			render: {
-			  fillStyle: '#4C3D3D'
-			}
-		  });
-		const leftWall = Bodies.rectangle(10, 300, 20, 560, {
-			isStatic: true,
-			render: {
-			  fillStyle: '#7AC7C4'
-			}
-		  });
-		const rightWall = Bodies.rectangle(790, 300, 20, 560, {
-			isStatic: true,
-			render: {
-			  fillStyle: '#7AC7C4'
-			}
-		  });
+		const floor = drawRect(400, 600, 800, 20, '#4C3D3D');
+		const ceiling = drawRect(400, 0, 800, 20, '#4C3D3D');
+		const rightBoard = drawRect(750, 300, 20, 150, '#4C3D3D');
+		const leftBoard = drawRect(50, 300, 20, 150, '#4C3D3D');
+		const leftWall = drawRect(10, 300, 20, 560, '#7AC7C4');
+		const rightWall = drawRect(790, 300, 20, 560, '#7AC7C4');
 		
-		  const ball = Bodies.circle(300, 200, 15, {
-			restitution: 1, // Make the ball fully elastic
-    		friction: 0, // Remove friction
-    		frictionAir: 0, // Remove air friction
-			inertia: Infinity, // prevent ball from slowing down
-			render: {
-			  fillStyle: '#FFB26B'
-			}
-		  });
-		  Matter.Body.setVelocity(ball, { x: 15, y: 5 }); // Set the ball moving speed
+		const ball = drawCircle(300, 200, 15, '#FFB26B');
+		Body.setVelocity(ball, { x: 15, y: 5 }); // Set the ball moving speed
 		
-		  World.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
+		World.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
 		
-		  Engine.run(engine);
-		  Render.run(render);
+		Engine.run(engine);
+		Render.run(render);
 	}, []);
 
 	return (
