@@ -25,9 +25,7 @@ import { UsersService } from '../users/users.service';
       else
         console.log("userExists: ", userExists);
       
-      return {
-        access_token: await this.jwtService.signAsync(payload),
-      }
+      return this.jwtService.signAsync(payload);
     }
   
     async findUserByusername(username) {
