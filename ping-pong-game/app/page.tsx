@@ -6,13 +6,27 @@ import { drawRect, drawCircle } from "@/utils/draw";
 
 
 export default function Game(){
-	const rightBoardY: number = 300;
+	// let board: number = 300;
 	const canvasRef = useRef(null);
 	const timeToStart: number = 3;
-	const [countDownValue, setCountDownValue] = useState(timeToStart);
-	const [pVisible, setPVisible] = useState(true);
+	const [countDownValue, setCountDownValue] = useState<number>(timeToStart);
+	const [pVisible, setPVisible] = useState<boolean>(true);
+	const  [board, setBoard] = useState<number>(300);
 	
 	// to prevent infinite loop
+	const handleKeyDown = (event) => {
+		console.log(event.key);
+		if (event.key === "ArrowUp"){
+			if (board > 0){
+				setBoard(board - 10);
+			}
+		}else if (event.key === "ArrowDown"){
+			if (board < 450){
+				setBoard(board + 10);
+			}
+		}
+	}
+
 	useEffect(() => {
 		if (countDownValue <= 0) {
 			setPVisible(false);
@@ -20,8 +34,11 @@ export default function Game(){
 			setTimeout(() => setCountDownValue(countDownValue - 1), 1000);
 		}
 	}, [countDownValue]);
+	
 
 	useEffect(() => {
+	
+		document.addEventListener("keydown", handleKeyDown);
 		let engine = Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
 			constraintIterations: 4, // he higher quality the simulation will be at the expense of performance.
@@ -44,28 +61,31 @@ export default function Game(){
 				}
 			});
 
-		const floor = drawRect(400, 600, 800, 20, '#7AC7C4');
-		const ceiling = drawRect(400, 0, 800, 20, '#7AC7C4');
-		const rightBoard = drawRect(750, rightBoardY, 20, 150, '#EA5581');
-		const leftBoard = drawRect(50, 300, 20, 150, '#EA5581');
-		const leftWall = drawRect(10, 300, 20, 560, '#7AC7C4');
-		const rightWall = drawRect(790, 300, 20, 560, '#7AC7C4');
+		const floor = drawRect(400, 600, 800, 20, '#92a7ad');
+		const rightBoard = drawRect(770, board, 20, 150, '#EA5581');
+		const ceiling = drawRect(400, 0, 800, 20, '#92a7ad');
+		const leftBoard = drawRect(30, 300, 20, 150, '#EA5581');
+		const leftWall = drawRect(10, 300, 15, 560, '#91adcc');
+		const rightWall = drawRect(790, 300, 15, 560, '#91adcc');
 		
 		const ball = drawCircle(400, 200, 15, '#384259');
-		const start =  () => Body.setVelocity(ball, { x: 8, y: 3 }); // Set the ball moving speed
+		// Body.setVelocity(ball, { x: 10, y: 3 }); // Set the ball moving speed
+		const start =  () => Body.setVelocity(ball, { x: 10, y: 3 }); // Set the ball moving speed
 		setTimeout(start, timeToStart * 1000);
-		//reset the timer
-		setCountDownValue(3);
-		setPVisible(true);
 		
 		World.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
 		
 		Engine.run(engine);
 		Render.run(render);
-	}, []);
+
+		// Remove event listener when component unmounts
+		return () => {
+		  document.removeEventListener("keydown", handleKeyDown);
+		};
+		}, []);
 
 	return (
-		<div className="flex justify-center relative">
+		<div className="flex justify-center relative mt-9">
 			<canvas ref={canvasRef}/>
 			{pVisible && <p className="absolute mt-4 font-bold text-white text-[50px]">{countDownValue}</p>}
 		</div>
