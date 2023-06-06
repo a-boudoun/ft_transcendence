@@ -6,6 +6,7 @@ import { drawRect, drawCircle } from "@/utils/draw";
 
 
 export default function Game(){
+	const rightBoardY: number = 300;
 	const canvasRef = useRef(null);
 	const timeToStart: number = 3;
 	const [countDownValue, setCountDownValue] = useState(timeToStart);
@@ -45,13 +46,13 @@ export default function Game(){
 
 		const floor = drawRect(400, 600, 800, 20, '#7AC7C4');
 		const ceiling = drawRect(400, 0, 800, 20, '#7AC7C4');
-		const rightBoard = drawRect(750, 300, 20, 150, '#EA5581');
+		const rightBoard = drawRect(750, rightBoardY, 20, 150, '#EA5581');
 		const leftBoard = drawRect(50, 300, 20, 150, '#EA5581');
 		const leftWall = drawRect(10, 300, 20, 560, '#7AC7C4');
 		const rightWall = drawRect(790, 300, 20, 560, '#7AC7C4');
 		
 		const ball = drawCircle(400, 200, 15, '#384259');
-		const start =  () => Body.setVelocity(ball, { x: 10, y: 5 }); // Set the ball moving speed
+		const start =  () => Body.setVelocity(ball, { x: 8, y: 3 }); // Set the ball moving speed
 		setTimeout(start, timeToStart * 1000);
 		//reset the timer
 		setCountDownValue(3);
