@@ -80,7 +80,7 @@ export default function Game(){
 		const ball = drawCircle(400, 200, 15, '#384259');
 		// Set the ball moving speed
 		const start =  () => {
-			Body.setVelocity(ball, { x: 15, y: 5 });
+			Body.setVelocity(ball, { x: 20, y: 5 });
 			document.addEventListener("keydown", handleKeyDown);
 			document.addEventListener("mousemove", handleMouseMove);
 		}; 
