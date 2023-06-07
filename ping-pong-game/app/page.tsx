@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import {Engine, Render, World, Body} from "matter-js";
 import { drawRect, drawCircle } from "@/utils/draw";
+import { redirect } from "next/dist/server/api-utils";
 
 export default function Game(){
 	// let board: number = 300;
@@ -14,17 +15,20 @@ export default function Game(){
 	const  [renderRef, setRenderRef] = useState<Render>();
 	
 	// to prevent infinite loop
-	const handleKeyDown = (event) => {
-		console.log(event.key);
+	const handleKeyDown = (event: any) => {
+		console.log("boardY keyhandle before: ", boardY);
 		if (event.key === "ArrowUp"){
 			if (boardY > 0){
+				console.log("boardY UP if: ", boardY);
 				setBoard(boardY - 10);
 			}
 		}else if (event.key === "ArrowDown"){
 			if (boardY < 450){
+				console.log("boardY DOWN if: ", boardY);
 				setBoard(boardY + 10);
 			}
 		}
+		console.log("boardY keyhandle after: ", boardY);
 	}
 
 	useEffect(() => {
@@ -37,6 +41,7 @@ export default function Game(){
 	
 	useEffect(() => {
 	
+		if (!canvasRef.current) return;
 		document.addEventListener("keydown", handleKeyDown);
 		let engine = Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
@@ -59,7 +64,8 @@ export default function Game(){
 				background: "#7AC7C4",
 			}
 		});
-
+		
+		console.log("rerender");
 		const floor = drawRect(400, 600, 800, 20, '#92a7ad');
 		const rightBoard = drawRect(770, 300, 20, 150, '#EA5581');
 		const ceiling = drawRect(400, 0, 800, 20, '#92a7ad');
@@ -84,10 +90,16 @@ export default function Game(){
 		};
 		}, []);
 
+		useEffect(() => {
+			if (!renderRef) return;
+			console.log("boardY change: ", boardY);
+			Body.setPosition(renderRef.engine.world.bodies[3], {x: 770, y: boardY});
+
+		} , [boardY]);
+
 	return (
 		<div className="flex justify-center relative mt-9">
 			<canvas ref={canvasRef}/>
-			<Rightb renderRef={renderRef} value={boardY}/>
 			{pVisible && <p className="absolute mt-4 font-bold text-white text-[50px]">{countDownValue}</p>}
 		</div>
 	);
