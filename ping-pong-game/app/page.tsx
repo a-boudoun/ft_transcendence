@@ -4,9 +4,13 @@ import React, { use, useEffect, useRef, useState } from "react";
 import {Engine, Render, World, Body, Mouse, MouseConstraint, Events} from "matter-js";
 import { drawRect, drawCircle } from "@/utils/draw";
 
+// TODO: implement the game logic in the backend and send the data to the frontend
+// TODO: make the cnasvas responsive
+// TODO: try the keyup keydown event to make the movement smoother
+
 export default function Game(){
 	let board: number = 300;
-	const moveSpeed: number = 25;
+	const moveSpeed: number = 30;
 	const canvasRef = useRef(null);
 	const timeToStart: number = 3;
 	const [countDownValue, setCountDownValue] = useState<number>(timeToStart);
@@ -83,6 +87,7 @@ export default function Game(){
 			Body.setVelocity(ball, { x: 20, y: 5 });
 			document.addEventListener("keydown", handleKeyDown);
 			document.addEventListener("mousemove", handleMouseMove);
+			setRenderRef(render);
 		}; 
 		setTimeout(start, timeToStart * 1000);
 		setPVisible(true);
@@ -92,7 +97,6 @@ export default function Game(){
 		
 		Engine.run(engine);
 		Render.run(render);
-		setRenderRef(render);
 		// Remove event listener when component unmounts
 		return () => {
 		  document.removeEventListener("keydown", handleKeyDown);
@@ -100,17 +104,17 @@ export default function Game(){
 		};
 		}, []);
 
-		// useEffect(() => {
-		// 	if (!renderRef) return;
-		// 	Body.setPosition(renderRef.engine.world.bodies[3], {x: 770, y: rightBoardY});
-		// } , [rightBoardY]);
 		useEffect(() => {
 			if (!renderRef) return;
-			Events.on(renderRef.engine, 'afterUpdate', () => {
-				const ballBody = renderRef.engine.world.bodies[1];
-				Body.setPosition(renderRef.engine.world.bodies[3], { x: 770, y: ballBody.position.y });
-			});
-		  }, [renderRef]);
+			Body.setPosition(renderRef.engine.world.bodies[3], {x: 770, y: rightBoardY});
+		} , [rightBoardY]);
+		// useEffect(() => {
+		// 	if (!renderRef) return;
+		// 	Events.on(renderRef.engine, 'afterUpdate', () => {
+		// 		const ballBody = renderRef.engine.world.bodies[1];
+		// 		Body.setPosition(renderRef.engine.world.bodies[3], { x: 770, y: ballBody.position.y });
+		// 	});
+		//   }, [renderRef]);
 
 		useEffect(() => {
 			if (!renderRef) return;
