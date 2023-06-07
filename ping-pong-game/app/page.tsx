@@ -1,24 +1,25 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import {Engine, Render, World, Body} from "matter-js";
+import React, { use, useEffect, useRef, useState } from "react";
+import {Engine, Render, World, Body, Mouse, MouseConstraint} from "matter-js";
 import { drawRect, drawCircle } from "@/utils/draw";
 
 export default function Game(){
 	let board: number = 300;
-	const moveSpeed: number = 10;
+	const moveSpeed: number = 20;
 	const canvasRef = useRef(null);
 	const timeToStart: number = 3;
 	const [countDownValue, setCountDownValue] = useState<number>(timeToStart);
 	const [pVisible, setPVisible] = useState<boolean>(true);
 	const  [rightBoardY, setRightBoard] = useState<number>(300);
+	const  [leftBoardY, setLeftBoard] = useState<number>(300);
 	const  [renderRef, setRenderRef] = useState<Render>();
 	
 	// to prevent infinite loop
 	const handleKeyDown = (event: any) => {
 		// TODO: work with boardY instead of board
 		if (event.key === "ArrowUp"){
-			if (board - moveSpeed > 0){
+			if (board - moveSpeed > 100){
 				board -= moveSpeed;
 			}
 		}else if (event.key === "ArrowDown"){
@@ -27,6 +28,13 @@ export default function Game(){
 			}
 		}
 		setRightBoard(board);
+	}
+
+	const handleMouseMove = (event: any) => {
+		const y = event.clientY;
+		if (y > 100 && y < 500){
+			setLeftBoard(y);
+		}
 	}
 
 	useEffect(() => {
@@ -41,6 +49,7 @@ export default function Game(){
 	
 		if (!canvasRef.current) return;
 		document.addEventListener("keydown", handleKeyDown);
+		document.addEventListener("mousemove", handleMouseMove);
 		let engine = Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
 			constraintIterations: 4, // he higher quality the simulation will be at the expense of performance.
@@ -84,14 +93,19 @@ export default function Game(){
 		// Remove event listener when component unmounts
 		return () => {
 		  document.removeEventListener("keydown", handleKeyDown);
+		  document.removeEventListener("mousemove", handleMouseMove);
 		};
 		}, []);
 
 		useEffect(() => {
 			if (!renderRef) return;
 			Body.setPosition(renderRef.engine.world.bodies[3], {x: 770, y: rightBoardY});
-
 		} , [rightBoardY]);
+
+		useEffect(() => {
+			if (!renderRef) return;
+			Body.setPosition(renderRef.engine.world.bodies[4], {x: 30, y: leftBoardY});
+		}, [leftBoardY]);
 
 	return (
 		<div className="flex justify-center relative mt-9">
