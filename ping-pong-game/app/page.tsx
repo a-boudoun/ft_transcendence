@@ -18,21 +18,6 @@ export default function Game(){
 	const  [rightBoardY, setRightBoard] = useState<number>(300);
 	const  [leftBoardY, setLeftBoard] = useState<number>(300);
 	const  [renderRef, setRenderRef] = useState<Render>();
-	
-	// to prevent infinite loop
-	const handleKeyDown = (event: any) => {
-		// TODO: work with boardY instead of board
-		if (event.key === "ArrowUp"){
-			if (board - moveSpeed > 100){
-				board -= moveSpeed;
-			}
-		}else if (event.key === "ArrowDown"){
-			if (board + moveSpeed < 500){
-				board += moveSpeed;
-			}
-		}
-		setRightBoard(board);
-	}
 
 	const handleMouseMove = (event: any) => {
 		const y = event.clientY;
@@ -83,9 +68,31 @@ export default function Game(){
 		
 		const ball = drawCircle(400, 200, 15, '#384259');
 		// Set the ball moving speed
+		World.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
 		const start =  () => {
-			Body.setVelocity(ball, { x: 20, y: 5 });
-			document.addEventListener("keydown", handleKeyDown);
+			Body.setVelocity(ball, { x: 15, y: 5 });
+			document.addEventListener("keydown", (event) => {
+				// TODO: work with boardY instead of board
+				if (event.key === "ArrowUp"){
+					if (board - moveSpeed > 100){
+						board -= moveSpeed;
+					}
+				}else if (event.key === "ArrowDown"){
+					if (board + moveSpeed < 500){
+						board += moveSpeed;
+					}
+				}
+				else if (event.key === "w"){
+					const NaroTo = drawCircle(engine.world.bodies[1].position.x, engine.world.bodies[1].position.y , 15, 'red');
+					const Velo = engine.world.bodies[1].velocity;
+					Body.setVelocity(NaroTo, { x: Velo.x , y: -Velo.y + 2});
+					World.add(engine.world, [NaroTo]);
+				}
+				// else if (event.key === "s"){
+				// 	engine.world.bodies[4]. = 20;
+				// }
+				setRightBoard(board);
+			});
 			document.addEventListener("mousemove", handleMouseMove);
 			setRenderRef(render);
 		}; 
@@ -93,7 +100,6 @@ export default function Game(){
 		setPVisible(true);
 		setCountDownValue(timeToStart);
 		
-		World.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
 		
 		Engine.run(engine);
 		Render.run(render);
