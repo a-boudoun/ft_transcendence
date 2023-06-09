@@ -20,10 +20,7 @@ import { UsersService } from '../users/users.service';
   
       if (!userExists) {
         let newUser = await this.userService.create(user);
-        console.log("newUser: ", newUser);
       }
-      else
-        console.log("userExists: ", userExists);
       
       return this.jwtService.signAsync(payload);
     }

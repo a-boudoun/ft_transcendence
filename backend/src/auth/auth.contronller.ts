@@ -1,8 +1,8 @@
-import { Controller, Get, Redirect, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { OAuthGuard } from './guards/42.guard';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-
+import { response } from 'express';
 
 interface Profile {
   id: number;
@@ -10,7 +10,6 @@ interface Profile {
   first_name: string;
   last_name: string;
 }
-
 
 @Controller('auth')
 export class AuthController {
@@ -25,24 +24,22 @@ export class AuthController {
   @Get('42/redirect')
   @UseGuards(OAuthGuard)
   async googleAuthCallback(@Req() req, @Res({ passthrough: true }) res) {
-    const token = await this.authService.login(req.user);
+    const token = await this.authService.login(req.user); 
 
-    console.log('token: ', token);  
 
     res.cookie('access_token', token, {
-      maxAge: 3600,
-      sameSite: true,
+      httpOnly: true,
       secure: false,
-      httponly: true,
-    }); 
+      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+  });
 
     res.redirect('http://localhost:3000/home');
   }
 
-  @Get('protected')
+  @Get('isAuth')
   @UseGuards(JwtAuthGuard)
-  protectedResource() {
-    return 'JWT is working!';
+  protectedResource() { 
+    return { message: 'success' };
   }
-
+  
 }
