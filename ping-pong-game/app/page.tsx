@@ -12,11 +12,12 @@ export default function Game(){
 	let board: number = window.innerHeight / 2;
 	const moveSpeed: number = 30;
 	const canvasRef = useRef(null);
+	const divRef = useRef(null);
 	const timeToStart: number = 3;
 	const [countDownValue, setCountDownValue] = useState<number>(timeToStart);
 	const [pVisible, setPVisible] = useState<boolean>(true);
-	const  [rightBoardY, setRightBoard] = useState<number>(300);
-	const  [leftBoardY, setLeftBoard] = useState<number>(300);
+	const  [rightBoardY, setRightBoard] = useState<number>(board);
+	const  [leftBoardY, setLeftBoard] = useState<number>(board);
 	const  [renderRef, setRenderRef] = useState<Render>();
 	const   [heightW, setHeightW] = useState<number>(window.innerHeight);
 	const   [widthW, setWidthW] = useState<number>(window.innerWidth);
@@ -32,6 +33,19 @@ export default function Game(){
 		setHeightW(window.innerHeight);
 		setWidthW(window.innerWidth);
 	}
+	const handlKeyDown = (event) => {
+			// TODO: work with boardY instead of board
+			if (event.key === "ArrowUp"){
+				if (board - moveSpeed > 0){
+					board -= moveSpeed;
+				}
+			}else if (event.key === "ArrowDown"){
+				if (board + moveSpeed < heightW){
+					board += moveSpeed;
+				}
+			}
+			setRightBoard(board);
+		};
 	useEffect(() => {
 		if (countDownValue <= 0) {
 			setPVisible(false);
@@ -56,6 +70,7 @@ export default function Game(){
 		render = Render.create({
 			engine: engine,
 			canvas: canvasRef.current,
+			element: divRef.current,
 			options: {
 				width: W,
 				height: H,
@@ -73,33 +88,12 @@ export default function Game(){
 		const leftWall = drawRect(10, H / 2, 15, H, '#91adcc');
 		const rightWall = drawRect(W - 10, H / 2, 15, H, '#91adcc');
 		
-		const ball = drawCircle(400, 200, 15, '#384259');
+		const ball = drawCircle(W / 2, H / 5, 15, '#384259');
 		// Set the ball moving speed
 		World.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
 		const start =  () => {
-			Body.setVelocity(ball, { x: 15, y: 5 });
-			document.addEventListener("keydown", (event) => {
-				// TODO: work with boardY instead of board
-				if (event.key === "ArrowUp"){
-					if (board - moveSpeed > 0){
-						board -= moveSpeed;
-					}
-				}else if (event.key === "ArrowDown"){
-					if (board + moveSpeed < heightW){
-						board += moveSpeed;
-					}
-				}
-				else if (event.key === "w"){
-					const NaroTo = drawCircle(engine.world.bodies[1].position.x, engine.world.bodies[1].position.y , 15, 'red');
-					const Velo = engine.world.bodies[1].velocity;
-					Body.setVelocity(NaroTo, { x: Velo.x , y: -Velo.y + 2});
-					World.add(engine.world, [NaroTo]);
-				}
-				// else if (event.key === "s"){
-				// 	engine.world.bodies[4]. = 20;
-				// }
-				setRightBoard(board);
-			});
+			Body.setVelocity(ball, { x: 20, y: 5 });
+			document.addEventListener("keydown", handlKeyDown);
 			document.addEventListener("mousemove", handleMouseMove);
 		}; 
 		setRenderRef(render);
@@ -120,7 +114,12 @@ export default function Game(){
 
 		useEffect(() => {
 			if (!renderRef) return;
-			console.log("heightW", heightW);
+			Body.setPosition(renderRef.engine.world.bodies[0], {x: widthW / 2, y: heightW});
+			Body.setPosition(renderRef.engine.world.bodies[2], {x: widthW / 2, y: 0});
+			Body.setPosition(renderRef.engine.world.bodies[5], {x: 10, y: heightW / 2});
+			Body.setPosition(renderRef.engine.world.bodies[6], {x: widthW - 10, y: heightW / 2});
+			Body.setPosition(renderRef.engine.world.bodies[3], {x: widthW - 30, y: rightBoardY});
+
 		}, [heightW, widthW]);
 		useEffect(() => {
 			if (!renderRef) return;
@@ -140,9 +139,9 @@ export default function Game(){
 		}, [leftBoardY]);
 
 	return (
-		<div>
-			{pVisible && <p className="absolute mt-4 font-bold text-white text-[50px]">{countDownValue}</p>}
-			<canvas ref={canvasRef}/>
+		<div className="h-screen" ref={divRef}>
+			<canvas ref={canvasRef} className="cursor-none w-full h-full"/>
+			{/* {pVisible && <p>{countDownValue}</p>} */}
 		</div>
 	);
 }
