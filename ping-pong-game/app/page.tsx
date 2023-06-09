@@ -9,7 +9,7 @@ import { drawRect, drawCircle } from "@/utils/draw";
 // TODO: try the keyup keydown event to make the movement smoother
 
 export default function Game(){
-	let board: number = 300;
+	let board: number = window.innerHeight / 2;
 	const moveSpeed: number = 30;
 	const canvasRef = useRef(null);
 	const timeToStart: number = 3;
@@ -18,14 +18,20 @@ export default function Game(){
 	const  [rightBoardY, setRightBoard] = useState<number>(300);
 	const  [leftBoardY, setLeftBoard] = useState<number>(300);
 	const  [renderRef, setRenderRef] = useState<Render>();
+	const   [heightW, setHeightW] = useState<number>(window.innerHeight);
+	const   [widthW, setWidthW] = useState<number>(window.innerWidth);
 
 	const handleMouseMove = (event: any) => {
 		const y = event.clientY;
-		if (y > 100 && y < 500){
+		if (y > 85 && y < heightW - 85){
 			setLeftBoard(y);
 		}
 	}
 
+	const handlResize = () => {
+		setHeightW(window.innerHeight);
+		setWidthW(window.innerWidth);
+	}
 	useEffect(() => {
 		if (countDownValue <= 0) {
 			setPVisible(false);
@@ -35,7 +41,8 @@ export default function Game(){
 	}, [countDownValue]);
 	
 	useEffect(() => {
-	
+		const H = window.innerHeight;
+		const W = window.innerWidth;
 		if (!canvasRef.current) return;
 		let engine = Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
@@ -50,8 +57,8 @@ export default function Game(){
 			engine: engine,
 			canvas: canvasRef.current,
 			options: {
-				width: 800,
-				height: 600,
+				width: W,
+				height: H,
 				// rendering pixel to be more sharp
 				pixelRatio: 2,
 				wireframes: false,
@@ -59,12 +66,12 @@ export default function Game(){
 			}
 		});
 		
-		const floor = drawRect(400, 600, 800, 20, '#92a7ad');
-		const rightBoard = drawRect(770, 300, 20, 150, '#EA5581');
-		const ceiling = drawRect(400, 0, 800, 20, '#92a7ad');
-		const leftBoard = drawRect(30, 300, 20, 150, '#EA5581');
-		const leftWall = drawRect(10, 300, 15, 560, '#91adcc');
-		const rightWall = drawRect(790, 300, 15, 560, '#91adcc');
+		const floor = drawRect(W / 2, H, W, 20, '#92a7ad');
+		const rightBoard = drawRect(W - 30, H / 2, 20, 150, '#EA5581');
+		const ceiling = drawRect(W / 2, 0, W, 20, '#92a7ad');
+		const leftBoard = drawRect(30, H / 2, 20, 150, '#EA5581');
+		const leftWall = drawRect(10, H / 2, 15, H, '#91adcc');
+		const rightWall = drawRect(W - 10, H / 2, 15, H, '#91adcc');
 		
 		const ball = drawCircle(400, 200, 15, '#384259');
 		// Set the ball moving speed
@@ -74,11 +81,11 @@ export default function Game(){
 			document.addEventListener("keydown", (event) => {
 				// TODO: work with boardY instead of board
 				if (event.key === "ArrowUp"){
-					if (board - moveSpeed > 100){
+					if (board - moveSpeed > 0){
 						board -= moveSpeed;
 					}
 				}else if (event.key === "ArrowDown"){
-					if (board + moveSpeed < 500){
+					if (board + moveSpeed < heightW){
 						board += moveSpeed;
 					}
 				}
@@ -94,8 +101,9 @@ export default function Game(){
 				setRightBoard(board);
 			});
 			document.addEventListener("mousemove", handleMouseMove);
-			setRenderRef(render);
 		}; 
+		setRenderRef(render);
+		window.addEventListener("resize", handlResize);
 		setTimeout(start, timeToStart * 1000);
 		setPVisible(true);
 		setCountDownValue(timeToStart);
@@ -112,7 +120,11 @@ export default function Game(){
 
 		useEffect(() => {
 			if (!renderRef) return;
-			Body.setPosition(renderRef.engine.world.bodies[3], {x: 770, y: rightBoardY});
+			console.log("heightW", heightW);
+		}, [heightW, widthW]);
+		useEffect(() => {
+			if (!renderRef) return;
+			Body.setPosition(renderRef.engine.world.bodies[3], {x: widthW - 30, y: rightBoardY});
 		} , [rightBoardY]);
 		// useEffect(() => {
 		// 	if (!renderRef) return;
@@ -128,9 +140,9 @@ export default function Game(){
 		}, [leftBoardY]);
 
 	return (
-		<div className="flex justify-center relative mt-9">
-			<canvas ref={canvasRef}/>
+		<div>
 			{pVisible && <p className="absolute mt-4 font-bold text-white text-[50px]">{countDownValue}</p>}
+			<canvas ref={canvasRef}/>
 		</div>
 	);
 }
