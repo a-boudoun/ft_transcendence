@@ -92,7 +92,7 @@ export default function Game(){
 		// Set the ball moving speed
 		World.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
 		const start =  () => {
-			Body.setVelocity(ball, { x: 20, y: 5 });
+			Body.setVelocity(ball, { x: 10, y: 5 });
 			document.addEventListener("keydown", handlKeyDown);
 			document.addEventListener("mousemove", handleMouseMove);
 		}; 
@@ -121,17 +121,17 @@ export default function Game(){
 			Body.setPosition(renderRef.engine.world.bodies[3], {x: widthW - 30, y: rightBoardY});
 
 		}, [heightW, widthW]);
-		useEffect(() => {
-			if (!renderRef) return;
-			Body.setPosition(renderRef.engine.world.bodies[3], {x: widthW - 30, y: rightBoardY});
-		} , [rightBoardY]);
 		// useEffect(() => {
 		// 	if (!renderRef) return;
-		// 	Events.on(renderRef.engine, 'afterUpdate', () => {
-		// 		const ballBody = renderRef.engine.world.bodies[1];
-		// 		Body.setPosition(renderRef.engine.world.bodies[3], { x: 770, y: ballBody.position.y });
-		// 	});
-		//   }, [renderRef]);
+		// 	Body.setPosition(renderRef.engine.world.bodies[3], {x: widthW - 30, y: rightBoardY});
+		// } , [rightBoardY]);
+		useEffect(() => {
+			if (!renderRef) return;
+			Events.on(renderRef.engine, 'afterUpdate', () => {
+				const ballBody = renderRef.engine.world.bodies[1];
+				Body.setPosition(renderRef.engine.world.bodies[3], { x: widthW - 30, y: ballBody.position.y });
+			});
+		  }, [renderRef]);
 
 		useEffect(() => {
 			if (!renderRef) return;
