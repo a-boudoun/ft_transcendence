@@ -9,10 +9,10 @@ import { drawRect, drawCircle } from "@/utils/draw";
 // TODO: try the keyup keydown event to make the movement smoother
 
 export default function Game(){
-	let board: number = window.innerHeight / 2;
+	let board: number = window.innerWidth / 2;
 	const moveSpeed: number = 30;
-	const canvasRef = useRef(null);
 	const divRef = useRef(null);
+	// const canvasRef = useRef(null);
 	const timeToStart: number = 3;
 	const [countDownValue, setCountDownValue] = useState<number>(timeToStart);
 	const [pVisible, setPVisible] = useState<boolean>(true);
@@ -57,7 +57,7 @@ export default function Game(){
 	useEffect(() => {
 		const H = window.innerHeight;
 		const W = window.innerWidth;
-		if (!canvasRef.current) return;
+
 		let engine = Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
 			constraintIterations: 4, // he higher quality the simulation will be at the expense of performance.
@@ -69,18 +69,17 @@ export default function Game(){
 		}),
 		render = Render.create({
 			engine: engine,
-			canvas: canvasRef.current,
 			element: divRef.current,
+			// canvas: canvasRef.current,
 			options: {
-				width: W,
-				height: H,
+				width: divRef.current.clientWidth,
+				height: divRef.current.clientHeight,
 				// rendering pixel to be more sharp
 				pixelRatio: 2,
 				wireframes: false,
 				background: "#7AC7C4",
 			}
-		});
-		
+		});		
 		const floor = drawRect(W / 2, H, W, 20, '#92a7ad');
 		const rightBoard = drawRect(W - 30, H / 2, 20, 150, '#EA5581');
 		const ceiling = drawRect(W / 2, 0, W, 20, '#92a7ad');
@@ -114,6 +113,8 @@ export default function Game(){
 
 		useEffect(() => {
 			if (!renderRef) return;
+			renderRef.canvas.width = divRef.current.clientWidth;
+			renderRef.canvas.height = divRef.current.clientHeight;
 			Body.setPosition(renderRef.engine.world.bodies[0], {x: widthW / 2, y: heightW});
 			Body.setPosition(renderRef.engine.world.bodies[2], {x: widthW / 2, y: 0});
 			Body.setPosition(renderRef.engine.world.bodies[5], {x: 10, y: heightW / 2});
@@ -121,17 +122,17 @@ export default function Game(){
 			Body.setPosition(renderRef.engine.world.bodies[3], {x: widthW - 30, y: rightBoardY});
 
 		}, [heightW, widthW]);
-		// useEffect(() => {
-		// 	if (!renderRef) return;
-		// 	Body.setPosition(renderRef.engine.world.bodies[3], {x: widthW - 30, y: rightBoardY});
-		// } , [rightBoardY]);
 		useEffect(() => {
 			if (!renderRef) return;
-			Events.on(renderRef.engine, 'afterUpdate', () => {
-				const ballBody = renderRef.engine.world.bodies[1];
-				Body.setPosition(renderRef.engine.world.bodies[3], { x: widthW - 30, y: ballBody.position.y });
-			});
-		  }, [renderRef]);
+			Body.setPosition(renderRef.engine.world.bodies[3], {x: widthW - 30, y: rightBoardY});
+		} , [rightBoardY]);
+		// useEffect(() => {
+		// 	if (!renderRef) return;
+		// 	Events.on(renderRef.engine, 'afterUpdate', () => {
+		// 		const ballBody = renderRef.engine.world.bodies[1];
+		// 		Body.setPosition(renderRef.engine.world.bodies[3], { x: widthW - 30, y: ballBody.position.y });
+		// 	});
+		//   }, [renderRef]);
 
 		useEffect(() => {
 			if (!renderRef) return;
@@ -139,9 +140,8 @@ export default function Game(){
 		}, [leftBoardY]);
 
 	return (
-		<div className="h-screen" ref={divRef}>
-			<canvas ref={canvasRef} className="cursor-none w-full h-full"/>
-			{/* {pVisible && <p>{countDownValue}</p>} */}
+		<div ref={divRef} className="h-screen">
+			<canvas className="cursor-none fixed top-0 left-0"/>
 		</div>
 	);
 }
