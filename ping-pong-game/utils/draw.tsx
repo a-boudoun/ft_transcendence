@@ -7,6 +7,8 @@ export function drawRect(x : number, y : number, w : number, h : number, color :
 			isStatic: true,
 			render: {
 				fillStyle: color,
+				strokeStyle: 'pink',
+				lineWidth: 2,
 			},
 		})
 		)
@@ -20,14 +22,14 @@ export function drawRect(x : number, y : number, w : number, h : number, color :
 				frictionAir: 0, // Remove air friction
 				inertia: Infinity, // prevent ball from slowing down
 				render: {
-					// sprite: {
-					// 	texture: 'https://png.pngtree.com/png-clipart/20200226/original/pngtree-football-championship-realistic-soccer-ball-isolated-png-image_5316695.jpg',
-					// 	xScale: 0.05,
-					// 	yScale: 0.05,
-					// }
-					fillStyle: color,
-					strokeStyle: 'pink',
-					lineWidth: 2,
+					sprite: {
+						texture: 'https://cdn.shopify.com/s/files/1/0009/2733/4466/products/755957ca0e8d95bb1d4e9ac2c8083de9.png?v=1539975508',
+						xScale: 0.05,
+						yScale: 0.05,
+					}
+					// fillStyle: color,
+					// strokeStyle: 'pink',
+					// lineWidth: 2,
 			},
 		})
 	)

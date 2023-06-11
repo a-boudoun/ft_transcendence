@@ -1,63 +1,22 @@
 "use client";
 
 import React, { use, useEffect, useRef, useState } from "react";
-import {Engine, Render, World, Body, Mouse, MouseConstraint, Events} from "matter-js";
+import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite} from "matter-js";
 import { drawRect, drawCircle } from "@/utils/draw";
 
-// TODO: implement the game logic in the backend and send the data to the frontend
-// TODO: make the cnasvas responsive
-// TODO: try the keyup keydown event to make the movement smoother
+//// : implement the game logic in the backend and send the data to the frontend
+//// : make the cnasvas responsive
+//// : try the keyup keydown event to make the movement smoother
 
 export default function Game(){
-	let board: number = window.innerWidth / 2;
-	const moveSpeed: number = 30;
-	const divRef = useRef(null);
-	// const canvasRef = useRef(null);
-	const timeToStart: number = 3;
-	const [countDownValue, setCountDownValue] = useState<number>(timeToStart);
-	const [pVisible, setPVisible] = useState<boolean>(true);
-	const  [rightBoardY, setRightBoard] = useState<number>(board);
-	const  [leftBoardY, setLeftBoard] = useState<number>(board);
-	const  [renderRef, setRenderRef] = useState<Render>();
-	const   [heightW, setHeightW] = useState<number>(window.innerHeight);
-	const   [widthW, setWidthW] = useState<number>(window.innerWidth);
-
-	const handleMouseMove = (event: any) => {
-		const y = event.clientY;
-		if (y > 85 && y < heightW - 85){
-			setLeftBoard(y);
-		}
-	}
-
-	const handlResize = () => {
-		setHeightW(window.innerHeight);
-		setWidthW(window.innerWidth);
-	}
-	const handlKeyDown = (event) => {
-			// TODO: work with boardY instead of board
-			if (event.key === "ArrowUp"){
-				if (board - moveSpeed > 0){
-					board -= moveSpeed;
-				}
-			}else if (event.key === "ArrowDown"){
-				if (board + moveSpeed < heightW){
-					board += moveSpeed;
-				}
-			}
-			setRightBoard(board);
-		};
-	useEffect(() => {
-		if (countDownValue <= 0) {
-			setPVisible(false);
-		}else{
-			setTimeout(() => setCountDownValue(countDownValue - 1), 1000);
-		}
-	}, [countDownValue]);
+	const divRef = useRef<HTMLDivElement>(null);
 	
 	useEffect(() => {
-		const H = window.innerHeight;
-		const W = window.innerWidth;
-
+		if (!divRef.current) return;
+		
+		const H = divRef.current.offsetHeight;
+		const W = divRef.current.offsetWidth;
+		
 		let engine = Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
 			constraintIterations: 4, // he higher quality the simulation will be at the expense of performance.
@@ -70,78 +29,81 @@ export default function Game(){
 		render = Render.create({
 			engine: engine,
 			element: divRef.current,
-			// canvas: canvasRef.current,
 			options: {
-				width: divRef.current.clientWidth,
-				height: divRef.current.clientHeight,
+				width: W,
+				height: H,
 				// rendering pixel to be more sharp
-				pixelRatio: 2,
+				pixelRatio: 1,
 				wireframes: false,
-				background: "#7AC7C4",
+				background: "grey",
 			}
 		});		
-		const floor = drawRect(W / 2, H, W, 20, '#92a7ad');
+		const handleResize = () => {
+			if (!divRef.current) return;
+			const divH = divRef.current.offsetHeight;
+			const divW = divRef.current.offsetWidth;
+			console.log("div", divRef.current.offsetWidth, divRef.current.offsetHeight);
+			// render.canvas.height = divH;
+			// render.canvas.width = divW;
+			console.log("canvas", render.canvas.width, render.canvas.height);
+			console.log("window", window.innerWidth, window.innerHeight);
+			render.canvas.style.background = "white";
+
+			Body.setPosition(engine.world.bodies[0], {x: divW / 2, y: divH});
+			Body.setPosition(engine.world.bodies[2], {x: divW / 2, y: 0});
+
+			console.log(Body);
+			Body.setPosition(engine.world.bodies[5], {x: 10, y: divH / 2});
+			Body.setPosition(engine.world.bodies[6], {x: divW - 20, y: divH / 2});
+			Body.setPosition(engine.world.bodies[3], {x: divW - 30, y: divH / 2});
+		}
+
+		const floor = drawRect(W / 2, H, W, 20, 'transparent');
 		const rightBoard = drawRect(W - 30, H / 2, 20, 150, '#EA5581');
-		const ceiling = drawRect(W / 2, 0, W, 20, '#92a7ad');
+		const ceiling = drawRect(W / 2, 0, W, 20, 'transparent');
 		const leftBoard = drawRect(30, H / 2, 20, 150, '#EA5581');
-		const leftWall = drawRect(10, H / 2, 15, H, '#91adcc');
-		const rightWall = drawRect(W - 10, H / 2, 15, H, '#91adcc');
+		const leftWall = Bodies.rectangle(0, H / 2, 15, H, {isStatic: true,});
+		const rightWall = drawRect(W - 10, H / 2, 15, H, 'red');
 		
 		const ball = drawCircle(W / 2, H / 5, 15, '#384259');
 		// Set the ball moving speed
-		World.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
-		const start =  () => {
-			Body.setVelocity(ball, { x: 10, y: 5 });
-			document.addEventListener("keydown", handlKeyDown);
-			document.addEventListener("mousemove", handleMouseMove);
-		}; 
-		setRenderRef(render);
-		window.addEventListener("resize", handlResize);
-		setTimeout(start, timeToStart * 1000);
-		setPVisible(true);
-		setCountDownValue(timeToStart);
+		Composite.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
+		Body.setVelocity(ball, { x: 10, y: 5 });
+		window.addEventListener("resize", 
+			() => {
+
+				if (!divRef.current) return;
+
+				render.canvas.width = divRef.current.offsetWidth;
+
+
+				Body.setPosition(
+					leftWall,
+					{
+						x: 0,
+						y: divRef.current.offsetHeight / 2
+					}
+				);
+				
+
+
+				// Body.setPosition(engine.world.bodies[6], {x: divRef.current.offsetWidth - 20, y: divRef.current.offsetHeight / 2});
+			}
+		);
+		
 		
 		
 		Engine.run(engine);
 		Render.run(render);
 		// Remove event listener when component unmounts
-		return () => {
-		  document.removeEventListener("keydown", handleKeyDown);
-		  document.removeEventListener("mousemove", handleMouseMove);
-		};
+		// return () => {
+		//   window.removeEventListener("resize", handleResize);
+		// };
 		}, []);
 
-		useEffect(() => {
-			if (!renderRef) return;
-			renderRef.canvas.width = divRef.current.clientWidth;
-			renderRef.canvas.height = divRef.current.clientHeight;
-			Body.setPosition(renderRef.engine.world.bodies[0], {x: widthW / 2, y: heightW});
-			Body.setPosition(renderRef.engine.world.bodies[2], {x: widthW / 2, y: 0});
-			Body.setPosition(renderRef.engine.world.bodies[5], {x: 10, y: heightW / 2});
-			Body.setPosition(renderRef.engine.world.bodies[6], {x: widthW - 10, y: heightW / 2});
-			Body.setPosition(renderRef.engine.world.bodies[3], {x: widthW - 30, y: rightBoardY});
-
-		}, [heightW, widthW]);
-		useEffect(() => {
-			if (!renderRef) return;
-			Body.setPosition(renderRef.engine.world.bodies[3], {x: widthW - 30, y: rightBoardY});
-		} , [rightBoardY]);
-		// useEffect(() => {
-		// 	if (!renderRef) return;
-		// 	Events.on(renderRef.engine, 'afterUpdate', () => {
-		// 		const ballBody = renderRef.engine.world.bodies[1];
-		// 		Body.setPosition(renderRef.engine.world.bodies[3], { x: widthW - 30, y: ballBody.position.y });
-		// 	});
-		//   }, [renderRef]);
-
-		useEffect(() => {
-			if (!renderRef) return;
-			Body.setPosition(renderRef.engine.world.bodies[4], {x: 30, y: leftBoardY});
-		}, [leftBoardY]);
-
 	return (
-		<div ref={divRef} className="h-screen">
-			<canvas className="cursor-none fixed top-0 left-0"/>
+		<div ref={divRef} className="h-[600px] w-[900px] bg-[#7AC7C4]">
+			{/* <canvas className="cursor-none fixed top-0 left-0"/> */}
 		</div>
 	);
 }
