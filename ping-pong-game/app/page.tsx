@@ -10,8 +10,60 @@ import { drawRect, drawCircle } from "@/utils/draw";
 
 export default function Game(){
 	const divRef = useRef<HTMLDivElement>(null);
-	
+
 	useEffect(() => {
+
+		const handleResize = () => {
+			if (!divRef.current) return;
+
+				render.canvas.width = divRef.current.offsetWidth;
+				render.canvas.height = divRef.current.offsetHeight;
+
+
+				Body.setPosition(
+					leftWall,
+					{
+						x: 10,
+						y: divRef.current.offsetHeight / 2
+					}
+				);
+				Body.setPosition(
+					rightWall,
+					{
+						x: divRef.current.offsetWidth - 10,
+						y: divRef.current.offsetHeight / 2,
+					}
+				);
+				Body.setPosition(
+					rightBoard,
+					{
+						x: divRef.current.offsetWidth - 35,
+						y: divRef.current.offsetHeight / 2,
+					}
+				);
+				Body.setPosition(
+					leftBoard,
+					{
+						x: 35,
+						y: divRef.current.offsetHeight / 2,
+					}
+				);
+				Body.setPosition(
+					floor,
+					{
+						x: divRef.current.offsetWidth / 2,
+						y: divRef.current.offsetHeight,
+					}
+				);
+				Body.setPosition(
+					ceiling,
+					{
+						x: divRef.current.offsetWidth / 2,
+						y: 0,
+					}
+				);
+		}
+		
 		if (!divRef.current) return;
 		
 		const H = divRef.current.offsetHeight;
@@ -35,75 +87,39 @@ export default function Game(){
 				// rendering pixel to be more sharp
 				pixelRatio: 1,
 				wireframes: false,
-				background: "grey",
+				background: "#7AC7C4",
 			}
-		});		
-		const handleResize = () => {
-			if (!divRef.current) return;
-			const divH = divRef.current.offsetHeight;
-			const divW = divRef.current.offsetWidth;
-			console.log("div", divRef.current.offsetWidth, divRef.current.offsetHeight);
-			// render.canvas.height = divH;
-			// render.canvas.width = divW;
-			console.log("canvas", render.canvas.width, render.canvas.height);
-			console.log("window", window.innerWidth, window.innerHeight);
-			render.canvas.style.background = "white";
+		});
 
-			Body.setPosition(engine.world.bodies[0], {x: divW / 2, y: divH});
-			Body.setPosition(engine.world.bodies[2], {x: divW / 2, y: 0});
-
-			console.log(Body);
-			Body.setPosition(engine.world.bodies[5], {x: 10, y: divH / 2});
-			Body.setPosition(engine.world.bodies[6], {x: divW - 20, y: divH / 2});
-			Body.setPosition(engine.world.bodies[3], {x: divW - 30, y: divH / 2});
-		}
-
-		const floor = drawRect(W / 2, H, W, 20, 'transparent');
-		const rightBoard = drawRect(W - 30, H / 2, 20, 150, '#EA5581');
-		const ceiling = drawRect(W / 2, 0, W, 20, 'transparent');
-		const leftBoard = drawRect(30, H / 2, 20, 150, '#EA5581');
-		const leftWall = Bodies.rectangle(0, H / 2, 15, H, {isStatic: true,});
-		const rightWall = drawRect(W - 10, H / 2, 15, H, 'red');
+		const floor = drawRect(W / 2, H, 5000, 20, '#5B4B8A');
+		const rightBoard = drawRect(W - 35, H / 2, 20, 150, '#F73859');
+		const ceiling = drawRect(W / 2, 0, 5000, 20, '#5B4B8A');
+		const leftBoard = drawRect(35, H / 2, 20, 150, '#F73859');
+		const leftWall = drawRect(10, H / 2, 15, 5000, '#C4EDDE');
+		const rightWall = drawRect(W - 10, H / 2, 15, 5000, '#C4EDDE');
 		
 		const ball = drawCircle(W / 2, H / 5, 15, '#384259');
 		// Set the ball moving speed
 		Composite.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
-		Body.setVelocity(ball, { x: 10, y: 5 });
-		window.addEventListener("resize", 
-			() => {
-
-				if (!divRef.current) return;
-
-				render.canvas.width = divRef.current.offsetWidth;
-
-
-				Body.setPosition(
-					leftWall,
-					{
-						x: 0,
-						y: divRef.current.offsetHeight / 2
-					}
-				);
-				
-
-
-				// Body.setPosition(engine.world.bodies[6], {x: divRef.current.offsetWidth - 20, y: divRef.current.offsetHeight / 2});
-			}
-		);
+		Body.setVelocity(ball, { x: 20, y: 5 });
+		window.addEventListener("resize", handleResize);
 		
 		
 		
 		Engine.run(engine);
 		Render.run(render);
-		// Remove event listener when component unmounts
-		// return () => {
-		//   window.removeEventListener("resize", handleResize);
-		// };
+		return () => {
+		  window.removeEventListener("resize", handleResize);
+		};
 		}, []);
 
 	return (
-		<div ref={divRef} className="h-[600px] w-[900px] bg-[#7AC7C4]">
-			{/* <canvas className="cursor-none fixed top-0 left-0"/> */}
+		<div className="bg-black/[.5] h-screen w-screen">
+		<div
+			ref={divRef}
+			className="h-full w-full bg-[#2C3333]">
+
 		</div>
+	</div>
 	);
 }
