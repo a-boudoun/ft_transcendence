@@ -91,17 +91,17 @@ export default function Game(){
 			}
 		});
 
-		const floor = drawRect(W / 2, H, 5000, 20, '#5B4B8A');
-		const ceiling = drawRect(W / 2, 0, 5000, 20, '#5B4B8A');
-		const rightBoard = drawRect(W - 35, H / 2, 30, 200, '#F73859');
-		const leftBoard = drawRect(35, H / 2, 30, 200, '#F73859');
-		const leftWall = drawRect(10, H / 2, 15, 5000, '#C4EDDE');
-		const rightWall = drawRect(W - 10, H / 2, 15, 5000, '#C4EDDE');
+		const floor = drawRect(W / 2, H, 5000, 20, '#7AC7C4');
+		const ceiling = drawRect(W / 2, 0, 5000, 20, '#7AC7C4');
+		const rightBoard = drawRect(W - 35, H / 2, 25, 170, '#F73859');
+		const leftBoard = drawRect(35, H / 2, 25, 170, '#F73859');
+		const leftWall = drawRect(10, H / 2, 15, 5000, '#7AC7C4');
+		const rightWall = drawRect(W - 10, H / 2, 15, 5000, '#7AC7C4');
 		
 		const ball = drawCircle(W / 2, H / 5, 20, '#384259');
 		// Set the ball moving speed
 		Composite.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
-		Body.setVelocity(ball, { x: 20, y: 5 });
+		Body.setVelocity(ball, { x: 10, y: 5 });
 		window.addEventListener("resize", handleResize);
 		// document.addEventListener('keydown', handleKeyDown);
 		
@@ -142,12 +142,12 @@ export default function Game(){
 		}, []);
 
 	return (
-		<div className="bg-black/[.5] h-screen w-screen">
-		<div
-			ref={divRef}
-			className="h-full w-full bg-[#2C3333]">
-
-		</div>
-	</div>
+    <div className="flex justify-center items-center h-full w-full bg-[#384259]">
+    <div
+      ref={divRef}
+      className="h-4/5 w-4/5">
+      {/* Your content goes here */}
+    </div>
+  </div>
 	);
 }
