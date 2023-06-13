@@ -92,24 +92,52 @@ export default function Game(){
 		});
 
 		const floor = drawRect(W / 2, H, 5000, 20, '#5B4B8A');
-		const rightBoard = drawRect(W - 35, H / 2, 20, 150, '#F73859');
 		const ceiling = drawRect(W / 2, 0, 5000, 20, '#5B4B8A');
-		const leftBoard = drawRect(35, H / 2, 20, 150, '#F73859');
+		const rightBoard = drawRect(W - 35, H / 2, 30, 200, '#F73859');
+		const leftBoard = drawRect(35, H / 2, 30, 200, '#F73859');
 		const leftWall = drawRect(10, H / 2, 15, 5000, '#C4EDDE');
 		const rightWall = drawRect(W - 10, H / 2, 15, 5000, '#C4EDDE');
 		
-		const ball = drawCircle(W / 2, H / 5, 15, '#384259');
+		const ball = drawCircle(W / 2, H / 5, 20, '#384259');
 		// Set the ball moving speed
 		Composite.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
 		Body.setVelocity(ball, { x: 20, y: 5 });
 		window.addEventListener("resize", handleResize);
-		
-		
+		// document.addEventListener('keydown', handleKeyDown);
 		
 		Engine.run(engine);
 		Render.run(render);
+		// adding requestAnimationFrame to make the movement smoother
+		// const delta = 1000 / 60;
+		// const subSteps = 3;
+		// const subDelta = delta / subSteps;
+
+		// (function run() {
+		//     window.requestAnimationFrame(run);
+		//     for (let i = 0; i < subSteps; i += 1) {
+		//       Engine.update(engine, subDelta);
+		//     }
+		// })();
+		Events.on(engine, 'afterUpdate', () => {
+			if (!divRef.current || ball.position.y < 0 || ball.position.y > divRef.current.clientHeight) return;
+			Body.setPosition(
+				rightBoard,
+				{
+					x: divRef.current.offsetWidth - 35,
+					y: ball.position.y,
+				}
+			);
+			Body.setPosition(
+				leftBoard,
+				{
+					x: 35,
+					y: ball.position.y,
+				}
+			);
+		});
 		return () => {
 		  window.removeEventListener("resize", handleResize);
+		//   document.removeEventListener('keydown', handleKeyDown);
 		};
 		}, []);
 

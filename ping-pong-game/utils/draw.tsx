@@ -5,10 +5,9 @@ export function drawRect(x : number, y : number, w : number, h : number, color :
 	return (
 		Bodies.rectangle(x, y, w, h, {
 			isStatic: true,
+			chamfer: { radius: 10 },
 			render: {
 				fillStyle: color,
-				strokeStyle: 'pink',
-				lineWidth: 2,
 			},
 		})
 		)
@@ -27,9 +26,6 @@ export function drawRect(x : number, y : number, w : number, h : number, color :
 						xScale: 0.05,
 						yScale: 0.05,
 					}
-					// fillStyle: color,
-					// strokeStyle: 'pink',
-					// lineWidth: 2,
 			},
 		})
 	)
