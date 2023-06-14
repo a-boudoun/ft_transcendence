@@ -6,6 +6,7 @@ import {
     OneToMany,
     ManyToMany,
     JoinTable,
+    Index
   } from 'typeorm';
   
 export enum Status {
@@ -20,6 +21,7 @@ export class User {
     id: number;
 
     @Column({ length: 25 })
+    @Index({ unique: true })
     pseudo: string;
 
     @Column('text')
@@ -34,12 +36,32 @@ export class User {
     @Column()
     XP: number;
 
-    @OneToMany(() => Channel, (channel) => channel.owner)
+    @OneToMany(() => Channel, channel => channel.owner)
     ownedChannels: Channel[];
 
-    @ManyToMany(() => Channel, (channel) => channel.members)
+    @ManyToMany(() => Channel, channel => channel.members)
     @JoinTable()
     channels: Channel[];
+
+    @ManyToMany(() => User)
+    @JoinTable({
+      name: 'Friendship',
+      joinColumn: {
+        name: 'initiaterID',
+        referencedColumnName: 'id',
+      },
+      inverseJoinColumn: {
+        name: 'recieverID',
+        referencedColumnName: 'id',
+      },
+    })
+    friendships: User[];
+  
+
+    get friends(): User[] {
+        // Filter the friendships based on the 'isAccepted' column
+        return this.friendships.filter((friendships) => friendships.isAccepted);
+    }
 
     @OneToMany(() => Friendship, (friendship) => friendship.initiater)
     initiatedFriendships: Friendship[];
@@ -84,26 +106,26 @@ export class Channel {
     @Column('text')
     type: ChannelType;
     
-    @ManyToOne(() => User, (user) => user.ownedChannels)
+    @ManyToOne(() => User, user => user.ownedChannels)
     owner: User;
     
     @Column({ length: 25 })
     password: string;
     
-    @ManyToMany(() => User, (user) => user.channels)
+    @ManyToMany(() => User, user => user.channels)
     @JoinTable()
     members: User[];
     
-    @OneToMany(() => Administration, (administration) => administration.channel)
+    @OneToMany(() => Administration, administration => administration.channel)
     administrators: Administration[];
     
-    @OneToMany(() => Membership, (membership) => membership.channel)
+    @OneToMany(() => Membership, membership => membership.channel)
     memberships: Membership[];
     
-    @OneToMany(() => Sanction, (sanction) => sanction.channel)
+    @OneToMany(() => Sanction, sanction => sanction.channel)
     sanctions: Sanction[];
     
-    @OneToMany(() => Message, (message) => message.channel)
+    @OneToMany(() => Message, message => message.channel)
     messages: Message[];
 }
     
