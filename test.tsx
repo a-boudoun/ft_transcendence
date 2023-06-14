@@ -11,7 +11,7 @@ interface test {
 @a
 class test {
     constructor() {
-    }
+    } 
 
     setName(name: string) {
         this.name = name;
