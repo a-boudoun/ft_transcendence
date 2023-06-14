@@ -4,7 +4,7 @@ import React from 'react'
 const Home = () => {
   return (
         <>
-        <main className="h-screen pt-[56px] bg-dark-gray">
+        <main className="h-screen pt-[56px] bg-light-gray">
           <h1 className='text-white'>Home</h1>   
         </main>
         </>
