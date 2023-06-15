@@ -1,0 +1,7 @@
+#set the friction to a small value and reset the vilocity of the ball every time it collids with the boards
+#sent the x and w of the {boards, ball} on the sockets according to the dimensions of the canvas
+	something like:
+			{	x:(Xball / canvasWidth)
+	ball
+			}	y:(Yball / canvasHeight)
+	
