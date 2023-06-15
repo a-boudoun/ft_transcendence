@@ -163,6 +163,9 @@ export default function Game(){
     	  className="h-4/6 w-4/5 mt-20 cursor-none">
     	  {/* Your content goes here */}
     	</div>
+		<button className="absolute bottom-0 right-0 m-4  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]">
+			leave
+		</button>
   </div>
 	);
 }
