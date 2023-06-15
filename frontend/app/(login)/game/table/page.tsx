@@ -3,6 +3,7 @@
 import React, { use, useEffect, useRef, useState } from "react";
 import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite} from "matter-js";
 import { drawRect, drawCircle } from "@components/draw";
+import { useRouter } from "next/navigation";
 
 //// : implement the game logic in the backend and send the data to the frontend
 //// : make the cnasvas responsive
@@ -11,6 +12,7 @@ import { drawRect, drawCircle } from "@components/draw";
 export default function Game(){
 	const divRef = useRef<HTMLDivElement | null>(null);
 	const [PVisible, setPVisible] = useState<boolean>(true);
+	const router = useRouter();
 	const [countDownValue, setCountDownValue] = useState<number>(3);
 
 
@@ -163,7 +165,8 @@ export default function Game(){
     	  className="h-4/6 w-4/5 mt-20 cursor-none">
     	  {/* Your content goes here */}
     	</div>
-		<button className="absolute bottom-0 right-0 m-4  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]">
+		<button 
+			className="absolute bottom-[50px] right-[50px]  m-4  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]" onClick={() => {router.push("/home")}}>
 			leave
 		</button>
   </div>
