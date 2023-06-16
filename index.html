@@ -5,10 +5,38 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
+    <style>
+        .div {
+            width: 100px;
+            height: 100px;
+            background-color: red;
+            margin: 10px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .div2 {
+            background-color: blue;
+            position: absolute;
+            /* z-index: -1; */
+
+            /* left: 1000px; */
+        }
+
+        .div3 {
+            background-color: green;
+        }
+
+        /* .div2 {
+            margin-left: 100px;
+            position: absolute;
+        } */
+    </style>
 </head>
 <body>
     <main>
-        <h1>add cat</h1>
+        <!-- <h1>add cat</h1>
         <p>
             <form action = "http://localhost:3000/cats" method = "post">
                 name: <input type = "text" name = "name">  <br />
@@ -16,7 +44,19 @@
                 breed: <input type = "text" name = "breed" />
                 <input type = "submit" value = "Submit" />
             </form>            
-        </p>
+        </p> -->
+    
+    
+
+    </div>
+        <div class="div div1"></div>
+        <div class="div">
+
+            <div class="div div2"></div>
+        </div>
+        <div class="div div3"></div>
+    
+    
     </main>
 </body>
 </html>
