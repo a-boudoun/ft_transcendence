@@ -47,7 +47,7 @@ const Right = () =>{
 
 const NavBar = () => {
   return (
-      <nav className="fixed flex justify-between items-center h-[56px] w-screen bg-dark-gray border-b border-blue">
+      <nav className="fixed flex justify-between items-center h-[56px] w-screen bg-dark-gray border-b border-blue top-0">
         <Left />
         <Mid />
         <Right />
