@@ -6,7 +6,8 @@ import {
     OneToMany,
     ManyToMany,
     JoinTable,
-    Index
+    Index,
+    DataSource
   } from 'typeorm';
   
 export enum Status {
@@ -39,29 +40,9 @@ export class User {
     @OneToMany(() => Channel, channel => channel.owner)
     ownedChannels: Channel[];
 
-    @ManyToMany(() => Channel, channel => channel.members)
+    @ManyToMany(() => Channel, channel => channel.memberships)
     @JoinTable()
     channels: Channel[];
-
-    @ManyToMany(() => User)
-    @JoinTable({
-      name: 'Friendship',
-      joinColumn: {
-        name: 'initiaterID',
-        referencedColumnName: 'id',
-      },
-      inverseJoinColumn: {
-        name: 'recieverID',
-        referencedColumnName: 'id',
-      },
-    })
-    friendships: User[];
-  
-
-    get friends(): User[] {
-        // Filter the friendships based on the 'isAccepted' column
-        return this.friendships.filter((friendships) => friendships.isAccepted);
-    }
 
     @OneToMany(() => Friendship, (friendship) => friendship.initiater)
     initiatedFriendships: Friendship[];
@@ -90,13 +71,13 @@ export class User {
     @OneToMany(() => Administration, (administration) => administration.admin)
     administratedChannels: Administration[];
 }
-  
+
 export enum ChannelType {
     DIRECT = 'direct',
     PUBLIC = 'public',
     PRIVATE = 'private',
     PROTECTED = 'protected'
-    }
+}
   
 @Entity({ name: 'Channel' })
 export class Channel {
@@ -111,10 +92,6 @@ export class Channel {
     
     @Column({ length: 25 })
     password: string;
-    
-    @ManyToMany(() => User, user => user.channels)
-    @JoinTable()
-    members: User[];
     
     @OneToMany(() => Administration, administration => administration.channel)
     administrators: Administration[];
@@ -146,7 +123,7 @@ export class Membership {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @ManyToOne(() => Channel, (channel) => channel.members)
+    @ManyToOne(() => Channel, (channel) => channel.memberships)
     channel: Channel;
     
     @ManyToOne(() => User, (user) => user.channels)
@@ -239,5 +216,3 @@ export class Friendship {
     @Column({ type: 'boolean' })
     isAccepted: boolean;
 }
-  
-  
