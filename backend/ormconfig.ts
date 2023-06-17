@@ -8,7 +8,8 @@ const config: PostgresConnectionOptions = {
     password: '1337',
     database: 'trans',
     entities: ['dist/src/**/*.entity.js'],
-    synchronize: true
+    synchronize: true,
+    // logging: true,
 }
 
 export default config;
