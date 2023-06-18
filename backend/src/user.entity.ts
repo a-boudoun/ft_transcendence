@@ -24,50 +24,50 @@ export class User {
     @Column({ length: 25 })
     @Index({ unique: true })
     pseudo: string;
-
+    
     @Column('text')
     status: Status;
-
+    
     @Column({ type: 'boolean' })
     fact2Auth: boolean;
-
+    
     @Column()
     level: number;
-
+    
     @Column()
     XP: number;
-
+    
     @OneToMany(() => Channel, channel => channel.owner)
     ownedChannels: Channel[];
-
+    
     @ManyToMany(() => Channel, channel => channel.memberships)
     @JoinTable()
     channels: Channel[];
-
+    
     @OneToMany(() => Friendship, (friendship) => friendship.initiater)
     initiatedFriendships: Friendship[];
-
+    
     @OneToMany(() => Friendship, (friendship) => friendship.receiver)
     receivedFriendships: Friendship[];
-
+    
     @OneToMany(() => Blockage, (blockage) => blockage.blocker)
     blockedUsers: Blockage[];
-
+    
     @OneToMany(() => Blockage, (blockage) => blockage.blocked)
     blockedByUsers: Blockage[];
-
+    
     @OneToMany(() => Sanction, (sanction) => sanction.member)
     sanctions: Sanction[];
-
+    
     @OneToMany(() => GameHistory, (gameHistory) => gameHistory.winner)
     wonGames: GameHistory[];
-
+    
     @OneToMany(() => GameHistory, (gameHistory) => gameHistory.loser)
     lostGames: GameHistory[];
-
+    
     @OneToMany(() => Message, (message) => message.sender)
     messages: Message[];
-
+    
     @OneToMany(() => Administration, (administration) => administration.admin)
     administratedChannels: Administration[];
 }
@@ -78,11 +78,15 @@ export enum ChannelType {
     PRIVATE = 'private',
     PROTECTED = 'protected'
 }
-  
+
 @Entity({ name: 'Channel' })
 export class Channel {
     @PrimaryGeneratedColumn()
     id: number;
+    
+    @Column({ length: 25 })
+    @Index({ unique: true })
+    name: string;
     
     @Column('text')
     type: ChannelType;
