@@ -7,7 +7,7 @@ const config: PostgresConnectionOptions = {
     username: 'postgres',
     password: '1337',
     database: 'trans',
-    entities: ['dist/src/**/*.entity.js'],
+    entities: ['dist/**/*.entity.js'],
     synchronize: true,
     // logging: true,
 }
