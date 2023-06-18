@@ -5,3 +5,5 @@
 	ball
 			}	y:(Yball / canvasHeight)
 	
+# you don't need to send the x and y of the ball to the server, just send it in the beginning and then send the velocity
+and after every collition with the boards
