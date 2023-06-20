@@ -4,6 +4,6 @@
 
 @layer components {
   .stats-div-mobile {
-    @apply grid content-center text-sm bg-light-gray py-2  rounded-sm col-span-1;
+    @apply grid content-center text-sm py-2  rounded-sm col-span-1;
   }
 }

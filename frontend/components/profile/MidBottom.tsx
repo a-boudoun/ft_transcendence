@@ -1,4 +1,4 @@
-const MidBottom = () => {
+const Stats = () => {
     const games = '100';
     const win = '50%';
     const lose = '50%';
@@ -8,7 +8,7 @@ const MidBottom = () => {
   
   
     return(
-      <div className='grid grid-cols-2 content-center w-[90%] capitalize m-[5%]'>
+      <div className='grid grid-cols-2 content-center w-[90%] capitalize m-[5%] xl:z-40'>
         <div className='stats-div-mobile'>
           <span className='font-bold text-lg'>{games}</span>
           <h3 className='text-blue'>total games</h3>
@@ -37,4 +37,4 @@ const MidBottom = () => {
     )
   }
 
-export default MidBottom;
+export default Stats;

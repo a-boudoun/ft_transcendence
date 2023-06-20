@@ -1,10 +1,16 @@
 import Image from 'next/image'
 
-const Title = ({str, src}: { str: string , src: string}) => {
+interface Props {
+    isActive: boolean
+    str: string
+    src: string
+}
+
+const Title = ({isActive ,str, src}: Props) => {
     return (
-        <div className='flex justify-center border-b border-blue w-[auto]'> 
+        <div className={`h-[56px] w-fit m-auto p-2 flex justify-center hover:border-b border-blue ${isActive ? 'border-b border-blue ' : ''}`}> 
              <Image src={src} alt={str} width={28} height={28} />
-             <h1 className='text-[28px] text-red ml-[28px]'>{str}</h1>
+             <h2 className='hidden lg:inline text-[28px] text-red ml-4'>{str}</h2>
         </div>
     )
 }
