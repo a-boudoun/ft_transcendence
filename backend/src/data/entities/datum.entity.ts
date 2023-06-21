@@ -220,3 +220,4 @@ export class Friendship {
     @Column({ type: 'boolean' })
     isAccepted: boolean;
 }
+

@@ -8,13 +8,15 @@ import config from '../ormconfig';
 import { Administration, Blockage, Channel, Friendship, 
         GameHistory, Membership, Message, Sanction, 
         User } from './user.entity';
+import { DataModule } from './data/data.module';
 
 @Module({
   // AuthModule, UsersModule,
   imports: [TypeOrmModule.forRoot(config),
             TypeOrmModule.forFeature([User, Channel, Message,
             Membership, Administration, Sanction, Friendship,
-            Blockage, GameHistory])],
+            Blockage, GameHistory]),
+            DataModule],
   controllers: [AppController],
   providers: [AppService],
 })
