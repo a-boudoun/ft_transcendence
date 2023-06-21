@@ -8,7 +8,16 @@ import { useRouter } from "next/navigation";
 //// : implement the game logic in the backend and send the data to the frontend
 //// : make the cnasvas responsive
 //// : try the keyup keydown event to make the movement smoother
-
+// function Players(){
+// 	return (
+// 		<div className="absolute top-0 left-0 w-full h-full flex flex-col">
+// 			<div className="flex flex-col items-center justify-center space-y-10">
+// 				<div className="text-white text-[50px]">Player 1</div>
+// 				<div className="text-white text-[50px]">Player 2</div>
+// 			</div>
+// 		</div>
+// 	);
+// }
 export default function Game(){
 	const divRef = useRef<HTMLDivElement | null>(null);
 	const [PVisible, setPVisible] = useState<boolean>(true);
