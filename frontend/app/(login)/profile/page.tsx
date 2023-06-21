@@ -1,10 +1,9 @@
 import React from 'react'
 import User from '@/components/profile/User'
 import UserDetails from '@/components/profile/UserDetails'
-import Title from '@/components/profile/Title'
 import Achievements from '@/components/profile/Achievements'
 import Matches from '@/components/profile/Matches'
-import Friends from '@/components/profile/Friends'
+import ProfileFriends from '@/components/profile/ProfileFriends'
 
 const Profile = () => {
   return (
@@ -19,7 +18,7 @@ const Profile = () => {
             <UserDetails/>
           </div>
           <div className='hidden lg:flex w-[340px]  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 rounded-[2.5rem]'>
-            <Friends />
+            <ProfileFriends />
           </div>
         </main>
         </>

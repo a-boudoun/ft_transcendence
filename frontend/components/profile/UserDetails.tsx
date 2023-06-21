@@ -1,10 +1,10 @@
 "use client";
-import { use, useEffect, useState } from 'react';
+import {useEffect, useState } from 'react';
 import MidButtom from './MidBottom';
 import Achievements from './Achievements';
 import Matches from './Matches';
 import Title from './Title';
-import Friends from './Friends';
+import ProfileFriends from './ProfileFriends';
 
 const UserDetails = () => {
 
@@ -13,19 +13,26 @@ const UserDetails = () => {
     const [matches, setMatches] = useState<boolean>(false);
     const [friends, setFriends] = useState<boolean>(false);
 
-    const chenge = window.addEventListener('resize', ()=> {
-
-        if(window.innerWidth > 1020) {
-            setStats(true);
-            setAchievements(false);
-            setMatches(false);
-            setFriends(false);
-        }
-    })
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 1020) {
+                setFriends(false);
+            }
+            if (window.innerWidth > 1280) {
+                setStats(true);
+                setAchievements(false);
+                setMatches(false);
+                setFriends(false);
+            }
+        };
     
-    useEffect( () => { chenge }, []);
-
-
+        window.addEventListener('resize', handleResize);
+    
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }, []);
+    
     return (
         <div className='grow flex flex-col'>
             <div className='h-[56px] flex justify-around bg-dark-gray sm:mt-8 sm:rounded-t-3xl xl:bg-light-gray'>
@@ -47,7 +54,7 @@ const UserDetails = () => {
             { Stats && <MidButtom/> }
             { achievements && <Achievements/> }
             { matches && <Matches/> }
-            { friends && <Friends/> }
+            { friends && <ProfileFriends /> }
 
             </div>
         </div>
