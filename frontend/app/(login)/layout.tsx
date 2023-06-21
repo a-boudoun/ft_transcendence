@@ -1,6 +1,5 @@
-import "../globals.css";
-import NavBar  from "../../components/NavBar/NavBar";
-import axios from "axios";
+import "@/app/globals.css";
+import NavBar  from "@/components/NavBar/NavBar";
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers'
 

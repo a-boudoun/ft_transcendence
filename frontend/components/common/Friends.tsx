@@ -1,11 +1,9 @@
-"use client";
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import Image from 'next/image';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import getData from "@/apis/getData";
 
-
-interface messageProps
+interface userDto
 {
     albumId: number;
     id: number;
@@ -14,37 +12,33 @@ interface messageProps
     thumbnailUrl: string;
 }
 
-const Messages = () => {
-    const [data, setData] = useState<messageProps[]>([]);
+const Friends = async() => {
 
-    useEffect(()=>{
-        const getData = async () =>
-        {
-            const res = await fetch(`https://jsonplaceholder.typicode.com/photos?_limit=30`);
-            const json = await res.json();
-            setData(json);
-        };
-        getData();
-    }, [])
-    
-  
-    
+    const friends: userDto[] = await getData(`https://jsonplaceholder.typicode.com/photos?_limit=30`);
+
+    friends.map((friend: userDto) => {
+      
+      });
+
     return (
         <div className={`h-full mt-2 flex  flex-col overflow-y-scroll`}>
             {
-            data.map((msg: messageProps) =>(
-                <Link href={`chat/${msg.id}`}>
-                    <Message key={msg.id} msg={msg} />
-                </Link>
-            ))}
+                friends.map((friend: userDto) => {
+                    return (
+                        <Link href={`/profile/${friend.id}`} key={friend.id}>
+                            click
+                        </Link>
+                    );
+                })
+            }
         </div>
     );
 }
  
-export default Messages;
+export default Friends;
 
 
-export const Message = ({msg}:{msg:messageProps}) => { 
+export const Message = ({msg}:{msg: userDto}) => { 
     const path = usePathname();
     console.log(path.at(-1));
     const style = path.at(-1) === msg.id.toString() ? "bg-light-gray" : "bg-dark-gray";
