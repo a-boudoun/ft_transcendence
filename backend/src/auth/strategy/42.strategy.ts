@@ -2,6 +2,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-42';
 import { Injectable } from '@nestjs/common';
 import { config } from 'dotenv';
+import { Status } from 'src/user.entity';
 
 config();
 
@@ -18,10 +19,14 @@ export class AuthStratedy extends PassportStrategy(Strategy, 'passport-42') {
   }
 
   async validate (accessToken: string, refreshToken: string, profile: any, done: VerifyCallback) : Promise<any> {
-    // const {name} = profile;
+    // const {name, } = profile;
+    
     const user = {
-      id: profile.id,
-      username: profile.username,
+      login: profile.username,
+      status: Status.ONLINE,
+      XP: 0,
+      level: 0,
+      fact2Auth: false,
     }
   
     done(null, user);
