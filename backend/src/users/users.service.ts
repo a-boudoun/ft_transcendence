@@ -1,24 +1,61 @@
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { User } from '../interfaces/user';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { UserDTO } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { Administration, Blockage, Channel, Friendship, 
+  GameHistory, Membership, Message, Sanction, 
+  User } from './entities/user.entity'
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UsersService {
-    // constructor ()
-    // private readonly users: User[] = [
-    //     {
-    //         id: '2',
-    //         username: 'amiski',
-    //     },
-    // ];
+  constructor(
+    @InjectRepository(User) private userRepo: Repository<User>,
+    // @InjectRepository(Channel) private channelRepo: Repository<Channel>,
+    // @InjectRepository(Message) private messageRepo: Repository<Message>,
+    // @InjectRepository(GameHistory) private gamehistoryRepo: Repository<GameHistory>,
+    // @InjectRepository(Friendship) private friendshipRepo: Repository<Friendship>,
+    // @InjectRepository(Sanction) private sanctionRepo: Repository<Sanction>,
+    // @InjectRepository(Membership) private membershipRepo: Repository<Membership>,
+    // @InjectRepository(Blockage) private blockageRepo: Repository<Blockage>,
+    // @InjectRepository(Administration) private administrationRepo: Repository<Administration>,
+    ) {}
 
-    // async findOne(username: string): Promise<User | undefined> {
-    //     return this.users.find(user => user.username === username);
-    // }
+  create(userDTO: UserDTO) {
+    const user = this.userRepo.create(userDTO);
+    return this.userRepo.save(user);
+  }
 
-    // async create(user: User){
-    //     this.users.push(user);
+  findAll(): Promise<UserDTO[]> {
+    return this.userRepo.find();
+  }
 
-    //     return user;
-    // }
+  findOne(login: string) {
+    const user = this.userRepo.findOneBy({ login });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
+  async update(login: string, updateUser: UpdateUserDto) {
+    const user = await this.findOne(login);
+    return this.userRepo.save({...user, ...updateUser})
+  }
+
+  async remove(login: string) {
+    const user = await this.findOne(login);
+    return this.userRepo.remove(user);
+  }
+  // getFriends(login: string) {
+  //   const user = this.userRepo.find({
+  //     where: {
+  //       login: login,
+  //     },
+  //     relations: {
+  //       initiatedFriendships: true,
+  //       receivedFriendships: true,
+  //     }
+  //   })
+  // }
 }

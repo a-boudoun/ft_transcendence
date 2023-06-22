@@ -1,4 +1,4 @@
-import { ChannelType, SanctionType, Status } from "./user.entity";
+import { ChannelType, SanctionType, Status } from "../entities/user.entity";
 
 export class UserDTO {
     login: string;
