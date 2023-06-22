@@ -29,8 +29,9 @@ export class AuthController {
 
     res.cookie('access_token', token, {
       httpOnly: true,
-      secure: false,
-      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: 'strict',
+      path: '/'
   });
 
     res.redirect('http://localhost:3000/home');

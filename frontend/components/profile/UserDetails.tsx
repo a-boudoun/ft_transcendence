@@ -1,12 +1,16 @@
 "use client";
-import {useEffect, useState } from 'react';
-import MidButtom from './MidBottom';
-import Achievements from './Achievements';
-import Matches from './Matches';
-import Title from './Title';
-import ProfileFriends from './ProfileFriends';
+import {useEffect, useState, ReactNode } from 'react';
 
-const UserDetails = () => {
+import Title from './Title';
+
+interface UserDetailsProps {
+    Stats : ReactNode;
+    Archievement : ReactNode;
+    Matches : ReactNode;
+    Friends : ReactNode;
+}
+
+const UserDetails = (props : UserDetailsProps) => {
 
     const [Stats, setStats] = useState<boolean>(true);
     const [achievements, setAchievements] = useState<boolean>(false);
@@ -24,10 +28,10 @@ const UserDetails = () => {
                 setMatches(false);
                 setFriends(false);
             }
-        };
-    
+        }
+
         window.addEventListener('resize', handleResize);
-    
+        
         return () => {
           window.removeEventListener('resize', handleResize);
         };
@@ -50,12 +54,10 @@ const UserDetails = () => {
                 </button>
             </div>
             <div className='grow grid content-center bg-light-gray sm:rounded-b-3xl' >
-        
-            { Stats && <MidButtom/> }
-            { achievements && <Achievements/> }
-            { matches && <Matches/> }
-            { friends && <ProfileFriends /> }
-
+                { Stats && props.Stats}
+                { achievements && props.Archievement}
+                { matches && props.Matches}
+                { friends && props.Friends}
             </div>
         </div>
     )       
