@@ -31,9 +31,9 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
 
-  // const isAuth = await checkauth('http://localhost:8000/auth/isAuth');
-  // if (!isAuth)
-  //   redirect('/');
+  const isAuth = await checkauth('http://localhost:8000/auth/isAuth');
+  if (!isAuth)
+    redirect('/');
   
   return (
     <>
