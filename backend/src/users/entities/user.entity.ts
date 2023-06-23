@@ -25,6 +25,12 @@ export class User {
     @Index({ unique: true })
     login: string;
     
+    @Column()
+    name: string;
+
+    @Column()
+    image: string;
+    
     @Column('text')
     status: Status;
     
