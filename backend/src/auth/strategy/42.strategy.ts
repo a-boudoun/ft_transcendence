@@ -1,8 +1,8 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-42';
 import { Injectable } from '@nestjs/common';
-import { config } from 'dotenv';
 import { Status } from 'src/user.entity';
+import { config } from 'dotenv';
 
 config();
 

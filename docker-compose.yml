@@ -1,0 +1,42 @@
+version: '3.1'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    env_file: 
+      - .env
+    ports:
+      - 5432:5432
+    networks:
+      - web
+    restart: always
+  nestjs:
+    build: ./backend
+    container_name: nestjs
+    depends_on:
+      - postgres
+    env_file: 
+      - .env
+    ports:
+      - 8000:8000
+    networks:
+      - web
+    restart: always
+  nextjs:
+    build: ./frontend
+    container_name: nextjs
+    depends_on:
+      - nestjs
+    env_file: 
+      - .env
+    ports:
+      - 3000:3000
+    networks:
+      - web
+    restart: always
+
+networks:
+  web:
+    name: web
+    driver: bridge

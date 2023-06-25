@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "@nestjs/cli": "^10.0.3",
-    "@nestjs/mapped-types": "*",
-    "@nestjs/typeorm": "^10.0.0",
-    "pg": "^8.11.0",
-    "typeorm": "^0.3.17"
-  }
-}
