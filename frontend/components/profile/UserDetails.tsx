@@ -38,7 +38,7 @@ const UserDetails = (props : UserDetailsProps) => {
       }, []);
     
     return (
-        <div className='grow flex flex-col'>
+        <div className='grow flex flex-col overflow-hidden xl:w-auto'>
             <div className='h-[56px] flex justify-around bg-dark-gray sm:mt-8 sm:rounded-t-3xl xl:bg-light-gray'>
                 <button onClick={() => {setStats(true); setAchievements(false); setMatches(false); setFriends(false);}}>
                     <Title isActive={Stats} str='Stats' src='/icons/profile/blue/stats.svg'/>
@@ -53,7 +53,7 @@ const UserDetails = (props : UserDetailsProps) => {
                     <Title isActive={friends} str='' src='/icons/profile/blue/friends.svg'/>
                 </button>
             </div>
-            <div className='grow grid content-center bg-light-gray sm:rounded-b-3xl' >
+            <div className='grow p-4 bg-light-gray  overflow-auto sm:rounded-b-3xl' >
                 { Stats && props.Stats}
                 { achievements && props.Archievement}
                 { matches && props.Matches}

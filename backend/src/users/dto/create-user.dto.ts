@@ -1,8 +1,7 @@
 import { ChannelType, SanctionType, Status } from "../entities/user.entity";
 
 export class UserDTO {
-    login: string;
-    name: string;
+    username: string;
     image: string;
     status: Status;
     fact2Auth: boolean;

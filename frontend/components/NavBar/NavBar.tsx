@@ -1,5 +1,3 @@
-"use client";
-
 import React from 'react' 
 import Image from 'next/image'
 import NotifDropDown from './NotifDropDown';
@@ -50,7 +48,7 @@ const NavBar = () => {
       <nav className="fixed flex justify-between items-center h-[56px] w-screen bg-dark-gray border-b border-blue z-50">
         <Left />
         <Mid />
-        <Right />
+        <Right/>
       </nav>
   )
 }

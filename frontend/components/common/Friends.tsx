@@ -2,76 +2,53 @@ import Image from 'next/image';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import getData from "@/apis/getData";
+import userDto from "@/dto/userDto";
 
-interface userDto
-{
-    albumId: number;
-    id: number;
-    title: string;
-    url: string;
-    thumbnailUrl: string;
-}
 
-const Friends = async() => {
 
-    const friends: userDto[] = await getData(`https://jsonplaceholder.typicode.com/photos?_limit=30`);
+const Friends = async({id, isChat} : {id: string, isChat : boolean}) => {
+    const friends: userDto[] = await getData('http://localhost:8000/users');
 
-    friends.map((friend: userDto) => {
-      
-      });
-
+    const link = (isChat ? '/chat/' : '/profile/');
+    
     return (
-        <div className={`h-full mt-2 flex  flex-col overflow-y-scroll`}>
+        <div className={'h-full flex flex-col gap-1 overflow-y-scroll rounded-2xl'}>
             {
+
                 friends.map((friend: userDto) => {
                     return (
-                        <Link href={`/profile/${friend.id}`} key={friend.id}>
-                            click
+                        <Link href={link} >
+                            <Friend user={friend} isChat={isChat} /> 
                         </Link>
                     );
                 })
-            }
+            }   
         </div>
     );
 }
- 
+
 export default Friends;
 
+export const Friend = ({user, isChat}: {user: userDto, isChat : boolean}) => {
+    // const path = usePathname();
+    // console.log(path.at(-1));
+    // const style = path.at(-1) === user.id.toString() ? "bg-light-gray" : "bg-dark-gray";
 
-export const Message = ({msg}:{msg: userDto}) => { 
-    const path = usePathname();
-    console.log(path.at(-1));
-    const style = path.at(-1) === msg.id.toString() ? "bg-light-gray" : "bg-dark-gray";
     return (
-        <div className={`${style} flex justify-between h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white`}>
-            <div className="flex items-center space-x-5">
-                <Image
-                className="rounded-full self-center"
-                src={msg.url}
-                width={42}
-                height={42}
-                alt=""
+        <div className={`flex justify-between px-4 py-2 mx-2 rounded-xl text-white bg-dark-gray`}>
+            <div className="grow flex items-center gap-4">
+                <Image  className="rounded-full self-center"  src={user.image}    width={48}  height={48}   alt="user image"
                 />
-                <h3>{msg.id}</h3>
-                
+                <h3>{user.username}</h3> 
             </div>
-            <div className="flex items-center space-x-2  justify-between">
-                <Image
-                className="rounded-full"
-                src="/img/block.svg"
-                width={26}
-                height={26}
-                alt=""
-                />
-                <Image
-                className="rounded-full"
-                src="/img/play.svg"
-                width={26}
-                height={26}
-                alt=""
+            <div className="flex items-center gap-4">
+                {!isChat && 
+                    <Image className="" src="/icons/navBar/chat.svg" width={24} height={24} alt="chat"
+                    />
+                }
+                <Image className="" src="/icons/navBar/game.svg" width={24} height={24} alt="challenge"
                 />
             </div>
         </div>
     );
 }
- 

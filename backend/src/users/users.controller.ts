@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -16,6 +17,18 @@ export class UsersController {
   findAll() {
     return this.usersService.findAll();
   }
+
+  @Get('getUser')
+  @UseGuards(JwtAuthGuard)
+  findProfile(@Req() req) {
+    return this.usersService.findOne(req.user.username);
+  }
+
+  // @Get('getGameswon')
+  // @UseGuards(JwtAuthGuard)
+  // findGamesWon(@Req() req) {
+  //   return this.usersService.findGamesWon(req.user.username);
+  // }
 
   @Get(':login')
   findOne(@Param('login') login: string) {

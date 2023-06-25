@@ -16,7 +16,7 @@ module.exports = {
         'light-gray': '#384259',
         'red': '#EA5581',
         'blue': '#7AC7C4',
-        'menu': '#5B6375',
+
     },
     keyframes: {
       right: {

@@ -12,9 +12,9 @@ import { UserDTO } from 'src/users/dto/create-user.dto';
   
     async login(user: UserDTO) {
 
-      const payload = {username: user.login, sub: user.XP};
+      const payload = {username: user.username, sub: user.XP};
 
-      const userExists =  await this.userService.findOne(user.login);
+      const userExists =  await this.userService.findOne(user.username);
   
       if (!userExists) {
         let newUser = await this.userService.create(user);

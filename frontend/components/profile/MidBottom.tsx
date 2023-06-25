@@ -1,9 +1,14 @@
-const Stats = () => {
+import getData from "@/apis/getData";
+import userDto from "@/dto/userDto";
+
+const Stats = async() => {
+
+  const data: userDto = await getData('http://localhost:8000/users/getUser');
+
+
     const games = '100';
     const win = '50%';
     const lose = '50%';
-    const xp = '1000';
-    const level = '10';
     const rank = '#5';
   
   
@@ -22,11 +27,11 @@ const Stats = () => {
           <h3 className='text-blue'>lose</h3>
         </div>
         <div className='stats-div-mobile'>
-          <span className='font-bold text-lg' >{xp}</span>
+          <span className='font-bold text-lg' >{data.XP}</span>
           <h3 className='text-blue'>xp</h3>
         </div>
         <div className='stats-div-mobile'>
-          <span className='font-bold text-lg' >{level}</span>
+          <span className='font-bold text-lg' >{data.level}</span>
           <h3 className='text-blue'>level</h3>
         </div>
         <div className='stats-div-mobile'>
