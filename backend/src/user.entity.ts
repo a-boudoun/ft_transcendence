@@ -23,7 +23,7 @@ export class User {
 
     @Column({ length: 25 })
     @Index({ unique: true })
-    login: string;
+    username: string;
     
     @Column('text')
     status: Status;

@@ -19,10 +19,12 @@ export class AuthStratedy extends PassportStrategy(Strategy, 'passport-42') {
   }
 
   async validate (accessToken: string, refreshToken: string, profile: any, done: VerifyCallback) : Promise<any> {
-    // const {name, } = profile;
-    
+
+  console.log();
+
     const user = {
-      login: profile.username,
+      username: profile.username,
+      image: profile._json.image.link,
       status: Status.ONLINE,
       XP: 0,
       level: 0,

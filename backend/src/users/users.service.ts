@@ -26,12 +26,12 @@ export class UsersService {
     return this.userRepo.save(user);
   }
 
-  findAll(): Promise<UserDTO[]> {
+  findAll() {
     return this.userRepo.find();
   }
 
-  findOne(login: string) {
-    const user = this.userRepo.findOneBy({ login });
+  findOne(username: string) {
+    const user = this.userRepo.findOneBy({username});
 
     return user;
   }

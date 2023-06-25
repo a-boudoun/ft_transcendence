@@ -22,13 +22,12 @@ export class User {
     id: number;
 
     @Column({ length: 25 })
-    @Index({ unique: true })
-    login: string;
+    @Index({ unique: true,})
+    username: string;
     
-    @Column()
-    name: string;
-
-    @Column()
+    @Column({
+        nullable: true,
+    })
     image: string;
     
     @Column('text')

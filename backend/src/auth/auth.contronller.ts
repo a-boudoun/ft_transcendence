@@ -30,8 +30,8 @@ export class AuthController {
 
   @Get('isAuth')
   @UseGuards(JwtAuthGuard)
-  protectedResource() { 
-    return { };
+  protectedResource(@Req() req) { 
+    return (req.user);
   }
-  
+
 }
