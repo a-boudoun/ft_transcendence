@@ -7,7 +7,7 @@ import userDto from "@/dto/userDto";
 
 
 const Friends = async({id, isChat} : {id: string, isChat : boolean}) => {
-    const friends: userDto[] = await getData('http://localhost:8000/users');
+    const friends: userDto[] = await getData('http://loaclhost:8000/users');
 
     const link = (isChat ? '/chat/' : '/profile/');
     

@@ -1,18 +1,18 @@
-# Use Node.js as the base image
 FROM node:latest
 
+workdir ./trans
+
 # Copy package.json and package-lock.json
-
-
-COPY package*.json ./
+COPY package*.json .
 
 # Install all dependencies including development dependencies
-RUN npm install && mkdir trans
+RUN npm install
 
-COPY . ./trans
+# Copy the entire project to the container
+COPY . .
 
-# Expose the port that the NestJS application listens on
+# Expose the port that the NextJS application listens on
 EXPOSE 3000
 
-# Start the NestJS application in watch mode for live reloading
-CMD cd trans && npm run dev
+# Start the NextJS application in watch mode for live reloading
+CMD [ "npm", "run", "dev" ]

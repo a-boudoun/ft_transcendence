@@ -1,8 +1,10 @@
 # Use Node.js as the base image
 FROM node:latest
 
+workdir ./trans
+
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package*.json .
 
 # Install all dependencies including development dependencies
 RUN npm install

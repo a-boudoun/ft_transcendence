@@ -1,5 +1,4 @@
 import React from 'react'
-import Link from 'next/link'
 import SingButton from '@/components/SingButton'
 
 
@@ -12,7 +11,7 @@ export default function Home() {
                 Ping
               <span className="block text-blue mt-[1rem] md:mt-[3rem] lg:inline"> Pong</span>
             </h1>
-            <SingButton />
+            {/* <SingButton /> */}
         </section>
     </main>
   )
