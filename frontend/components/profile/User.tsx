@@ -4,7 +4,7 @@ import getData from '@/apis/getData'
 
 const User = async() => {
 
-  const data: userDto = await getData('http://localhost:8000/users/getUser');
+  const data: userDto = await getData('http://loaclhost:8000/users/getUser');
 
   console.log(data);
 
