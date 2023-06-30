@@ -41,16 +41,16 @@ const UserDetails = (props : UserDetailsProps) => {
         <div className='grow flex flex-col overflow-hidden xl:w-auto'>
             <div className='h-[56px] flex justify-around bg-dark-gray sm:mt-8 sm:rounded-t-3xl xl:bg-light-gray'>
                 <button onClick={() => {setStats(true); setAchievements(false); setMatches(false); setFriends(false);}}>
-                    <Title isActive={Stats} str='Stats' src='/icons/profile/blue/stats.svg'/>
+                    <Title isActive={Stats} str='Stats' src='/icons/profile/stats.svg'/>
                 </button>
                 <button className='xl:hidden' onClick={() => {setStats(false); setAchievements(true); setMatches(false); setFriends(false);}}>
-                    <Title isActive={achievements} str='Achievements' src='/icons/profile/blue/achievements.svg'/>
+                    <Title isActive={achievements} str='Achievements' src='/icons/profile/achievements.svg'/>
                 </button>
                 <button className='xl:hidden' onClick={() => {setStats(false); setAchievements(false); setMatches(true); setFriends(false);}}>
-                    <Title  isActive={matches} str='Matches' src='/icons/profile/blue/matches.svg'/>
+                    <Title  isActive={matches} str='Matches' src='/icons/profile/matches.svg'/>
                 </button>
                 <button className='lg:hidden' onClick={() => {setStats(false); setAchievements(false); setMatches(false); setFriends(true);}}>
-                    <Title isActive={friends} str='' src='/icons/profile/blue/friends.svg'/>
+                    <Title isActive={friends} str='' src='/icons/profile/friends.svg'/>
                 </button>
             </div>
             <div className='grow p-4 bg-light-gray  overflow-auto sm:rounded-b-3xl' >
