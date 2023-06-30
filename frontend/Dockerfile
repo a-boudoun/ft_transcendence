@@ -1,12 +1,12 @@
-FROM node:latest
+FROM node:20-alpine3.17
 
 workdir ./trans
 
 # Copy package.json and package-lock.json
-COPY package*.json .
+COPY package*.json ./
 
 # Install all dependencies including development dependencies
-RUN npm install
+RUN npm config set fetch-timeout 1000000000 && npm i
 
 # Copy the entire project to the container
 COPY . .

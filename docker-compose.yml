@@ -23,7 +23,7 @@ services:
     networks:
       - web
     volumes:
-      - backend:/trans
+      - ./backend:/trans
     restart: always
   nextjs:
     build: ./frontend
@@ -35,7 +35,7 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - frontend:/trans
+      - ./frontend:/trans
     networks:
       - web
     restart: always
@@ -44,19 +44,3 @@ networks:
   web:
     name: web
     driver: bridge
-
-volumes:
-  frontend:
-    name: frontend
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /Users/mazhari/Desktop/ft_transcendence/frontend
-  backend:
-    name: backend
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /Users/mazhari/Desktop/ft_transcendence/backend

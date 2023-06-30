@@ -3,7 +3,7 @@ import userDto from "@/dto/userDto";
 
 const Stats = async() => {
 
-  const data: userDto = await getData('http://loaclhost:8000/users/getUser');
+  const data: userDto = await getData('/users/getUser');
 
 
     const games = '100';

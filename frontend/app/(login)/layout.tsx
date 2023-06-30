@@ -11,7 +11,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
 
-  const data: userDto | null = await getData('http://loaclhost:8000/auth/isAuth');
+  const data: userDto | null = await getData('/auth/isAuth');
   if (!data)
     redirect('/');
   

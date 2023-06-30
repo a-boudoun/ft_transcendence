@@ -28,7 +28,6 @@ const profileNavBar = () => {
       
       window.addEventListener("scroll", onScroll);
     }, []);
-    console.log('render');
     return (
       <div className={`${fixed ? 'fixed w-full' : 'sticky'} top-[56px] flex justify-between bg-dark-gray`}>
           <NavLink route={navigationRoutes[0]} src={'/icons/profileNavBar/red/stats.svg'} alt={navigationRoutes[0]}/>
