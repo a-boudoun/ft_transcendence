@@ -11,7 +11,7 @@ const User = async() => {
   const status = 'online';
    
     return(
-       <div className='max-h-[200px] relative sm:rounded-3xl overflow-hidden'>
+       <div className='relative sm:rounded-3xl overflow-hidden'>
          <Image className='w-full h-full'  src={baner} alt='baner' width={1000} height={1000} />
          <div className='absolute flex gap-3 items-center bottom-0 w-full bg-black/70 p-[14px]'> 
            <Image className='rounded-full sm:w-[86px] sm:m-4'  src={data.image} alt='img' width={68} height={68} />

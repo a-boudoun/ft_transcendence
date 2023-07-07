@@ -8,8 +8,10 @@ const getData = async (endpoint: string) =>
     const cookieStore = cookies();
     const token = cookieStore.get('access_token');
 
+    
     const url = `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}${endpoint}`;
-
+    console.log(url);
+    
     if (!token)
       return null;
 

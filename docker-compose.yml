@@ -24,6 +24,7 @@ services:
       - web
     volumes:
       - ./backend:/trans
+      - /trans/node_modules
     restart: always
   nextjs:
     build: ./frontend
@@ -36,6 +37,7 @@ services:
       - 3000:3000
     volumes:
       - ./frontend:/trans
+      - /trans/node_modules
     networks:
       - web
     restart: always

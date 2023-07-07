@@ -1,13 +1,13 @@
 # Use Node.js as the base image
-FROM node:20-alpine3.17
+FROM node:alpine
 
-workdir ./trans
+WORKDIR /trans
 
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package.json ./
 
 # Install all dependencies including development dependencies
-RUN npm config set fetch-timeout 1000000000 && npm i
+RUN npm install
 
 # Copy the entire project to the container
 COPY . .
