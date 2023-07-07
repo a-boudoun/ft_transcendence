@@ -1,12 +1,12 @@
-FROM node:20-alpine3.17
+FROM node:alpine
 
-workdir ./trans
+WORKDIR /trans
 
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package.json ./
 
 # Install all dependencies including development dependencies
-RUN npm config set fetch-timeout 1000000000 && npm i
+RUN npm install
 
 # Copy the entire project to the container
 COPY . .
@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 3000
 
 # Start the NextJS application in watch mode for live reloading
-CMD [ "npm", "run", "dev" ]
+CMD ["npm", "run", "dev"]
