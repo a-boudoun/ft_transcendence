@@ -10,7 +10,7 @@ import NavLink from './NavLink';
 const Left = () => {
   return (
     <div className='ml-[1rem]'>
-      <Image 
+      <Image
         src="/img/website_logo.svg" 
         alt="logo"
         width={128}
@@ -47,7 +47,7 @@ const Right = () =>{
 
 const NavBar = () => {
   return (
-      <nav className="fixed flex justify-between items-center h-[56px] w-screen bg-dark-gray border-b border-blue">
+      <nav className="fixed flex justify-between items-center h-[56px] w-screen bg-[#202E50] border-b border-blue">
         <Left />
         <Mid />
         <Right />
