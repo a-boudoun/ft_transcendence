@@ -19,9 +19,9 @@ const NavLink = ({route, src, alt, setIsOpen = () => {}}: NavLinkProps) => {
     let color: string;
 
     if (setIsOpen.length === 1)
-        color = 'bg-light-gray hover:bg-dark-gray';
+        color = 'bg-dark-gray hover:bg-dark-gray';
     else
-        color = currentRoute === '/' + route ? 'bg-light-gray' : 'bg-dark-gray hover:bg-light-gray';
+        color = currentRoute === '/' + route ? 'bg-dark-gray+' : 'bg-[#202E50]  hover:bg-dark-gray+';
     
     return (
       <div className={`grid place-content-center h-[55px] w-[56px] ${color}`}>
