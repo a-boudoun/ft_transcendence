@@ -9,3 +9,14 @@
 and after every collition with the boards. OR you just have to send the oponent board position 
 BUT the walls could move so IT IS A PROBLEM
 
+# create a backend object to hold the game elements positions;
+	one for the ball {x, y, w, h, vx, vy}
+	one for the boards [ {x, y}, {x, y} ]
+	one for the walls
+	one for the score
+
+asign every board to the player with the player with the same index in the players array
+	players[0] -> board[0]
+	players[1] -> board[1]
+
+

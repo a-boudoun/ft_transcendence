@@ -19,14 +19,14 @@ import io from 'socket.io-client';
 // 		</div>
 // 	);
 // }
+const socket = io('http://localhost:8000');
 export default function Game(){
 	const divRef = useRef<HTMLDivElement | null>(null);
 	const [PVisible, setPVisible] = useState<boolean>(true);
 	const router = useRouter();
 	const [countDownValue, setCountDownValue] = useState<number>(3);
-
+	
 	useEffect(() => {
-		const socket = io('http://localhost:8000');
 		socket.on('connect', () => {
 		  console.log('Connected to server');
 		});
@@ -36,9 +36,6 @@ export default function Game(){
 		socket.on('message', (message) => {
 		  console.log('Message from server:', message);
 		});
-		return () => {
-		  socket.disconnect();
-		};
 	  }, []);
 
 	useEffect(() => {
