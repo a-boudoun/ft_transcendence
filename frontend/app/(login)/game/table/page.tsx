@@ -4,6 +4,7 @@ import React, { use, useEffect, useRef, useState } from "react";
 import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite} from "matter-js";
 import { drawRect, drawCircle } from "@components/draw";
 import { useRouter } from "next/navigation";
+import io from 'socket.io-client';
 
 //// : implement the game logic in the backend and send the data to the frontend
 //// : make the cnasvas responsive
@@ -24,6 +25,21 @@ export default function Game(){
 	const router = useRouter();
 	const [countDownValue, setCountDownValue] = useState<number>(3);
 
+	useEffect(() => {
+		const socket = io('http://localhost:8000');
+		socket.on('connect', () => {
+		  console.log('Connected to server');
+		});
+		socket.on('disconnect', () => {
+		  console.log('Disconnected from server');
+		});
+		socket.on('message', (message) => {
+		  console.log('Message from server:', message);
+		});
+		return () => {
+		  socket.disconnect();
+		};
+	  }, []);
 
 	useEffect(() => {
 
