@@ -22,4 +22,4 @@ const NotifDropDown = () => {
   )
 }
 
-export default NotifDropDown
+export default NotifDropDown;

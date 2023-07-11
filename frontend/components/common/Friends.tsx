@@ -4,8 +4,6 @@ import { usePathname } from "next/navigation";
 import getData from "@/apis/getData";
 import userDto from "@/dto/userDto";
 
-
-
 const Friends = async({id, isChat} : {id: string, isChat : boolean}) => {
     const friends: userDto[] = await getData('/users');
 
@@ -17,7 +15,7 @@ const Friends = async({id, isChat} : {id: string, isChat : boolean}) => {
 
                 friends.map((friend: userDto) => {
                     return (
-                        <Link href={link} >
+                        <Link href={`${link}${friend.username}`} >
                             <Friend user={friend} isChat={isChat} /> 
                         </Link>
                     );
