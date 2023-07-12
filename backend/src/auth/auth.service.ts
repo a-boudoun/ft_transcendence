@@ -1,7 +1,8 @@
 
 import {BadRequestException, Injectable, InternalServerErrorException} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../interfaces/user';
+import { User } from '/home/abderrahim/Desktop/ft_transcendence/backend/src/interfaces/User';
+// import { User } from '../interfaces/user';
 import { UsersService } from '../users/users.service';
 
   

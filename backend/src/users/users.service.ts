@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../interfaces/user';
+// import { User } from '../interfaces/user';
+import { User } from '/home/abderrahim/Desktop/ft_transcendence/backend/src/interfaces/User';
 
 @Injectable()
 export class UsersService {
