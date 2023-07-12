@@ -13,7 +13,7 @@ import { CreatePlayerDto } from './dto/player.dto';
 	},
 })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
-	
+  constructor(private readonly gameService: gameService) {}
 @WebSocketServer()
   server: Server;
 
