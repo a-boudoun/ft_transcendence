@@ -30,6 +30,9 @@ export default function Game(){
 		socket.on('connect', () => {
 		  console.log('Connected to server');
 		});
+		socket.on('room', (room) => {
+			console.log('Joined room', room);
+		});
 		socket.on('disconnect', () => {
 		  console.log('Disconnected from server');
 		});

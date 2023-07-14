@@ -1,9 +1,8 @@
 import { SubscribeMessage, WebSocketGateway, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer } from '@nestjs/websockets';
-import { subscribe } from 'diagnostics_channel';
 import { Server, Socket } from 'socket.io';
 import { gameService } from './game.service';
-import { CreatePlayerDto } from './dto/player.dto';
-
+import { Player } from './interfaces/player.interface';
+import { Room } from './interfaces/room.interface';
 @WebSocketGateway({
 	//Cross-Origin-Resource-Sharing (CORS) is a mechanism that uses additional HTTP headers to tell browsers 
 	//to give a web application running at one origin,
@@ -12,6 +11,7 @@ import { CreatePlayerDto } from './dto/player.dto';
 		origin: '*',
 	},
 })
+//TODO: check if the player is authenticated
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private gameService: gameService) {}
 @WebSocketServer()
@@ -21,7 +21,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // console.log(`Client connected: ${client.id}`);
     this.gameService.addPlayerToQueue(client);
     // this.gameService.printQueue();
-    console.log(`rooms ${this.gameService.matchPlayers()}`);
+    this.gameService.matchPlayers();
+    this.gameService.informPlayers('room');
     // this.gameService.printRooms();
   }
 
@@ -30,4 +31,5 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
 }
+// ! run the engin in ht ebackend and export the locations to the frontend
  
