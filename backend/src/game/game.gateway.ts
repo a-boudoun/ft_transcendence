@@ -16,59 +16,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private gameService: gameService) {}
 @WebSocketServer()
   server: Server;
-  private rooms: Map<string, Set<Socket>> = new Map();
 
-  @SubscribeMessage('matchPlayers')
-  handleMatchPlayers(socket: Socket, data: any) {
-    const { playerId1, playerId2 } = data;
-    const room = `${playerId1}_${playerId2}`;
-
-    // Create a new room
-    this.rooms.set(room, new Set([socket]));
-
-    // Join the room
-    socket.join(room);
+  handleConnection(client: Socket, data: any) {
+    // console.log(`Client connected: ${client.id}`);
+    this.gameService.addPlayerToQueue(client);
+    // this.gameService.printQueue();
+    console.log(`rooms ${this.gameService.matchPlayers()}`);
+    // this.gameService.printRooms();
   }
-
-  @SubscribeMessage('playerMove')
-  handlePlayerMove(socket: Socket, data: any) {
-    const { room, movement } = data;
-
-    // Broadcast the movement event to all clients in the room
-    socket.to(room).emit('playerMoved', movement);
-  }
-
-  // Other event handlers...
 
   handleDisconnect(client: Socket) {
-    // Remove the socket from its associated room
     console.log(`Client disconnected: ${client.id}`);
-    for (const [room, sockets] of this.rooms.entries()) {
-      if (sockets.has(client)) {
-        sockets.delete(client);
-        if (sockets.size === 0) {
-          // If the room becomes empty, remove it
-          this.rooms.delete(room);
-        }
-        break;
-      }
-    }
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
-    //TODO: add player to matchmaker
-    console.log(`Client connected: ${client.id}`);
-  }
-
-  @SubscribeMessage('message')
-  handleMessage(client: Socket, payload: any): string {
-	console.log(payload);
-    return 'Hello world!';
-  }
-
-  @SubscribeMessage('sayHi')
-  	handleSayHi(client: Socket, payload: string): void{
-	  this.server.emit('message', 'Hi everyone!');
-  	}
 }
  

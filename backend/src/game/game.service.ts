@@ -1,27 +1,40 @@
 import { Injectable } from "@nestjs/common";
+import { Socket } from "socket.io";
 import { Player } from "./interfaces/player.interface";
 
 @Injectable()
 export class gameService{
-	private players: Player[] = [];
-	createPlayer(player: Player){
-		this.players.push(player);
-	}
-// Todo: create a room service to match two players
+  private matchmakingQueue: Array<Socket> = [];
+  private rooms: Map<string, Array<Socket>> = new Map<string, Array<Socket>>();
 
-// Todo: create a matchmaking service
-  private matchmakingQueue: string[] = [];
-
-  addPlayerToQueue(playerId: string) {
-    this.matchmakingQueue.push(playerId);
+  addPlayerToQueue(playerSocket: Socket) {
+    this.matchmakingQueue.push(playerSocket);
   }
 
-  matchPlayers(): { player1: string, player2: string } | null {
+  matchPlayers(): string | null {
     if (this.matchmakingQueue.length >= 2) {
       const player1 = this.matchmakingQueue.shift();
       const player2 = this.matchmakingQueue.shift();
-      return { player1, player2 };
+      if (player1 && player2) {
+        const roomID = `${player1.id}+${player2.id}`;
+        this.rooms.set(roomID, [player1, player2]);
+        player1.join(roomID);
+        player2.join(roomID);
+        return roomID;
+      }
     }
     return null;
   }
+  
+  // printQueue(): void {
+  //   if (this.matchmakingQueue.length === 2) {
+  //   console.log(`Queue: ${this.matchmakingQueue.map((player) => player.id)}`);
+  //   }
+  // }
+
+  // printRooms(): void {
+  //   if (this.rooms.size > 0) {
+  //   console.log(`Rooms: ${Array.from(this.rooms.keys())}`);
+  //   }
+  // }
 }
