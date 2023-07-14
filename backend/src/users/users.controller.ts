@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseGuards} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import con from 'ormconfig';
 
 @Controller('users')
 export class UsersController {
@@ -14,14 +15,22 @@ export class UsersController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Get('getUser')
+  @Get('me')
   @UseGuards(JwtAuthGuard)
-  findProfile(@Req() req) {
+  me(@Req() req) {
     return this.usersService.findOne(req.user.username);
+  }
+
+  @Patch('updateMe')
+  @UseGuards(JwtAuthGuard)
+  updateMe(@Req() req, @Res() res, @Body() updateUserDto: UpdateUserDto) {
+    this.usersService.update(req.user.username, updateUserDto);
+    res.status(200).send({message: 'User updated'});
   }
 
   // @Get('getGameswon')
@@ -35,10 +44,10 @@ export class UsersController {
     return this.usersService.findOne(login);
   }
 
-  @Patch(':login')
-  update(@Param('login') login: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(login, updateUserDto);
-  }
+  // @Patch(':login')
+  // update(@Param('login') login: string, @Body() updateUserDto: UpdateUserDto) {
+  //   return this.usersService.update(login, updateUserDto);
+  // }
 
   @Delete(':login')
   remove(@Param('login') login: string) {

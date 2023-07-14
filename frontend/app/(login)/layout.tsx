@@ -1,7 +1,7 @@
 import "@/app/globals.css";
 import NavBar  from "@/components/NavBar/NavBar";
 import { redirect } from 'next/navigation';
-import getData from  "@/apis/getData";
+import getData from  "@/apis/getInServer";
 import userDto from "@/dto/userDto";
 
 
@@ -11,9 +11,9 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
 
-  const data: userDto | null = await getData('/auth/isAuth');
-  if (!data)
-    redirect('/');
+  // const data: userDto | null = await getData('/auth/isAuth');
+  // if (!data)
+  //   redirect('/');
   
   return (
     <>
