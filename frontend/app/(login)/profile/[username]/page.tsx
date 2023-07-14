@@ -1,11 +1,11 @@
 import ProfileComponent from "@/components/profile/ProfileComponent";
-import getData from "@/apis/getData";
+import getData from "@/apis/getInServer";
 import userDto from "@/dto/userDto";
 import { redirect } from 'next/navigation';
 
 const Profile = async ({params}: { params: { username: string } }) => {
 
-  const data: userDto = await getData('/users/getUser');
+  const data: userDto = await getData('/users/me');
 
   if (data.username === params.username)
     redirect('/profile');

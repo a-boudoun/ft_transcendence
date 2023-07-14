@@ -3,14 +3,16 @@ import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Administration, Blockage, Channel, Friendship, 
   GameHistory, Membership, Message, Sanction, 
-  User } from './entities/user.entity'
+  User } from '../entities/user.entity'
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
+    private jwtService: JwtService
     // @InjectRepository(Channel) private channelRepo: Repository<Channel>,
     // @InjectRepository(Message) private messageRepo: Repository<Message>,
     // @InjectRepository(GameHistory) private gamehistoryRepo: Repository<GameHistory>,
@@ -44,6 +46,11 @@ export class UsersService {
   async remove(login: string) {
     const user = await this.findOne(login);
     return this.userRepo.remove(user);
+  }
+
+  async genarateToken(user: UserDTO) {
+    const payload = {username: user.username, sub: user.XP};
+    return this.jwtService.signAsync(payload);
   }
   // getFriends(login: string) {
   //   const user = this.userRepo.find({

@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import con from '../ormconfig';
 import { Administration, Blockage, Channel, Friendship, 
         GameHistory, Membership, Message, Sanction, 
-        User } from './user.entity';
+        User } from './entities/user.entity';
 import { UsersModule } from './users/users.module';
 
 @Module({

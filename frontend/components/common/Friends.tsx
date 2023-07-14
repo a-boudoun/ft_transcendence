@@ -1,13 +1,12 @@
 import Image from 'next/image';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import getData from "@/apis/getData";
+import getData from "@/apis/getInServer";
 import userDto from "@/dto/userDto";
 
-const Friends = async({id, isChat} : {id: string, isChat : boolean}) => {
-    const friends: userDto[] = await getData('/users');
+const Friends = async({id} : {id: string} ) => {
 
-    const link = (isChat ? '/chat/' : '/profile/');
+    const friends: userDto[] = await getData('/users');
     
     return (
         <div className={'h-full flex flex-col gap-1 overflow-y-scroll rounded-2xl'}>
@@ -15,8 +14,8 @@ const Friends = async({id, isChat} : {id: string, isChat : boolean}) => {
 
                 friends.map((friend: userDto) => {
                     return (
-                        <Link href={`${link}${friend.username}`} >
-                            <Friend user={friend} isChat={isChat} /> 
+                        <Link href={`/profile/${friend.name}`} >
+                            <Friend user={friend} /> 
                         </Link>
                     );
                 })
@@ -27,23 +26,17 @@ const Friends = async({id, isChat} : {id: string, isChat : boolean}) => {
 
 export default Friends;
 
-export const Friend = ({user, isChat}: {user: userDto, isChat : boolean}) => {
-    // const path = usePathname();
-    // console.log(path.at(-1));
-    // const style = path.at(-1) === user.id.toString() ? "bg-light-gray" : "bg-dark-gray";
+export const Friend = ({user}: {user: userDto}) => {
 
     return (
         <div className={`flex justify-between px-4 py-2 mx-2 rounded-xl text-white bg-dark-gray`}>
             <div className="grow flex items-center gap-4">
                 <Image  className="rounded-full self-center"  src={user.image}    width={48}  height={48}   alt="user image"
                 />
-                <h3>{user.username}</h3> 
+                <h3>{user.name}</h3> 
             </div>
             <div className="flex items-center gap-4">
-                {!isChat && 
-                    <Image className="" src="/icons/navBar/chat.svg" width={24} height={24} alt="chat"
-                    />
-                }
+                <Image className="" src="/icons/navBar/chat.svg" width={24} height={24} alt="chat"/>
                 <Image className="" src="/icons/navBar/game.svg" width={24} height={24} alt="challenge"
                 />
             </div>
