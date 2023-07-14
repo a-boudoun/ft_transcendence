@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { Player } from "./interfaces/player.interface";
+import { Room } from "./interfaces/room.interface";
 
 @Injectable()
 export class gameService{
@@ -20,12 +21,22 @@ export class gameService{
         this.rooms.set(roomID, [player1, player2]);
         player1.join(roomID);
         player2.join(roomID);
+        console.log(`Room created: ${roomID}`);
         return roomID;
       }
     }
     return null;
   }
-  
+
+  informPlayers(event: string) {
+    this.rooms.forEach((players, roomID) => {
+      players.forEach((player) => {
+        player.emit(event, roomID);
+      });
+    });
+  }
+  //TODO: create rooms array and create room and delete room functions
+
   // printQueue(): void {
   //   if (this.matchmakingQueue.length === 2) {
   //   console.log(`Queue: ${this.matchmakingQueue.map((player) => player.id)}`);
