@@ -1,4 +1,7 @@
 import "./globals.css";
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Next.js',
@@ -12,8 +15,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html className="h-full w-full" lang="en">
-      <body className="h-full w-full text-center">
+    <html className="" lang="en">
+      <body className="{inter.className} h-screen w-screen bg-red text-center  text-white">
         {children}
       </body>
     </html>

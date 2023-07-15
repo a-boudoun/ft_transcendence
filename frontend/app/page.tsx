@@ -1,6 +1,5 @@
 import React from 'react'
-import Link from 'next/link'
-import SingButton from '@/components/singButton'
+import SingButton from '@/components/SingButton'
 
 
 export default function Home() {
