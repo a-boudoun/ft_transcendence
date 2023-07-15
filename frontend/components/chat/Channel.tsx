@@ -10,7 +10,7 @@ const Channel = async() => {
     return (
         <div className={`h-full`}>
             <ChNav />
-            {/* <Messeges data={data}  path="/channel"/> */}
+            <Messeges data={data}  path="/chat"/>
         </div>
     );
 }

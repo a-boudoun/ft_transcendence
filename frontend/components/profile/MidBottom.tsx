@@ -1,9 +1,9 @@
-import getData from "@/apis/getData";
+import getData from "@/apis/server/get";
 import userDto from "@/dto/userDto";
 
-const Stats = async() => {
+const Stats = async({id} : {id : string | null}) => {
 
-  const data: userDto = await getData('/users/getUser');
+  const data: userDto = await getData('/users/me');
 
 
     const games = '100';
@@ -13,7 +13,7 @@ const Stats = async() => {
   
   
     return(
-      <div className='grid grid-cols-2 content-center w-[90%] capitalize m-[5%] xl:z-40'>
+      <div className='grid grid-cols-2 content-center w-[90%] capitalize mx-auto mt-[30%] xl:z-40 '>
         <div className='stats-div-mobile'>
           <span className='font-bold text-lg'>{games}</span>
           <h3 className='text-blue'>total games</h3>

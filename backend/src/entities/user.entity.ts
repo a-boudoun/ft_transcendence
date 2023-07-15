@@ -22,13 +22,21 @@ export class User {
     id: number;
 
     @Column({ length: 25 })
-    @Index({ unique: true })
+    @Index()
     username: string;
+
+    @Column()
+    name: string;
     
-    @Column('text')
+    @Column({
+        nullable: true,
+    })
+    image: string;
+    
+    @Column('text' , { nullable: true })
     status: Status;
     
-    @Column({ type: 'boolean' })
+    @Column({ type: 'boolean', nullable: true})
     fact2Auth: boolean;
     
     @Column()
