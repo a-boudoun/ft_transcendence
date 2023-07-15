@@ -1,12 +1,16 @@
+import getData from "@/apis/getData";
 import ChNav from "./ChNav";
 import Messeges from "./Messeges";
+import Friends from "@/components/common/Friends";
+import userDto from "@/dto/userDto";
 
-const Channel = ({isChannel}:{isChannel: boolean}) => {
-    const s = isChannel ? '' : 'hidden';
+const Channel = async() => {
+    const data: userDto[] = await getData('/users');
+    console.log("channel");
     return (
-        <div className={`${s} h-full`}>
+        <div className={`h-full`}>
             <ChNav />
-            <Messeges />
+            {/* <Messeges data={data}  path="/channel"/> */}
         </div>
     );
 }

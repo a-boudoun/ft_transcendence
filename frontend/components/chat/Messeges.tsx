@@ -1,42 +1,24 @@
-"use client";
+
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
+import userDto from "@/dto/userDto";
 
-interface messageProps
-{
-    
-    id: number;
-    name: string;
-    image: string;
-}
-
-const Messages = () => {
-    const [data, setData] = useState<messageProps[]>([]);
-
-    useEffect(()=>{
-        const getData = async () =>
-        {
-            const res = await fetch(`http://localhost:3001/users`);
-            const json = await res.json();
-            setData(json);
-        };
-        getData();
-    }, [])
+const Messages = ({data, path}:{data:userDto[], path:string}) => {
+   
     
   
 
-    let path : string = usePathname();
+   
     path = path.slice(0, 5) === "/chat" ? "/chat" : "/channel";
     const hm  =(`h-[calc(100%-100px]`)
     return (
-        <div className={`h-full overflow-y-scroll py-2 `}>
+        <div className="h-full overflow-y-scroll py-2">
             {
-            data.map((msg: messageProps) =>(
-                <Link href={`${path}/${msg.name}`}>
-                    <Message key={msg.id} msg={msg} />
+            data.map((msg: userDto) =>(
+                <Link href={`${path}/${msg.username}`}>
+                    <Message key={msg.username} msg={msg} />
                 </Link>
             ))}
         </div>
@@ -46,12 +28,10 @@ const Messages = () => {
 export default Messages;
 
 
-export const Message = ({msg}:{msg:messageProps}) => { 
-    const path = usePathname();
-    console.log(path);
-    const style = path === "/chat/" + msg.id.toString() ? "bg-dark-gray" : "bg-dark-gray";
+export const Message = ({msg}:{msg:userDto}) => { 
+    const path = "/chat/" ;
     return (
-        <div className={`${style} flex justify-between h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white`}>
+        <div className={`bg-dark-gray flex justify-between h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white`}>
             <div className="flex items-center space-x-5">
                 <Image
                 className="rounded-full self-center"
@@ -60,7 +40,7 @@ export const Message = ({msg}:{msg:messageProps}) => {
                 height={42}
                 alt=""
                 />
-                <h3>{msg.name}</h3>
+                <h3>{msg.username}</h3>
                 
             </div>
             <div className="flex items-center space-x-2  justify-between">

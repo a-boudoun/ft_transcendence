@@ -1,16 +1,16 @@
-"use client";
+// "use client";
 import Image from 'next/image'
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+// import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import Channel from './Channel';
 import Friend from './Friend';
 const MiniNav = () => {
 
 
-    const usepathname = usePathname();
-    console.log(usepathname);
-    const isFriend = usepathname.slice(0, 5) === '/chat' ? true : false;
+    // const usepathname = usePathname();
+    // console.log(usepathname);
+    const isFriend = true;
    
     console.log(isFriend);
     return (
@@ -35,8 +35,8 @@ const MiniNav = () => {
                     />
                 </div>
             </div>
-            <Friend isFriend={isFriend} />
-            <Channel isChannel={!isFriend} />
+            <Friend />
+            {/* <Channel  /> */}
         </>
     );
 }

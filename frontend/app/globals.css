@@ -2,14 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .stats-div-mobile {
+    @apply grid content-center text-sm py-2  rounded-sm col-span-1;
+  }
+}
 
-/* width */
 ::-webkit-scrollbar {
-    width: 0px;
-  }
-  
-  
-  ::-webkit-scrollbar-thumb {
-    background: #1753df;
-    border-radius: 10px;
-  }
+  width: 0px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

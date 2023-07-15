@@ -1,12 +1,17 @@
 import Messeges from "./Messeges";
+import Friends from "@/components/common/Friends";
+import getData from  "@/apis/getData";
+import userDto from "@/dto/userDto";
 
-const Friend = ({ isFriend }: { isFriend: boolean }) => {
-    const s = isFriend ? '' : 'hidden';
+
+const Friend = async() => {
+   
+    const data: userDto[] = await getData('/users');
     
     return (
 
-        <div className={`${s} h-full `}>
-            <Messeges/>
+        <div className={` h-full`}>
+            <Messeges data={data}  path="/chat"/>
         </div>
 
     );

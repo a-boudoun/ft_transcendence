@@ -1,9 +1,8 @@
-"use client";
+// "use client";
 import Mid from "@/components/chat/Mid";
 import Mininav from "@/components/chat/Mininav";
 import Right from "@/components/chat/Right";
 import Chat from "./chat/page";
-import { usePathname } from "next/navigation";
 import { use } from "react";
 import Messeges from "@/components/chat/Messeges";
 import ChNav from "@/components/chat/ChNav";
@@ -15,7 +14,7 @@ export default function LoginLayout({
 }: {
   children: React.ReactNode
 }) {
-  let res = usePathname() === "/channel" || usePathname() === "/chat" ? true : false;
+  let res = true
   return (
     <main className={`h-full  pt-[56px] lg:p-[30px] lg:pt-[86px] flex   bg-dark-gray  justify-center `}>
       <div className=" w-full  flex gap-2 max-w-7xl overflow-hidden">
