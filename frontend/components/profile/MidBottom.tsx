@@ -1,4 +1,4 @@
-import getData from "@/apis/getInServer";
+import getData from "@/apis/server/get";
 import userDto from "@/dto/userDto";
 
 const Stats = async({id} : {id : string | null}) => {

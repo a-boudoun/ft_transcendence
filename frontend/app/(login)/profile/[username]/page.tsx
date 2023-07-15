@@ -1,5 +1,5 @@
 import ProfileComponent from "@/components/profile/ProfileComponent";
-import getData from "@/apis/getInServer";
+import getData from "@/apis/server/get";
 import userDto from "@/dto/userDto";
 import { redirect } from 'next/navigation';
 

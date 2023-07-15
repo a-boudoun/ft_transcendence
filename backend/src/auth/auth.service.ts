@@ -12,7 +12,6 @@ import { Response } from 'express';
     async login(user : UserDTO, res: Response) {
 
       const userExists =  await this.userService.findOne(user.username);
-      console.log(userExists);
 
       const token = await this.userService.genarateToken(user);
       res.cookie('access_token', token, {httpOnly: true,
@@ -21,14 +20,12 @@ import { Response } from 'express';
         path: '/'
       });
 
-      
-      if (userExists === null){
+      if (!userExists){
         await this.userService.create(user);
-        res.redirect('http://localhost:3000/singIn');
-      }
-      else {
-        res.redirect('http://localhost:3000/home');
+        res.redirect('http://localhost:3000/signIn');
+        return ;
       }
 
+        res.redirect('http://localhost:3000/home');
     }
 }

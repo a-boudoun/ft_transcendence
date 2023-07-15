@@ -4,7 +4,7 @@ import userDto from '@/dto/userDto';
 import { config } from 'dotenv';
 config();
 
-const gt = async (endpoint: string, user: userDto) =>
+const patch = async (endpoint: string, user: userDto) =>
 {
     
     const url = `http://localhost:8000${endpoint}`;
@@ -14,7 +14,7 @@ const gt = async (endpoint: string, user: userDto) =>
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({name : user.name, avatar : user.image,  fact2Auth : user.fact2Auth, level : user.level, XP : user.XP}),
+        body: JSON.stringify({name : user.name, image: user.image,  fact2Auth : user.fact2Auth, level : user.level, XP : user.XP}),
         credentials : 'include'});
         
         const data = await res.json();
@@ -22,4 +22,4 @@ const gt = async (endpoint: string, user: userDto) =>
     return data;
 };
 
-export default gt;
+export default patch;

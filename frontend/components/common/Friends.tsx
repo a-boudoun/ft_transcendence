@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import getData from "@/apis/getInServer";
+import getData from "@/apis/server/get";
 import userDto from "@/dto/userDto";
 
-const Friends = async({id} : {id: string} ) => {
+const Friends = async() => {
 
     const friends: userDto[] = await getData('/users');
     
@@ -31,7 +31,7 @@ export const Friend = ({user}: {user: userDto}) => {
     return (
         <div className={`flex justify-between px-4 py-2 mx-2 rounded-xl text-white bg-dark-gray`}>
             <div className="grow flex items-center gap-4">
-                <Image  className="rounded-full self-center"  src={user.image}    width={48}  height={48}   alt="user image"
+                <Image  className="w-[48px] h-[48px] rounded-full self-center"  src={user.image}    width={1000}  height={1000}   alt="user image"
                 />
                 <h3>{user.name}</h3> 
             </div>

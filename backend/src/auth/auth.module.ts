@@ -1,5 +1,5 @@
 import { Module, Get  } from '@nestjs/common';
-import { AuthController } from './auth.contronller';
+import { AuthController } from './auth.controller';
 import { AuthStratedy  } from './strategy/42.strategy';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategy/jwt.strategy';
