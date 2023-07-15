@@ -8,13 +8,15 @@ export class MyGateway {
   server: Server;
 
   handleConnection(socket: Socket): void {
-    
+    console.log(this.server.sockets.adapter.sids)
+    console.log(typeof( this.server.sockets.adapter.sids))
     const username = socket.handshake.auth.username;
     console.log(`user ${username} connected`);
     if(!username) { return; }
 
     socket.on("private message", ({ content, to, from }) => {
-      //ADD TO DATABASE
+      // 
+      // ADD TO DATABASE
       socket.to(to).emit("private message", {
         content,
         from: from,
@@ -33,6 +35,7 @@ export class MyGateway {
         socket.emit("users", users);
        
         socket.broadcast.emit("user connected", users);
+        console.log('connected')
 
       });
   }

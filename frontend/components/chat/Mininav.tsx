@@ -35,8 +35,8 @@ const MiniNav = () => {
                     />
                 </div>
             </div>
-            <Friend />
-            {/* <Channel  /> */}
+            {/* <Friend /> */}
+            <Channel  />
         </>
     );
 }

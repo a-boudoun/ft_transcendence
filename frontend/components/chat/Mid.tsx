@@ -26,8 +26,10 @@ interface Message {
 
 
 const Mid = ({ user }: { user: userDto }) => {
+
     const receiver = useParams();
     const username: string = user.username;
+    
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
     const [myusers, setMyusers] = useState<User[]>([]);
@@ -35,6 +37,7 @@ const Mid = ({ user }: { user: userDto }) => {
     socket.auth = { username };
     socket.connect();
     const messageContainerRef = useRef(null);
+   
     // fetch all messages
 
 
@@ -98,7 +101,10 @@ const Mid = ({ user }: { user: userDto }) => {
         if (messageContainerRef.current) {
             messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
         }
-    }, [messages]);
+    }, []);
+    useEffect(() => {
+       console.log(myusers)
+    }, []);
 
 
 
