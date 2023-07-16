@@ -25,6 +25,7 @@ export class UsersController {
   getDM(@Req() req) {
     return this.usersService.getDM(req.user.username);
   }
+  
   @Get('DM')
   @UseGuards(JwtAuthGuard)
   getChannels(@Req() req) {
@@ -40,6 +41,7 @@ export class UsersController {
   @Patch('updateMe')
   @UseGuards(JwtAuthGuard)
   updateMe(@Req() req, @Res() res, @Body() updateUserDto: UpdateUserDto) {
+    console.log(updateUserDto);
     this.usersService.update(req.user.username, updateUserDto);
     res.status(200).send({message: 'User updated'});
   }
@@ -49,14 +51,15 @@ export class UsersController {
   // findGamesWon(@Req() req) {
   //   return this.usersService.findGamesWon(req.user.username);
   // }
-  @Get('getUser')
-  @UseGuards(JwtAuthGuard)
-  findProfile(@Req() req) {
-    return this.usersService.findOne(req.user.username);
-  }
-  @Get(':login')
-  findOne(@Param('login') login: string) {
-    return this.usersService.findOne(login);
+  // @Get('getUser')
+  // @UseGuards(JwtAuthGuard)
+  // findProfile(@Req() req) {
+  //   return this.usersService.findOne(req.user.username);
+  // }
+
+  @Get(':name')
+  findOne(@Param('name') name: string) {
+    return this.usersService.findOneByname(name);
   }
 
   // @Patch(':login')

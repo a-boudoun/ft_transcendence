@@ -23,10 +23,10 @@ export class User {
     id: number;
 
     @Column({ length: 25 })
-    @Index()
+    @Index({unique: true})
     username: string;
 
-    @Column()
+    @Column({unique: true})
     name: string;
     
     @Column({
@@ -81,8 +81,6 @@ export class User {
     administratedChannels: Administration[];
 }
 
-
-    
 @Entity({ name: 'GameHistory' })
 export class GameHistory {
     @PrimaryGeneratedColumn()

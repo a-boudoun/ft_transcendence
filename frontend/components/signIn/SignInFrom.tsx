@@ -3,9 +3,10 @@
 import React from 'react'
 import { useState } from 'react';
 import Image from 'next/image';
-import patch from '@/apis/client/patch';
+import patchUser from '@/apis/client/patchUser';
 import { useRouter } from 'next/navigation';
 import { config } from 'dotenv';
+import uploadImage from '@/apis/uploadImage';
 
 config();
 
@@ -28,26 +29,15 @@ const SignInFrom = ({user} : {user: any}) => {
 
   const handleSubmit = async(e: any) => {
     e.preventDefault();
-    const formdata = new FormData();
+    user.name = name;
 
     if (image)
     {
-      formdata.append('file', image);
-      formdata.append('upload_preset', 'pofiles_images');
-      const endpoint = 'https://api.cloudinary.com/v1_1/dwif6n6z6/image/upload';
-      const res = await fetch(endpoint, {
-          method: 'POST',
-          body: formdata,
-      });
-      const data = await res.json();
-      user.image = data.secure_url;
+      const uploadimage = await uploadImage(image);
+      user.image = uploadimage;
     }
-
     
-    user.name = name;
-    user.image = imagePreview;
-    await patch('/users/updateMe', user);
-  
+    await patchUser('/users/updateMe', user);
     Router.push('/home');
   };
 

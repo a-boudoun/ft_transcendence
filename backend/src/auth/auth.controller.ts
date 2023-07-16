@@ -16,7 +16,6 @@ export class AuthController {
   @Get('redirect')  
   @UseGuards(OAuthGuard)
   async AuthCallback(@Req() req, @Res({ passthrough: true }) res) {
-    console.log('AuthCallback');
     return this.authService.login(req.user, res);
   }
 
