@@ -9,11 +9,12 @@ import { Administration, Blockage, Channel, Friendship,
         User } from './entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { GatewayModule } from './gateway/gateway.module';
+import { ChannelsModule } from './channels/channels.module';
 
 @Module({
   // AuthModule, UsersModule,
   imports: [TypeOrmModule.forRoot(con),
-            AuthModule, UsersModule, GatewayModule],
+            AuthModule, UsersModule, GatewayModule, ChannelsModule],
   controllers: [AppController],
   providers: [AppService],
 })

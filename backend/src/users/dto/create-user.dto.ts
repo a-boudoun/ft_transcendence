@@ -1,3 +1,4 @@
+import { AdministrationDTO, ChannelDTO, MessageDTO, SanctionDTO } from "src/channels/dto/create-channel.dto";
 import { ChannelType, SanctionType, Status } from "../../entities/user.entity";
 
 export class UserDTO {
@@ -21,33 +22,6 @@ export class UserDTO {
     administratedChannels: AdministrationDTO[];
 }
 
-export class ChannelDTO {
-    name: string;
-    type: ChannelType;
-    owner: UserDTO;
-    password: string;
-    administrators: AdministrationDTO[];
-    memberships: MembershipDTO[];
-    sanctions: SanctionDTO[];
-    messages: MessageDTO[];
-}
-
-export class AdministrationDTO {
-    channel: ChannelDTO;
-    admin: UserDTO;
-}
-
-export class MembershipDTO {
-    channel: ChannelDTO;
-    member: UserDTO;
-}
-
-export class SanctionDTO {
-    channel: ChannelDTO;
-    member: UserDTO;
-    type: SanctionType;
-    duration: Date;
-}
 
 export class GameHistoryDTO {
     winner: UserDTO;
@@ -61,12 +35,6 @@ export class BlockageDTO {
     blocked: UserDTO;
 }
 
-export class MessageDTO {
-    createdAt: Date;
-    channel: ChannelDTO;
-    sender: UserDTO;
-    content: string;
-}
 
 export class FriendshipDTO {
     initiater: UserDTO;

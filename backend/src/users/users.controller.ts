@@ -20,6 +20,17 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get('DM')
+  @UseGuards(JwtAuthGuard)
+  getDM(@Req() req) {
+    return this.usersService.getDM(req.user.username);
+  }
+  @Get('DM')
+  @UseGuards(JwtAuthGuard)
+  getChannels(@Req() req) {
+    return this.usersService.getChannels(req.user.username);
+  }
+
   @Get('me')
   @UseGuards(JwtAuthGuard)
   me(@Req() req) {

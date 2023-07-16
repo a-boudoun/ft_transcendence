@@ -22,22 +22,34 @@ export class UsersService {
     // @InjectRepository(Blockage) private blockageRepo: Repository<Blockage>,
     // @InjectRepository(Administration) private administrationRepo: Repository<Administration>,
     ) {}
-
+    
   create(userDTO: UserDTO) {
     const user = this.userRepo.create(userDTO);
     return this.userRepo.save(user);
   }
-
+  
   findAll() {
     return this.userRepo.find();
   }
-
+  
   findOne(username: string) {
     const user = this.userRepo.findOneBy({username});
-
+    
     return user;
   }
-
+  
+  async getDM(username: string) {
+  const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type = :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
+  return channels;
+  // return this.userRepo.findOne({where: {
+    //   username: username,
+    // }, relations: ['channels', 'channels.type']});
+  }
+  
+  async getChannels(username: string) {
+  const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type != :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
+  return channels;
+  }
   async update(login: string, updateUser: UpdateUserDto) {
     const user = await this.findOne(login);
     return this.userRepo.save({...user, ...updateUser})
