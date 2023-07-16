@@ -11,7 +11,6 @@ const User = async({id} : {id : string | null}) => {
 
   const data: userDto = await getData(endpoint);
 
-
   const  baner = '/img/baner.webp'
   const status = 'online';
    

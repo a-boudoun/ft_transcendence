@@ -1,5 +1,5 @@
 import { AdministrationDTO, ChannelDTO, MessageDTO, SanctionDTO } from "src/channels/dto/create-channel.dto";
-import { ChannelType, SanctionType, Status } from "../../entities/user.entity";
+import { Status } from "../../entities/user.entity";
 
 export class UserDTO {
     username: string;

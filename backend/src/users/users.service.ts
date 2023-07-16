@@ -1,9 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Administration, Blockage, Channel, Friendship, 
-  GameHistory, Membership, Message, Sanction, 
-  User } from '../entities/user.entity'
+import { User } from '../entities/user.entity'
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -37,6 +35,13 @@ export class UsersService {
     
     return user;
   }
+
+  findOneByname(name: string) {
+    const user = this.userRepo.findOneBy({name});
+
+    return user;
+  }
+
   
   async getDM(username: string) {
   const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type = :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();

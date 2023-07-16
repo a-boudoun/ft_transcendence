@@ -4,7 +4,7 @@ import userDto from '@/dto/userDto';
 import { config } from 'dotenv';
 config();
 
-const patch = async (endpoint: string, user: userDto) =>
+const patchUser = async (endpoint: string, user: userDto) =>
 {
     
     const url = `http://localhost:8000${endpoint}`;
@@ -22,4 +22,4 @@ const patch = async (endpoint: string, user: userDto) =>
     return data;
 };
 
-export default patch;
+export default patchUser;

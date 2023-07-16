@@ -10,7 +10,6 @@ const getData = async (endpoint: string) =>
 
     
     const url = `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}${endpoint}`;
-    console.log(url);
     
     if (!token)
       return null;
