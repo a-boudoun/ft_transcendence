@@ -2,11 +2,12 @@ import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { Player } from "./interfaces/player.interface";
 import { Room } from "./interfaces/room.interface";
+import { SocketReadyState } from "net";
 
 @Injectable()
 export class gameService{
   private matchmakingQueue: Array<Socket> = [];
-  private rooms: Map<string, Array<Socket>> = new Map<string, Array<Socket>>();
+  private rooms: Map<string, Room> = new Map<string, Room>();
 
   addPlayerToQueue(playerSocket: Socket) {
     this.matchmakingQueue.push(playerSocket);
@@ -19,10 +20,14 @@ export class gameService{
     }
   }
 
+  findRoom(roomId: string): Room | null {
+    return this.rooms.get(roomId);
+  }
+
   matchPlayers(): string | null {
     if (this.matchmakingQueue.length >= 2) {
-      const player1 = this.matchmakingQueue.shift();
-      const player2 = this.matchmakingQueue.shift();
+      const player1: Socket = this.matchmakingQueue.shift();
+      const player2: Socket = this.matchmakingQueue.shift();
       if (player1 && player2) {
         const roomID = `${player1.id}+${player2.id}`;
         this.rooms.set(roomID, [player1, player2]);
