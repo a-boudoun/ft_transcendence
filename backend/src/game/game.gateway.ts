@@ -18,18 +18,29 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
 
   handleConnection(client: Socket, data: any) {
+    if (!client.handshake.query.username ||  client.handshake.headers.connection === 'close') {
+      client.disconnect(true);
+      return;
+    }
     // console.log(`Client connected: ${client.id}`);
+    console.log(
+      'client connected', client.handshake.query.username,
+    );
     this.gameService.addPlayerToQueue(client);
     // this.gameService.printQueue();
     this.gameService.matchPlayers();
-    this.gameService.informPlayers('room');
+    //   'with headers', client.handshake.headers,
+    //   );
+    // console.log('headers', client.handshake.headers)
     // this.gameService.printRooms();
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`Client disconnected: ${client.id}`);
+    console.log(`Client disconnected: ${client.handshake.query.username}`);
+    this.gameService.removePlayerFromQueue(client);
   }
 
 }
+
 // ! run the engin in ht ebackend and export the locations to the frontend
  

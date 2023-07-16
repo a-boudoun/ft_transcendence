@@ -12,6 +12,13 @@ export class gameService{
     this.matchmakingQueue.push(playerSocket);
   }
 
+  removePlayerFromQueue(playerSocket: Socket) {
+    const index = this.matchmakingQueue.indexOf(playerSocket);
+    if (index > -1) {
+      this.matchmakingQueue.splice(index, 1);
+    }
+  }
+
   matchPlayers(): string | null {
     if (this.matchmakingQueue.length >= 2) {
       const player1 = this.matchmakingQueue.shift();
@@ -22,13 +29,14 @@ export class gameService{
         player1.join(roomID);
         player2.join(roomID);
         console.log(`Room created: ${roomID}`);
+        this.informPlayers('roomCreated', roomID);
         return roomID;
       }
     }
     return null;
   }
 
-  informPlayers(event: string) {
+  informPlayers(event: string, roomID: string) {
     this.rooms.forEach((players, roomID) => {
       players.forEach((player) => {
         player.emit(event, roomID);
@@ -37,11 +45,9 @@ export class gameService{
   }
   //TODO: create rooms array and create room and delete room functions
 
-  // printQueue(): void {
-  //   if (this.matchmakingQueue.length === 2) {
-  //   console.log(`Queue: ${this.matchmakingQueue.map((player) => player.id)}`);
-  //   }
-  // }
+  printQueue(): void {
+    console.log (this.matchmakingQueue.length)
+  }
 
   // printRooms(): void {
   //   if (this.rooms.size > 0) {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { use, useEffect, useRef, useState } from "react";
-import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite} from "matter-js";
+import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite, Query} from "matter-js";
 import { drawRect, drawCircle } from "@components/draw";
 import { useRouter } from "next/navigation";
 import io from 'socket.io-client';
@@ -19,7 +19,12 @@ import io from 'socket.io-client';
 // 		</div>
 // 	);
 // }
-const socket = io('http://localhost:8000');
+const randomInt = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1)) + min;
+
+const socket = io('http://localhost:8000', {
+	query: {username: randomInt(1, 1000).toString()},
+});
 export default function Game(){
 	const divRef = useRef<HTMLDivElement | null>(null);
 	const [PVisible, setPVisible] = useState<boolean>(true);
