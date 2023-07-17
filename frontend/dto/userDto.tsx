@@ -1,8 +1,8 @@
-export default interface userDto {
-    username: string; 
-    name: string;
-    image: string;
-    fact2Auth: boolean;
-    level: number;
-    XP: number;
-}
+import {z } from 'zod';
+import { signInSchema, userSchema} from "@/models/user";
+
+type userDto = z.infer<typeof userSchema>
+
+type signInDto = z.infer<typeof signInSchema>
+
+export type {userDto, signInDto};

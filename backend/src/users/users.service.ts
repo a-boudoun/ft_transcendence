@@ -5,6 +5,7 @@ import { User } from '../entities/user.entity'
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
+import con from 'ormconfig';
 
 @Injectable()
 export class UsersService {
@@ -42,7 +43,15 @@ export class UsersService {
     return user;
   }
 
-  
+  async isUser(name: string) {
+    const user = await this.userRepo.findOneBy({name});
+
+    if (user) {
+      return true;
+    }
+    return false;
+  }
+
   async getDM(username: string) {
   const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type = :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
   return channels;
