@@ -59,9 +59,9 @@ const SignInFrom = ({user} : {user: signInDto}) => {
     <form className='flex flex-col gap-11' onChange={handleChange} onSubmit={handleSubmit} >
       <label>
         <div className='relative hover:opacity-60'>
-            <Image className='w-[200px] h-[200px] rounded-full cursor-pointer' src={imagePreview} width={1000} height={1000} alt="avatar"/>
+            <Image className='w-[200px] h-[200px] rounded-full cursor-pointer' src={imagePreview} width={1000} height={1000} alt="avatar" />
             <Image className='absolute bottom-5 right-0' src={"/icons/changeImage.svg"} width={32} height={32} alt="" />
-            <input type="file" className="hidden"/>
+            <input type="file" className="hidden" accept="image/jpeg, image/jpg, image/png, image/webp" />
         </div>
       </label>
       <input className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-black focus:border-[2px] hover:opacity-60" type="text" placeholder={user.name}/>
