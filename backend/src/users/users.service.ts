@@ -43,10 +43,17 @@ export class UsersService {
     return user;
   }
 
-  async isUser(name: string) {
+  async isUserExist(myName: string,  name: string) {
     const user = await this.userRepo.findOneBy({name});
+    
+    console.log(user.name);
+    console.log(myName);
 
     if (user) {
+      if (user.name === myName)
+      {
+        return false;
+      }
       return true;
     }
     return false;

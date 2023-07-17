@@ -63,9 +63,10 @@ export class UsersController {
     return this.usersService.findOneByname(name);
   }
   
-  @Get('isUser/:name')
-  async isUser(@Param('name') name: string) {
-    return this.usersService.isUser(name);
+  @Get('isUserExist/:name')
+  @UseGuards(JwtAuthGuard)
+  async isUser(@Req() req, @Param('name') name: string) {
+    return this.usersService.isUserExist(req.user.username, name);
   }
 
   // @Patch(':login')
