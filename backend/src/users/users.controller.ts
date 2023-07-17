@@ -46,6 +46,7 @@ export class UsersController {
     res.status(200).send({message: 'User updated'});
   }
 
+
   // @Get('getGameswon')
   // @UseGuards(JwtAuthGuard)
   // findGamesWon(@Req() req) {
@@ -60,6 +61,11 @@ export class UsersController {
   @Get(':name')
   findOne(@Param('name') name: string) {
     return this.usersService.findOneByname(name);
+  }
+  
+  @Get('isUser/:name')
+  async isUser(@Param('name') name: string) {
+    return this.usersService.isUser(name);
   }
 
   // @Patch(':login')
