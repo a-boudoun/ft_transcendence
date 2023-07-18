@@ -33,7 +33,8 @@ export class Channel {
     @ManyToOne(() => User, user => user.ownedChannels)
     owner: User;
     
-    @Column({ length: 25 })
+    @Column({ length: 25 ,
+    nullable : true})
     password: string;
     
     @OneToMany(() => Administration, administration => administration.channel)

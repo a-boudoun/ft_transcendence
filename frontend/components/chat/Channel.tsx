@@ -8,10 +8,7 @@ const Channel = async() => {
     const data: userDto[] = await getData('/users');
     console.log("channel");
     return (
-        <div className={`h-full`}>
-            <ChNav />
-            <Messeges data={data}  path="/chat"/>
-        </div>
+            <ChNav data={data}  path="/chat"/>
     );
 }
 

@@ -4,13 +4,27 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway()
 export class MyGateway {
+
+  
   @WebSocketServer()
   server: Server;
 
   handleConnection(socket: Socket): void {
-    console.log(this.server.sockets.adapter.sids)
-    console.log(typeof( this.server.sockets.adapter.sids))
+    // const gusers = [];
+
     const username = socket.handshake.auth.username;
+
+  
+    // for (let [id, socket] of this.server.of("/").sockets) {
+    //   gusers.push({
+    //     userID: id,
+    //     username: socket.handshake.auth.username,
+    //   });
+    // }
+    // console.log('-------------------------------')
+    // console.log(gusers)
+    // console.log('-------------------------------')
+
     console.log(`user ${username} connected`);
     if(!username) { return; }
 
@@ -21,6 +35,7 @@ export class MyGateway {
         content,
         from: from,
       });
+      console.log({ content, to, from })
     });
 
     this.server.on('connection', (socket) => {
@@ -32,16 +47,17 @@ export class MyGateway {
           });
         }
 
-        socket.emit("users", users);
-       
-        socket.broadcast.emit("user connected", users);
+        this.server.emit("users", users);
+       console.log(users);
+        // socket.broadcast.emit("user connected", users);
         console.log('connected')
 
       });
   }
   handleDisconnect(socket: Socket): void {
     const username = socket.handshake.auth.username;
-    console.log(`user ${username} disconnected`);
+    
+   
   }
 
 }
