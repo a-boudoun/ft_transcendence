@@ -22,27 +22,35 @@ import io from 'socket.io-client';
 const randomInt = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
+const usnm: number = randomInt(1, 1000);
 const socket = io('http://localhost:8000', {
-	query: {username: randomInt(1, 1000).toString()},
+	query: {username: usnm.toString()},
 });
 export default function Game(){
 	const divRef = useRef<HTMLDivElement | null>(null);
 	const [PVisible, setPVisible] = useState<boolean>(true);
 	const router = useRouter();
 	const [countDownValue, setCountDownValue] = useState<number>(3);
+	const [room, setRoom] = useState<string>('');
+	const [sender, setSender] = useState<number>(0);
 	
 	useEffect(() => {
 		socket.on('connect', () => {
 		  console.log('Connected to server');
 		});
-		socket.on('room', (room) => {
-			console.log('Joined room', room);
-		});
+
 		socket.on('disconnect', () => {
-		  console.log('Disconnected from server');
+			console.log('Disconnected from server');
 		});
-		socket.on('message', (message) => {
-		  console.log('Message from server:', message);
+	
+		socket.on('roomCreated', ({room: room, us: users}) => {
+			setRoom(room);
+			const n1: number = parseInt(users[0]);
+			const n2: number = parseInt(users[1]);
+			setSender(n1);
+			console.log('Room created', room, 'with users', n1, n2);
+			console.log('username', usnm);
+			console.log('bigger', sender);
 		});
 	  }, []);
 
@@ -171,7 +179,8 @@ export default function Game(){
 						y: ball.position.y,
 					}
 				);
-		});	}, 3000);
+			}	
+		);	}, 3000);
 
 		return () => {
 		  window.removeEventListener("resize", handleResize);

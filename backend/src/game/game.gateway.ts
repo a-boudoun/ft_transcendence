@@ -40,6 +40,17 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.gameService.removePlayerFromQueue(client);
   }
 
+  @SubscribeMessage('move')
+  handleMove(client: Socket, data: any) {
+    const room: Room = this.gameService.findRoom(data.roomID);
+    if (room) {
+      room.players.forEach((player) => {
+        if (player.socket.id !== client.id) {
+          player.socket.emit('move', data);
+        }
+      });
+    }
+  }
 }
 
 // ! run the engin in ht ebackend and export the locations to the frontend

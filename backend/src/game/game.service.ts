@@ -24,29 +24,35 @@ export class gameService{
     return this.rooms.get(roomId);
   }
 
-  matchPlayers(): string | null {
+  matchPlayers(): string | null 
+  {
     if (this.matchmakingQueue.length >= 2) {
-      const player1: Socket = this.matchmakingQueue.shift();
-      const player2: Socket = this.matchmakingQueue.shift();
+      const socket1: Socket = this.matchmakingQueue.shift();
+      const socket2: Socket = this.matchmakingQueue.shift();
+      const player1: Player = {socket: socket1, username: socket1.handshake.query.username};
+      const player2: Player = {socket: socket2, username: socket2.handshake.query.username};
+
+      const room : Room = {id: `${socket1.id}+${socket2.id}`, players: [player1, player2]};
       if (player1 && player2) {
-        const roomID = `${player1.id}+${player2.id}`;
-        this.rooms.set(roomID, [player1, player2]);
-        player1.join(roomID);
-        player2.join(roomID);
-        console.log(`Room created: ${roomID}`);
-        this.informPlayers('roomCreated', roomID);
-        return roomID;
+        this.rooms.set(room.id, room);
+        socket1.join(room.id);
+        socket2.join(room.id);
+        console.log(`Room created: ${room.id}`);
+        this.informPlayers('roomCreated', room);
+        return room.id;
       }
     }
     return null;
   }
 
-  informPlayers(event: string, roomID: string) {
-    this.rooms.forEach((players, roomID) => {
-      players.forEach((player) => {
-        player.emit(event, roomID);
+  // sending the room id and the users in the room to the players
+  informPlayers(event: string, room: Room) {
+    if (room) {
+      const users = room.players.map((player) => player.username);
+      room.players.forEach((player) => {
+        player.socket.emit(event, {room: room.id, us: users});
       });
-    });
+    }
   }
   //TODO: create rooms array and create room and delete room functions
 
