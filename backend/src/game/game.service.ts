@@ -20,7 +20,7 @@ export class gameService{
     }
   }
 
-  findRoom(roomId: string): Room | null {
+  findRoom(roomId: string): Room | undefined {
     return this.rooms.get(roomId);
   }
 
