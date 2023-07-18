@@ -32,7 +32,7 @@ export default function Game(){
 	const router = useRouter();
 	const [countDownValue, setCountDownValue] = useState<number>(3);
 	const [room, setRoom] = useState<string>('');
-	const [sender, setSender] = useState<number>(0);
+	let sender: boolean = false;
 	
 	useEffect(() => {
 		socket.on('connect', () => {
@@ -47,7 +47,7 @@ export default function Game(){
 			setRoom(room);
 			const n1: number = parseInt(users[0]);
 			const n2: number = parseInt(users[1]);
-			setSender(n1);
+			sender = true ? usnm >= n1 && usnm >= n2 : false;
 			console.log('Room created', room, 'with users', n1, n2);
 			console.log('username', usnm);
 			console.log('bigger', sender);
