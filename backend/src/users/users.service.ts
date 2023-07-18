@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Administration, Blockage, Channel, Friendship, 
-  GameHistory, Membership, Message, Sanction, 
+import { Blockage, Channel, Friendship, 
+  GameHistory, 
   User } from '../entities/user.entity'
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';

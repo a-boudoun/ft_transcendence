@@ -1,40 +1,39 @@
 "use client"
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
+import Messeges from "./Messeges";
+import userDto from "@/dto/userDto";
+import NewChannel from "./NewChannel";
 
-const ChNav = () => {
-    const us = usePathname();
-    const [buttonstyle1, setButtonstyle1] = useState("border-b-4 text-blue border-blue");
-    const [buttonstyle2, setButtonstyle2] = useState('');
+const ChNav = ({data, path}:{data:userDto[], path:string}) => {
+   
+    const [newchannel, setNewchannel] = useState(false);
+    const activeStyle = "border-b-4 text-blue border-blue";
     
-    const {section1, section2} = us.includes("/chat") ? {section1:"Chat", section2: "Friends"} : {section1:"Channel", section2:"New Channel"};
 
     const handleclick = (buttonNumber : number) => {
-      if(buttonNumber === 1){
-        setButtonstyle1("border-b-4 text-blue border-blue");
-        setButtonstyle2('');
-      
-      }
-      else {
-        setButtonstyle1('');
-        setButtonstyle2("border-b-4 text-blue border-blue");
-      }
-    
+      buttonNumber === 1 ?  setNewchannel(false) : setNewchannel(true);
     }
 
     return (
+      <div className={`h-full`}>
+
         <div className={` w-full bg-dark-gray+ h-10 flex justify-between  py-2 text-white gap-1`} >
-            <button className={`w-1/2 flex items-center justify-center text-lg  ${buttonstyle1}`} onClick={()=> handleclick(1)}>
-              {section1} 
+            <button className={`w-1/2 flex items-center justify-center text-lg  ${newchannel === false ? activeStyle: ''}`} onClick={()=> handleclick(1)}>
+              Channel 
             </button>
-            <button className={`w-1/2 flex items-center justify-center  text-lg ${buttonstyle2}`} onClick={()=> handleclick(2)}>
-              {section2}
+            <button className={`w-1/2 flex items-center justify-center  text-lg  ${newchannel === true ? activeStyle: ''}`} onClick={()=> handleclick(2)}>
+              New Channel
             </button>
         </div>
-
-
+        <div className={`${newchannel === true ? 'hidden': ''}`}>
+          <Messeges data={data}  path="/chat"/>
+        </div>
+        <div className={`${newchannel === false ? 'hidden': ''}`}>
+          <NewChannel />
+        </div>
+      </div>
     );
 }
 
-export default ChNav;
+export default ChNav; 
