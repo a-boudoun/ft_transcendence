@@ -9,21 +9,21 @@ import io from 'socket.io-client';
 //// : implement the game logic in the backend and send the data to the frontend
 //// : make the cnasvas responsive
 //// : try the keyup keydown event to make the movement smoother
-// function Players(){
-// 	return (
-// 		<div className="absolute top-0 left-0 w-full h-full flex flex-col">
-// 			<div className="flex flex-col items-center justify-center space-y-10">
-// 				<div className="text-white text-[50px]">Player 1</div>
-// 				<div className="text-white text-[50px]">Player 2</div>
-// 			</div>
-// 		</div>
-// 	);
-// }
+function Players(){
+	return (
+		<div className="absolute top-0 left-0 w-full h-full flex flex-col">
+			<div className="flex flex-col items-center justify-center space-y-10">
+				<div className="text-white text-[50px]">Player 1</div>
+				<div className="text-white text-[50px]">Player 2</div>
+			</div>
+		</div>
+	);
+}
 const randomInt = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
 const usnm: number = randomInt(1, 1000);
-const socket = io('http://10.13.3.13:8000', {
+const socket = io('http/localhost:8000', {
 	query: {username: usnm.toString()},
 });
 export default function Game(){
@@ -112,6 +112,7 @@ export default function Game(){
 		
 		const H = divRef.current.offsetHeight;
 		const W = divRef.current.offsetWidth;
+		console.log('H', H, 'W', W);
 		
 		let engine = Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
