@@ -83,4 +83,3 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 }
 
 // ! run the engin in ht ebackend and export the locations to the frontend
- 
