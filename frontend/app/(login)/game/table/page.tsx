@@ -23,7 +23,7 @@ const randomInt = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
 const usnm: number = randomInt(1, 1000);
-const socket = io('http://localhost:8000', {
+const socket = io('http://10.13.3.13:8000', {
 	query: {username: usnm.toString()},
 });
 export default function Game(){
@@ -169,8 +169,8 @@ export default function Game(){
 					socket.emit('ball', 
 					{
 						room: roomid,
-						x: ball.position.x,
-						y: ball.position.y,
+						x: ball.position.x / divRef.current.offsetWidth,
+						y: ball.position.y / divRef.current.offsetHeight,
 					});
 					socket.emit('rightPaddle', 
 					{
@@ -228,8 +228,8 @@ export default function Game(){
 			Body.setPosition(
 				ball,
 				{
-					x: x,
-					y: y,
+					x: x * divRef.current.offsetWidth,
+					y: y * divRef.current.offsetHeight,
 				}
 			);
 		});

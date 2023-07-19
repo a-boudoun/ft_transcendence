@@ -1,6 +1,7 @@
 import { SubscribeMessage, WebSocketGateway, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { gameService } from './game.service';
+import { engineService } from './engine.service';
 import { Player } from './interfaces/player.interface';
 import { Room } from './interfaces/room.interface';
 import { subscribe } from 'diagnostics_channel';
@@ -14,7 +15,10 @@ import { subscribe } from 'diagnostics_channel';
 })
 //TODO: check if the player is authenticated
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private gameService: gameService) {}
+  constructor(
+    private gameService: gameService,
+    private engineService: engineService,
+  ) {}
 @WebSocketServer()
   server: Server;
 
