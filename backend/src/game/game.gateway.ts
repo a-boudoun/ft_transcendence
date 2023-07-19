@@ -3,6 +3,7 @@ import { Server, Socket } from 'socket.io';
 import { gameService } from './game.service';
 import { Player } from './interfaces/player.interface';
 import { Room } from './interfaces/room.interface';
+import { subscribe } from 'diagnostics_channel';
 @WebSocketGateway({
 	//Cross-Origin-Resource-Sharing (CORS) is a mechanism that uses additional HTTP headers to tell browsers 
 	//to give a web application running at one origin,
@@ -40,13 +41,37 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.gameService.removePlayerFromQueue(client);
   }
 
-  @SubscribeMessage('move')
+  @SubscribeMessage('ball')
   handleMove(client: Socket, data: any) {
-    const room: Room = this.gameService.findRoom(data.roomID);
+    const room: Room = this.gameService.findRoom(data.room);
     if (room) {
       room.players.forEach((player) => {
         if (player.socket.id !== client.id) {
-          player.socket.emit('move', data);
+          player.socket.emit('ball', {x: data.x, y: data.y});
+        }
+      });
+    }
+  }
+
+  @SubscribeMessage('rightPaddle')
+  handlerPaddle(client: Socket, data: any) {
+    const room: Room = this.gameService.findRoom(data.room);
+    if (room) {
+      room.players.forEach((player) => {
+        if (player.socket.id !== client.id) {
+          player.socket.emit('rightPaddle', {y: data.y});
+        }
+      });
+    }
+  }
+
+  @SubscribeMessage('leftPaddle')
+  handlelPaddle(client: Socket, data: any) {
+    const room: Room = this.gameService.findRoom(data.room);
+    if (room) {
+      room.players.forEach((player) => {
+        if (player.socket.id !== client.id) {
+          player.socket.emit('leftPaddle', {y: data.y});
         }
       });
     }

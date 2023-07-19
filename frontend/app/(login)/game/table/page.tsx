@@ -31,8 +31,9 @@ export default function Game(){
 	const [PVisible, setPVisible] = useState<boolean>(true);
 	const router = useRouter();
 	const [countDownValue, setCountDownValue] = useState<number>(3);
-	const [room, setRoom] = useState<string>('');
+	let roomid: string = '';
 	let sender: boolean = false;
+	// let rightBoardY: number = 0;
 	
 	useEffect(() => {
 		socket.on('connect', () => {
@@ -44,7 +45,7 @@ export default function Game(){
 		});
 	
 		socket.on('roomCreated', ({room: room, us: users}) => {
-			setRoom(room);
+			roomid = room;
 			const n1: number = parseInt(users[0]);
 			const n2: number = parseInt(users[1]);
 			sender = true ? usnm >= n1 && usnm >= n2 : false;
@@ -164,27 +165,78 @@ export default function Game(){
 		setTimeout(() => {
 			Body.setVelocity(ball, { x: 10, y: 5 });
 			Events.on(render, 'afterRender', () => {
-				if (!divRef.current || ball.position.y < 0 || ball.position.y > divRef.current.clientHeight) return;
-				Body.setPosition(
-					leftBoard,
+				if (sender) {
+					socket.emit('ball', 
 					{
-						x: 35,
+						room: roomid,
+						x: ball.position.x,
+						y: ball.position.y,
+					});
+					socket.emit('rightPaddle', 
+					{
 						y: mouse.position.y,
-					}
-				);
-				Body.setPosition(
+						room: roomid,
+					});
+				}
+				else {
+					socket.emit('leftPaddle', 
+					{
+						y: mouse.position.y,
+						room: roomid,
+					});
+				}
+			});
+			Events.on(render, 'afterRender', () => {
+				if (!divRef.current || ball.position.y < 0 || ball.position.y > divRef.current.clientHeight) return;
+				if (sender)
+				{
+					Body.setPosition(
 					rightBoard,
 					{
 						x: divRef.current.offsetWidth - 35,
-						y: ball.position.y,
-					}
-				);
-			}	
-		);	}, 3000);
+						y: mouse.position.y,
+					});
+					socket.on('leftPaddle', ({y}) => {
+						Body.setPosition(
+							leftBoard,
+							{
+								x: 35,
+								y: y,
+							});
+					});
+				}
+				else{
+					Body.setPosition(
+						leftBoard,
+						{
+							x: 35,
+							y: mouse.position.y,
+						});
+					socket.on('rightPaddle', ({y}) => {
+						Body.setPosition(
+							rightBoard,
+							{
+								x: divRef.current.offsetWidth - 35,
+								y: y,
+							});
+					});
+				}
+
+			}
+		);
+		socket.on('ball', ({x, y}) => {
+			Body.setPosition(
+				ball,
+				{
+					x: x,
+					y: y,
+				}
+			);
+		});
+		}, 3000);
 
 		return () => {
 		  window.removeEventListener("resize", handleResize);
-		//   document.removeEventListener('keydown', handleKeyDown);
 		};
 		}, []);
 
