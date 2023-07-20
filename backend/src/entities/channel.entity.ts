@@ -30,6 +30,10 @@ export class Channel {
     @Column('text')
     type: ChannelType;
     
+    @Column()
+    image : string;
+
+    
     @ManyToOne(() => User, user => user.ownedChannels)
     owner: User;
     
