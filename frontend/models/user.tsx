@@ -13,22 +13,32 @@ export const signInSchema = z.object({
         const isUser = await get(`/users/isUserExist/${name}`);
         return !isUser;
     }
-    , "Name already exists."),
+    , "Name already exists.")
+    .optional(),
     image: z
     .any()
     .refine((file) => {
-        if (typeof file === "string")
+        if (file?.size === undefined)
+        {
             return true;
+        }
         else
-            return file.size <= MAX_FILE_SIZE
+            return file?.size <= MAX_FILE_SIZE
     }, `Max image size is 2.5MB.`)
+    .optional()
 });
 
 export const userSchema = signInSchema.extend({
+    baner: z
+    .any()
+    .optional(),
     fact2Auth: z
-    .boolean(),
+    .boolean()
+    .optional(),
     level: z
-    .number(),
+    .number()
+    .optional(),
     XP: z
-    .number(),
+    .number()
+    .optional(),
 });

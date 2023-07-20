@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Inter } from 'next/font/google'
+import QueryProvider from "@/Providers/QueryProvider";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -9,6 +10,8 @@ export const metadata = {
   icon: '/favicon.ico',
 }
 
+
+
 export default function RootLayout({
   children,
 }: {
@@ -16,8 +19,10 @@ export default function RootLayout({
 }) {
   return (
     <html className="" lang="en">
-      <body className="{inter.className} h-screen w-screen bg-red text-center  text-white">
-        {children}
+      <body className={`${inter.className} h-screen w-screen bg-red text-center  text-white`}>
+        <QueryProvider>
+          {children}
+        </QueryProvider>
       </body>
     </html>
   )

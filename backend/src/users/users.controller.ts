@@ -41,7 +41,7 @@ export class UsersController {
   @Patch('updateMe')
   @UseGuards(JwtAuthGuard)
   updateMe(@Req() req, @Res() res, @Body() updateUserDto: UpdateUserDto) {
-    console.log(updateUserDto);
+    console.log(req.user);
     this.usersService.update(req.user.username, updateUserDto);
     res.status(200).send({message: 'User updated'});
   }
@@ -66,6 +66,7 @@ export class UsersController {
   @Get('isUserExist/:name')
   @UseGuards(JwtAuthGuard)
   async isUser(@Req() req, @Param('name') name: string) {
+    console.log(req.user);
     return this.usersService.isUserExist(req.user.username, name);
   }
 

@@ -5,6 +5,7 @@ export class UserDTO {
     username: string;
     name: string;
     image: string;
+    baner: string;
     status: Status;
     fact2Auth: boolean;
     level: number;
