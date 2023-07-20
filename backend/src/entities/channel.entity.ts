@@ -27,12 +27,11 @@ export class Channel {
     @Index({ unique: true })
     name: string;
     
-    @Column('text')
-    type: ChannelType;
-    
     @Column()
     image : string;
 
+    @Column('text')
+    type: ChannelType;
     
     @ManyToOne(() => User, user => user.ownedChannels)
     owner: User;

@@ -1,10 +1,15 @@
-import UserDTO from "./userDto";
+import { channelSchema } from "@/models/channel";
+import { z } from  'zod' 
 
 
-export default interface channelDto {
-    name: string;
-    image: string;
-    type: string;
-    owner: UserDTO;
-    password: string;
-}
+type channelDto = z.infer<typeof channelSchema>
+
+// interface channelDto {
+//     name?: string;
+//     image?: string;
+//     type?: string;
+//     owner?: string;
+//     password?: string;
+// }
+
+export default channelDto ;
