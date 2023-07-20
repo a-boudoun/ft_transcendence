@@ -66,9 +66,9 @@
     {
       "id": "pointer:pointer",
       "typeName": "pointer",
-      "x": 681.869077429611,
-      "y": -442.98512811477826,
-      "lastActivityTimestamp": 1689798516378,
+      "x": 2272.4923182954362,
+      "y": 3232.185938149768,
+      "lastActivityTimestamp": 1689876987008,
       "meta": {}
     },
     {
@@ -79,9 +79,9 @@
       "typeName": "page"
     },
     {
-      "x": 167.79081000881914,
-      "y": 554.850660637723,
-      "z": 0.5759565618371758,
+      "x": 1227.4075312506368,
+      "y": 20.74340213950461,
+      "z": 0.2669853182002313,
       "meta": {},
       "id": "camera:page:Zy1Z_-zTE8zicz7nAD_8x",
       "typeName": "camera"
@@ -122,8 +122,8 @@
       "screenBounds": {
         "x": 0,
         "y": 0,
-        "w": 869,
-        "h": 976
+        "w": 1137,
+        "h": 1038
       },
       "zoomBrush": null,
       "isGridMode": false,
@@ -1512,13 +1512,12 @@
       "isLocked": false,
       "opacity": 1,
       "meta": {},
-      "id": "shape:jQQUVPCr_AAT9BhHnEjeJ",
       "type": "text",
       "props": {
         "color": "red",
         "size": "l",
         "w": 989.78125,
-        "text": "run the engin in the backend with canvas of H and W\nthe emit the ball position and padle position \nnormalized based on the players dimentions\nH:700   W:100\nlooks better",
+        "text": "run the engin in the backend with canvas of H and W\nthe emit the ball position and padle position \nnormalized based on the players dimentions\nH:700   W:1000\nlooks better",
         "font": "draw",
         "align": "middle",
         "autoSize": true,
@@ -1526,6 +1525,7 @@
       },
       "parentId": "page:Zy1Z_-zTE8zicz7nAD_8x",
       "index": "au",
+      "id": "shape:jQQUVPCr_AAT9BhHnEjeJ",
       "typeName": "shape"
     }
   ]
