@@ -14,7 +14,7 @@ const Messages = ({data, path}:{data:userDto[], path:string}) => {
     path = path.slice(0, 5) === "/chat" ? "/chat" : "/channel";
     const hm  =(`h-[calc(100%-100px]`)
     return (
-        <div className="h-full overflow-y-scroll py-2">
+        <div className="h-full overflow-y-scroll py-2 ">
             {
             data.map((msg: userDto) =>(
                 <Link href={`${path}/${msg.username}`}>
