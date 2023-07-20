@@ -23,7 +23,7 @@ const randomInt = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
 const usnm: number = randomInt(1, 1000);
-const socket = io('http/localhost:8000', {
+const socket = io('http://localhost:8000', {
 	query: {username: usnm.toString()},
 });
 export default function Game(){

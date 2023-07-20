@@ -5,13 +5,20 @@ import Matter = require("matter-js");
 @Injectable()
 export class engineService {
 	private engine: Matter.Engine;
-	private world: Matter.World;
-	private ball: Matter.Body;
+	private runner: Matter.Runner;
+	private Cheight: number = 700;
+	private Cwidth: number = 1000;
 
 	constructor() {
-		this.engine = Matter.Engine.create();
-		this.world = this.engine.world;
-		this.ball = Matter.Bodies.circle(400, 200, 20);
-		Matter.World.add(this.world, this.ball);
+		this.engine = Matter.Engine.create({
+			enableSleeping: false, // Sleep the object when it is not moving
+			constraintIterations: 4, // he higher quality the simulation will be at the expense of performance.
+			gravity:{
+				x:0,
+				y:0,
+				scale:0.001,
+			},
+		});
 	}
+
 }
