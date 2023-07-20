@@ -3,6 +3,7 @@ import { UserDTO } from "src/users/dto/create-user.dto";
 
 export class ChannelDTO {
     name: string;
+    image: string;
     type: ChannelType;
     owner: UserDTO;
     password: string;

@@ -1,9 +1,14 @@
+'use client'
+
 import Image from 'next/image';
 import { useState } from 'react';
-
+import  channelDto  from '@/dto/channelDto'
+import postChannel from '@/apis/client/postChannel';
 
 const NewChannel = () => {
     const [isclicked, setIsclicked] = useState(false);
+    const [name , setName] = useState('')
+    const [password , setPassword] = useState('')
     const [type, setType] = useState('Public');
     const [image, setImage] = useState<any>(null);
     const [imagePreview, setImagePreview] = useState<string>('/img/profile.svg');
@@ -24,13 +29,19 @@ const NewChannel = () => {
           setImage(e.target.files[0]);
           setImagePreview(URL.createObjectURL(e.target.files[0]));
         }
+        else if (e.target.id === 'name')
+          setName(e.target.value)
+        else
+            setPassword(e.target.value)
       };
-
 
 
 
       const handleSubmit = async(e: any) => {
         e.preventDefault();
+
+        let channel : channelDto = {}
+
         const formdata = new FormData();
 
         if (image)
@@ -43,19 +54,26 @@ const NewChannel = () => {
               body: formdata,
           });
           const data = await res.json();
+          console.log(data.secure_url);
+          channel.image = data.secure_url;
         }
         
+        channel.name = name;
+        channel.password = password;
+        channel.type = type;
+
+        await postChannel('/channels/createChannel', channel);
     
     }
     return (
 
-        <form className=' w-full bg-dark-gray p-4 rounded-xl ' onChange={handleChange}>
+        <form className=' w-full bg-dark-gray p-4 rounded-xl ' onChange={handleChange} onSubmit={handleSubmit}>
             <div className='w-fit mx-auto my-3 hover:opacity-60'>
                 <label htmlFor="id" className='bg-red'>
                 <Image className='rounded-full cursor-pointer w-[150px] h-[150px]' src={imagePreview} width={150} height={150} alt="avatar" />
               </label>  <input type="file" className="hidden" id='id' />
             </div>
-            <input required className='w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none' placeholder='Name of channel' />
+            <input required id={'name'} className='w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none' placeholder='Name of channel' />
             <button type='button'  className="hover:opacity-60 text-white w-full  rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center justify-center bg-blue" onClick={handleclick}>
                 {type}
                 <svg
