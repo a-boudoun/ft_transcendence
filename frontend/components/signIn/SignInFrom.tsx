@@ -23,19 +23,19 @@ const SignInFrom = ({user} : {user: signInDto}) => {
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
   
   const handleChange = async (e: any) => {
-
     if (e.target.files){
       setImage(e.target.files[0]);
       setImagePreview(URL.createObjectURL(e.target.files[0]));
     }
-    else (e.target.value && e.target.value.length > 0)
+    else if (e.target.id === 'name' && e.target.value.length > 0)
       setName(e.target.value);
   };
 
   const handleSubmit = async(e: any) => {
     e.preventDefault();
     
-    console.log(name);
+
+    console.log('name: ' + name);
 
     const validationResult = await signInSchema.safeParseAsync({name: name, image: image});
 
@@ -65,7 +65,7 @@ const SignInFrom = ({user} : {user: signInDto}) => {
             <input type="file" className="hidden" accept="image/jpeg, image/jpg, image/png, image/webp" />
         </div>
       </label>
-      <input className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-black focus:border-[2px] hover:opacity-60" type="text" placeholder={user.name}/>
+      <input id={'name'} className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-black focus:border-[2px] hover:opacity-60" type="text" placeholder={user.name}/>
       <button className="mt-12 h-16 rounded-2xl text-black text-center bg-blue px-14 hover:opacity-60" type='submit' >let's play</button>
     </form>
     {errors.length > 0 && <p className='text-red text-center max-w-[200px]'>{errors[0].message}</p>}
