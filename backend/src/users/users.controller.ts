@@ -66,7 +66,6 @@ export class UsersController {
   @Get('isUserExist/:name')
   @UseGuards(JwtAuthGuard)
   async isUser(@Req() req, @Param('name') name: string) {
-    console.log(req.user);
     return this.usersService.isUserExist(req.user.username, name);
   }
 

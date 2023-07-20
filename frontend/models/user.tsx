@@ -2,6 +2,7 @@ import { z } from 'zod';
 import get from "@/apis/client/get";
 
 const MAX_FILE_SIZE = 2500000;
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 export const signInSchema = z.object({
     name: z
@@ -13,18 +14,19 @@ export const signInSchema = z.object({
         const isUser = await get(`/users/isUserExist/${name}`);
         return !isUser;
     }
-    , "Name already exists.")
-    .optional(),
+    , "Name already exists."),
     image: z
     .any()
     .refine((file) => {
         if (file?.size === undefined)
-        {
             return true;
+        else {
+            return ACCEPTED_IMAGE_TYPES.includes(file?.type);
         }
-        else
-            return file?.size <= MAX_FILE_SIZE
-    }, `Max image size is 2.5MB.`)
+    }, `Only .jpg, .jpeg, .png and .webp formats are supported.`)
+    .refine((file) => {
+        return (file.size <= MAX_FILE_SIZE );
+    }, `File size must be less than 2.5MB.`) 
     .optional()
 });
 
