@@ -3,7 +3,7 @@
 import React from 'react'
 import { useState } from 'react';
 import Image from 'next/image';
-import patchUser from '@/apis/client/patchUser';
+import patch from '@/apis/client/patch';
 import { useRouter } from 'next/navigation';
 import { config } from 'dotenv';
 import uploadImage from '@/apis/uploadImage';
@@ -28,13 +28,14 @@ const SignInFrom = ({user} : {user: signInDto}) => {
       setImage(e.target.files[0]);
       setImagePreview(URL.createObjectURL(e.target.files[0]));
     }
-    else
+    else (e.target.value && e.target.value.length > 0)
       setName(e.target.value);
   };
 
   const handleSubmit = async(e: any) => {
     e.preventDefault();
-  
+    
+    console.log(name);
 
     const validationResult = await signInSchema.safeParseAsync({name: name, image: image});
 
@@ -46,7 +47,7 @@ const SignInFrom = ({user} : {user: signInDto}) => {
         user.image = uploadimage;
       }
       
-      await patchUser('/users/updateMe', user);
+      await patch('/users/updateMe', user);
       Router.push('/home');
     }
     else

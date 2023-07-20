@@ -28,11 +28,17 @@ export class User {
 
     @Column({unique: true})
     name: string;
+
     
     @Column({
         nullable: true,
     })
     image: string;
+
+    @Column({
+        nullable: true,
+    })
+    baner: string;
     
     @Column('text' , { nullable: true })
     status: Status;
@@ -126,4 +132,3 @@ export class Friendship {
     isAccepted: boolean;
 }
 export { Channel };
-

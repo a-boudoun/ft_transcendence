@@ -25,6 +25,7 @@ export class AuthStratedy extends PassportStrategy(Strategy, 'passport-42') {
       username: profile.username,
       name: profile.username,
       image: image,
+      baner: '/img/baner.webp',
       status: Status.ONLINE,
       XP: 0,
       level: 0,

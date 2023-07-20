@@ -7,8 +7,7 @@ import userDto from "@/dto/userDto";
 const Friend = async() => {
    
     const data: userDto[] = await getData('/users');
-    console.log(data)
-    
+
     return (
 
         <div className={` h-full`}>
