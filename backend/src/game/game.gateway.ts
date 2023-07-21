@@ -21,7 +21,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {}
 @WebSocketServer()
   server: Server;
-
+  
+  recentRomm: string | null;
   handleConnection(client: Socket, data: any) {
     if (!client.handshake.query.username ||  client.handshake.headers.connection === 'close') {
       client.disconnect(true);
@@ -32,12 +33,20 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       'client connected', client.handshake.query.username,
     );
     this.gameService.addPlayerToQueue(client);
-    // this.gameService.printQueue();
-    this.gameService.matchPlayers();
+    this.recentRomm = this.gameService.matchPlayers();
+    if (this.recentRomm){
+      this.engineService.runEngine();
+        const room: Room = this.gameService.findRoom(this.recentRomm);
+        if (room) {
+        this.engineService.sendBallPosition(room);
+        this.engineService.printBallPosition();
+      }
+    }
     //   'with headers', client.handshake.headers,
     //   );
     // console.log('headers', client.handshake.headers)
     // this.gameService.printRooms();
+    // this.engineService.printBallPosition();
   }
 
   handleDisconnect(client: Socket) {
