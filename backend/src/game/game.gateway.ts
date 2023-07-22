@@ -5,6 +5,9 @@ import { engineService } from './engine.service';
 import { Player } from './interfaces/player.interface';
 import { Room } from './interfaces/room.interface';
 import { subscribe } from 'diagnostics_channel';
+import { interval } from 'rxjs';
+import { Interval } from '@nestjs/schedule';
+
 @WebSocketGateway({
 	//Cross-Origin-Resource-Sharing (CORS) is a mechanism that uses additional HTTP headers to tell browsers 
 	//to give a web application running at one origin,
@@ -36,17 +39,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.recentRomm = this.gameService.matchPlayers();
     if (this.recentRomm){
       this.engineService.runEngine();
-        const room: Room = this.gameService.findRoom(this.recentRomm);
-        if (room) {
-        this.engineService.sendBallPosition(room);
+      const room: Room = this.gameService.findRoom(this.recentRomm);
+      if (room) {
+        console.log('sending position');
         this.engineService.printBallPosition();
+        this.engineService.sendPosition(room);
       }
     }
-    //   'with headers', client.handshake.headers,
-    //   );
-    // console.log('headers', client.handshake.headers)
-    // this.gameService.printRooms();
-    // this.engineService.printBallPosition();
   }
 
   handleDisconnect(client: Socket) {
@@ -54,41 +53,23 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.gameService.removePlayerFromQueue(client);
   }
 
-  @SubscribeMessage('ball')
-  handleMove(client: Socket, data: any) {
-    const room: Room = this.gameService.findRoom(data.room);
-    if (room) {
-      room.players.forEach((player) => {
-        if (player.socket.id !== client.id) {
-          player.socket.emit('ball', {x: data.x, y: data.y});
-        }
-      });
-    }
-  }
+  // @Interval(1000 / 60)
+  // sendPosition() {
+  //   console.log('sendPosition');
+  //   const room: Room = this.gameService.findRoom(this.recentRomm);
+  //   if (room) {
+  //     console.log('sending position');
+  //     this.engineService.sendPosition(room);
+  //   }
+  // }
 
   @SubscribeMessage('rightPaddle')
   handlerPaddle(client: Socket, data: any) {
-    const room: Room = this.gameService.findRoom(data.room);
-    if (room) {
-      room.players.forEach((player) => {
-        if (player.socket.id !== client.id) {
-          player.socket.emit('rightPaddle', {y: data.y});
-        }
-      });
+    this.engineService.setRightBoardPosition(data.y);
     }
-  }
 
   @SubscribeMessage('leftPaddle')
   handlelPaddle(client: Socket, data: any) {
-    const room: Room = this.gameService.findRoom(data.room);
-    if (room) {
-      room.players.forEach((player) => {
-        if (player.socket.id !== client.id) {
-          player.socket.emit('leftPaddle', {y: data.y});
-        }
-      });
-    }
+    this.engineService.setLeftBoardPosition(data.y);
   }
 }
-
-// ! run the engin in ht ebackend and export the locations to the frontend
