@@ -25,7 +25,10 @@ export const signInSchema = z.object({
         }
     }, `Only .jpg, .jpeg, .png and .webp formats are supported.`)
     .refine((file) => {
-        return (file.size <= MAX_FILE_SIZE );
+        if (file?.size === undefined)
+            return true;
+        else
+            return (file?.size <= MAX_FILE_SIZE );
     }, `File size must be less than 2.5MB.`) 
     .optional()
 });
