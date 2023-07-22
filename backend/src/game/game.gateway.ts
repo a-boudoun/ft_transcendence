@@ -42,7 +42,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const room: Room = this.gameService.findRoom(this.recentRomm);
       if (room) {
         console.log('sending position');
-        this.engineService.printBallPosition();
+        // this.engineService.printBallPosition();
         this.engineService.sendPosition(room);
       }
     }
@@ -52,16 +52,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(`Client disconnected: ${client.handshake.query.username}`);
     this.gameService.removePlayerFromQueue(client);
   }
-
-  // @Interval(1000 / 60)
-  // sendPosition() {
-  //   console.log('sendPosition');
-  //   const room: Room = this.gameService.findRoom(this.recentRomm);
-  //   if (room) {
-  //     console.log('sending position');
-  //     this.engineService.sendPosition(room);
-  //   }
-  // }
 
   @SubscribeMessage('rightPaddle')
   handlerPaddle(client: Socket, data: any) {
