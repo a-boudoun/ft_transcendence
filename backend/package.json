@@ -26,6 +26,7 @@
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/platform-socket.io": "^10.0.5",
+    "@nestjs/schedule": "^3.0.1",
     "@nestjs/websockets": "^10.0.5",
     "@types/matter-js": "^0.18.5",
     "cookie-parser": "^1.4.6",

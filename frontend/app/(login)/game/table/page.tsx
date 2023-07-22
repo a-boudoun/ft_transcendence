@@ -145,34 +145,14 @@ export default function Game(){
 		const rightWall = drawRect(W - 10, H / 2, 15, 5000, '#7AC7C4');
 		
 		const ball = drawCircle(W / 2, H / 5, 20, '#384259');
-		// Set the ball moving speed
 		Composite.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
 		window.addEventListener("resize", handleResize);
-		// document.addEventListener('keydown', handleKeyDown);
-		
-		Engine.run(engine);
+		// document.addEventListener('keydown', handleKeyDown);\
 		Render.run(render);
-		// adding requestAnimationFrame to make the movement smoother
-		// const delta = 1000 / 60;
-		// const subSteps = 3;
-		// const subDelta = delta / subSteps;
-		
-		// (function run() {
-			//     window.requestAnimationFrame(run);
-			//     for (let i = 0; i < subSteps; i += 1) {
-				//       Engine.update(engine, subDelta);
-				//     }
-				// })();
+
 		setTimeout(() => {
-			Body.setVelocity(ball, { x: 10, y: 5 });
 			Events.on(render, 'afterRender', () => {
 				if (sender) {
-					socket.emit('ball', 
-					{
-						room: roomid,
-						x: ball.position.x / divRef.current.offsetWidth,
-						y: ball.position.y / divRef.current.offsetHeight,
-					});
 					socket.emit('rightPaddle', 
 					{
 						y: mouse.position.y,
@@ -188,52 +168,31 @@ export default function Game(){
 				}
 			});
 			Events.on(render, 'afterRender', () => {
-				if (!divRef.current || ball.position.y < 0 || ball.position.y > divRef.current.clientHeight) return;
-				if (sender)
-				{
+			if (!divRef.current || ball.position.y < 0 || ball.position.y > divRef.current.clientHeight) return;
+				socket.on('positions', (data) => {
 					Body.setPosition(
-					rightBoard,
-					{
-						x: divRef.current.offsetWidth - 35,
-						y: mouse.position.y,
-					});
-					socket.on('leftPaddle', ({y}) => {
+						rightBoard,
+						{
+							x: data.rightBoardX,
+							y: data.rightBoardY,
+						});
 						Body.setPosition(
 							leftBoard,
 							{
-								x: 35,
-								y: y,
+								x: data.leftBoardX,
+								y: data.leftBoardY,
 							});
 					});
-				}
-				else{
-					Body.setPosition(
-						leftBoard,
-						{
-							x: 35,
-							y: mouse.position.y,
-						});
-					socket.on('rightPaddle', ({y}) => {
-						Body.setPosition(
-							rightBoard,
-							{
-								x: divRef.current.offsetWidth - 35,
-								y: y,
-							});
-					});
-				}
-
-			}
-		);
-		socket.on('ball', ({x, y}) => {
-			Body.setPosition(
-				ball,
-				{
-					x: x * divRef.current.offsetWidth,
-					y: y * divRef.current.offsetHeight,
-				}
-			);
-		});
+				});
+			socket.on('ball', ({x, y}) => {
+				Body.setPosition(
+					ball,
+					{
+						x: x,
+						y: y,
+					}
+				);
+			});
 		}, 3000);
 
 		return () => {
