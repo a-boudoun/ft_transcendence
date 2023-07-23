@@ -5,8 +5,9 @@ import Friends from "@/components/common/Friends";
 import userDto from "@/dto/userDto";
 
 const Channel = async() => {
-    const data: userDto[] = await getData('/users');
-    console.log("channel");
+    console.log("-------------------");
+    const data = await getData('/channels');
+    console.log(data);
     return (
             <ChNav data={data}  path="/chat"/>
     );
