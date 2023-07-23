@@ -17,7 +17,7 @@ export class ChannelsService {
   }
 
   findAll() {
-    return `This action returns all channels`;
+    return this.channelRepo.find();
   }
 
   findOne(id: number) {

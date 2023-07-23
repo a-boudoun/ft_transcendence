@@ -39,6 +39,9 @@ const NewChannel = () => {
 
       const handleSubmit = async(e: any) => {
         e.preventDefault();
+        setImagePreview('/img/profile.svg');
+        setName('');
+        setPassword('');
 
         let channel : channelDto = {}
 
@@ -57,6 +60,8 @@ const NewChannel = () => {
           console.log(data.secure_url);
           channel.image = data.secure_url;
         }
+        else
+            channel.image = '/img/profile.svg';
         
         channel.name = name;
         channel.password = password;
@@ -73,7 +78,7 @@ const NewChannel = () => {
                 <Image className='rounded-full cursor-pointer w-[150px] h-[150px]' src={imagePreview} width={150} height={150} alt="avatar" />
               </label>  <input type="file" className="hidden" id='id' />
             </div>
-            <input required id={'name'} className='w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none' placeholder='Name of channel' />
+            <input required id={'name'} className='w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none' placeholder='Name of channel' value={name} />
             <button type='button'  className="hover:opacity-60 text-white w-full  rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center justify-center bg-blue" onClick={handleclick}>
                 {type}
                 <svg
@@ -103,7 +108,7 @@ const NewChannel = () => {
 
                 </div>
             </div>
-            <input  required={type === 'Protected'} type='password' className={`${type !== 'Protected' ? 'hidden' : ''} w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none`} placeholder='Password' />
+            <input  required={type === 'Protected'} type='password' value={password} className={`${type !== 'Protected' ? 'hidden' : ''} w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none`} placeholder='Password' />
             <button className='bg-red w-full mt-5 rounded-lg py-2 hover:opacity-60'>Create</button>
         </form>
 

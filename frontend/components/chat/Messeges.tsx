@@ -17,7 +17,7 @@ const Messages = ({data, path}:{data:userDto[], path:string}) => {
         <div className="h-full overflow-y-scroll py-2 ">
             {
             data.map((msg: userDto) =>(
-                <Link href={`${path}/${msg.username}`}>
+                <Link href={`${path}/${msg.name}`}>
                     <Message key={msg.username} msg={msg} />
                 </Link>
             ))}
@@ -40,7 +40,7 @@ export const Message = ({msg}:{msg:userDto}) => {
                 height={42}
                 alt=""
                 />
-                <h3>{msg.username}</h3>
+                <h3>{msg.name}</h3>
                 
             </div>
             <div className="flex items-center space-x-2  justify-between">
