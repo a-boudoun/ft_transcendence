@@ -13,11 +13,19 @@ export class gameService{
     this.matchmakingQueue.push(playerSocket);
   }
 
-  removePlayerFromQueue(playerSocket: Socket) {
-    const index = this.matchmakingQueue.indexOf(playerSocket);
+  removePlayer(playerSocket: Socket) {
+    const index: number = this.matchmakingQueue.indexOf(playerSocket);
     if (index > -1) {
       this.matchmakingQueue.splice(index, 1);
     }
+    else{}
+  }
+
+  findRoomByPlayer(playerSocket: Socket): Room | undefined {
+    const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {
+      return room.players.find((player: Player) => player.socket === playerSocket);
+    });
+    return room;
   }
 
   findRoom(roomId: string): Room | undefined {

@@ -5,8 +5,7 @@ import { engineService } from './engine.service';
 import { Player } from './interfaces/player.interface';
 import { Room } from './interfaces/room.interface';
 import { subscribe } from 'diagnostics_channel';
-import { interval } from 'rxjs';
-import { Interval } from '@nestjs/schedule';
+import { Interval, Timeout } from '@nestjs/schedule';
 
 @WebSocketGateway({
 	//Cross-Origin-Resource-Sharing (CORS) is a mechanism that uses additional HTTP headers to tell browsers 
@@ -47,19 +46,29 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
     }
   }
-
+  
   handleDisconnect(client: Socket) {
     console.log(`Client disconnected: ${client.handshake.query.username}`);
-    this.gameService.removePlayerFromQueue(client);
+    this.gameService.removePlayer(client);
   }
 
   @SubscribeMessage('rightPaddle')
   handlerPaddle(client: Socket, data: any) {
     this.engineService.setRightBoardPosition(data.y);
-    }
-
+  }
+  
   @SubscribeMessage('leftPaddle')
   handlelPaddle(client: Socket, data: any) {
     this.engineService.setLeftBoardPosition(data.y);
   }
+
+  // @Interval(1000 / 60)
+  // handleInterval() {
+  //   console.log('interval');
+  // }
+
+  // @Timeout(15)
+  // handleTimeout() {
+  //   console.log('timeout');
+  // }
 }
