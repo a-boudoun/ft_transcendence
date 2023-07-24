@@ -9,7 +9,6 @@ export class ChannelsController {
 
   @Post('/createChannel')
   create(@Body() ChannelDTO: ChannelDTO) {
-    console.log(ChannelDTO);
     return this.channelsService.create(ChannelDTO);
   }
 
@@ -17,6 +16,12 @@ export class ChannelsController {
   findAll() {
     return this.channelsService.findAll();
   }
+
+  @Get('me')
+  me() {
+    return this.channelsService.findOne(2);
+  }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -33,3 +38,7 @@ export class ChannelsController {
     return this.channelsService.remove(+id);
   }
 }
+function Req(): (target: ChannelsController, propertyKey: "me", parameterIndex: 0) => void {
+  throw new Error('Function not implemented.');
+}
+

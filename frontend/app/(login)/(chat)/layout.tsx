@@ -4,7 +4,7 @@ import Mininav from "@/components/chat/Mininav";
 import Right from "@/components/chat/Right";
 import Chat from "./chat/page";
 import { use } from "react";
-import Messeges from "@/components/chat/Messeges";
+import Messeges from "@/components/chat/ChannelItems";
 import ChNav from "@/components/chat/ChNav";
 import Channel from "@/components/chat/Channel";
 import Friend from "@/components/chat/Friend";

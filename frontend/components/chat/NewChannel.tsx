@@ -4,8 +4,9 @@ import Image from 'next/image';
 import { useState } from 'react';
 import  channelDto  from '@/dto/channelDto'
 import postChannel from '@/apis/client/postChannel';
+import userDto from '@/dto/userDto';
 
-const NewChannel = () => {
+const NewChannel = ({owner}:{owner: userDto}) => {
     const [isclicked, setIsclicked] = useState(false);
     const [name , setName] = useState('')
     const [password , setPassword] = useState('')
@@ -66,6 +67,7 @@ const NewChannel = () => {
         channel.name = name;
         channel.password = password;
         channel.type = type;
+        channel.owner = owner;
 
         await postChannel('/channels/createChannel', channel);
     
