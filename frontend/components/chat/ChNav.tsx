@@ -1,11 +1,12 @@
 "use client"
 import Link from "next/link";
 import { useState } from "react";
-import Messeges from "./Messeges";
+import ChannelItems from "./ChannelItems";
 import userDto from "@/dto/userDto";
 import NewChannel from "./NewChannel";
+import channelDto from "@/dto/channelDto";
 
-const ChNav = ({data, path}:{data:userDto[], path:string}) => {
+const ChNav = ({data,  owner,  path}:{data:channelDto[], owner:userDto, path:string}) => {
    
     const [newchannel, setNewchannel] = useState(false);
     const activeStyle = "border-b-4 text-blue border-blue";
@@ -27,10 +28,10 @@ const ChNav = ({data, path}:{data:userDto[], path:string}) => {
             </button>
         </div>
         <div className={`${newchannel === true ? 'hidden': ''}`}>
-          <Messeges data={data}  path="/chat"/>
+          <ChannelItems data={data}  path="/chat"/>
         </div>
         <div className={`${newchannel === false ? 'hidden': ''}`}>
-          <NewChannel />
+          <NewChannel owner={owner} />
         </div>
       </div>
     );

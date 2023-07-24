@@ -13,11 +13,11 @@ const postChannel = async (endpoint: string, channel: channelDto) =>
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({name : channel.name, image: channel.image,  type: channel.type, password: channel.password}),
+        body: JSON.stringify({name : channel.name, image: channel.image,  type: channel.type, password: channel.password, owner: channel.owner}),
         credentials : 'include'});
         
         const data = await res.json();
-
+        console.log(data);
     return data;
 };
 

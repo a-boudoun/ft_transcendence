@@ -1,4 +1,4 @@
-import Messeges from "./Messeges";
+import Messeges from "./ChannelItems";
 import Friends from "@/components/common/Friends";
 import getData from  "@/apis/getData";
 import userDto from "@/dto/userDto";
