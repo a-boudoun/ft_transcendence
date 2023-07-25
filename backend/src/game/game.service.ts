@@ -18,7 +18,13 @@ export class gameService{
     if (index > -1) {
       this.matchmakingQueue.splice(index, 1);
     }
-    else{}
+    else{
+      const room: Room | undefined = this.findRoomByPlayer(playerSocket);
+      if (room) {
+        this.removeRoom(room.id);
+        console.log(`Room removed: ${room.id}`);
+      }
+    }
   }
 
   findRoomByPlayer(playerSocket: Socket): Room | undefined {
@@ -30,6 +36,10 @@ export class gameService{
 
   findRoom(roomId: string): Room | undefined {
     return this.rooms.get(roomId);
+  }
+
+  removeRoom(roomId: string) {
+    this.rooms.delete(roomId);
   }
 
   matchPlayers(): string | null 

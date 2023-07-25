@@ -9,6 +9,7 @@ import { interval } from "rxjs";
 export class engineService {
 	//Engine
 	private engine: Matter.Engine;
+	private runner: Matter.Runner;
 	private Cheight: number = 665;
 	private Cwidth: number = 1019;
 	//Bodies
@@ -30,6 +31,7 @@ export class engineService {
 				scale:0.001,
 			},
 		});
+		this.runner = Matter.Runner.create();
 	}
 
 	drawWorld() {
@@ -65,8 +67,14 @@ export class engineService {
 //TODO: create a game for every room
 	runEngine() {
 		this.drawWorld();
-		// Matter.Runner.run(this.engine)
-		Matter.Engine.run(this.engine);
+		Matter.Runner.run(this.runner, this.engine);
+		// Matter.Engine.run(this.engine);
+	}
+
+	stopEngine() {
+		Matter.Engine.clear(this.engine);
+		Matter.World.clear(this.engine.world, false);
+		Matter.Runner.stop(this.runner);
 	}
 
 	// ! This function is for debugging purposes only
