@@ -79,13 +79,7 @@ export class gameSimulation{
 		clearInterval(this.id);
 	}
 
-	// ! This function is for debugging purposes only
-	// printBallPosition() {
-	// 	Matter.Events.on(this.engine, 'afterUpdate', () => {
-	// 		console.log('Ball position X, Y: ', this.ball.position.x, this.ball.position.y);
-	// 	});
-	// }
-// TODO: sent the positions normalized to the client
+	// TODO: sent the positions normalized to the client
 	sendPosition(room : Room) {
 		this.id = setInterval(() => {
 			room.players.forEach((player) => {
@@ -115,7 +109,7 @@ export class gameSimulation{
 			})
 			)
 		}
-		
+
 	drawCircle(x : number, y : number, r : number) {
 		return (
 			Matter.Bodies.circle(x, y, r, {

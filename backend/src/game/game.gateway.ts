@@ -26,7 +26,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   
   recentRomm: string | null;
   handleConnection(client: Socket, data: any) {
-    // TODO: check if the player is already in a room 
+    // TODO: check if the player username is already in a room 
     if (!client.handshake.query.username ||  client.handshake.headers.connection === 'close') {
       client.disconnect(true);
       return;
