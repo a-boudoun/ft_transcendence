@@ -7,10 +7,11 @@ import userDto from "@/dto/userDto";
 const Channel = async() => {
     console.log("-------------------");
     const data = await getData('/channels');
+    console.log('data',data);
     const owner = await getData('/users/me');
-    console.log(data);
+   
     return (
-            <ChNav data={data}  path="/chat" owner={owner}/>
+        <ChNav data={data}  path="/chat" owner={owner}/>
     );
 }
 

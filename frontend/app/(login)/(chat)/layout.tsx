@@ -9,11 +9,17 @@ import ChNav from "@/components/chat/ChNav";
 import Channel from "@/components/chat/Channel";
 import Friend from "@/components/chat/Friend";
 
+
 export default function LoginLayout({
   children,
+  params,
 }: {
   children: React.ReactNode
+  params: string
 }) {
+
+
+ 
   let res = true
   return (
     <main className={`h-full  pt-[56px] lg:p-[30px] lg:pt-[86px] flex   bg-dark-gray  justify-center `}>
@@ -23,9 +29,7 @@ export default function LoginLayout({
           
         </div>
         {children}
-        {/* <div className={`hidden lg:${res === true ? 'hidden' : 'flex'}  lg:w-3/12 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-xl`}>
 
-        </div> */}
       </div>
     </main>
   )

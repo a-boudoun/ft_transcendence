@@ -6,6 +6,12 @@ import Image from "next/image";
 import Link from "next/link";
 import io from 'socket.io-client';
 import userDto from "@/dto/userDto";
+import channelDto from '@/dto/channelDto';
+import { useSelector } from 'react-redux';
+import { set } from 'zod';
+import { setMessage } from '@/redux/features/currentChannel';
+import { AppDispatch } from '@/redux/store';
+import { useDispatch } from 'react-redux';
 
 const socket = io('http://localhost:8000', {
     autoConnect: false,
@@ -24,87 +30,45 @@ interface Message {
 }
 
 
+interface Data{
+    id: number;
+    name: string;
+    image: string;
+    type: string;
+    password: string;
+    
+}
 
-const Mid = ({ user }: { user: userDto }) => {
+
+const Mid = () => {
 
     const receiver = useParams();
-    const username: string = user.username;
-    
-    const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [myusers, setMyusers] = useState<User[]>([]);
-
-    socket.auth = { username };
-    socket.connect();
-    const messageContainerRef = useRef(null);
+    const data: Data = useSelector((state: any) => state.currentChannel.channel);
+    const messages: Message[] = useSelector((state: any) => state.currentChannel.channel.messages);
+    const [input, setInput] = useState('');
    
-    // fetch all messages
-
-
+    const dispatch = useDispatch<AppDispatch>();
+    const messageContainerRef = useRef(null);
 
     const handelchange = (event: any) => {
         const msg = event.target.value;
-        setMessage(msg);
+        setInput(msg);
     }
 
 
     const handelSubmit = (event: any) => {
         event.preventDefault();
-
-        const receiverIds = myusers
-            .filter((tuser: User) => (tuser.username === receiver.id || (tuser.username === username)))
-            .map((tuser: User) => tuser.userID);
-
-
-            if (receiverIds.length > 0) { receiverIds.forEach((receiverId: string) => {
-
-                    socket.emit("private message", {
-                        content: message,
-                        to: receiverId,
-                        from: username,
-                    });
-
-                });
-
-            setMessages((messages: Message[]) => [...messages, { content: message, from: "me" }]);
-            setMessage('')
-        }
+        if(!input.trim()) return;
+        dispatch(setMessage({content: input, from: "me"}));
+        setInput('');
     }
-
-    useEffect(() => {
-        socket.on("users", (users: User[]) => {
-            setMyusers(users);
-        });
-
-        socket.on("user connected", (users: User[]) => {
-            setMyusers(users)
-        });
-
-
-        socket.on("private message", ({ content, from }: { content: string, from: string }) => {
-            setMessages((messages: Message[]) => [...messages, { content, from }]);
-        });
-
-    }, []);
-
-
-
-
-
-
-
-
-
 
 
     useEffect(() => {
         if (messageContainerRef.current) {
             messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
         }
-    }, []);
-    useEffect(() => {
-       console.log(myusers)
-    }, []);
+    }, [messages]);
 
 
 
@@ -123,13 +87,13 @@ const Mid = ({ user }: { user: userDto }) => {
                         />
                     </Link>
                     <Image
-                        className="h-full  "
-                        src={"/img/profile.svg"}
+                        className="h-full rounded-full  "
+                        src={data.image}
                         width={30}
                         height={30}
                         alt=""
                     />
-                    <span className="text-center h-fit">{receiver.id}</span>
+                    <span className="text-center h-fit">{data.name}</span>
                 </div>
             </div>
             <div className="overflow-y-auto flex-grow " ref={messageContainerRef}>
@@ -137,12 +101,11 @@ const Mid = ({ user }: { user: userDto }) => {
                     messages.map((msg: Message) => (
                         <Message msg={msg.content} id={msg.from} />
                     ))
-
                 }
             </div>
             <div className="h-[56px] flex justify-between bg-dark-gray items-center px-3 py-2  rounded-lg">
                 <form onSubmit={handelSubmit} className="flex bg-inherit justify-between items-center w-full">
-                    <input type="text" value={message} onChange={handelchange} className="w-full bg-inherit h-10 rounded-md px-2 outline-none" placeholder="Send Message.." />
+                    <input type="text" value={input} onChange={handelchange} className="w-full bg-inherit h-10 rounded-md px-2 outline-none" placeholder="Send Message.." />
                     <button type="submit" className="  px-3 rounded-md">
                         <Image src="/img/send.svg" width={20} height={20} alt="" />
                     </button>
@@ -175,6 +138,8 @@ export const Message = (msg: any) => {
         </div>
     );
 }
+
+
 
 
 
