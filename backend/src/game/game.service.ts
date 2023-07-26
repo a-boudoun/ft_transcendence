@@ -13,7 +13,7 @@ export class gameService{
     this.matchmakingQueue.push(playerSocket);
   }
 
-  removePlayer(playerSocket: Socket) {
+  removePlayer(playerSocket: Socket) : string | null {
     const index: number = this.matchmakingQueue.indexOf(playerSocket);
     if (index > -1) {
       this.matchmakingQueue.splice(index, 1);
@@ -21,10 +21,15 @@ export class gameService{
     else{
       const room: Room | undefined = this.findRoomByPlayer(playerSocket);
       if (room) {
-        this.removeRoom(room.id);
-        console.log(`Room removed: ${room.id}`);
+        this.removePlayerFromRoom(playerSocket, room);
+        if (room.players.length === 0) {
+          this.removeRoom(room.id);
+          console.log(`Room removed: ${room.id}`);
+          return room.id;
+        }
       }
     }
+    return null;
   }
   // TODO add a function to find the user's room based on his username
 
@@ -41,6 +46,13 @@ export class gameService{
 
   removeRoom(roomId: string) {
     this.rooms.delete(roomId);
+  }
+
+  removePlayerFromRoom(playerSocket: Socket, room: Room) {
+    const index: number = room.players.findIndex((player: Player) => player.socket === playerSocket);
+    if (index > -1) {
+      room.players.splice(index, 1);
+    }
   }
 
   matchPlayers(): string | null 
