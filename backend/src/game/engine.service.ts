@@ -66,9 +66,10 @@ export class engineService {
 	}
 //TODO: create a game for every room
 	runEngine() {
+		setTimeout(() => {
 		this.drawWorld();
 		Matter.Runner.run(this.runner, this.engine);
-		// Matter.Engine.run(this.engine);
+		}, 3000);
 	}
 
 	stopEngine() {
@@ -122,6 +123,6 @@ export class engineService {
 				frictionAir: 0, // Remove air friction
 				inertia: Infinity, // prevent ball from slowing down
 			})
-		)
+		);
 	}
 }

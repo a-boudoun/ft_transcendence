@@ -43,11 +43,14 @@ export default function Maps(){
 				</div>
 
 			</div>
+			
+			<div className="bg-white">
 				<button
 					className=" mb-[400px] w-full max-w-[320px] sm:max-w-auto sm:fixed bottom-[40px] right-[40px] text-white text-[30px] bg-red w-[150px] py-2 rounded-[10px] hover:bg-[#FBACB3] font-bold" onClick={() => {router.push('http://localhost:3000/game/table')}}
-				>
-					next
+					>
+					Next
 				</button>
+			</div>
 
 		</div>
 	)
