@@ -26,6 +26,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   
   recentRomm: string | null;
   handleConnection(client: Socket, data: any) {
+    // TODO: check if the player is already in a room 
     if (!client.handshake.query.username ||  client.handshake.headers.connection === 'close') {
       client.disconnect(true);
       return;
@@ -47,9 +48,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   
   handleDisconnect(client: Socket) {
+    let removedRoom: string | null ;
     console.log(`Client disconnected: ${client.handshake.query.username}`);
-    this.gameService.removePlayer(client);
-    // this.engineService.stopEngine();
+    removedRoom = this.gameService.removePlayer(client);
+    if (removedRoom) {
+      this.engineService.removeGameSimulation(removedRoom);
+    }
   }
 
   @SubscribeMessage('rightPaddle')
