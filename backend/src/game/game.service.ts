@@ -26,6 +26,7 @@ export class gameService{
       }
     }
   }
+  // TODO add a function to find the user's room based on his username
 
   findRoomByPlayer(playerSocket: Socket): Room | undefined {
     const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {
