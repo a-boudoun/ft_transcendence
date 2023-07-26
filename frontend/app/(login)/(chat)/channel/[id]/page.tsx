@@ -1,22 +1,37 @@
-import React from 'react'
-import Image from 'next/image'
-import Messeges from '@/components/chat/ChannelItems';
-import Link from 'next/link';
+"use client";
+import React, { useEffect } from 'react'
 import Mid from '@/components/chat/Mid';
-import { usePathname } from 'next/navigation';
-import userDto from '@/dto/userDto';
-import getData from '@/apis/getData';
+import Right from '@/components/chat/Right';
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios';
+import {setcurrentChannel, resetcurrent} from "@/redux/features/currentChannel";
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
 
-const Page = async() => {
-    const user = await getData('/channels/me');
-    return (
-        <>
-            <Mid  user={user}  />
-            <div className={`hidden lg:flex lg:w-3/12 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-xl`}>
-            {user.name}
-            </div>
+const Page = async({params}:{params: string}) => {
+  
+    // const user : userDto = await getData('/users/getUser');
+    const dispatch = useDispatch<AppDispatch>();
+    const { data, isLoading } = useQuery({
+        queryKey: ['channel'],
+        queryFn: async () =>  {
+         const {data} = await axios.get(`http://localhost:8000/channels/${params.id}`, {withCredentials: true});
+          return data;
+        }
+      })
+      useEffect(() => {
+        if (!data) return;
+        dispatch(setcurrentChannel(data));
+      }, [data]);
+        return (
+            <>
+            <Mid  />
+            <Right/>
         </>
     );
 }
 
+
 export default Page;
+
+

@@ -1,5 +1,7 @@
 import "./globals.css";
 import { Inter } from 'next/font/google'
+import QueryProvider from "@/providers/QueryProvider";
+import ReduxProvider from "@/redux/provider";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -9,6 +11,8 @@ export const metadata = {
   icon: '/favicon.ico',
 }
 
+
+
 export default function RootLayout({
   children,
 }: {
@@ -16,8 +20,10 @@ export default function RootLayout({
 }) {
   return (
     <html className="" lang="en">
-      <body className="{inter.className} h-screen w-screen bg-red text-center  text-white">
-        {children}
+      <body className={`${inter.className} h-screen w-screen bg-red text-center  text-white`}>
+        <QueryProvider>
+        <ReduxProvider>{children}</ReduxProvider>
+        </QueryProvider>
       </body>
     </html>
   )

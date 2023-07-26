@@ -5,15 +5,22 @@ import { useState } from 'react';
 import  channelDto  from '@/dto/channelDto'
 import postChannel from '@/apis/client/postChannel';
 import userDto from '@/dto/userDto';
+import { AppDispatch } from '@/redux/store';
+import { useDispatch } from 'react-redux';
+import { setnewchannel } from '@/redux/features/currentChannel';
+import { set } from 'zod';
 
 const NewChannel = ({owner}:{owner: userDto}) => {
+    const dispatch = useDispatch<AppDispatch>();
+
+    
     const [isclicked, setIsclicked] = useState(false);
     const [name , setName] = useState('')
     const [password , setPassword] = useState('')
     const [type, setType] = useState('Public');
     const [image, setImage] = useState<any>(null);
     const [imagePreview, setImagePreview] = useState<string>('/img/profile.svg');
-
+    console.log("new channel re")
     const handleclick = () => {
         setIsclicked(!isclicked);
     }
@@ -68,6 +75,7 @@ const NewChannel = ({owner}:{owner: userDto}) => {
         channel.password = password;
         channel.type = type;
         channel.owner = owner;
+        dispatch(setnewchannel(channel));
 
         await postChannel('/channels/createChannel', channel);
     

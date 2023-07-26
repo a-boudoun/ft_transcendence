@@ -17,7 +17,7 @@ export class ChannelsController {
     return this.channelsService.findAll();
   }
 
-  @Get('me')
+  @Get('/me')
   me() {
     return this.channelsService.findOne(2);
   }

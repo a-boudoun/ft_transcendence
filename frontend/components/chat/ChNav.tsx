@@ -5,11 +5,18 @@ import ChannelItems from "./ChannelItems";
 import userDto from "@/dto/userDto";
 import NewChannel from "./NewChannel";
 import channelDto from "@/dto/channelDto";
+import { AppDispatch } from '@/redux/store';
+import { useDispatch } from 'react-redux';
+import { setChannels } from "@/redux/features/currentChannel";
 
 const ChNav = ({data,  owner,  path}:{data:channelDto[], owner:userDto, path:string}) => {
    
+    const dispatch = useDispatch<AppDispatch>();
+    dispatch(setChannels(data));
+
     const [newchannel, setNewchannel] = useState(false);
     const activeStyle = "border-b-4 text-blue border-blue";
+
     
 
     const handleclick = (buttonNumber : number) => {
@@ -28,7 +35,7 @@ const ChNav = ({data,  owner,  path}:{data:channelDto[], owner:userDto, path:str
             </button>
         </div>
         <div className={`${newchannel === true ? 'hidden': ''}`}>
-          <ChannelItems data={data}  path="/chat"/>
+          <ChannelItems  path="/chat"/>
         </div>
         <div className={`${newchannel === false ? 'hidden': ''}`}>
           <NewChannel owner={owner} />

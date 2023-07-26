@@ -10,7 +10,7 @@ import con from 'ormconfig';
 export class ChannelsService {
   constructor(
     @InjectRepository(Channel) private channelRepo: Repository<Channel>,
-    // @InjectRepository(Channel) private adminRepo: Repository<Administration>,
+    @InjectRepository(Administration) private adminRepo: Repository<Administration>,
     private jwtService: JwtService
   ) {}
   async create(ChannelDTO: ChannelDTO) {
@@ -19,7 +19,7 @@ export class ChannelsService {
     // administrators.channel = <ChannelDTO>(await this.channelRepo.save(channel));
     // administrators.admin = ChannelDTO.owner;
     // await this.channelRepo.save(channel);
-    // const admin = this.adminRepo.create();
+    const admin = this.adminRepo.create();
     // console.log(channel.name);
     // admin.admin = channel.owner;
     // admin.channel = channel;
@@ -32,13 +32,15 @@ export class ChannelsService {
     return this.channelRepo.find();
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     const channel = this.channelRepo.findOneBy({id});
+   
+    console.log(await channel);
     return channel;
   }
 
   update(id: number, updateChannelDto: UpdateChannelDto) {
-    return `This action updates a #${id} channel`;
+    return this.channelRepo.update(id, updateChannelDto);
   }
 
   remove(id: number) {

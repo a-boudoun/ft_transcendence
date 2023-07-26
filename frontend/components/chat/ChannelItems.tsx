@@ -5,21 +5,27 @@ import Link from "next/link";
 
 import userDto from "@/dto/userDto";
 import channelDto from "@/dto/channelDto";
+import { useSelector } from 'react-redux';
 
-const ChannelItems = ({data, path}:{data:channelDto[], path:string}) => {
-   
+interface Data{
+    id: number;
+    name: string;
+    image: string;
+    type: string;
+    password: string;
     
-  
+}
 
-   
-    path = path.slice(0, 5) === "/chat" ? "/chat" : "/channel";
-    const hm  =(`h-[calc(100%-100px]`)
-    console.log(data);
+
+const ChannelItems = ({path}:{path:string}) => {
+    console.log("channel items re")
+
+    const data: Data[] = useSelector((state: any) => state.currentChannel.channels);
     return (
         <div className="h-full overflow-y-scroll py-2 ">
             {
             data.map((msg: channelDto) =>(
-                <Link href={`/channel/${msg.name}`}>
+                <Link href={`/channel/${msg.id}` }>
                     <ChannelItem key={msg.name} msg={msg} />
                 </Link>
             ))}
@@ -28,7 +34,6 @@ const ChannelItems = ({data, path}:{data:channelDto[], path:string}) => {
 }
  
 export default ChannelItems;
-
 
 export const ChannelItem = ({msg}:{msg:channelDto}) => { 
     const path = "/chat/" ;
@@ -44,7 +49,6 @@ export const ChannelItem = ({msg}:{msg:channelDto}) => {
                 />
                 <h3>{msg.name}</h3>
             </div>
-           
         </div>
     );
 }
