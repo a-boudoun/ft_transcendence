@@ -13,10 +13,6 @@ export class engineService {
 		game.runEngine();
 	}
 
-	getGameSimulation(roomId: string): gameSimulation | undefined {
-		return this.gameSimulations.get(roomId);
-	}
-
 	sendPosition(room: Room) {
 		const game: gameSimulation | undefined = this.gameSimulations.get(room.id);
 		if (game) {

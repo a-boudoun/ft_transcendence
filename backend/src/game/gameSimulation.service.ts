@@ -21,6 +21,8 @@ export class gameSimulation{
 	private rightWall: Matter.Body;
 	private ball: Matter.Body;
 
+	private id: NodeJS.Timer;
+
 	constructor() {
 		this.engine = Matter.Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
@@ -64,29 +66,28 @@ export class gameSimulation{
 		}
 		);
 	}
-//TODO: create a game for every room
+
 	runEngine() {
-		setTimeout(() => {
 		this.drawWorld();
 		Matter.Runner.run(this.runner, this.engine);
-		}, 3000);
 	}
 
 	stopEngine() {
 		Matter.Engine.clear(this.engine);
 		Matter.World.clear(this.engine.world, false);
 		Matter.Runner.stop(this.runner);
+		clearInterval(this.id);
 	}
 
 	// ! This function is for debugging purposes only
-	printBallPosition() {
-		Matter.Events.on(this.engine, 'afterUpdate', () => {
-			console.log('Ball position X, Y: ', this.ball.position.x, this.ball.position.y);
-		});
-	}
-// TODO: sent the positions according ot every game possible
+	// printBallPosition() {
+	// 	Matter.Events.on(this.engine, 'afterUpdate', () => {
+	// 		console.log('Ball position X, Y: ', this.ball.position.x, this.ball.position.y);
+	// 	});
+	// }
+// TODO: sent the positions normalized to the client
 	sendPosition(room : Room) {
-		Matter.Events.on(this.engine, 'afterUpdate', () => {
+		this.id = setInterval(() => {
 			room.players.forEach((player) => {
 				player.socket.emit('ball', 
 				{
@@ -103,7 +104,7 @@ export class gameSimulation{
 				}
 				);
 			});
-		});
+		}, 15);
 	}
 
 	drawRect(x : number, y : number, w : number, h : number) {
