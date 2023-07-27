@@ -9,7 +9,7 @@ export class gameSimulation{
 
 	//Engine
 	private engine: Matter.Engine;
-	private runner: Matter.Runner;
+	// private runner: Matter.Runner;
 	private Cheight: number = 665;
 	private Cwidth: number = 1019;
 	//Bodies
@@ -22,6 +22,7 @@ export class gameSimulation{
 	private ball: Matter.Body;
 
 	private id: NodeJS.Timer;
+	private roomIn: Room;
 
 	constructor() {
 		this.engine = Matter.Engine.create({
@@ -33,7 +34,8 @@ export class gameSimulation{
 				scale:0.001,
 			},
 		});
-		this.runner = Matter.Runner.create();
+		// this.runner = Matter.Runner.create({
+		// });
 	}
 
 	drawWorld() {
@@ -69,18 +71,23 @@ export class gameSimulation{
 
 	runEngine() {
 		this.drawWorld();
-		Matter.Runner.run(this.runner, this.engine);
+		Matter.Engine.run(this.engine);
 	}
 
 	stopEngine() {
 		Matter.Engine.clear(this.engine);
 		Matter.World.clear(this.engine.world, false);
-		Matter.Runner.stop(this.runner);
 		clearInterval(this.id);
+
 	}
+
+	// stopRunner() {
+	// 	Matter.Runner.stop(this.runner);
+	// }
 
 	// TODO: sent the positions normalized to the client
 	sendPosition(room : Room) {
+		this.roomIn = room;
 		this.id = setInterval(() => {
 			room.players.forEach((player) => {
 				player.socket.emit('ball', 

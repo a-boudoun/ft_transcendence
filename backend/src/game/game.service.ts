@@ -24,7 +24,6 @@ export class gameService{
         this.removePlayerFromRoom(playerSocket, room);
         if (room.players.length === 0) {
           this.removeRoom(room.id);
-          console.log(`Room removed: ${room.id}`);
           return room.id;
         }
       }
@@ -68,7 +67,6 @@ export class gameService{
         this.rooms.set(room.id, room);
         socket1.join(room.id);
         socket2.join(room.id);
-        console.log(`Room created: ${room.id}`);
         this.informPlayers('roomCreated', room);
         return room.id;
       }
