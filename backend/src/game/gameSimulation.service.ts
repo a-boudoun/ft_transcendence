@@ -91,16 +91,19 @@ export class gameSimulation{
 					x: -20,
 					y: ballVelocity.y 
 				});
+				this.roomIn.players.forEach((player) => {
+					player.socket.emit('sound');
+				});
 			}
 			else if (pair.bodyA === this.rightBoard || pair.bodyB === this.rightBoard) {
 				Matter.Body.setVelocity(this.ball, { 
 					x: 20, 
 					y: ballVelocity.y
 				});
+				this.roomIn.players.forEach((player) => {
+					player.socket.emit('sound');
+				});
 			}
-			this.roomIn.players.forEach((player) => {
-				player.socket.emit('sound');
-			});
 		});
 	}
 	
