@@ -22,7 +22,8 @@ export default function Game(){
 	const [countDownValue, setCountDownValue] = useState<number>(3);
 	let roomid: string = '';
 	let sender: boolean = false;
-	// let rightBoardY: number = 0;
+	let sx : number = 1;
+	let sy : number = 1;
 
 	useEffect(() => {
 		socket.on('connect', () => {
@@ -56,36 +57,9 @@ export default function Game(){
 
 				render.canvas.width = divRef.current.offsetWidth;
 				render.canvas.height = divRef.current.offsetHeight;
+				sx = divRef.current.offsetWidth / 2048;
+				sy = divRef.current.offsetHeight / 890;
 
-
-				Body.setPosition(
-					leftWall,
-					{
-						x: 10,
-						y: divRef.current.offsetHeight / 2
-					}
-				);
-				Body.setPosition(
-					rightWall,
-					{
-						x: divRef.current.offsetWidth - 10,
-						y: divRef.current.offsetHeight / 2,
-					}
-				);
-				Body.setPosition(
-					rightBoard,
-					{
-						x: divRef.current.offsetWidth - 35,
-						y: divRef.current.offsetHeight / 2,
-					}
-				);
-				Body.setPosition(
-					leftBoard,
-					{
-						x: 35,
-						y: divRef.current.offsetHeight / 2,
-					}
-				);
 				Body.setPosition(
 					floor,
 					{
@@ -106,7 +80,8 @@ export default function Game(){
 		
 		const H = divRef.current.offsetHeight;
 		const W = divRef.current.offsetWidth;
-		console.log('H', H, 'W', W);
+		sx = W / 2048;
+		sy = H / 890;
 		
 		let engine = Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
@@ -135,11 +110,10 @@ export default function Game(){
 		const ceiling = drawRect(W / 2, 0, 5000, 20, '#7AC7C4');
 		const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#F73859');
 		const leftBoard = drawRect(35, H / 2, 20, 120, '#F73859');
-		const leftWall = drawRect(10, H / 2, 15, 5000, '#7AC7C4');
-		const rightWall = drawRect(W - 10, H / 2, 15, 5000, '#7AC7C4');
+
 		
 		const ball = drawCircle(W / 2, H / 5, 20, '#384259');
-		Composite.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard, leftWall, rightWall]);
+		Composite.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard]);
 		window.addEventListener("resize", handleResize);
 		// document.addEventListener('keydown', handleKeyDown);\
 		Render.run(render);
@@ -167,23 +141,23 @@ export default function Game(){
 					Body.setPosition(
 						rightBoard,
 						{
-							x: data.rightBoardX,
-							y: data.rightBoardY,
+							x: data.rightBoardX * sx,
+							y: data.rightBoardY * sy,
 						});
-						Body.setPosition(
-							leftBoard,
-							{
-								x: data.leftBoardX,
-								y: data.leftBoardY,
-							});
+					Body.setPosition(
+						leftBoard,
+						{
+							x: data.leftBoardX * sx,
+							y: data.leftBoardY * sy,
+						});
 					});
 				});
 			socket.on('ball', ({x, y}) => {
 				Body.setPosition(
 					ball,
 					{
-						x: x,
-						y: y,
+						x: x * sx,
+						y: y * sy,
 					}
 				);
 			});

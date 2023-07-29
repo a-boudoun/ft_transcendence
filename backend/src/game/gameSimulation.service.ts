@@ -10,15 +10,13 @@ export class gameSimulation{
 	//Engine
 	private engine: Matter.Engine;
 	// private runner: Matter.Runner;
-	private Cheight: number = 665;
-	private Cwidth: number = 1019;
+	private Cheight: number = 890;
+	private Cwidth: number = 2048;
 	//Bodies
 	private floor: Matter.Body;
 	private ceiling: Matter.Body;
 	private rightBoard: Matter.Body;
 	private leftBoard: Matter.Body;
-	private leftWall: Matter.Body;
-	private rightWall: Matter.Body;
 	private ball: Matter.Body;
 
 	private id: NodeJS.Timer;
@@ -43,11 +41,9 @@ export class gameSimulation{
 		this.ceiling = this.drawRect(this.Cwidth / 2, 0, 5000, 20);
 		this.rightBoard = this.drawRect(this.Cwidth - 35, this.Cheight / 2, 20, 120);
 		this.leftBoard = this.drawRect(35, this.Cheight / 2, 20, 120);
-		this.leftWall = this.drawRect(10, this.Cheight / 2, 15, 5000);
-		this.rightWall = this.drawRect(this.Cwidth - 10, this.Cheight / 2, 15, 5000);
 		this.ball = this.drawCircle(this.Cwidth / 2, this.Cheight / 2, 20);
 
-		Matter.World.add(this.engine.world, [this.floor, this.ceiling, this.rightBoard, this.leftBoard, this.leftWall, this.rightWall, this.ball]);
+		Matter.World.add(this.engine.world, [this.floor, this.ceiling, this.rightBoard, this.leftBoard, this.ball]);
 		Matter.Body.setVelocity(this.ball, { x: 10, y: 5 });
 	}
 	
@@ -72,7 +68,17 @@ export class gameSimulation{
 	runEngine() {
 		this.drawWorld();
 		this.detectCollision();
+		this.restartGame();
 		Matter.Engine.run(this.engine);
+	}
+	
+	restartGame() {
+		Matter.Events.on(this.engine, 'afterUpdate', () => {
+			if (this.ball.position.x < 0 || this.ball.position.x > this.Cwidth) {
+				Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
+				Matter.Body.setVelocity(this.ball, { x: 12, y: 3 });
+			}
+		});
 	}
 	
 	detectCollision() {
