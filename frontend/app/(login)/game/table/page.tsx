@@ -1,25 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite, Query} from "matter-js";
 import { drawRect, drawCircle } from "@components/draw";
 import { useRouter } from "next/navigation";
 import io from 'socket.io-client';
-import sound from '~/goinfre/aboudoun/game/frontend/public/game/bounce.mp3';
 
 //// : implement the game logic in the backend and send the data to the frontend
 //// : make the cnasvas responsive
-//// : try the keyup keydown event to make the movement smoother
-function Players(){
-	return (
-		<div className="absolute top-0 left-0 w-full h-full flex flex-col">
-			<div className="flex flex-col items-center justify-center space-y-10">
-				<div className="text-white text-[50px]">Player 1</div>
-				<div className="text-white text-[50px]">Player 2</div>
-			</div>
-		</div>
-	);
-}
 const randomInt = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -35,15 +23,15 @@ export default function Game(){
 	let roomid: string = '';
 	let sender: boolean = false;
 	// let rightBoardY: number = 0;
-	
+
 	useEffect(() => {
 		socket.on('connect', () => {
 		  console.log('Connected to server');
 		});
 
 		socket.on('sound', () => {
-			console.log('sound');
-			sound.play();
+			const audio = new Audio('/game/bounce.mp3');
+			audio.play();
 		});
 
 		socket.on('disconnect', () => {
