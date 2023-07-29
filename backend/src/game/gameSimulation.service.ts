@@ -71,14 +71,45 @@ export class gameSimulation{
 
 	runEngine() {
 		this.drawWorld();
+		this.detectCollision();
 		Matter.Engine.run(this.engine);
 	}
+	
+	detectCollision() {
+		Matter.Events.on(this.engine, 'collisionStart', (event) => {
+			this.handleCollision(event);
+		});;
+	}
+
+	handleCollision(event: Matter.IEventCollision<Matter.Engine>): void {
+		let pairs = event.pairs;
+		let ballVelocity = this.ball.velocity;
+		
+		pairs.forEach((pair) => {
+			if (pair.bodyA === this.leftBoard || pair.bodyB === this.leftBoard) {
+				Matter.Body.setVelocity(this.ball, { 
+					x: -20,
+					y: ballVelocity.y 
+				});
+			}
+			else if (pair.bodyA === this.rightBoard || pair.bodyB === this.rightBoard) {
+				Matter.Body.setVelocity(this.ball, { 
+					x: 20, 
+					y: ballVelocity.y
+				});
+			}
+			this.roomIn.players.forEach((player) => {
+				player.socket.emit('sound');
+			});
+		});
+	}
+	
 
 	stopEngine() {
 		Matter.Engine.clear(this.engine);
 		Matter.World.clear(this.engine.world, false);
+		Matter.Events.off(this.engine, 'collisionStart', this.handleCollision);
 		clearInterval(this.id);
-
 	}
 
 	// stopRunner() {
@@ -120,7 +151,7 @@ export class gameSimulation{
 	drawCircle(x : number, y : number, r : number) {
 		return (
 			Matter.Bodies.circle(x, y, r, {
-				restitution: 1, // Make the ball fully elastic
+				restitution: 0.9, // Make the ball fully elastic
 				friction: 0, // Remove friction
 				frictionAir: 0, // Remove air friction
 				inertia: Infinity, // prevent ball from slowing down

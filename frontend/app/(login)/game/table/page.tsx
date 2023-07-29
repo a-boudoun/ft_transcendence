@@ -1,10 +1,11 @@
 "use client";
 
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite, Query} from "matter-js";
 import { drawRect, drawCircle } from "@components/draw";
 import { useRouter } from "next/navigation";
 import io from 'socket.io-client';
+import sound from '~/goinfre/aboudoun/game/frontend/public/game/bounce.mp3';
 
 //// : implement the game logic in the backend and send the data to the frontend
 //// : make the cnasvas responsive
@@ -38,6 +39,11 @@ export default function Game(){
 	useEffect(() => {
 		socket.on('connect', () => {
 		  console.log('Connected to server');
+		});
+
+		socket.on('sound', () => {
+			console.log('sound');
+			sound.play();
 		});
 
 		socket.on('disconnect', () => {
