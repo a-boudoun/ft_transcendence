@@ -29,7 +29,10 @@ export class ChannelsService {
   }
 
   findAll() {
-    return this.channelRepo.find();
+    return this.channelRepo.find({
+      order: {
+          id: "DESC"}
+      });
   }
 
   async findOne(id: number) {

@@ -74,10 +74,11 @@ const NewChannel = ({owner}:{owner: userDto}) => {
         channel.name = name;
         channel.password = password;
         channel.type = type;
-        channel.owner = owner;
-        dispatch(setnewchannel(channel));
-
-        await postChannel('/channels/createChannel', channel);
+        // channel.owner = owner;
+        
+        const dt = await postChannel('/channels/createChannel', channel);
+        dispatch(setnewchannel(dt));
+        console.log('youssef',dt);
     
     }
     return (

@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChannelItems from "./ChannelItems";
 import userDto from "@/dto/userDto";
 import NewChannel from "./NewChannel";
@@ -8,11 +8,51 @@ import channelDto from "@/dto/channelDto";
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { setChannels } from "@/redux/features/currentChannel";
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios';
+
+interface Message {
+  content: string;
+  from: string;
+}
+interface Data{
+  id: number;
+  name: string;
+  image: string;
+  type: string;
+  password: string;
+  messages: Message[];
+  
+}
 
 const ChNav = ({data,  owner,  path}:{data:channelDto[], owner:userDto, path:string}) => {
    
-    const dispatch = useDispatch<AppDispatch>();
-    dispatch(setChannels(data));
+
+  const dispatch = useDispatch<AppDispatch>();
+
+
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+
+      const response = await axios.get('http://localhost:8000/channels'); 
+      const dt: Data[] = response.data;
+      dispatch(setChannels(dt))
+      return { dt };
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    
+    }
+
+
+  };
+  
+  // dispatch(setChannels(data));
+
 
     const [newchannel, setNewchannel] = useState(false);
     const activeStyle = "border-b-4 text-blue border-blue";
@@ -34,10 +74,10 @@ const ChNav = ({data,  owner,  path}:{data:channelDto[], owner:userDto, path:str
               New Channel
             </button>
         </div>
-        <div className={`${newchannel === true ? 'hidden': ''}`}>
+        <div className={`${newchannel === true ? 'hidden': ''} h-full`}>
           <ChannelItems  path="/chat"/>
         </div>
-        <div className={`${newchannel === false ? 'hidden': ''}`}>
+        <div className={`${newchannel === false ? 'hidden': ''}  `}>
           <NewChannel owner={owner} />
         </div>
       </div>

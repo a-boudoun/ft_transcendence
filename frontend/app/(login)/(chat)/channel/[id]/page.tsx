@@ -4,31 +4,25 @@ import Mid from '@/components/chat/Mid';
 import Right from '@/components/chat/Right';
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios';
-import {setcurrentChannel, resetcurrent} from "@/redux/features/currentChannel";
+import { setcurrentChannel, resetcurrent } from "@/redux/features/currentChannel";
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
+import { useParams, usePathname } from 'next/navigation';
 
-const Page = async({params}:{params: string}) => {
-  
-    // const user : userDto = await getData('/users/getUser');
-    const dispatch = useDispatch<AppDispatch>();
-    const { data, isLoading } = useQuery({
-        queryKey: ['channel'],
-        queryFn: async () =>  {
-         const {data} = await axios.get(`http://localhost:8000/channels/${params.id}`, {withCredentials: true});
-          return data;
-        }
-      })
-      useEffect(() => {
-        if (!data) return;
-        dispatch(setcurrentChannel(data));
-      }, [data]);
-        return (
-            <>
-            <Mid  />
-            <Right/>
-        </>
-    );
+const Page =  ({ params }: { params: number }) => {
+
+
+  const dispatch = useDispatch<AppDispatch>();
+ 
+  useEffect(() => {
+      dispatch(setcurrentChannel(params));
+  }, [params]);
+  return (
+    <>
+      <Mid />
+      <Right />
+    </>
+  );
 }
 
 

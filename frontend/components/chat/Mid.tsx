@@ -1,6 +1,6 @@
 "use client";
 import { useParams } from 'next/navigation'
-import { useState } from "react";
+import { use, useState } from "react";
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -42,10 +42,11 @@ interface Data{
 
 const Mid = () => {
 
-    const receiver = useParams();
+    
     const data: Data = useSelector((state: any) => state.currentChannel.channel);
-    const messages: Message[] = useSelector((state: any) => state.currentChannel.channel.messages);
+    // const messages: Message[] = useSelector((state: any) => state.currentChannel.channel.messages);
     const [input, setInput] = useState('');
+    console.log("data",data);
    
     const dispatch = useDispatch<AppDispatch>();
     const messageContainerRef = useRef(null);
@@ -64,11 +65,12 @@ const Mid = () => {
     }
 
 
+
     useEffect(() => {
         if (messageContainerRef.current) {
             messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
         }
-    }, [messages]);
+    }, []);
 
 
 
@@ -98,9 +100,9 @@ const Mid = () => {
             </div>
             <div className="overflow-y-auto flex-grow " ref={messageContainerRef}>
                 {
-                    messages.map((msg: Message) => (
-                        <Message msg={msg.content} id={msg.from} />
-                    ))
+                    // messages?.map((msg: Message) => (
+                    //     <Message msg={msg.content} id={msg.from} />
+                    // ))
                 }
             </div>
             <div className="h-[56px] flex justify-between bg-dark-gray items-center px-3 py-2  rounded-lg">
