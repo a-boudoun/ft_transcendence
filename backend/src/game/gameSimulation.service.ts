@@ -73,10 +73,20 @@ export class gameSimulation{
 	}
 	
 	restartGame() {
+		let vx : number;
+		let vy: number;
 		Matter.Events.on(this.engine, 'afterUpdate', () => {
 			if (this.ball.position.x < 0 || this.ball.position.x > this.Cwidth) {
+				if (this.ball.position.x < 0){
+					vx = -14;
+					vy = -1;
+				}
+				else{
+					vx = 14;
+					vy = 1;
+				}
 				Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
-				Matter.Body.setVelocity(this.ball, { x: 12, y: 3 });
+				Matter.Body.setVelocity(this.ball, { x: vx, y: vy });
 			}
 		});
 	}
