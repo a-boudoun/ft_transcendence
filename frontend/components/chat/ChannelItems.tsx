@@ -18,15 +18,15 @@ interface Data{
 
 
 const ChannelItems = ({path}:{path:string}) => {
-    console.log("channel items re")
 
-    const data: Data[] = useSelector((state: any) => state.currentChannel.channels);
+
+    const data = useSelector((state: any) => state.currentChannel.channels);
     return (
-        <div className="h-full overflow-y-scroll py-2 ">
+        <div className="h-[90%] overflow-y-scroll py-2 ">
             {
-            data.map((msg: channelDto) =>(
-                <Link href={`/channel/${msg.id}` }>
-                    <ChannelItem key={msg.name} msg={msg} />
+            data?.map((data: channelDto) =>(
+                <Link href={`/channel/${data.id}` }>
+                    <ChannelItem key={data.id} msg={data} />
                 </Link>
             ))}
         </div>
