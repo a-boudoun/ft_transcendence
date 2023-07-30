@@ -68,6 +68,7 @@ export class UsersService {
   const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type != :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
   return channels;
   }
+
   async update(login: string, updateUser: UpdateUserDto) {
     const user = await this.findOne(login);
     return this.userRepo.save({...user, ...updateUser})
@@ -81,6 +82,18 @@ export class UsersService {
   async genarateToken(user: UserDTO) {
     const payload = {username: user.username, sub: user.XP};
     return this.jwtService.signAsync(payload);
+  }
+
+  async set2FAsecret(secret: string, login: string) {
+    const user = await this.findOne(login);
+    return await this.userRepo.save({...user, ...{fact2Secret: secret}})
+  }
+
+  async turnON2FA(login: string) {
+    const user = await this.findOne(login);
+    await this.userRepo.update(user, { 
+      fact2Auth : true
+    });
   }
   // getFriends(login: string) {
   //   const user = this.userRepo.find({

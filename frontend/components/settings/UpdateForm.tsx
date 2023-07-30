@@ -9,9 +9,13 @@ import { Loader2 } from  'lucide-react';
 import { userSchema } from '@/models/user';
 import { userDto } from '@/dto/userDto';
 import uploadImage from '@/apis/uploadImage';
+import { useRouter } from 'next/navigation'
+import { Client } from '@/Providers/QueryProvider';
+import { set } from 'zod';
 
 const UpdateForm = () => {
 
+  const Router = useRouter();
   const [image, setImage] = useState<any>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [name, setName] = useState<string>('');
@@ -31,7 +35,7 @@ const UpdateForm = () => {
       await axios.patch('http://localhost:8000/users/updateMe', user, { withCredentials: true });
     },
     onSuccess: () => {
-      console.log('success');
+      Client.refetchQueries('user');
       setIsLoading(false);
     },
   });
@@ -72,25 +76,51 @@ const UpdateForm = () => {
     }
   };
 
+  const handele2FA = async() => {
+
+   if (User.data.fact2Auth === true ){
+      User.data.fact2Auth = false;
+      User.data.fact2Secret = null;
+
+      await updateUser.mutate(User.data);
+      Router.push('settings')
+   }
+    else
+      Router.push('settings/fact2auth')
+  
+ }
+
 
   if (User.isLoading)
-    return <div>loading...</div>
+  return <div>loading...</div>
   else {
+      console.log(User.data);
+
       return (
           <>
-          <form className='p-[56px]'  onChange={handleChange} onSubmit={handleSubmit}>
-            <h3 className='mb-6 text-xl font-bold text-blue' >Account settings</h3>
-            <div className='flex justify-center items-center gap-8'>
-              <label>
-                <div className='relative hover:opacity-60'>
-                    <Image className='min-w-[132px] min-h-[132px] sm:w-[200px] sm:h-[200px] rounded-full cursor-pointer' src={imagePreview} width={1000} height={1000} alt="avatar" />
-                    <Image className='absolute bottom-5 right-0 sm:w-8 sm:h-8' src={"/icons/changeImage.svg"} width={24} height={24} alt="" />
-                    <input type="file" className="hidden" accept="image/jpeg, image/jpg, image/png, image/webp" />
-                </div>
-              </label>
-              <input id={'name'} className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-black focus:border-[2px] hover:opacity-60" type="text" placeholder={name}/>
+          <form className='h-full flex flex-col items-center gap-8'  onChange={handleChange} onSubmit={handleSubmit}>
+            <div>
+              <h3 className='mb-6 text-xl font-bold text-blue' >Account settings</h3>
+              <div className='flex justify-center items-center gap-8'>
+                <label>
+                  <div className='relative hover:opacity-60'>
+                      <Image className='min-w-[132px] min-h-[132px] sm:w-[200px] sm:h-[200px] rounded-full cursor-pointer' src={imagePreview} width={1000} height={1000} alt="avatar" />
+                      <Image className='absolute bottom-5 right-0 sm:w-8 sm:h-8' src={"/icons/changeImage.svg"} width={24} height={24} alt="" />
+                      <input type="file" className="hidden" accept="image/jpeg, image/jpg, image/png, image/webp" />
+                  </div>
+                </label>
+                <input id={'name'} className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-[2px] hover:opacity-60" type="text" placeholder={name}/>
+              </div>  
             </div>
-            <h3 className='my-6 text-xl font-bold text-blue' >two-factor authentication</h3>
+            <div>
+              <h3 className='my-6 text-xl font-bold text-blue' >two-factor authentication</h3>
+              <p className='max-w-sm'>
+                Two-factor authentication adds an extra layer of security to your account by requiring more than just a password to log in.
+              </p>
+              <button className={`my-6 relative h-16 rounded-2xl text-black text-center ${User.data.fact2Auth === true ? 'bg-red' : 'bg-blue'} px-14 hover:opacity-60`}  onClick={() => handele2FA() } >
+                {User.data.fact2Auth === true? 'disable' : 'enable'}
+              </button>
+            </div>
             <button className="relative mt-12 h-16 rounded-2xl text-black text-center bg-blue px-14 hover:opacity-60" type='submit' onClick={ () => setIsLoading(true)} >save
               {isLoading && <Loader2 className="absolute top-6 right-6 animate-spin" size={20} strokeWidth={1.2} />}
             </button>

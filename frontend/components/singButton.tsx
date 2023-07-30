@@ -1,10 +1,8 @@
 "use client";
 import React from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image';
 
 export default function SingButton(){
-    const router = useRouter();
 
     return (
         <a href='http://localhost:8000/auth/42'>
