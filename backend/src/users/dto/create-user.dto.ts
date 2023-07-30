@@ -10,6 +10,7 @@ export class UserDTO {
     fact2Auth: boolean;
     level: number;
     XP: number;
+    fact2Secret: string;
     ownedChannels: ChannelDTO[];
     channels: ChannelDTO[];
     initiatedFriendships: FriendshipDTO[];

@@ -51,6 +51,9 @@ export class User {
     
     @Column()
     XP: number;
+
+    @Column({ nullable: true })
+    fact2Secret: string;
     
     @OneToMany(() => Channel, channel => channel.owner)
     ownedChannels: Channel[];

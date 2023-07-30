@@ -41,7 +41,6 @@ export class UsersController {
   @Patch('updateMe')
   @UseGuards(JwtAuthGuard)
   updateMe(@Req() req, @Res() res, @Body() updateUserDto: UpdateUserDto) {
-    console.log(req.user);
     this.usersService.update(req.user.username, updateUserDto);
     res.status(200).send({message: 'User updated'});
   }
