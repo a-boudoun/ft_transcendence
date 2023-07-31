@@ -47,7 +47,7 @@ export class gameSimulation{
 		this.ball = this.drawCircle(this.Cwidth / 2, this.Cheight / 2, 20);
 
 		Matter.World.add(this.engine.world, [this.floor, this.ceiling, this.rightBoard, this.leftBoard, this.ball]);
-		Matter.Body.setVelocity(this.ball, { x: 10, y: 5 });
+		setTimeout(() => Matter.Body.setVelocity(this.ball, { x: 10, y: 5 }), 3000);
 	}
 	
 	setLeftBoardPosition(y : number) {

@@ -6,8 +6,7 @@ import { drawRect, drawCircle } from "@components/draw";
 import { useRouter } from "next/navigation";
 import io from 'socket.io-client';
 
-//// : implement the game logic in the backend and send the data to the frontend
-//// : make the cnasvas responsive
+
 const randomInt = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -15,11 +14,24 @@ const usnm: number = randomInt(1, 1000);
 const socket = io('http://localhost:8000', {
 	query: {username: usnm.toString()},
 });
+
+
+function PlayersScore({ left, right }) {
+	return (
+	  <div className="flex justify-between absolute top-[160px] left-[100px] right-[100px]">
+		<div className="text-3xl text-white mx-4">{/* left player score */}Left: {left}</div>
+		<div className="text-3xl text-white mx-4">{/* right player score */}Right: {right}</div>
+	  </div>
+	);
+  }
+
 export default function Game(){
 	const divRef = useRef<HTMLDivElement | null>(null);
 	const [PVisible, setPVisible] = useState<boolean>(true);
 	const router = useRouter();
 	const [countDownValue, setCountDownValue] = useState<number>(3);
+	const [leftScore, setLeftScore] = useState<number>(0);
+	const [rightScore, setRightScore] = useState<number>(0);
 	let roomid: string = '';
 	let sender: boolean = false;
 	let sx : number = 1;
@@ -59,21 +71,6 @@ export default function Game(){
 				render.canvas.height = divRef.current.offsetHeight;
 				sx = divRef.current.offsetWidth / 2048;
 				sy = divRef.current.offsetHeight / 890;
-
-				Body.setPosition(
-					floor,
-					{
-						x: divRef.current.offsetWidth / 2,
-						y: divRef.current.offsetHeight,
-					}
-				);
-				Body.setPosition(
-					ceiling,
-					{
-						x: divRef.current.offsetWidth / 2,
-						y: 0,
-					}
-				);
 		}
 		
 		if (!divRef.current) return;
@@ -83,22 +80,13 @@ export default function Game(){
 		sx = W / 2048;
 		sy = H / 890;
 		
-		let engine = Engine.create({
-			enableSleeping: false, // Sleep the object when it is not moving
-			constraintIterations: 4, // he higher quality the simulation will be at the expense of performance.
-			gravity:{
-				x:0,
-				y:0,
-				scale:0.001,
-			},
-		}),
+		let engine = Engine.create(),
 		render = Render.create({
 			engine: engine,
 			element: divRef.current,
 			options: {
 				width: W,
 				height: H,
-				// rendering pixel to be more sharp
 				pixelRatio: 1,
 				wireframes: false,
 				background: "#7AC7C4",
@@ -106,14 +94,12 @@ export default function Game(){
 		}),
 		mouse = Mouse.create(render.canvas);
 
-		const floor = drawRect(W / 2, H, 5000, 20, '#7AC7C4');
-		const ceiling = drawRect(W / 2, 0, 5000, 20, '#7AC7C4');
 		const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#F73859');
 		const leftBoard = drawRect(35, H / 2, 20, 120, '#F73859');
 
 		
-		const ball = drawCircle(W / 2, H / 5, 20, '#384259');
-		Composite.add(engine.world, [floor, ball, ceiling, rightBoard, leftBoard]);
+		const ball = drawCircle(W / 2, H / 2, 15, '#384259');
+		Composite.add(engine.world, [ball, rightBoard, leftBoard]);
 		window.addEventListener("resize", handleResize);
 		// document.addEventListener('keydown', handleKeyDown);\
 		Render.run(render);
@@ -162,7 +148,16 @@ export default function Game(){
 				);
 			});
 			socket.on('score', (data) => {
-				console.log('left', data.leftScore, 'right', data.rightScore);
+				setLeftScore(data.leftScore);
+				setRightScore(data.rightScore);
+			});
+			socket.on('winner', (data) => {
+				if (data.winner == usnm) {
+					router.push('/game/winner');
+				}
+				else {
+					router.push('/game/loser');
+				}
 			});
 		}, 3000);
 
@@ -182,10 +177,10 @@ export default function Game(){
 	return (
     <div className="flex justify-center items-center h-full w-full bg-[#384259]">
 		{PVisible && <p className="absolute font-bold text-[#384259] text-[70px] ">{countDownValue}</p>}
+		<PlayersScore left={leftScore} right={rightScore}/>
     	<div
     	  ref={divRef}
     	  className="h-4/6 w-4/5 mt-20 cursor-none">
-    	  {/* Your content goes here */}
     	</div>
 		<button 
 			className="absolute bottom-[50px] right-[50px]  m-4  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]" onClick={() => {router.push("/home")}}>
