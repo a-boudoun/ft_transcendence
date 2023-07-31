@@ -4,10 +4,9 @@ import { useState } from 'react'
 import { useQuery, useMutation} from "@tanstack/react-query";
 import axios from 'axios'
 import Image from 'next/image'
-import { userSchema } from '@/models/user';
-import { userDto } from '@/dto/userDto';
 import { useRouter } from 'next/navigation'
 import { Loader2 } from  'lucide-react';
+import { userSchema } from '@/models/user';
 
 interface body {
   code : string
@@ -37,7 +36,6 @@ export const Enable2FA = () => {
       router.push('/settings');
     else {
       setIsLoading(false);
-      console.log(data);
       setMsg(data.message);
     }
     }
@@ -49,23 +47,9 @@ export const Enable2FA = () => {
 
   const handleSubmit = async(e: any) => {
     e.preventDefault(); 
-    // const validationResult = await userSchema.safeParseAsync({fact2secret: code});
-    //  if(validationResult.success)
-    //  {
-      // const user : userDto = {fact2Secret: code}
 
-      const body : body = {code: code}
-
-
-      await turnON.mutate(body);
-
-    //  }
-
-    // else
-    // {
-    //   setIsLoading(false);
-    //   setErrors(validationResult.error.issues);
-    // }
+    const body : body = {code: code}
+    await turnON.mutate(body);
   };
 
   

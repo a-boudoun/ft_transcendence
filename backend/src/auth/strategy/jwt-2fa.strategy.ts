@@ -5,7 +5,6 @@ import { config } from 'dotenv';
 import { Request } from 'express';
 import { UsersService } from 'src/users/users.service';
 
-
 config();
 
 const extractCookie = (req: Request): string | null => {
@@ -15,7 +14,7 @@ const extractCookie = (req: Request): string | null => {
     return null;
 }
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class Jwt2faStrategy extends PassportStrategy(Strategy, 'jwt-2fa') {
     constructor(private readonly usersService: UsersService) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([extractCookie]),
@@ -25,7 +24,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     async validate(payload: any) {
+        
         const user = await this.usersService.findOne(payload.username);
-        return user;
+
+        if (!user.fact2Auth)
+            return user;
+        if (payload.fact2Auth === true) 
+            return user;
     }
 }

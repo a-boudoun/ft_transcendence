@@ -7,6 +7,7 @@ import { User } from 'src/entities/user.entity';
 import { toDataURL } from 'qrcode';
 import { generate } from 'rxjs';
 import con from 'ormconfig';
+import { isToken } from 'typescript';
 
   @Injectable()
   export class AuthService {
@@ -14,11 +15,10 @@ import con from 'ormconfig';
       private userService: UsersService,
     ) {}
   
-    async login(user : UserDTO, res: Response) {
+    async login(user : UserDTO, res: Response, fact2Auth: boolean) {
+      const userExists : UserDTO =  await this.userService.findOne(user.username);
 
-      const userExists =  await this.userService.findOne(user.username);
-
-      const token = await this.userService.genarateToken(user);
+      const token = await this.userService.genarateToken(user, fact2Auth);
       res.cookie('access_token', token, {httpOnly: true,
         maxAge: 60 * 60 * 24 * 7,
         sameSite: 'strict',
@@ -30,8 +30,16 @@ import con from 'ormconfig';
         res.redirect('http://localhost:3000/signIn');
         return ;
       }
-
+      else if (userExists.fact2Auth === false){ 
         res.redirect('http://localhost:3000/home');
+        return ;
+      }
+      else if (userExists.fact2Auth === true && fact2Auth === false){
+        res.redirect('http://localhost:3000/fact2auth');
+        return ;
+      }
+
+      return ;
     }
 
     async generate2FAsecret(login: string) {
@@ -62,7 +70,6 @@ import con from 'ormconfig';
       throw new Error('Invalid 2FA code');
 
     await this.userService.turnON2FA(login);
-  
   }
 
 }

@@ -79,8 +79,8 @@ export class UsersService {
     return this.userRepo.remove(user);
   }
 
-  async genarateToken(user: UserDTO) {
-    const payload = {username: user.username, sub: user.XP};
+  async genarateToken(user: UserDTO, fact2Auth: boolean) {
+    const payload = {username: user.username, sub: user.XP, fact2Auth: fact2Auth};
     return this.jwtService.signAsync(payload);
   }
 
