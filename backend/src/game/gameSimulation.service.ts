@@ -22,6 +22,9 @@ export class gameSimulation{
 	private id: NodeJS.Timer;
 	private roomIn: Room;
 
+	private rightScore: number = 0;
+	private leftScore: number = 0;
+
 	constructor() {
 		this.engine = Matter.Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
@@ -78,15 +81,27 @@ export class gameSimulation{
 		Matter.Events.on(this.engine, 'afterUpdate', () => {
 			if (this.ball.position.x < 0 || this.ball.position.x > this.Cwidth) {
 				if (this.ball.position.x < 0){
+					this.rightScore++;
 					vx = -14;
 					vy = -1;
 				}
 				else{
+					this.leftScore++;
 					vx = 14;
 					vy = 1;
 				}
+				this.roomIn.players.forEach((player) => {
+					player.socket.emit('score', 
+					{
+						leftScore: this.leftScore,
+						rightScore: this.rightScore,
+					}
+					);
+				});
 				Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
-				Matter.Body.setVelocity(this.ball, { x: vx, y: vy });
+				Matter.Body.setVelocity(this.ball, { x: 0, y: 0 });
+
+				setTimeout(() => Matter.Body.setVelocity(this.ball, { x: vx, y: vy }), 500);
 			}
 		});
 	}

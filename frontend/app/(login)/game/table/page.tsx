@@ -161,6 +161,9 @@ export default function Game(){
 					}
 				);
 			});
+			socket.on('score', (data) => {
+				console.log('left', data.leftScore, 'right', data.rightScore);
+			});
 		}, 3000);
 
 		return () => {
