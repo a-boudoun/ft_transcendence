@@ -19,8 +19,8 @@ const socket = io('http://localhost:8000', {
 function PlayersScore({ left, right }) {
 	return (
 	  <div className="flex justify-between absolute top-[160px] left-[100px] right-[100px]">
-		<div className="text-3xl text-white mx-4">{/* left player score */}Left: {left}</div>
-		<div className="text-3xl text-white mx-4">{/* right player score */}Right: {right}</div>
+		<div className="text-5xl text-white mx-4">{left}</div>
+		<div className="text-5xl text-white mx-4">{right}</div>
 	  </div>
 	);
   }
@@ -152,11 +152,13 @@ export default function Game(){
 				setRightScore(data.rightScore);
 			});
 			socket.on('winner', (data) => {
-				if (data.winner == usnm) {
-					router.push('/game/winner');
+				if(sender){
+					if (data === 'right') router.push('/game/winner')
+					else router.push('/game/loser')
 				}
-				else {
-					router.push('/game/loser');
+				else{
+					if (data === 'left') router.push('/game/winner')
+					else router.push('/game/loser')
 				}
 			});
 		}, 3000);
