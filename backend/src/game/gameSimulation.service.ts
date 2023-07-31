@@ -82,13 +82,13 @@ export class gameSimulation{
 			if (this.ball.position.x < 0 || this.ball.position.x > this.Cwidth) {
 				if (this.ball.position.x < 0){
 					this.rightScore++;
-					vx = -14;
-					vy = -1;
+					vx = -10;
+					vy = -3;
 				}
 				else{
 					this.leftScore++;
-					vx = 14;
-					vy = 1;
+					vx = 10;
+					vy = 3;
 				}
 				this.roomIn.players.forEach((player) => {
 					player.socket.emit('score', 
