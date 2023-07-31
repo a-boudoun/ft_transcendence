@@ -3,6 +3,9 @@ import NavBar  from "@/components/NavBar/NavBar";
 import { redirect } from 'next/navigation';
 import get  from '@/apis/server/get';
 import userDto from "@/dto/userDto";
+import axios from "axios";
+import { cookies } from 'next/headers';
+
 
 export default async function RootLayout({
   children,
@@ -10,9 +13,11 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
 
-  const data: userDto | null = await get('/auth/isAuth');
-  if (!data)
-    redirect('/');
+  const cookieStore = cookies();
+  const token = cookieStore.get('access_token');
+  const url = `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/auth/isAuth`;
+
+  await axios.get(url , {'headers' : {'cookie' : `access_token=${token?.value}`}}).catch((err : any) => {redirect('/')}); 
   
   return (
     <>
