@@ -8,6 +8,7 @@ import Messeges from "@/components/chat/ChannelItems";
 import ChNav from "@/components/chat/ChNav";
 import Channel from "@/components/chat/Channel";
 import Friend from "@/components/chat/Friend";
+import Modal from "@/components/chat/Modal";
 
 
 export default function LoginLayout({
@@ -29,7 +30,7 @@ export default function LoginLayout({
           
         </div>
         {children}
-
+        {/* <Modal isOpen={true}/> */}
       </div>
     </main>
   )

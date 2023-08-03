@@ -22,7 +22,7 @@ export const channelSchema = z.object({
     type: z
     .any()
     .optional(),
-    owner: z
+    members: z
     .any(),
     password: z
     .string()

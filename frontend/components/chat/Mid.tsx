@@ -9,9 +9,13 @@ import userDto from "@/dto/userDto";
 import channelDto from '@/dto/channelDto';
 import { useSelector } from 'react-redux';
 import { set } from 'zod';
-import { setMessage } from '@/redux/features/currentChannel';
+import { setMembership, setMessage } from '@/redux/features/currentChannel';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
+import Channel from '@/dto/Channel';
+import Message from '@/dto/Message';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 
 const socket = io('http://localhost:8000', {
     autoConnect: false,
@@ -19,37 +23,25 @@ const socket = io('http://localhost:8000', {
 });
 
 
-interface User {
-    userID: string;
-    username: string;
-}
-
-interface Message {
-    content: string;
-    from: string;
-}
-
-
-interface Data{
-    id: number;
-    name: string;
-    image: string;
-    type: string;
-    password: string;
-    
-}
-
-
 const Mid = () => {
-
-    
-    const data: Data = useSelector((state: any) => state.currentChannel.channel);
-    // const messages: Message[] = useSelector((state: any) => state.currentChannel.channel.messages);
+    const channel = useSelector((state: any) => state.currentChannel.channel);
+    const user = useSelector((state: any) => state.currentChannel.user);
     const [input, setInput] = useState('');
-    console.log("data",data);
-   
+
+    const messages: Message[] = channel.messages;
     const dispatch = useDispatch<AppDispatch>();
     const messageContainerRef = useRef(null);
+
+    const joinChannel = useMutation({
+        mutationFn: async (user : userDto) => {
+            const {data} = await axios.patch(`http://localhost:8000/channels/${channel.id}/joinChannel`, user, {withCredentials: true});
+            dispatch(setMembership(data));
+            return data;
+        },
+        onSuccess: () => {
+            console.log("joined")
+        }
+    });
 
     const handelchange = (event: any) => {
         const msg = event.target.value;
@@ -59,10 +51,11 @@ const Mid = () => {
 
     const handelSubmit = (event: any) => {
         event.preventDefault();
-        if(!input.trim()) return;
-        dispatch(setMessage({content: input, from: "me"}));
+        if (!input.trim()) return;
+        dispatch(setMessage({ content: input, from: "me" }));
         setInput('');
     }
+
 
 
 
@@ -72,7 +65,12 @@ const Mid = () => {
         }
     }, []);
 
+    const handleJoinChannel = () => {
+            joinChannel.mutate(user);
+    }
 
+
+    const isMember = channel.memberships?.some((membership) => membership.member.id === user.id)
 
     return (
         <div className={` h-full w-full flex sm:w-1/2 lg:w-5/12 flex-col text-white  rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4`}>
@@ -90,28 +88,31 @@ const Mid = () => {
                     </Link>
                     <Image
                         className="h-full rounded-full  "
-                        src={data.image}
+                        src={channel.image}
                         width={30}
                         height={30}
                         alt=""
                     />
-                    <span className="text-center h-fit">{data.name}</span>
+                    <span className="text-center h-fit">{channel.name}</span>
                 </div>
             </div>
             <div className="overflow-y-auto flex-grow " ref={messageContainerRef}>
                 {
-                    // messages?.map((msg: Message) => (
-                    //     <Message msg={msg.content} id={msg.from} />
-                    // ))
+                    messages?.map((msg: Message) => (
+                        <Message msg={msg.content} id={msg.from} />
+                    ))
                 }
             </div>
             <div className="h-[56px] flex justify-between bg-dark-gray items-center px-3 py-2  rounded-lg">
-                <form onSubmit={handelSubmit} className="flex bg-inherit justify-between items-center w-full">
+                <form onSubmit={handelSubmit} className={` ${isMember === true ? '' : 'hidden'} flex bg-inherit justify-between items-center w-full`}>
                     <input type="text" value={input} onChange={handelchange} className="w-full bg-inherit h-10 rounded-md px-2 outline-none" placeholder="Send Message.." />
                     <button type="submit" className="  px-3 rounded-md">
                         <Image src="/img/send.svg" width={20} height={20} alt="" />
                     </button>
                 </form>
+                <button className={` ${isMember === false ? '' : 'hidden'} flex  justify-center items-center  w-full h-full text-blue`} onClick={handleJoinChannel} >
+                    Join
+                </button>
             </div>
         </div>
 
@@ -124,7 +125,6 @@ export default Mid;
 
 export const Message = (msg: any) => {
     return (
-
         <div className="flex  flex-col bg-dark-gray w-fit  max-w-[250px] rounded-md  py-2 m-2">
             <div className="flex justify-between text-blue">
                 <div className="text-left px-2 text-xs">

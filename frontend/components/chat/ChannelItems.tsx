@@ -5,7 +5,9 @@ import Link from "next/link";
 
 import userDto from "@/dto/userDto";
 import channelDto from "@/dto/channelDto";
-import { useSelector } from 'react-redux';
+import axios from "axios";
+import { useSelector } from "react-redux";
+import Channel from "@/dto/Channel";
 
 interface Data{
     id: number;
@@ -13,41 +15,46 @@ interface Data{
     image: string;
     type: string;
     password: string;
-    
+
 }
 
 
 const ChannelItems = ({path}:{path:string}) => {
 
-
-    const data = useSelector((state: any) => state.currentChannel.channels);
+    const data :Channel[] = useSelector((state: any) => state.currentChannel.channels);
     return (
+        
         <div className="h-[90%] overflow-y-scroll py-2 ">
             {
-            data?.map((data: channelDto) =>(
+            data?.map((data: Channel) =>(
                 <Link href={`/channel/${data.id}` }>
-                    <ChannelItem key={data.id} msg={data} />
+                    <ChannelItem key={data.id} channel={data}  />
                 </Link>
-            ))}
+            ))
+        
+            }
         </div>
     );
 }
  
 export default ChannelItems;
 
-export const ChannelItem = ({msg}:{msg:channelDto}) => { 
-    const path = "/chat/" ;
+export const ChannelItem = ({channel}:{channel:Channel}) => { 
+   
     return (
-        <div className={`bg-dark-gray h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white`}>
+        <div className={`bg-dark-gray h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white flex justify-between`}>
             <div className="flex items-center space-x-5">
                 <Image
                 className="rounded-full self-center"
-                src={msg.image}
+                src={channel.image}
                 width={42}
                 height={42}
                 alt=""
                 />
-                <h3>{msg.name}</h3>
+                <h3>{channel.name}</h3>
+            </div>
+            <div>
+               <h2>{channel.type}</h2> 
             </div>
         </div>
     );

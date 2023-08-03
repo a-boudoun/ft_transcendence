@@ -17,6 +17,11 @@ export enum ChannelType {
     PRIVATE = 'private',
     PROTECTED = 'protected'
 }
+export enum MemberTitle {
+    MEMBER = 'member',
+    ADMIN = 'admin',
+    OWNER = 'owner'
+}
 
 @Entity({ name: 'Channel' })
 export class Channel {
@@ -93,6 +98,9 @@ export class Membership {
     
     @ManyToOne(() => User, (user) => user.channels)
     member: User;
+
+    @Column({ length: 25 })
+    title: MemberTitle;
 }
 
 export enum SanctionType {

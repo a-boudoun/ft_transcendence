@@ -5,11 +5,11 @@ import ChannelItems from "./ChannelItems";
 import userDto from "@/dto/userDto";
 import NewChannel from "./NewChannel";
 import channelDto from "@/dto/channelDto";
-import { AppDispatch } from '@/redux/store';
-import { useDispatch } from 'react-redux';
-import { setChannels } from "@/redux/features/currentChannel";
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios';
+import { useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import { setChannels, setuser } from "@/redux/features/currentChannel";
+import Channel from "@/dto/Channel";
 
 interface Message {
   content: string;
@@ -26,43 +26,19 @@ interface Data{
 }
 
 const ChNav = ({data,  owner,  path}:{data:channelDto[], owner:userDto, path:string}) => {
-   
-
-  const dispatch = useDispatch<AppDispatch>();
-
-
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-
-      const response = await axios.get('http://localhost:8000/channels'); 
-      const dt: Data[] = response.data;
-      dispatch(setChannels(dt))
-      return { dt };
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    
-    }
-
-
-  };
-  
-  // dispatch(setChannels(data));
-
-
+   const dispatch = useDispatch<AppDispatch>();
     const [newchannel, setNewchannel] = useState(false);
     const activeStyle = "border-b-4 text-blue border-blue";
 
     
-
+    dispatch(setuser(owner));
     const handleclick = (buttonNumber : number) => {
       buttonNumber === 1 ?  setNewchannel(false) : setNewchannel(true);
     }
-
+    useEffect(() => {
+      dispatch(setChannels(data as Channel[]));
+  }, []);
+   
     return (
       <div className={`h-full`}>
 

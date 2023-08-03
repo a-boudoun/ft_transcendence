@@ -3,6 +3,7 @@ import NavBar  from "@/components/NavBar/NavBar";
 import { redirect } from 'next/navigation';
 import get  from '@/apis/server/get';
 import userDto from "@/dto/userDto";
+import Modal from "@/components/chat/Modal";
 
 export default async function RootLayout({
   children,
@@ -16,6 +17,7 @@ export default async function RootLayout({
   
   return (
     <>
+       
         <NavBar />
         {children}
     </>  
