@@ -26,21 +26,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   
   recentRomm: string | null;
   handleConnection(client: Socket, data: any) {
-    // TODO: check if the player username is already in a room 
-    if (!client.handshake.query.username ||  client.handshake.headers.connection === 'close') {
-      client.disconnect(true);
-      return;
-    }
   }
   
   handleDisconnect(client: Socket) {
     let removedRoom: string | null ;
-    console.log(`Client disconnected: ${client.handshake.query.username}`);
+    console.log(`Client disconnected: ${client.id}`);
     removedRoom = this.gameService.removePlayer(client);
     if (removedRoom) {
       this.engineService.removeGameSimulation(removedRoom);
     }
   }
+
+  
   
   @SubscribeMessage('rightPaddle')
   handlerPaddle(client: Socket, data: any) {
@@ -51,11 +48,27 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handlelPaddle(client: Socket, data: any) {
     this.engineService.setLeftBoardPosition(data.room, data.y);
   }
+
+  @SubscribeMessage('refresh')
+  handleRefresh(client: Socket, data: any) {
+    console.log('refreshing');
+  }
   
+  @SubscribeMessage('endGame')
+  handleEndGame(client: Socket, data: any) {
+    console.log('ending game');
+    const room: Room = this.gameService.findRoom(data.room);
+    if (room) {
+      this.engineService.removeGameSimulation(room.id);
+      this.gameService.removeRoom(room.id);
+    }
+  }
+
   @SubscribeMessage('startGame')
   handleStartGame(client: Socket, data: any) {
+    client.handshake.query.username = data.username;
     console.log(
-      'client connected', client.handshake.query.username,
+      `client id ${client.handshake.query.username}`
     );
     this.gameService.addPlayerToQueue(client);
     this.recentRomm = this.gameService.matchPlayers();

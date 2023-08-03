@@ -34,7 +34,8 @@ export default function Game(){
 	let sy : number = 1;
 
 	useEffect(() => {
-		socket.emit('ready', usnm);
+		socket.emit('refresh');
+		socket.emit('startGame', {username: usnm});
 		
 		socket.on('connect', () => {
 		  console.log('Connected to server');
@@ -150,6 +151,7 @@ export default function Game(){
 				setRightScore(data.rightScore);
 			});
 			socket.on('winner', (data) => {
+				socket.emit('endGame', {room: roomid});
 				if(sender){
 					if (data === 'right') router.push('/game/winner')
 					else router.push('/game/loser')
