@@ -2,7 +2,8 @@
 
 import React, { use, useEffect, useRef, useState } from "react";
 import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite, Query} from "matter-js";
-import { drawRect, drawCircle } from "@components/draw";
+import PlayersScore from "@components/game/score";
+import { drawRect, drawCircle } from "@components/game/draw";
 import { useRouter } from "next/navigation";
 import socket from "@components/socketG";
 
@@ -12,14 +13,7 @@ const randomInt = (min: number, max: number) =>
 
 const usnm: number = randomInt(1, 1000);
 
-function PlayersScore({ left, right }) {
-	return (
-	  <div className="flex justify-between absolute top-[160px] left-[100px] right-[100px]">
-		<div className="text-5xl text-white mx-4">{left}</div>
-		<div className="text-5xl text-white mx-4">{right}</div>
-	  </div>
-	);
-  }
+
 
 export default function Game(){
 	const divRef = useRef<HTMLDivElement | null>(null);
