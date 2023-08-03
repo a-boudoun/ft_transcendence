@@ -6,7 +6,23 @@ import Image from "next/image";
 
 export default function Maps(){
 	const router = useRouter();
-	const [selectedMap, setSelectedMap] = useState<number>(0);
+	const [selectedMap, setSelectedMap] = useState<string>("0");
+
+
+	const setmapToLocalStorage = (map: string) => {
+		setSelectedMap(map);
+		localStorage.setItem("map", map);
+	}
+
+
+	useEffect(() => {
+		const map = localStorage.getItem("map");
+		
+		if (map) {
+			setSelectedMap(map);
+		}
+	}, [selectedMap]);
+
 	return (
 		<div className="h-screen w-full bg-dark-gray mt-[56px] py-4 pt-[200px]">
 			<div className="w-full px-2">
@@ -19,23 +35,23 @@ export default function Maps(){
 				<div className="flex justify-center gap-8 items-center flex-col sm:flex-row w-full">
 
 					<div
-						className={selectedMap === 2 ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
+						className={selectedMap === "2" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
 						:"w-full max-w-[320px] hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px]"}
-						onClick={() => setSelectedMap(2)}>
+						onClick={() => setmapToLocalStorage("2")}>
 						<Image width={100} height={100} alt="#" src="/game/m3a-m3a.svg" className="h-full w-full"/>
 						<p className="text-white text-center mt-[10px] font-bold">m3a-m3a</p>
 					</div>
 					<div 
-						className={selectedMap === 1 ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
+						className={selectedMap === "1" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
 						:"w-full max-w-[320px] hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px]"}
-						onClick={() => setSelectedMap(1)}>
+						onClick={() => setmapToLocalStorage("1")}>
 						<Image width={100} height={100} alt="#" src="/game/ched-ched.svg" className="h-full w-full"/>
 						<p className="text-white text-center mt-[10px] font-bold">ched-ched</p>
 					</div>
 					<div 
-						className={selectedMap === 0 ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
+						className={selectedMap === "0" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
 						:"w-full max-w-[320px] hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px]"}
-						onClick={() => setSelectedMap(0)}>
+						onClick={() => setmapToLocalStorage("0")}>
 						<Image width={100} height={100} alt="#" src="/game/default-map.svg" className="h-full w-full"/>
 						<p className="text-white text-center mt-[10px] font-bold">default</p>
 					</div>
