@@ -31,7 +31,29 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.disconnect(true);
       return;
     }
-    // console.log(`Client connected: ${client.id}`);
+  }
+  
+  handleDisconnect(client: Socket) {
+    let removedRoom: string | null ;
+    console.log(`Client disconnected: ${client.handshake.query.username}`);
+    removedRoom = this.gameService.removePlayer(client);
+    if (removedRoom) {
+      this.engineService.removeGameSimulation(removedRoom);
+    }
+  }
+  
+  @SubscribeMessage('rightPaddle')
+  handlerPaddle(client: Socket, data: any) {
+    this.engineService.setRightBoardPosition(data.room, data.y);
+  }
+  
+  @SubscribeMessage('leftPaddle')
+  handlelPaddle(client: Socket, data: any) {
+    this.engineService.setLeftBoardPosition(data.room, data.y);
+  }
+  
+  @SubscribeMessage('startGame')
+  handleStartGame(client: Socket, data: any) {
     console.log(
       'client connected', client.handshake.query.username,
     );
@@ -46,24 +68,4 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
     }
   }
-  
-  handleDisconnect(client: Socket) {
-    let removedRoom: string | null ;
-    console.log(`Client disconnected: ${client.handshake.query.username}`);
-    removedRoom = this.gameService.removePlayer(client);
-    if (removedRoom) {
-      this.engineService.removeGameSimulation(removedRoom);
-    }
-  }
-
-  @SubscribeMessage('rightPaddle')
-  handlerPaddle(client: Socket, data: any) {
-    this.engineService.setRightBoardPosition(data.room, data.y);
-  }
-  
-  @SubscribeMessage('leftPaddle')
-  handlelPaddle(client: Socket, data: any) {
-    this.engineService.setLeftBoardPosition(data.room, data.y);
-  }
-
 }

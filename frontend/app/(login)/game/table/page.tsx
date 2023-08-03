@@ -4,17 +4,13 @@ import React, { use, useEffect, useRef, useState } from "react";
 import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite, Query} from "matter-js";
 import { drawRect, drawCircle } from "@components/draw";
 import { useRouter } from "next/navigation";
-import io from 'socket.io-client';
+import socket from "@components/socketG";
 
 
 const randomInt = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
 const usnm: number = randomInt(1, 1000);
-const socket = io('http://localhost:8000', {
-	query: {username: usnm.toString()},
-});
-
 
 function PlayersScore({ left, right }) {
 	return (
@@ -38,6 +34,8 @@ export default function Game(){
 	let sy : number = 1;
 
 	useEffect(() => {
+		socket.emit('ready', usnm);
+		
 		socket.on('connect', () => {
 		  console.log('Connected to server');
 		});
