@@ -29,12 +29,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   
   handleDisconnect(client: Socket) {
-    let removedRoom: string | null ;
-    console.log(`Client disconnected: ${client.id}`);
-    removedRoom = this.gameService.removePlayer(client);
-    if (removedRoom) {
-      this.engineService.removeGameSimulation(removedRoom);
-    }
   }
 
   
@@ -56,9 +50,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   
   @SubscribeMessage('endGame')
   handleEndGame(client: Socket, data: any) {
-    console.log('ending game');
     const room: Room = this.gameService.findRoom(data.room);
     if (room) {
+      console.log('ending game');
       this.engineService.removeGameSimulation(room.id);
       this.gameService.removeRoom(room.id);
     }
