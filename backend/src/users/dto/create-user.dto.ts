@@ -2,6 +2,7 @@ import { AdministrationDTO, ChannelDTO, MessageDTO, SanctionDTO } from "src/chan
 import { Status } from "../../entities/user.entity";
 
 export class UserDTO {
+    id: number;
     username: string;
     name: string;
     image: string;

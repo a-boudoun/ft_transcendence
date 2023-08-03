@@ -8,19 +8,32 @@ import { setcurrentChannel, resetcurrent } from "@/redux/features/currentChannel
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { useParams, usePathname } from 'next/navigation';
+import Channel from '@/dto/Channel';
+import Modal from '@/components/chat/Modal';
+
 
 const Page =  ({ params }: { params: number }) => {
 
 
   const dispatch = useDispatch<AppDispatch>();
- 
+  
+console.log("page re")
   useEffect(() => {
-      dispatch(setcurrentChannel(params));
+    fetchData();
   }, [params]);
+
+  const fetchData = async () => {
+      const response = await axios.get(`http://localhost:8000/channels/${params.id}`); 
+      const dt = response.data;
+        console.log("dt",dt);
+        dispatch(setcurrentChannel(dt as Channel));
+  };
+ 
   return (
     <>
       <Mid />
       <Right />
+      <Modal />
     </>
   );
 }

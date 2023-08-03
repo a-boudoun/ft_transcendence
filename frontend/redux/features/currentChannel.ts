@@ -8,6 +8,8 @@ import { set } from 'zod';
 type InitialState = {
     channel: Channel;
     channels: Channel[];
+    user: userDto;
+    isopen: boolean;
 };
 
 interface Message {
@@ -15,6 +17,15 @@ interface Message {
     from: string;
 }
 
+type userDto  = {
+    id: number;
+    username: string; 
+    name: string;
+    image: string;
+    fact2Auth: boolean;
+    level: number;
+    XP: number;
+}
 type Channel = {
     id: number;
     name: string;
@@ -22,18 +33,14 @@ type Channel = {
     type: string;
     password: string;
     messages: Message[];
+    memberships: any[];
 };
 const initialState = {
-    channel: {
-    id: 0,
-    name: '',
-    image: '',
-    type: '',
-    password: '',
-    messages: [],
-    } as Channel,
 
+    channel:{} as Channel,
     channels: [] as Channel[],
+    user: {} as userDto,
+    isopen: false,
 
 } as InitialState
 
@@ -42,37 +49,34 @@ export const currentChannelSlice = createSlice({
     initialState,
     reducers: {
         setcurrentChannel: (state , action: PayloadAction<any>) => {
-            // state.channel.id = action.payload.id;
-            // state.channel.name = action.payload.name;
-            // state.channel.image = action.payload.image;
-            // state.channel.type = action.payload.type;
-            // state.channel.password = action.payload.password;
-
-            state.channel  = state.channels.find((channel: any) => channel.id === parseInt(action.payload.id));
-
-            // console.log(state.channel.messages);
-            // state.channel.id = ch.id;
-            // state.channel.name = ch.name;
-            // state.channel.image = ch.image;
-            // state.channel.type = ch.type;
-            // state.channel.password = ch.password;
-            // state.channel.messages = [];
-            
-
+            console.log('action.payload', action.payload)
+            state.channel  = action.payload;
         },
         setMessage: (state: any, action: PayloadAction<any>) => {
-            state.channel.messages.push(action.payload);
+            console.log('action.payload11', action.payload)
+            state.channel.messages.push(action.payload );
+
         },
         setChannels: (state: any, action: PayloadAction<any>) => {
             state.channels = action.payload;
         },
         setnewchannel: (state: any, action: PayloadAction<any>) => {
-            state.channels.push(action.payload);
+            state.channels.unshift(action.payload);
+        },
+        setisopen: (state: any, action: PayloadAction<any>) => {
+            state.isopen = action.payload;
+        },
+        setuser: (state: any, action: PayloadAction<any>) => {
+            state.user = action.payload;
+        },
+        setMembership: (state: any, action: PayloadAction<any>) => {
+            state.channel.memberships.push(action.payload);
         }
+
 
     }
 })
 
 
-export const {setcurrentChannel, setMessage, setChannels, setnewchannel} = currentChannelSlice.actions;
+export const {setcurrentChannel, setMessage, setChannels, setnewchannel, setisopen, setuser, setMembership} = currentChannelSlice.actions;
 export default currentChannelSlice.reducer;
