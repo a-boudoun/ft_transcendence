@@ -7,7 +7,8 @@ import {
     ManyToMany,
     JoinTable,
     Index,
-    DataSource
+    DataSource,
+    CreateDateColumn
   } from 'typeorm';
 import { User } from './user.entity';
   
@@ -54,8 +55,8 @@ export class Message {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @Column({ type: 'timestamp' })
-    createdAt: Date;
+    @CreateDateColumn()
+    created_at: Date;
   
     @ManyToOne(() => Channel, (channel) => channel.messages)
     channel: Channel;
