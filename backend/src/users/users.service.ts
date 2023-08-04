@@ -27,8 +27,8 @@ export class UsersService {
     return this.userRepo.save(user);
   }
   
-  findAll() {
-    return this.userRepo.find();
+  async findAll() {
+    return await this.userRepo.find();
   }
   
   findOne(username: string) {

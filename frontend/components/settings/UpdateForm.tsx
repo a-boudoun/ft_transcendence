@@ -1,7 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useState } from 'react';
+import { useEffect, useState } from 'react'
 import Image from 'next/image';
 import axios from 'axios';
 import { useQuery , useMutation } from "@tanstack/react-query";
@@ -12,6 +11,8 @@ import uploadImage from '@/apis/uploadImage';
 import { useRouter } from 'next/navigation'
 import { Client } from '@/Providers/QueryProvider';
 import { set } from 'zod';
+import Frineds from "@/components/common/Friends";
+
 
 const UpdateForm = () => {
 
@@ -19,7 +20,7 @@ const UpdateForm = () => {
   const [image, setImage] = useState<any>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [name, setName] = useState<string>('');
-  const [errors, setErrors] = useState<z.ZodIssue[]>([]);
+  const [msg, setMsg] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const User = useQuery({
@@ -37,6 +38,7 @@ const UpdateForm = () => {
     onSuccess: () => {
       Client.refetchQueries('user');
       setIsLoading(false);
+      setMsg('your account has been updated successfully');
     },
   });
 
@@ -72,12 +74,11 @@ const UpdateForm = () => {
     else
     {
       setIsLoading(false);
-      setErrors(validationResult.error.issues);
+      setMsg(validationResult.error.errors[0].message);
     }
   };
 
   const handele2FA = async() => {
-
    if (User.data.fact2Auth === true ){
       User.data.fact2Auth = false;
       User.data.fact2Secret = null;
@@ -87,9 +88,7 @@ const UpdateForm = () => {
    }
     else
       Router.push('settings/fact2auth')
-  
  }
-
 
   if (User.isLoading)
   return <div>loading...</div>
@@ -97,21 +96,26 @@ const UpdateForm = () => {
       console.log(User.data);
 
       return (
-          <>
-          <form className='h-full flex flex-col items-center gap-8'  onChange={handleChange} onSubmit={handleSubmit}>
-            <div>
-              <h3 className='mb-6 text-xl font-bold text-blue' >Account settings</h3>
-              <div className='flex justify-center items-center gap-8'>
-                <label>
-                  <div className='relative hover:opacity-60'>
-                      <Image className='min-w-[132px] min-h-[132px] sm:w-[200px] sm:h-[200px] rounded-full cursor-pointer' src={imagePreview} width={1000} height={1000} alt="avatar" />
-                      <Image className='absolute bottom-5 right-0 sm:w-8 sm:h-8' src={"/icons/changeImage.svg"} width={24} height={24} alt="" />
-                      <input type="file" className="hidden" accept="image/jpeg, image/jpg, image/png, image/webp" />
-                  </div>
-                </label>
-                <input id={'name'} className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-[2px] hover:opacity-60" type="text" placeholder={name}/>
-              </div>  
-            </div>
+          <div className='my-8 h-full w-full flex flex-col items-center gap-8'>
+            <form onChange={handleChange} onSubmit={handleSubmit}>
+              <div>
+                <h3 className='mb-6 text-xl font-bold text-blue' >Account settings</h3>
+                <div className='flex justify-center items-center gap-8'>
+                  <label>
+                    <div className='relative hover:opacity-60'>
+                        <Image className='w-[132px] h-[132px] sm:w-[200px] sm:h-[200px] rounded-full cursor-pointer' src={imagePreview} width={1000} height={1000} alt="avatar" />
+                        <Image className='absolute bottom-5 right-0 sm:w-8 sm:h-8' src={"/icons/changeImage.svg"} width={24} height={24} alt="" />
+                        <input type="file" className="hidden" accept="image/jpeg, image/jpg, image/png, image/webp" />
+                    </div>
+                  </label>
+                  <input id={'name'} className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-[2px] hover:opacity-60" type="text" placeholder={name}/>
+                </div>
+              <button className="relative mt-6 h-16 rounded-2xl text-black text-center bg-blue px-14 hover:opacity-60" type='submit' onClick={ () => {setIsLoading(true)}  } >save
+                {isLoading && <Loader2 className="absolute top-6 right-6 animate-spin" size={20} strokeWidth={1.2} />}
+              </button>
+              {msg && <p className={`${msg[0] === 'y' ? 'text-blue' : 'text-red'} text-center mt-3`}>{msg}</p>}
+              </div>
+            </form>
             <div>
               <h3 className='my-6 text-xl font-bold text-blue' >two-factor authentication</h3>
               <p className='max-w-sm'>
@@ -121,12 +125,13 @@ const UpdateForm = () => {
                 {User.data.fact2Auth === true? 'disable' : 'enable'}
               </button>
             </div>
-            <button className="relative mt-12 h-16 rounded-2xl text-black text-center bg-blue px-14 hover:opacity-60" type='submit' onClick={ () => setIsLoading(true)} >save
-              {isLoading && <Loader2 className="absolute top-6 right-6 animate-spin" size={20} strokeWidth={1.2} />}
-            </button>
-          </form>
-          {/* {errors.length > 0 && <p className='text-red text-center max-w-[200px]'>{errors[0].message}</p>} */}
-          </>
+            <div className='w-[400px] grow flex flex-col'>
+              <h3 className='mb-6 text-xl font-bold text-blue' >blocked users</h3> 
+              <div className='bg-light-gray grow rounded-3xl shadow-2xl p-8'> 
+                <Frineds /> 
+              </div>
+            </div>
+        </div>
     )
   }
 }

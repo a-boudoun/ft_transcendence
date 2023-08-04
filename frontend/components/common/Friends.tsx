@@ -1,27 +1,41 @@
+'use client'
+
 import Image from 'next/image';
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import getData from "@/apis/server/get";
 import userDto from "@/dto/userDto";
+import axios from 'axios';
+import { useQuery } from "@tanstack/react-query";
+import { use } from 'react';
 
-const Friends = async() => {
 
-    const friends: userDto[] = await getData('/users');
-    
-    return (
+const Friends = () => {
+
+    const {data, isLoading} = useQuery({
+        queryKey: ['users'],
+        queryFn: async ()=> {
+            const { data } = await axios.get('http://localhost:8000/users', { withCredentials: true });
+            return data;
+        }
+      });
+   
+      if (isLoading) 
+      return <div className="">loading... </div>
+      else {
+        return (
         <div className={'h-full flex flex-col gap-1 overflow-y-scroll rounded-2xl'}>
-            {
-
-                friends.map((friend: userDto) => {
-                    return (
-                        <Link href={`/profile/${friend.name}`} >
-                            <Friend user={friend} /> 
-                        </Link>
-                    );
-                })
-            }   
-        </div>
-    );
+                {
+                    data.users?.map((friend: userDto) => {
+                        return (
+                            <Link href={`/profile/${friend.name}`} >
+                                <Friend user={friend} /> 
+                            </Link>
+                        );
+                    })
+                }   
+            </div>
+        );
+    }
 }
 
 export default Friends;
