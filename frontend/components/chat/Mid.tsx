@@ -16,25 +16,28 @@ import Channel from '@/dto/Channel';
 import Message from '@/dto/Message';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-
-const socket = io('http://localhost:8000', {
-    autoConnect: false,
-    transports: ['websocket'],
-});
+import { socket } from './chatSocket';
 
 
-const Mid = () => {
+function Mid() {
     const channel = useSelector((state: any) => state.currentChannel.channel);
     const user = useSelector((state: any) => state.currentChannel.user);
+    const isMid = useSelector((state: any) => state.currentChannel.isMid);
     const [input, setInput] = useState('');
+
+
+    if (!socket.connected) {
+        socket.connect();
+    }
+   
 
     const messages: Message[] = channel.messages;
     const dispatch = useDispatch<AppDispatch>();
     const messageContainerRef = useRef(null);
 
     const joinChannel = useMutation({
-        mutationFn: async (user : userDto) => {
-            const {data} = await axios.patch(`http://localhost:8000/channels/${channel.id}/joinChannel`, user, {withCredentials: true});
+        mutationFn: async (user: userDto) => {
+            const { data } = await axios.patch(`http://localhost:8000/channels/${channel.id}/joinChannel`, user, { withCredentials: true });
             dispatch(setMembership(data));
             return data;
         },
@@ -52,12 +55,20 @@ const Mid = () => {
     const handelSubmit = (event: any) => {
         event.preventDefault();
         if (!input.trim()) return;
-        dispatch(setMessage({ content: input, from: "me" }));
+        // dispatch(setMessage({ content: input, from: user.name }));
+        socket.emit('prevmessage', { channel: channel.id, message: input, from: user.name });
         setInput('');
     }
-
-
-
+       useEffect(() => {
+        const onMsg = (msg: any)=>{
+            dispatch(setMessage({ content: msg.content, from: msg.from }));
+        }
+        socket.on('message', onMsg);
+        return()=>{
+            socket.off('message', onMsg);
+        }
+    }, []);
+  
 
     useEffect(() => {
         if (messageContainerRef.current) {
@@ -66,15 +77,15 @@ const Mid = () => {
     }, []);
 
     const handleJoinChannel = () => {
-            joinChannel.mutate(user);
+        joinChannel.mutate(user);
     }
 
 
     const isMember = channel.memberships?.some((membership) => membership.member.id === user.id)
-
+    { if (!channel.image) return <div></div> }
     return (
-        <div className={` h-full w-full flex sm:w-1/2 lg:w-5/12 flex-col text-white  rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4`}>
-            <div className="h-fit bg-dark-gray flex items-center py-3  rounded-xl" >
+        <div className={` h-full w-full flex sm:w-1/2 lg:w-5/12 flex-col justify-between text-white  rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4`}>
+            <div className="h-fit bg-dark-gray flex items-center py-3  rounded-xl flex justify-between " >
                 <div className="flex items-center space-x-2 ">
 
                     <Link href={`/chat`}>
@@ -95,12 +106,26 @@ const Mid = () => {
                     />
                     <span className="text-center h-fit">{channel.name}</span>
                 </div>
+                <div className="text-3xl mr-5 flex items-center justify-center lg:hidden ">
+                    <button >
+                    <Image
+                        className="h-full rounded-full  "
+                        src={"/img/info.svg"}
+                        width={24}
+                        height={24}
+                        alt=""
+                    />
+                    </button>
+                </div>
             </div>
             <div className="overflow-y-auto flex-grow " ref={messageContainerRef}>
                 {
-                    messages?.map((msg: Message) => (
-                        <Message msg={msg.content} id={msg.from} />
-                    ))
+                    messages?.map((msg: Message, id: number) =>
+
+
+                        <Message key={id} msg={msg.content} id={msg.from}  user={user.username}/>
+
+                    )
                 }
             </div>
             <div className="h-[56px] flex justify-between bg-dark-gray items-center px-3 py-2  rounded-lg">
@@ -124,20 +149,24 @@ export default Mid;
 
 
 export const Message = (msg: any) => {
+    const style = msg.id === msg.user ? "justify-end" : "justify-start";
     return (
-        <div className="flex  flex-col bg-dark-gray w-fit  max-w-[250px] rounded-md  py-2 m-2">
-            <div className="flex justify-between text-blue">
-                <div className="text-left px-2 text-xs">
-                    {msg.id}
+        <div className={`w-full flex ${style}`}>
+            <div className="flex  flex-col bg-dark-gray w-fit  max-w-[250px] rounded-md  py-2 m-2 ">
+                <div className="flex justify-between text-blue">
+                    <div className="text-left px-2 text-xs">
+                        {msg.id}
+                    </div>
+                    <div className="px-2 text-xs">
+                        20:20
+                    </div>
                 </div>
-                <div className="px-2 text-xs">
-                    20:20
+                <div key={msg.id} className="px-3 break-words text-left">
+                    {msg.msg}
                 </div>
-            </div>
-            <div key={msg.id} className="px-3 break-words text-left">
-                {msg.msg}
             </div>
         </div>
+
     );
 }
 

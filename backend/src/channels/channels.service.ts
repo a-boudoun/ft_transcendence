@@ -37,7 +37,6 @@ export class ChannelsService {
     membership.channel = ret;
     membership.member = channel.owner;
     membership.title = MemberTitle.OWNER;
-    console.log('-----------------------------');
 
     console.log(membership);
     await this.membershipRepo.save(membership);

@@ -27,8 +27,8 @@ const ChannelItems = ({path}:{path:string}) => {
         <div className="h-[90%] overflow-y-scroll py-2 ">
             {
             data?.map((data: Channel) =>(
-                <Link href={`/channel/${data.id}` }>
-                    <ChannelItem key={data.id} channel={data}  />
+                <Link  key={data.id} href={`/channel/${data.id}` }>
+                    <ChannelItem channel={data}  />
                 </Link>
             ))
         

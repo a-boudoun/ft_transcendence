@@ -1,7 +1,6 @@
 
 import Channel from '@/components/chat/Channel';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import { channel } from 'diagnostics_channel';
 import { type } from 'os';
 import { set } from 'zod';
 
@@ -10,6 +9,7 @@ type InitialState = {
     channels: Channel[];
     user: userDto;
     isopen: boolean;
+    isMid: boolean;
 };
 
 interface Message {
@@ -41,6 +41,8 @@ const initialState = {
     channels: [] as Channel[],
     user: {} as userDto,
     isopen: false,
+    isMid: true,
+    isRight: false,
 
 } as InitialState
 
@@ -49,11 +51,9 @@ export const currentChannelSlice = createSlice({
     initialState,
     reducers: {
         setcurrentChannel: (state , action: PayloadAction<any>) => {
-            console.log('action.payload', action.payload)
             state.channel  = action.payload;
         },
         setMessage: (state: any, action: PayloadAction<any>) => {
-            console.log('action.payload11', action.payload)
             state.channel.messages.push(action.payload );
 
         },
@@ -71,12 +71,19 @@ export const currentChannelSlice = createSlice({
         },
         setMembership: (state: any, action: PayloadAction<any>) => {
             state.channel.memberships.push(action.payload);
+        },
+        setisMid: (state: any, action: PayloadAction<any>) => {
+            state.isMid = action.payload;
+        },
+        setisRight: (state: any, action: PayloadAction<any>) => {
+            state.isRight = action.payload;
         }
+
 
 
     }
 })
 
 
-export const {setcurrentChannel, setMessage, setChannels, setnewchannel, setisopen, setuser, setMembership} = currentChannelSlice.actions;
+export const {setcurrentChannel, setMessage, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisRight} = currentChannelSlice.actions;
 export default currentChannelSlice.reducer;

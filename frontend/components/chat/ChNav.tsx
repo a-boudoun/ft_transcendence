@@ -31,11 +31,11 @@ const ChNav = ({data,  owner,  path}:{data:channelDto[], owner:userDto, path:str
     const activeStyle = "border-b-4 text-blue border-blue";
 
     
-    dispatch(setuser(owner));
     const handleclick = (buttonNumber : number) => {
       buttonNumber === 1 ?  setNewchannel(false) : setNewchannel(true);
     }
     useEffect(() => {
+      dispatch(setuser(owner));
       dispatch(setChannels(data as Channel[]));
   }, []);
    
