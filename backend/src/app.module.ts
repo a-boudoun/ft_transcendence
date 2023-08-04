@@ -10,11 +10,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import con from '../ormconfig';
 import { GatewayModule } from './gateway/gateway.module';
 import { ChannelsModule } from './channels/channels.module';
+import { GameHistoryModule } from './game-history/game-history.module';
 
 @Module({
   // AuthModule, UsersModule,
   imports: [TypeOrmModule.forRoot(con),
-            AuthModule, UsersModule, GatewayModule, ChannelsModule],
+            AuthModule, UsersModule, GatewayModule, ChannelsModule, GameHistoryModule],
   controllers: [AppController],
   providers: [AppService],
 })
