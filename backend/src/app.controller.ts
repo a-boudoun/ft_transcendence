@@ -14,18 +14,18 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(@Req() request: Request ): any {
-    return this.appService.getHello();
+  async getHello(): Promise<any> {
+    return 'seed completed';
   }
-  @Post()
-  create(@Body() CreateCatDto: CreateCatDto): string {
-    return 'This action adds a new cat';
-  }
-  @Get('cookie')
-  @Header('test', 'test')
-  setCookie(@Res({ passthrough: true }) response: Response){
-    response.cookie('name', 'mazhari');
-    return 'cookie is set';
-  }
+  // @Post()
+  // create(@Body() CreateCatDto: CreateCatDto): string {
+  //   return 'This action adds a new cat';
+  // }
+  // @Get('cookie')
+  // @Header('test', 'test')
+  // setCookie(@Res({ passthrough: true }) response: Response){
+  //   response.cookie('name', 'mazhari');
+  //   return 'cookie is set';
+  // }
 
 }

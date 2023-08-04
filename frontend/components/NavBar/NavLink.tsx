@@ -19,7 +19,7 @@ const NavLink = ({route, src, alt, setIsOpen = () => {}}: NavLinkProps) => {
     let color: string;
 
     if (setIsOpen.length === 1)
-        color = 'bg-light-gray hover:bg-dark-gray';
+        color = 'bg-dark-gray hover:bg-light-gray';
     else
         color = currentRoute === '/' + route ? 'bg-light-gray' : 'bg-dark-gray hover:bg-light-gray';
     

@@ -13,7 +13,7 @@ const NotifDropDown = () => {
   return (
     <>
         <button className='grid place-content-center mr-[14px]' onClick={() => setIsOpen(!isOpen)}>
-         <Image src={'/icons/notification.svg'} alt={"notification"} width={28} height={28} />
+         <Image src={'/icons/navBar/notification.svg'} alt={"notification"} width={28} height={28} />
         </button>
         {
             isOpen
@@ -22,4 +22,4 @@ const NotifDropDown = () => {
   )
 }
 
-export default NotifDropDown
+export default NotifDropDown;
