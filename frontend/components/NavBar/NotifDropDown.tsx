@@ -16,7 +16,7 @@ const NotifDropDown = () => {
          <Image src={'/icons/navBar/notification.svg'} alt={"notification"} width={28} height={28} />
         </button>
         {
-            isOpen
+            isOpen 
         }
     </>
   )
