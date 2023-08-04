@@ -6,8 +6,15 @@ import { UsersModule } from './users/users.module';
 import { GameGateway } from './game/game.gateway';
 import { gameService } from './game/game.service';
 import { GameModule } from './game/game.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import con from '../ormconfig';
+import { GatewayModule } from './gateway/gateway.module';
+import { ChannelsModule } from './channels/channels.module';
+
 @Module({
-  imports: [AuthModule, UsersModule, GameModule],
+  // AuthModule, UsersModule,
+  imports: [TypeOrmModule.forRoot(con),
+            AuthModule, UsersModule, GatewayModule, ChannelsModule],
   controllers: [AppController],
   providers: [AppService],
 })

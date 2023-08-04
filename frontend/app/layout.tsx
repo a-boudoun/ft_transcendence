@@ -1,4 +1,8 @@
 import "./globals.css";
+import { Inter } from 'next/font/google'
+import QueryProvider from "@/Providers/QueryProvider";
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Next.js',
@@ -6,15 +10,19 @@ export const metadata = {
   icon: '/favicon.ico',
 }
 
+
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html className="h-full w-full" lang="en">
-      <body className="h-full w-full text-center">
-        {children}
+    <html className="" lang="en">
+      <body className={`${inter.className} h-screen w-screen bg-red text-center  text-white`}>
+        <QueryProvider>
+          {children}
+        </QueryProvider>
       </body>
     </html>
   )
