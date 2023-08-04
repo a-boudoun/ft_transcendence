@@ -2,10 +2,10 @@
 
 import React, { use, useEffect, useRef, useState } from "react";
 import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite, Query} from "matter-js";
-import PlayersScore from "@components/game/score";
-import { drawRect, drawCircle } from "@components/game/draw";
+import PlayersScore from "@/components/game/score";
+import { drawRect, drawCircle } from "@/components/game/draw";
 import { useRouter } from "next/navigation";
-import socket from "@components/socketG";
+import socket from "@/components/socketG";
 
 
 const randomInt = (min: number, max: number) =>
