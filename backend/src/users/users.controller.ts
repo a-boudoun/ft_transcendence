@@ -16,8 +16,9 @@ export class UsersController {
 
   @Get()
   @UseGuards(Jwt2faAuthGuard)
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    const users =  await this.usersService.findAll();
+    return {'users' : users};
   }
 
   @Get('DM')
