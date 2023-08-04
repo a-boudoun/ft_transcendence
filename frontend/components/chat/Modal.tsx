@@ -13,7 +13,6 @@ function Modal() {
     const isopen:boolean = useSelector((state: any) => state.currentChannel.isopen);
 
     const onClick = () => {
-        console.log("close")
         dispatch(setisopen(false));
     }
     return (

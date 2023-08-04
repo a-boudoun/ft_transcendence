@@ -20,7 +20,6 @@ const NewChannel = ({owner}:{owner: userDto}) => {
     const [type, setType] = useState('Public');
     const [image, setImage] = useState<any>(null);
     const [imagePreview, setImagePreview] = useState<string>('/img/profile.svg');
-    console.log("new channel re")
     const handleclick = () => {
         setIsclicked(!isclicked);
     }
@@ -30,17 +29,11 @@ const NewChannel = ({owner}:{owner: userDto}) => {
         setIsclicked(!isclicked);
     }
 
-
+    
 
     const handleChange = (e: any) => {
-        if (e.target.files){
           setImage(e.target.files[0]);
           setImagePreview(URL.createObjectURL(e.target.files[0]));
-        }
-        else if (e.target.id === 'name')
-          setName(e.target.value)
-        else
-            setPassword(e.target.value)
       };
 
 
@@ -77,19 +70,18 @@ const NewChannel = ({owner}:{owner: userDto}) => {
         channel.owner = owner;
         
         const dt = await postChannel('/channels/createChannel', channel);
-        console.log('youssef',dt);
         dispatch(setnewchannel(dt));
 
     }
     return (
 
-        <form className=' w-full bg-dark-gray p-4 rounded-xl ' onChange={handleChange} onSubmit={handleSubmit}>
+        <form className=' w-full bg-dark-gray p-4 rounded-xl '  onSubmit={handleSubmit}>
             <div className='w-fit mx-auto my-3 hover:opacity-60'>
                 <label htmlFor="id" className='bg-red'>
                 <Image className='rounded-full cursor-pointer w-[150px] h-[150px]' src={imagePreview} width={150} height={150} alt="avatar" />
-              </label>  <input type="file" className="hidden" id='id' />
+              </label>  <input type="file" className="hidden" id='id' onChange={handleChange} />
             </div>
-            <input required id={'name'} className='w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none' placeholder='Name of channel' value={name} />
+            <input required id={'name'} className='w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none' placeholder='Name of channel' value={name} onChange={(e:any)=> setName(e.target.value)}/>
             <button type='button'  className="hover:opacity-60 text-white w-full  rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center justify-center bg-blue" onClick={handleclick}>
                 {type}
                 <svg
@@ -119,7 +111,7 @@ const NewChannel = ({owner}:{owner: userDto}) => {
 
                 </div>
             </div>
-            <input  required={type === 'Protected'} type='password' value={password} className={`${type !== 'Protected' ? 'hidden' : ''} w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none`} placeholder='Password' />
+            <input  required={type === 'Protected'} type='password' value={password} className={`${type !== 'Protected' ? 'hidden' : ''} w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none`} placeholder='Password' onChange={(e:any)=> setPassword(e.target.value)}/>
             <button className='bg-red w-full mt-5 rounded-lg py-2 hover:opacity-60'>Create</button>
         </form>
 

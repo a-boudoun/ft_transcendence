@@ -7,11 +7,12 @@ import con from '../ormconfig';
 import { UsersModule } from './users/users.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { ChannelsModule } from './channels/channels.module';
+import { RoomGateway } from './room/room.gateway';
 
 @Module({
   // AuthModule, UsersModule,
   imports: [TypeOrmModule.forRoot(con),
-            AuthModule, UsersModule, GatewayModule, ChannelsModule],
+            AuthModule, UsersModule, ChannelsModule, RoomGateway],
   controllers: [AppController],
   providers: [AppService],
 })

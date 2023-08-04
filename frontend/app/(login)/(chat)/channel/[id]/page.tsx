@@ -10,14 +10,13 @@ import { AppDispatch } from '@/redux/store';
 import { useParams, usePathname } from 'next/navigation';
 import Channel from '@/dto/Channel';
 import Modal from '@/components/chat/Modal';
+import { socket } from '@/components/chat/chatSocket';
 
 
 const Page =  ({ params }: { params: number }) => {
 
 
   const dispatch = useDispatch<AppDispatch>();
-  
-console.log("page re")
   useEffect(() => {
     fetchData();
   }, [params]);
@@ -25,8 +24,9 @@ console.log("page re")
   const fetchData = async () => {
       const response = await axios.get(`http://localhost:8000/channels/${params.id}`); 
       const dt = response.data;
-        console.log("dt",dt);
         dispatch(setcurrentChannel(dt as Channel));
+        console.log('asdadsadsadsasss------------------');
+        socket.emit('join', { channel: dt.id })
   };
  
   return (
