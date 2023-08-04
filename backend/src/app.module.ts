@@ -14,7 +14,7 @@ import { ChannelsModule } from './channels/channels.module';
 @Module({
   // AuthModule, UsersModule,
   imports: [TypeOrmModule.forRoot(con),
-            AuthModule, UsersModule, GatewayModule, ChannelsModule],
+            AuthModule, UsersModule, ChannelsModule, GameModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -10,10 +10,7 @@ import { Interval, Timeout } from '@nestjs/schedule';
 @WebSocketGateway({
 	//Cross-Origin-Resource-Sharing (CORS) is a mechanism that uses additional HTTP headers to tell browsers 
 	//to give a web application running at one origin,
-	//access to selected resources from a different origin.
-	cors: {
-		origin: '*',
-	},
+	//access to selected resources from a different origin
 })
 //TODO: check if the player is authenticated
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -31,8 +28,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleDisconnect(client: Socket) {
   }
 
-  
-  
   @SubscribeMessage('rightPaddle')
   handlerPaddle(client: Socket, data: any) {
     this.engineService.setRightBoardPosition(data.room, data.y);
