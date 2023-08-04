@@ -46,7 +46,4 @@ export const userSchema = signInSchema.extend({
     XP: z
     .number()
     .optional(),
-    fact2Secret: z
-    .any()
-    .optional(),
 });
