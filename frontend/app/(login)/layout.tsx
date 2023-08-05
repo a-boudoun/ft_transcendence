@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import get  from '@/apis/server/get';
 import userDto from "@/dto/userDto";
 import Modal from "@/components/chat/Modal";
+import ReduxProvider from "@/redux/provider";
 
 export default async function RootLayout({
   children,
@@ -17,9 +18,11 @@ export default async function RootLayout({
   
   return (
     <>
-       
+      
+
         <NavBar />
         {children}
+       
     </>  
   )
 }

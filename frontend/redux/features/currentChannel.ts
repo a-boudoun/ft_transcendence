@@ -10,6 +10,7 @@ type InitialState = {
     user: userDto;
     isopen: boolean;
     isMid: boolean;
+    isChild: boolean;
 };
 
 interface Message {
@@ -42,7 +43,7 @@ const initialState = {
     user: {} as userDto,
     isopen: false,
     isMid: true,
-    isRight: false,
+    isChild: false,
 
 } as InitialState
 
@@ -75,8 +76,8 @@ export const currentChannelSlice = createSlice({
         setisMid: (state: any, action: PayloadAction<any>) => {
             state.isMid = action.payload;
         },
-        setisRight: (state: any, action: PayloadAction<any>) => {
-            state.isRight = action.payload;
+        setisChild: (state: any, action: PayloadAction<any>) => {
+            state.isChild= action.payload;
         }
 
 
@@ -85,5 +86,5 @@ export const currentChannelSlice = createSlice({
 })
 
 
-export const {setcurrentChannel, setMessage, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisRight} = currentChannelSlice.actions;
+export const {setcurrentChannel, setMessage, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisChild} = currentChannelSlice.actions;
 export default currentChannelSlice.reducer;

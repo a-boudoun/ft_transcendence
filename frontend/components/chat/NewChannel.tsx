@@ -9,11 +9,12 @@ import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { setnewchannel } from '@/redux/features/currentChannel';
 import { set } from 'zod';
+import { useSelector } from 'react-redux';
 
-const NewChannel = ({owner}:{owner: userDto}) => {
+const NewChannel = () => {
     const dispatch = useDispatch<AppDispatch>();
 
-    
+    const owner = useSelector((state: any) => state.currentChannel.user);
     const [isclicked, setIsclicked] = useState(false);
     const [name , setName] = useState('')
     const [password , setPassword] = useState('')

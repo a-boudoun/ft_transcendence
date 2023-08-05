@@ -25,7 +25,6 @@ const Page =  ({ params }: { params: number }) => {
       const response = await axios.get(`http://localhost:8000/channels/${params.id}`); 
       const dt = response.data;
         dispatch(setcurrentChannel(dt as Channel));
-        console.log('asdadsadsadsasss------------------');
         socket.emit('join', { channel: dt.id })
   };
  
