@@ -17,7 +17,7 @@ export default async function RootLayout({
   const token = cookieStore.get('access_token');
   const url = `http://${process.env.BACKEND_HOST}:${process.env.BACKEND_PORT}/auth/isAuth`;
 
-  // await axios.get(url , {'headers' : {'cookie' : `access_token=${token?.value}`}}).catch((err : any) => {redirect('/')}); 
+  await axios.get(url , {'headers' : {'cookie' : `access_token=${token?.value}`}}).catch((err : any) => {redirect('/')}); 
   
   return (
     <>
