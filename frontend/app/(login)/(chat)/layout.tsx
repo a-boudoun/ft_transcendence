@@ -1,6 +1,6 @@
 // "use client";
 import Mid from "@/components/chat/Mid";
-import Mininav from "@/components/chat/Mininav";
+import Left from "@/components/chat/Left";
 import Right from "@/components/chat/Right";
 import Chat from "./chat/page";
 import { use } from "react";
@@ -9,6 +9,9 @@ import ChNav from "@/components/chat/ChNav";
 import Channel from "@/components/chat/Channel";
 import Friend from "@/components/chat/Friend";
 import Modal from "@/components/chat/Modal";
+import { useSelector } from 'react-redux';
+import ReduxProvider from "@/redux/provider";
+
 
 
 export default function LoginLayout({
@@ -19,19 +22,17 @@ export default function LoginLayout({
   params: string
 }) {
 
+  const ischild = true;
+  
 
- 
-  let res = true
   return (
+   
     <main className={`h-full  pt-[56px] lg:p-[30px] lg:pt-[86px] flex   bg-dark-gray  justify-center `}>
       <div className=" w-full  flex gap-2 max-w-7xl overflow-hidden">
-        <div className={`h-full w-full ${res === false ? 'hidden': ''} sm:block sm:w-1/2  lg:w-4/12    sm:rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4`}>
-          <Mininav />
-          
-        </div>
+        <Left />
         {children}
-        {/* <Modal isOpen={true}/> */}
       </div>
     </main>
+  
   )
 }

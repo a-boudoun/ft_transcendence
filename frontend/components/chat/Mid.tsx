@@ -9,7 +9,7 @@ import userDto from "@/dto/userDto";
 import channelDto from '@/dto/channelDto';
 import { useSelector } from 'react-redux';
 import { set } from 'zod';
-import { setMembership, setMessage } from '@/redux/features/currentChannel';
+import { setMembership, setMessage, setisMid, setisChild } from '@/redux/features/currentChannel';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import Channel from '@/dto/Channel';
@@ -19,20 +19,26 @@ import axios from 'axios';
 import { socket } from './chatSocket';
 
 
+
 function Mid() {
+    const dispatch = useDispatch<AppDispatch>();
+    
+    
     const channel = useSelector((state: any) => state.currentChannel.channel);
     const user = useSelector((state: any) => state.currentChannel.user);
     const isMid = useSelector((state: any) => state.currentChannel.isMid);
     const [input, setInput] = useState('');
-
-
-    if (!socket.connected) {
-        socket.connect();
-    }
-   
-
+    
+    useEffect(() => {
+        if (!socket.connected) {
+            socket.connect();
+        }
+        
+        dispatch(setisChild(true));
+    }, []);
+    
+    
     const messages: Message[] = channel.messages;
-    const dispatch = useDispatch<AppDispatch>();
     const messageContainerRef = useRef(null);
 
     const joinChannel = useMutation({
@@ -55,26 +61,25 @@ function Mid() {
     const handelSubmit = (event: any) => {
         event.preventDefault();
         if (!input.trim()) return;
-        // dispatch(setMessage({ content: input, from: user.name }));
         socket.emit('prevmessage', { channel: channel.id, message: input, from: user.name });
         setInput('');
     }
-       useEffect(() => {
-        const onMsg = (msg: any)=>{
+    useEffect(() => {
+        const onMsg = (msg: any) => {
             dispatch(setMessage({ content: msg.content, from: msg.from }));
         }
         socket.on('message', onMsg);
-        return()=>{
+        return () => {
             socket.off('message', onMsg);
         }
     }, []);
-  
+
 
     useEffect(() => {
         if (messageContainerRef.current) {
             messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
         }
-    }, []);
+    }, [messages]);
 
     const handleJoinChannel = () => {
         joinChannel.mutate(user);
@@ -84,7 +89,7 @@ function Mid() {
     const isMember = channel.memberships?.some((membership) => membership.member.id === user.id)
     { if (!channel.image) return <div></div> }
     return (
-        <div className={` h-full w-full flex sm:w-1/2 lg:w-5/12 flex-col justify-between text-white  rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4`}>
+        <div className={`justify-between text-white  rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 ${isMid === true ? 'w-full sm:w-1/2 md:w-7/12 lg:w-5/12 flex flex-col lg:w-5/12' : 'hidden lg:flex lg:flex-col  lg:w-5/12'} `}>
             <div className="h-fit bg-dark-gray flex items-center py-3  rounded-xl flex justify-between " >
                 <div className="flex items-center space-x-2 ">
 
@@ -107,14 +112,14 @@ function Mid() {
                     <span className="text-center h-fit">{channel.name}</span>
                 </div>
                 <div className="text-3xl mr-5 flex items-center justify-center lg:hidden ">
-                    <button >
-                    <Image
-                        className="h-full rounded-full  "
-                        src={"/img/info.svg"}
-                        width={24}
-                        height={24}
-                        alt=""
-                    />
+                    <button onClick={() => dispatch(setisMid(false))}>
+                        <Image
+                            className="h-full rounded-full  "
+                            src={"/img/info.svg"}
+                            width={24}
+                            height={24}
+                            alt=""
+                        />
                     </button>
                 </div>
             </div>
@@ -123,7 +128,7 @@ function Mid() {
                     messages?.map((msg: Message, id: number) =>
 
 
-                        <Message key={id} msg={msg.content} id={msg.from}  user={user.username}/>
+                        <Message key={id} msg={msg.content} id={msg.from} user={user.username} />
 
                     )
                 }

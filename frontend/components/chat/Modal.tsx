@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { setisopen } from "@/redux/features/currentChannel";
+import Image from "next/image";
 
 function Modal() {
 
@@ -22,8 +23,16 @@ function Modal() {
               <div className="fixed inset-0 bg-black opacity-50">
                
               </div>
-              <div className="bg-white rounded-lg p-8 text-black h-96 w-96 z-50 ">
-                <button className="bg-blue px-4 py-2 rounded-8 cursor-pointer" onClick={onClick}>Click</button>
+              <div className=" relative rounded-lg  text-black h-96 w-96 z-50 bg-gray-900 ">
+                <button className="absolute left-0  p-2  cursor-pointer" onClick={onClick}>
+                  <Image
+                    className="h-full rounded-full  "
+                    src={'/img/cancel.svg'}
+                    width={24}
+                    height={24}
+                    alt=""
+                  />
+                </button>
               </div>
             </div>
           </div>
@@ -33,3 +42,4 @@ function Modal() {
   }
   
   export default Modal;
+
