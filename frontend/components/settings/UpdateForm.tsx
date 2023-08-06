@@ -70,6 +70,7 @@ const UpdateForm = () => {
         User.data.image = uploadimage;
       }
       await updateUser.mutate(User.data);
+      setImagePreview(User.data.image);
     }
     else
     {
@@ -96,14 +97,14 @@ const UpdateForm = () => {
       console.log(User.data);
 
       return (
-          <div className='my-8 h-full w-full flex flex-col items-center gap-8'>
+          <div className='my-8 h-full w-full flex flex-col items-center gap-8 overf'>
             <form onChange={handleChange} onSubmit={handleSubmit}>
               <div>
                 <h3 className='mb-6 text-xl font-bold text-blue' >Account settings</h3>
-                <div className='flex justify-center items-center gap-8'>
+                <div className='flex flex-col sm:flex-row justify-center items-center gap-8'>
                   <label>
                     <div className='relative hover:opacity-60'>
-                        <Image className='w-[132px] h-[132px] sm:w-[200px] sm:h-[200px] rounded-full cursor-pointer' src={imagePreview} width={1000} height={1000} alt="avatar" />
+                        <Image className='w-[100px] h-[100px] sm:w-[200px] sm:h-[200px] rounded-full cursor-pointer' src={imagePreview} width={1000} height={1000} alt="avatar" />
                         <Image className='absolute bottom-5 right-0 sm:w-8 sm:h-8' src={"/icons/changeImage.svg"} width={24} height={24} alt="" />
                         <input type="file" className="hidden" accept="image/jpeg, image/jpg, image/png, image/webp" />
                     </div>
@@ -127,7 +128,7 @@ const UpdateForm = () => {
             </div>
             <div className='w-[400px] grow flex flex-col'>
               <h3 className='mb-6 text-xl font-bold text-blue' >blocked users</h3> 
-              <div className='bg-light-gray grow rounded-3xl shadow-2xl p-8'> 
+              <div className='bg-light-gray grow rounded-3xl shadow-2xl overflow-hidden p-8'> 
                 <Frineds /> 
               </div>
             </div>

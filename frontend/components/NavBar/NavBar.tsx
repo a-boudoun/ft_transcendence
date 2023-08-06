@@ -2,7 +2,7 @@
 
 import React from 'react' 
 import Image from 'next/image'
-import NotifDropDown from './NotifDropDown';
+import NotifDropDown from './FriendRequest';
 import MenuDropDown from './MenuDropDown';
 import AccountDropDown from './AccountDropDown';
 import NavLink from './NavLink';
