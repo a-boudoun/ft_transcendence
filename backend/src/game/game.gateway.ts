@@ -23,6 +23,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   
   recentRomm: string | null;
   handleConnection(client: Socket, data: any) {
+    console.log('new connection');
   }
   
   handleDisconnect(client: Socket) {
@@ -69,5 +70,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.engineService.sendPosition(room);
       }
     }
+  }
+
+  @SubscribeMessage('match-found')
+  handleMatchFound(client: Socket, data: any) {
+    console.log('match found', data.player);
+    client.emit('match-found', 'yel-khad');
+  }
+
+  @SubscribeMessage('main-comp')
+  handleMainComp(client: Socket, data: any) {
+    console.log('main comp ');
   }
 }

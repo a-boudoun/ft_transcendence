@@ -3,6 +3,7 @@
 import React, { use } from 'react';
 import { useEffect, useState } from 'react';
 import socket from '@/components/socketG';
+import { io } from "socket.io-client";
 import Image from "next/image";
 import axios from 'axios';
 import { useQuery } from "@tanstack/react-query";
@@ -13,16 +14,12 @@ interface prop {
  setClicked: (val: number) => void;
 }
 
-// TODO: remove global data
-var globalData : any;
-
 function LeftPlayer(){
 
 	const {data, isLoading} = useQuery({
 		queryKey: ['user'],
 		queryFn: async ()=> {
 		  const {data} = await axios.get('http://localhost:8000/users/me', { withCredentials: true })
-		  globalData = data;
 		  return data;
 		}
 	  });
@@ -66,22 +63,30 @@ function LoadingPlayer({setClicked}: prop){
 			setImage(iamges[Math.floor(Math.random() * iamges.length)]);
 		}, 200);
 
-		socket.on('match-fount', (player: any) => {
-			const {data} = useQuery({
-				queryKey: ['user'],
-				queryFn: async ()=> {
-				  const {data} = await axios.get(`http://localhost:8000/users/${player.name}`, { withCredentials: true })
-				  return data;
-				}
-			  });
-			  if (data) {
-				  setClicked(3);
-				  setImage(data.image);
-				  setName(data.username);
-				}
+		setTimeout(() => {
+			console.log('match found timeout');
+			socket.emit("match-found", {player: "aboudoun"});
+		}, 3000);
+
+		socket.on('match-found', (player: any) => {
+			console.log('match found on');
+			// const {data} = useQuery({
+			// 	queryKey: ['user'],
+			// 	queryFn: async ()=> {
+			// 	  const {data} = await axios.get(`http://localhost:8000/users/${player}`, { withCredentials: true })
+			// 	  return data;
+			// 	}
+			//   });
+			//   if (data) {
+				clearInterval(interval);
+				setClicked(3);
+				setImage('/icons/avatar.svg');
+				setName(player);
+				// }
 			});
 			return () => {
-				clearInterval(interval)
+				socket.off('match-found');
+				clearInterval(interval);
 			};
 		}, []);
 		
@@ -89,7 +94,7 @@ function LoadingPlayer({setClicked}: prop){
 		return (
 			<>
 			 <Image src={image} width={200} height={200} alt="avatar" className="w-full h-full rounded-full"/>
-			 <h1 className = 'pt-2 text-2xl font-thin '> {name} </h1>
+			 <h1 className = 'pt-2 text-2xl font-bold '> {name} </h1>
 		</>
 	)
 	
@@ -97,9 +102,6 @@ function LoadingPlayer({setClicked}: prop){
 
 function RightPlayer({ clicked, setClicked } : prop){
 	
-	useEffect(() => {
-		
-	}, []);
 	return (
 		<div className = 'flex flex-col iterms-center justify-center  w-[150px] h-[150px]'>
 			{clicked? <LoadingPlayer setClicked={setClicked}/>  :   <Image src="/game/unknown.svg" width={200} height={200} alt="unkown" className="w-full h-full rounded-full"/>}
@@ -110,12 +112,13 @@ function RightPlayer({ clicked, setClicked } : prop){
 export default function MatchPlayers(){
 	const [look, setLook] = useState<number>(0);
 
-		useEffect(() => {
-		socket.emit('already-looking', globalData.username);
-		socket.on('already-looking', () => {
-			setLook(1);
+	useEffect(() => {
+		socket.emit('main-comp');
+		socket.on('connect', () => {
+			console.log('connected-main');
 		});
 	}, []);
+
 	return (
 		<div className = 'flex flex-col items-center justify-center w-screen h-screen bg-dark-gray gap-2'>
 			<main className = 'flex flex-row bg-[#384259] w-[500px] h-[300px] items-center justify-between px-8 rounded-[10px]'>
@@ -127,7 +130,7 @@ export default function MatchPlayers(){
 				{ look === 0 && <button 
 				className=" max-w-[320px] sm:max-w-auto  bottom-[40px] right-[40px] text-white text-[30px] bg-red w-[250px] py-2 rounded-[10px] hover:bg-[#FBACB3] font-bold"
 				onClick = {() => {
-					socket.emit('looking-for-match', globalData.username);
+					socket.emit('looking-for-match');
 					setLook(1);
 				}}>
 				find a player
@@ -136,7 +139,7 @@ export default function MatchPlayers(){
 				{look === 1 && <button 
 				className=" max-w-[320px] sm:max-w-auto  bottom-[40px] right-[40px] text-white text-[30px] bg-[#fc2e2e] py-2 w-[120px] rounded-[10px] hover:bg-[#f01f2d] font-bold"
 				onClick = {() => {
-					socket.emit('cancel-looking', globalData.username);
+					socket.emit('cancel-looking');
 					setLook(0);
 				}}>
 				cancel

@@ -15,7 +15,7 @@ import { GameHistoryModule } from './game-history/game-history.module';
 @Module({
   // AuthModule, UsersModule,
   imports: [TypeOrmModule.forRoot(con),
-            AuthModule, UsersModule, GatewayModule, ChannelsModule, GameHistoryModule],
+            AuthModule, UsersModule, GatewayModule, ChannelsModule, GameHistoryModule, GameModule],
   controllers: [AppController],
   providers: [AppService],
 })
