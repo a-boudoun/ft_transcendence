@@ -71,15 +71,45 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
     }
   }
+  
+  //TODO: remove player from matchmaking queue
+  @SubscribeMessage('cancel-looking')
+  handleCancelLooking(client: Socket, user: string) {
+    console.log('cancel looking', user);
+    this.gameService.removePlayerFromQueue(user);
+  }
+  
+  //TODO: add player to matchmaking queue
+  //TODO: add username to client.data
+  @SubscribeMessage('looking-for-match')
+  handleLookingForMatch(client: Socket, user: string) {
+    console.log('looking-for-match', user);
+    let found: boolean = false;
+    client.data.username = user;
+    this.gameService.addPlayerToQueue(client);
+    found = this.gameService.findMatch();
+    if (found){
+      // this.engineService.createGameSimulation(this.recentRomm);
+      // const room: Room = this.gameService.findRoom(this.recentRomm);
+      // if (room) {
+      //   console.log('sending position');
+      //   this.engineService.sendPosition(room);
+      // }
+    }
 
-  @SubscribeMessage('match-found')
-  handleMatchFound(client: Socket, data: any) {
-    console.log('match found', data.player);
-    client.emit('match-found', 'yel-khad');
   }
 
-  @SubscribeMessage('main-comp')
-  handleMainComp(client: Socket, data: any) {
-    console.log('main comp ');
+  //TODO: check if the player is already in a matchmaking queue
+  @SubscribeMessage('already-looking')
+  handleAlreadyLooking(client: Socket, data: any) {
+    console.log('already-looking', data);
+    if (!client.data.username) {
+      client.data.username = data;
+    }
+    if (this.gameService.isInQueue(data)){
+      this.gameService.removePlayerFromQueue(data);
+      this.gameService.addPlayerToQueue(client);
+      client.emit('already-looking');
+    }
   }
 }

@@ -63,33 +63,22 @@ function LoadingPlayer({setClicked}: prop){
 			setImage(iamges[Math.floor(Math.random() * iamges.length)]);
 		}, 200);
 
-		setTimeout(() => {
-			console.log('match found timeout');
-			socket.emit("match-found", {player: "aboudoun"});
-		}, 3000);
-
-		socket.on('match-found', (player: any) => {
-			console.log('match found on');
-			// const {data} = useQuery({
-			// 	queryKey: ['user'],
-			// 	queryFn: async ()=> {
-			// 	  const {data} = await axios.get(`http://localhost:8000/users/${player}`, { withCredentials: true })
-			// 	  return data;
-			// 	}
-			//   });
-			//   if (data) {
+		socket.on('match-found', async (player: string) => {
+			try {
+				const { data } = await axios.get(`http://localhost:8000/users/${player}`, { withCredentials: true });
+				setName(data.username);
+				setImage(data.image);
 				clearInterval(interval);
-				setClicked(3);
-				setImage('/icons/avatar.svg');
-				setName(player);
-				// }
+				setClicked(2);
+			} catch (error) {
+				console.error('Error fetching user data:', error);
+			}
 			});
 			return () => {
 				socket.off('match-found');
 				clearInterval(interval);
 			};
 		}, []);
-		
 		
 		return (
 			<>
@@ -109,15 +98,37 @@ function RightPlayer({ clicked, setClicked } : prop){
 	)
 }
 
-export default function MatchPlayers(){
+export default function MatchPlayers() {
 	const [look, setLook] = useState<number>(0);
-
+	const [player, setPlayer] = useState<string>('');
+	const [isPlayerFetched, setIsPlayerFetched] = useState<boolean>(false);
+  
 	useEffect(() => {
-		socket.emit('main-comp');
-		socket.on('connect', () => {
-			console.log('connected-main');
-		});
+	  const fetchData = async () => {
+		try {
+		  const { data } = await axios.get(`http://localhost:8000/users/me`, { withCredentials: true });
+		  if (data) {
+			setPlayer(data.username);
+			setIsPlayerFetched(true);
+		  }
+		} catch (error) {
+		  console.error('Error fetching user data:', error);
+		}
+	  };
+	  fetchData();
 	}, []);
+	
+	useEffect(() => {
+		if (isPlayerFetched) {
+			socket.emit('already-looking', player);
+		}
+		socket.on('already-looking', () => {
+		  setLook(1);
+		});
+		return () => {
+		  socket.off('already-looking');
+		};
+	}, [isPlayerFetched, player]);
 
 	return (
 		<div className = 'flex flex-col items-center justify-center w-screen h-screen bg-dark-gray gap-2'>
@@ -126,11 +137,11 @@ export default function MatchPlayers(){
 				<h1 className = 'text-white text-5xl font-serif'>VS</h1>
 				<RightPlayer clicked={look} setClicked={setLook}/>
 			</main>
-			{ look !== 3 && <div>
+			{ look !== 2 && <div>
 				{ look === 0 && <button 
 				className=" max-w-[320px] sm:max-w-auto  bottom-[40px] right-[40px] text-white text-[30px] bg-red w-[250px] py-2 rounded-[10px] hover:bg-[#FBACB3] font-bold"
 				onClick = {() => {
-					socket.emit('looking-for-match');
+					socket.emit('looking-for-match', player);
 					setLook(1);
 				}}>
 				find a player
@@ -139,7 +150,7 @@ export default function MatchPlayers(){
 				{look === 1 && <button 
 				className=" max-w-[320px] sm:max-w-auto  bottom-[40px] right-[40px] text-white text-[30px] bg-[#fc2e2e] py-2 w-[120px] rounded-[10px] hover:bg-[#f01f2d] font-bold"
 				onClick = {() => {
-					socket.emit('cancel-looking');
+					socket.emit('cancel-looking', player);
 					setLook(0);
 				}}>
 				cancel
