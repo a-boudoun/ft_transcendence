@@ -9,8 +9,25 @@ export class gameService{
   private matchmakingQueue: Array<Socket> = [];
   private rooms: Map<string, Room> = new Map<string, Room>();
 
+  isInQueue(username: string): boolean {
+    const present : boolean = this.matchmakingQueue.find((player: Socket) => player.data.username === username) ? true : false;
+    console.log(`username ${username} is in queue: ${present}`);
+    return present;
+  }
+
   addPlayerToQueue(playerSocket: Socket) {
-    this.matchmakingQueue.push(playerSocket);
+    const id: string = playerSocket.data.username;
+    const present : boolean = this.isInQueue(id);
+    if (!present) {
+      this.matchmakingQueue.push(playerSocket);
+    }
+  }
+
+  removePlayerFromQueue(username: string) {
+    const index: number = this.matchmakingQueue.findIndex((player: Socket) => player.data.username === username);
+    if (index > -1) {
+      this.matchmakingQueue.splice(index, 1);
+    }
   }
 
   removePlayer(playerSocket: Socket) : string | null {
@@ -74,6 +91,20 @@ export class gameService{
     return null;
   }
 
+  findMatch() : boolean{
+    if (this.matchmakingQueue.length >= 2) {
+      const socket1: Socket = this.matchmakingQueue.shift();
+      const socket2: Socket = this.matchmakingQueue.shift();
+      
+      const user1: string = socket1.data.username;
+      const user2: string = socket2.data.username;
+
+      socket1.emit('match-found', user2);
+      socket2.emit('match-found', user1);
+      return true;
+    }
+    return false;
+  }
   // sending the room id and the users in the room to the players
   informPlayers(event: string, room: Room) {
     if (room) {
