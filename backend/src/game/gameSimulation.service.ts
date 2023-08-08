@@ -98,18 +98,18 @@ export class gameSimulation{
 					}
 					);
 				});
-				if (this.leftScore === 3 || this.rightScore === 3){
-					if (this.leftScore === 3){
-						this.roomIn.players.forEach((player) => {
-							player.socket.emit('winner', 'left');
-						});
-					}
-					else{
-						this.roomIn.players.forEach((player) => {
-							player.socket.emit('winner', 'right');
-						});
-					}
-				}
+				// if (this.leftScore === 3 || this.rightScore === 3){
+				// 	if (this.leftScore === 3){
+				// 		this.roomIn.players.forEach((player) => {
+				// 			player.socket.emit('winner', 'left');
+				// 		});
+				// 	}
+				// 	else{
+				// 		this.roomIn.players.forEach((player) => {
+				// 			player.socket.emit('winner', 'right');
+				// 		});
+				// 	}
+				// }
 				Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
 				Matter.Body.setVelocity(this.ball, { x: 0, y: 0 });
 

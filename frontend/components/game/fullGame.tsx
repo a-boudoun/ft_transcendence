@@ -28,7 +28,9 @@ export default function Game(){
 	let sy : number = 1;
 
 	useEffect(() => {
-		socket.emit('refresh');
+		socket.on('fullGame', () => {
+			console.log('fullGame');
+		});
 		socket.emit('startGame', {username: usnm});
 		
 		socket.on('connect', () => {

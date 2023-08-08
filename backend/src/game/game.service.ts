@@ -101,6 +101,10 @@ export class gameService{
 
       socket1.emit('match-found', user2);
       socket2.emit('match-found', user1);
+      setTimeout(() => {
+      socket1.emit('fullGame');
+      socket2.emit('fullGame');
+      }, 1000);
       return true;
     }
     return false;

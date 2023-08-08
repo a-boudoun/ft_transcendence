@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import socket from '@/components/socketG';
 import axios from 'axios';
+import Game from './fullGame';
 
 interface prop {
 	clicked?: number;
@@ -69,7 +70,7 @@ function LoadingPlayer({setClicked, setGame}: prop){
 					setClicked(2);
 					setTimeout(() => {
 						setGame(true);
-					}, 1000);
+					}, 800);
 				} catch (error) {
 					console.error('Error fetching user data:', error);
 				}

@@ -89,12 +89,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.gameService.addPlayerToQueue(client);
     found = this.gameService.findMatch();
     if (found){
-      // this.engineService.createGameSimulation(this.recentRomm);
-      // const room: Room = this.gameService.findRoom(this.recentRomm);
-      // if (room) {
-      //   console.log('sending position');
-      //   this.engineService.sendPosition(room);
-      // }
     }
 
   }
