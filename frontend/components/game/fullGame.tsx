@@ -15,7 +15,7 @@ const usnm: number = randomInt(1, 1000);
 
 
 
-export default function Game(){
+export default function Game({me} : {me: string}){
 	const divRef = useRef<HTMLDivElement | null>(null);
 	const [PVisible, setPVisible] = useState<boolean>(true);
 	const router = useRouter();
@@ -28,22 +28,10 @@ export default function Game(){
 	let sy : number = 1;
 
 	useEffect(() => {
-		socket.on('fullGame', () => {
-			console.log('fullGame');
-		});
-		socket.emit('startGame', {username: usnm});
-		
-		socket.on('connect', () => {
-		  console.log('Connected to server');
-		});
-
+		socket.emit('full-Game', me);
 		socket.on('sound', () => {
 			const audio = new Audio('/game/bounce.mp3');
 			audio.play();
-		});
-
-		socket.on('disconnect', () => {
-			console.log('Disconnected from server');
 		});
 	
 		socket.on('roomCreated', ({room: room, us: users}) => {
@@ -99,7 +87,6 @@ export default function Game(){
 		// document.addEventListener('keydown', handleKeyDown);\
 		Render.run(render);
 
-		setTimeout(() => {
 			Events.on(render, 'afterRender', () => {
 				if (sender) {
 					socket.emit('rightPaddle', 
@@ -157,7 +144,6 @@ export default function Game(){
 					else router.push('/game/loser')
 				}
 			});
-		}, 3000);
 
 		return () => {
 		  window.removeEventListener("resize", handleResize);
