@@ -30,13 +30,16 @@ export default function MatchPlayers() {
 	
 	useEffect(() => {
 		if (isPlayerFetched) {
-			socket.emit('already-looking', player);
+			socket.emit('player-status', player);
 		}
-		socket.on('already-looking', () => {
-		  setLook(1);
+		socket.on('player-status', (status) => {
+			if (status === 'already-looking')
+		  		setLook(1);
+			else
+				setGameStart(true);
 		});
 		return () => {
-		  socket.off('already-looking');
+		  socket.off('player-status');
 		};
 	}, [isPlayerFetched, player]);
 
@@ -69,7 +72,7 @@ export default function MatchPlayers() {
 				</button>}
 			</div>}
 		</div>}
-		{gameStart && <Game/>}
+		{gameStart && <Game me = {player} />}
 		</>
 		)
 }
