@@ -173,7 +173,7 @@ export class gameSimulation{
 				y: this.ball.position.y,
 			}
 			);
-			this.server.to(room.id).emit('ball', 
+			this.server.to(room.id).emit('positions', 
 				{
 					leftBoardX: this.leftBoard.position.x,
 					leftBoardY: this.leftBoard.position.y,
