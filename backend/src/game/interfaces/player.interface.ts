@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import { User } from '../../interfaces/User';
 export interface Player {
-	socket: Socket;
+	socket: Array<Socket>;
 	username: string | string[];
 }

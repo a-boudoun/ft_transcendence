@@ -6,33 +6,37 @@ import { SocketReadyState } from "net";
 
 @Injectable()
 export class gameService{
-  private matchmakingQueue: Array<Socket> = [];
+  private matchMakingQue: Map< string, Array<Socket>> = new Map<string, Array<Socket>>();
   private rooms: Map<string, Room> = new Map<string, Room>();
 
-  isInQueue(username: string): boolean {
-    const present : boolean = this.matchmakingQueue.find((player: Socket) => player.data.username === username) ? true : false;
+  isInQueue(client: Socket): boolean {
+    const present : boolean = this.matchMakingQue.has(client.data.username);
+    if (present) {
+      this.matchMakingQue.get(client.data.username).push(client);
+    }
     return present;
   }
 
+  // TODO: it maybe cause some problems
+  // because when you refresh the button still apears before receiving the 'already-looking' or 'ingame' event
   addPlayerToQueue(playerSocket: Socket) {
-    const id: string = playerSocket.data.username;
-    const present : boolean = this.isInQueue(id);
-    if (!present) {
-      this.matchmakingQueue.push(playerSocket);
+    const username: string = playerSocket.data.username;
+    if (this.matchMakingQue.has(username)) {
+      this.matchMakingQue.get(username).push(playerSocket);
+    }
+    else {
+      this.matchMakingQue.set(username, [playerSocket]);
     }
   }
 
-  removePlayerFromQueue(username: string) {
-    const index: number = this.matchmakingQueue.findIndex((player: Socket) => player.data.username === username);
-    if (index > -1) {
-      this.matchmakingQueue.splice(index, 1);
-    }
+  removePlayerFromQueue(client: Socket) {
+   this.matchMakingQue.delete(client.data.username);
   }
 
   // removePlayer(playerSocket: Socket) : string | null {
-  //   const index: number = this.matchmakingQueue.indexOf(playerSocket);
+  //   const index: number = this.matchmakingQue.indexOf(playerSocket);
   //   if (index > -1) {
-  //     this.matchmakingQueue.splice(index, 1);
+  //     this.matchmakingQue.splice(index, 1);
   //   }
   //   else{
   //     const room: Room | undefined = this.findRoomByPlayer(playerSocket);
@@ -48,20 +52,20 @@ export class gameService{
   // }
   // TODO add a function to find the user's room based on his username
 
-  findRoomByPlayer(user: string): Room | undefined {
-    const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {
-      return room.players.find((player: Player) => player.username === user);
-    });
-    return room;
-  }
+  // findRoomByPlayer(user: string): Room | undefined {
+  //   const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {
+  //     return room.players.find((player: Player) => player.username === user);
+  //   });
+  //   return room;
+  // }
 
-  findRoom(roomId: string): Room | undefined {
-    return this.rooms.get(roomId);
-  }
+  // findRoom(roomId: string): Room | undefined {
+  //   return this.rooms.get(roomId);
+  // }
 
-  removeRoom(roomId: string) {
-    this.rooms.delete(roomId);
-  }
+  // removeRoom(roomId: string) {
+  //   this.rooms.delete(roomId);
+  // }
 
   // removePlayerFromRoom(playerSocket: Socket, room: Room) {
   //   const index: number = room.players.findIndex((player: Player) => player.socket === playerSocket);
@@ -85,33 +89,24 @@ export class gameService{
   }
 
   findMatch() : Room | null{
-    if (this.matchmakingQueue.length >= 2) {
-      const socket1: Socket = this.matchmakingQueue.shift();
-      const socket2: Socket = this.matchmakingQueue.shift();
+    if (this.matchMakingQue.size >= 2) {
       
-      const user1: string = socket1.data.username;
-      const user2: string = socket2.data.username;
-
-      socket1.emit('match-found', user2);
-      socket2.emit('match-found', user1);
-      return(this.creatRoom(socket1, socket2));
     }
     return null;
   }
   // sending the room id and the users in the room to the players
-  informPlayers(event: string, room: Room) {
-    if (room) {
-      const users = room.players.map((player) => player.username);
-      room.players.forEach((player) => {
-        player.socket.emit(event, {room: room.id, us: users});
-      });
-    }
-  }
-  //TODO: create rooms array and create room and delete room functions
+  // informPlayers(event: string, room: Room) {
+  //   if (room) {
+  //     const users = room.players.map((player) => player.username);
+  //     room.players.forEach((player) => {
+  //       player.socket.emit(event, {room: room.id, us: users});
+  //     });
+  //   }
+  // }
 
-  printQueue(): void {
-    console.log (this.matchmakingQueue.length)
-  }
+  // printQueue(): void {
+  //   console.log (this.matchmakingQue.length)
+  // }
 
   isInGame(username: string): boolean {
     const present : boolean = Array.from(this.rooms.values()).find((room: Room) => {
