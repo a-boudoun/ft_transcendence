@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
+import { Player } from "./interfaces/player.interface";
+import { Server } from "socket.io";
 // ! why import Matter like this?
 import Matter = require("matter-js");
 import { Room } from "./interfaces/room.interface";
@@ -7,6 +9,8 @@ import { Room } from "./interfaces/room.interface";
 @Injectable()
 export class gameSimulation{
 
+	//server
+	private server: Server;
 	//Engine
 	private engine: Matter.Engine;
 	// private runner: Matter.Runner;
@@ -37,6 +41,9 @@ export class gameSimulation{
 		});
 		// this.runner = Matter.Runner.create({
 		// });
+	}
+	addServer(server: Server) {
+		this.server = server;
 	}
 
 	drawWorld() {
@@ -90,14 +97,12 @@ export class gameSimulation{
 					vx = 10;
 					vy = 3;
 				}
-				this.roomIn.players.forEach((player) => {
-					player.socket.emit('score', 
+				this.server.to(this.roomIn.id).emit('score', 
 					{
 						leftScore: this.leftScore,
 						rightScore: this.rightScore,
 					}
-					);
-				});
+				);
 				// if (this.leftScore === 3 || this.rightScore === 3){
 				// 	if (this.leftScore === 3){
 				// 		this.roomIn.players.forEach((player) => {
@@ -134,18 +139,14 @@ export class gameSimulation{
 					x: -20,
 					y: ballVelocity.y 
 				});
-				this.roomIn.players.forEach((player) => {
-					player.socket.emit('sound');
-				});
+				this.server.to(this.roomIn.id).emit('sound');
 			}
 			else if (pair.bodyA === this.rightBoard || pair.bodyB === this.rightBoard) {
 				Matter.Body.setVelocity(this.ball, { 
 					x: 20, 
 					y: ballVelocity.y
 				});
-				this.roomIn.players.forEach((player) => {
-					player.socket.emit('sound');
-				});
+				this.server.to(this.roomIn.id).emit('sound');
 			}
 		});
 	}
@@ -166,14 +167,13 @@ export class gameSimulation{
 	sendPosition(room : Room) {
 		this.roomIn = room;
 		this.id = setInterval(() => {
-			room.players.forEach((player) => {
-				player.socket.emit('ball', 
-				{
-					x: this.ball.position.x,
-					y: this.ball.position.y,
-				}
-				);
-				player.socket.emit('positions', 
+			this.server.to(room.id).emit('ball', 
+			{
+				x: this.ball.position.x,
+				y: this.ball.position.y,
+			}
+			);
+			this.server.to(room.id).emit('ball', 
 				{
 					leftBoardX: this.leftBoard.position.x,
 					leftBoardY: this.leftBoard.position.y,
@@ -181,7 +181,6 @@ export class gameSimulation{
 					rightBoardY: this.rightBoard.position.y,
 				}
 				);
-			});
 		}, 15);
 	}
 
