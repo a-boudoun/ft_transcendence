@@ -74,23 +74,49 @@ export class gameService{
   //   }
   // }
 
-  creatRoom(socket1: Socket, socket2: Socket): Room
+  creatRoom(socket1: Array<Socket>, socket2: Array<Socket>, user1:string, user2:string): Room
   {
-      const player1: Player = {socket: socket1, username: socket1.data.username};
-      const player2: Player = {socket: socket2, username: socket2.data.username};
+      const player1: Player = {sockets: socket1, username: user1, position: 'left'};
+      const player2: Player = {sockets: socket2, username: user2, position: 'right'};
 
-      const room : Room = {id: `${socket1.id}+${socket2.id}`, players: [player1, player2]};
+      const room : Room = {id: `${user1}+${user2}`, players: [player1, player2]};
       if (player1 && player2) {
         this.rooms.set(room.id, room);
-        socket1.join(room.id);
-        socket2.join(room.id);
+
+        socket1.forEach((socket: Socket) => {
+          socket.join(room.id);
+        });
+
+        socket2.forEach((socket: Socket) => {
+          socket.join(room.id);
+        });
       }
       return room;
   }
 
+  /*
+  ==>try to copy it to another array to avoid underifined behaviour
+  const palayer1copy: string = player1;
+  const player2copy: string = player2;
+  const value1copy: Array<Socket> = [...value1];
+  const value2copy: Array<Socket> = [...value2];
+  */
   findMatch() : Room | null{
     if (this.matchMakingQue.size >= 2) {
-      
+      const iterator: any = this.matchMakingQue.entries();
+      const [username1, sockets1] = [...iterator.next().value];
+      const [username2, sockets2] = [...iterator.next().value];
+
+      this.matchMakingQue.delete(username1);
+      this.matchMakingQue.delete(username2);
+
+      sockets1.forEach((socket: Socket) => {
+        socket.emit('match-found', username2);
+      });
+      sockets2.forEach((socket: Socket) => {
+        socket.emit('match-found', username1);
+      });
+      return this.creatRoom(sockets1, sockets2, username1, username2);
     }
     return null;
   }
@@ -108,17 +134,13 @@ export class gameService{
   //   console.log (this.matchmakingQue.length)
   // }
 
-  isInGame(username: string): boolean {
-    const present : boolean = Array.from(this.rooms.values()).find((room: Room) => {
+  isInGame(username: string): string | null { 
+    const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {
       return room.players.find((player: Player) => player.username === username);
-    }) ? true : false;
-    return present;
+    });
+    if (room) {
+      return room.id;
+    }
+    return null;
   }
-  
-
-  // printRooms(): void {
-  //   if (this.rooms.size > 0) {
-  //   console.log(`Rooms: ${Array.from(this.rooms.keys())}`);
-  //   }
-  // }
 }

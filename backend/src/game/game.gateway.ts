@@ -30,6 +30,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleDisconnect(client: Socket) {
   }
 
+  EmitToRoom(room: Room, event: string, data: any) {
+    this.server.to(room.id).emit(event, data);
+  }
+
   @SubscribeMessage('rightPaddle')
   handlerPaddle(client: Socket, data: any) {
     this.engineService.setRightBoardPosition(data.room, data.y);
@@ -53,15 +57,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     //   this.engineService.sendPosition(room);
     // }
   }
-  
-  // @SubscribeMessage('endGame')
-  // handleEndGame(client: Socket, data: any) {
-  //   const room: Room = this.gameService.findRoom(data.room);
-  //   if (room) {
-  //     this.engineService.removeGameSimulation(room.id);
-  //     this.gameService.removeRoom(room.id);
-  //   }
-  // }
   
   //TODO: remove player from matchmaking queue
   @SubscribeMessage('cancel-looking')
@@ -89,15 +84,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //TODO: check if the player is already in a matchmaking queue
   @SubscribeMessage('player-status')
   handleAlreadyLooking(client: Socket, data: any) {
-    if (!client.data.username) {
-      client.data.username = data;
-    }
+    let roomId: string | null;
+
+    client.data.username = data;
     if (this.gameService.isInQueue(client)){
       client.emit('player-status', 'already-looking');
     }
-    else if (this.gameService.isInGame(data)){
-      //joind socket to room id of the player
-      //ingame return room id of the player
+    else if (roomId = this.gameService.isInGame(data)){
+      client.join(roomId);
       client.emit('player-status', 'already-playing');
     }
     else 
