@@ -30,10 +30,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleDisconnect(client: Socket) {
   }
 
-  EmitToRoom(room: Room, event: string, data: any) {
-    this.server.to(room.id).emit(event, data);
-  }
-
   @SubscribeMessage('rightPaddle')
   handlerPaddle(client: Socket, data: any) {
     this.engineService.setRightBoardPosition(data.room, data.y);
@@ -78,6 +74,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (found !== null) {
       this.engineService.createGameSimulation(found.id);
       this.engineService.sendPosition(found);
+      this.engineService.addServerToGame(found.id, this.server);
     }
   }
 
