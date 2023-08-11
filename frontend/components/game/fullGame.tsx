@@ -17,9 +17,9 @@ const usnm: number = randomInt(1, 1000);
 
 export default function Game({me} : {me: string}){
 	const divRef = useRef<HTMLDivElement | null>(null);
-	const [PVisible, setPVisible] = useState<boolean>(true);
+	// const [PVisible, setPVisible] = useState<boolean>(true);
 	const router = useRouter();
-	const [countDownValue, setCountDownValue] = useState<number>(3);
+	// const [countDownValue, setCountDownValue] = useState<number>(3);
 	const [leftScore, setLeftScore] = useState<number>(0);
 	const [rightScore, setRightScore] = useState<number>(0);
 	let roomid: string = '';
@@ -150,17 +150,17 @@ export default function Game({me} : {me: string}){
 		};
 		}, []);
 
-		useEffect(() => {
-			if (countDownValue == 0) {
-			  setPVisible(false);
-			} else {
-			  setTimeout(() => setCountDownValue(countDownValue - 1), 1000);
-			}
-		  }, [countDownValue]);
+		// useEffect(() => {
+		// 	if (countDownValue == 0) {
+		// 	  setPVisible(false);
+		// 	} else {
+		// 	  setTimeout(() => setCountDownValue(countDownValue - 1), 1000);
+		// 	}
+		//   }, [countDownValue]);
 
 	return (
     <div className="flex justify-center items-center h-full w-full bg-[#384259]">
-		{PVisible && <p className="absolute font-bold text-[#384259] text-[70px] ">{countDownValue}</p>}
+		{/* {PVisible && <p className="absolute font-bold text-[#384259] text-[70px] ">{countDownValue}</p>} */}
 		<PlayersScore left={leftScore} right={rightScore}/>
     	<div
     	  ref={divRef}

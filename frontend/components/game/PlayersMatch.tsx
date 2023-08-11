@@ -94,7 +94,7 @@ function LoadingPlayer({setClicked, setGame}: prop){
 		
 		return (
 			<div className = 'flex flex-col iterms-center justify-center  w-[150px] h-[150px]'>
-				{clicked? <LoadingPlayer setClicked={setClicked} setGame={setGame}/>  :   <Image src="/game/unknown.svg" width={200} height={200} alt="unkown" className="w-full h-full rounded-full"/>}
+				{clicked === 1 ? <LoadingPlayer setClicked={setClicked} setGame={setGame}/>  :   <Image src="/game/unknown.svg" width={200} height={200} alt="unkown" className="w-full h-full rounded-full"/>}
 			</div>
 		)
 	}
