@@ -44,6 +44,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleFullGame(client: Socket, data: any) {
     client.data.username = data;
     console.log('full game', data);
+    //TODO: emit the place of the players
     // TODO: emit only the room details to the client
     // TODO: add the socket id to the player room
     // const room: Room = this.gameService.findRoomByPlayer(data);
@@ -53,19 +54,22 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // }
   }
   
-  @SubscribeMessage('endGame')
-  handleEndGame(client: Socket, data: any) {
-    const room: Room = this.gameService.findRoom(data.room);
-    if (room) {
-      this.engineService.removeGameSimulation(room.id);
-      this.gameService.removeRoom(room.id);
-    }
-  }
+  // @SubscribeMessage('endGame')
+  // handleEndGame(client: Socket, data: any) {
+  //   const room: Room = this.gameService.findRoom(data.room);
+  //   if (room) {
+  //     this.engineService.removeGameSimulation(room.id);
+  //     this.gameService.removeRoom(room.id);
+  //   }
+  // }
   
   //TODO: remove player from matchmaking queue
   @SubscribeMessage('cancel-looking')
   handleCancelLooking(client: Socket, user: string) {
-    this.gameService.removePlayerFromQueue(user);
+    if (!client.data.username) {
+      client.data.username = user;
+    }
+    this.gameService.removePlayerFromQueue(client);
   }
   
   //TODO: add player to matchmaking queue
@@ -82,20 +86,21 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  //! TODO : replace matchmakingQueue (map(<username, <array<socket.id>>)) with a (map<username, socket>) map
   //TODO: check if the player is already in a matchmaking queue
   @SubscribeMessage('player-status')
   handleAlreadyLooking(client: Socket, data: any) {
     if (!client.data.username) {
       client.data.username = data;
     }
-    if (this.gameService.isInQueue(data)){
-      this.gameService.removePlayerFromQueue(data);
-      this.gameService.addPlayerToQueue(client);
+    if (this.gameService.isInQueue(client)){
       client.emit('player-status', 'already-looking');
     }
     else if (this.gameService.isInGame(data)){
+      //joind socket to room id of the player
+      //ingame return room id of the player
       client.emit('player-status', 'already-playing');
     }
+    else 
+      client.emit('player-status', 'not-looking');
   }
 }

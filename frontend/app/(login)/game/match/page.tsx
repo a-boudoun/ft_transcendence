@@ -8,7 +8,7 @@ import axios from 'axios';
 import  Game  from '@/components/game/fullGame';
 
 export default function MatchPlayers() {
-	const [look, setLook] = useState<number>(0);
+	const [look, setLook] = useState<number>(2);
 	const [player, setPlayer] = useState<string>('');
 	const [isPlayerFetched, setIsPlayerFetched] = useState<boolean>(false);
 	const [gameStart, setGameStart] = useState<boolean>(false);
@@ -35,6 +35,8 @@ export default function MatchPlayers() {
 		socket.on('player-status', (status) => {
 			if (status === 'already-looking')
 		  		setLook(1);
+			else if (status === 'not-looking')
+				setLook(0);
 			else
 				setGameStart(true);
 		});
