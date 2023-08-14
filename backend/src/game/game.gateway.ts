@@ -47,11 +47,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     //TODO: emit the place of the players
     // TODO: emit only the room details to the client
     // TODO: add the socket id to the player room
-    // const room: Room = this.gameService.findRoomByPlayer(data);
-    // if (room) {
-    //   this.engineService.createGameSimulation(room.id);
-    //   this.engineService.sendPosition(room);
-    // }
+    const room: Room = this.gameService.findRoomByPlayer(data);
+    if (room !== undefined) {
+      const data: any = {
+        room: room.id,
+        leftPlayer: room.players[0].position === 'left' ? room.players[0].username : room.players[1].username,
+        rightPlayer: room.players[0].position === 'right' ? room.players[0].username : room.players[1].username,
+      }
+      client.emit('game-info', data);
+    }
   }
   
   //TODO: remove player from matchmaking queue
