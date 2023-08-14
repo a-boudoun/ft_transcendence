@@ -8,13 +8,6 @@ import { useRouter } from "next/navigation";
 import socket from "@/components/socketG";
 
 
-const randomInt = (min: number, max: number) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
-
-const usnm: number = randomInt(1, 1000);
-
-
-
 export default function Game({me} : {me: string}){
 	const divRef = useRef<HTMLDivElement | null>(null);
 	// const [PVisible, setPVisible] = useState<boolean>(true);
@@ -22,8 +15,6 @@ export default function Game({me} : {me: string}){
 	// const [countDownValue, setCountDownValue] = useState<number>(3);
 	const [leftScore, setLeftScore] = useState<number>(0);
 	const [rightScore, setRightScore] = useState<number>(0);
-	let roomid: string = '';
-	let sender: boolean = false;
 	let sx : number = 1;
 	let sy : number = 1;
 
@@ -32,16 +23,6 @@ export default function Game({me} : {me: string}){
 		socket.on('sound', () => {
 			const audio = new Audio('/game/bounce.mp3');
 			audio.play();
-		});
-	
-		socket.on('roomCreated', ({room: room, us: users}) => {
-			roomid = room;
-			const n1: number = parseInt(users[0]);
-			const n2: number = parseInt(users[1]);
-			sender = true ? usnm >= n1 && usnm >= n2 : false;
-			console.log('Room created', room, 'with users', n1, n2);
-			console.log('username', usnm);
-			console.log('bigger', sender);
 		});
 	  }, []);
 
