@@ -15,6 +15,9 @@ export default function Game({me} : {me: string}){
 	// const [countDownValue, setCountDownValue] = useState<number>(3);
 	const [leftScore, setLeftScore] = useState<number>(0);
 	const [rightScore, setRightScore] = useState<number>(0);
+	const [LeftPlayer, setLeftPlayer] = useState<string>('');
+	const [RightPlayer, setRightPlayer] = useState<string>('');
+	const [roomid, setRoomid] = useState<string>('');
 	let sx : number = 1;
 	let sy : number = 1;
 
@@ -24,6 +27,15 @@ export default function Game({me} : {me: string}){
 			const audio = new Audio('/game/bounce.mp3');
 			audio.play();
 		});
+		socket.on('game-info', (data) => {
+			setLeftPlayer(data.leftPlayer);
+			setRightPlayer(data.rightPlayer);
+			setRoomid(data.room);
+		});
+		return () => {
+			socket.off('game-info');
+			socket.off('sound');
+		}
 	  }, []);
 
 	useEffect(() => {
@@ -69,7 +81,7 @@ export default function Game({me} : {me: string}){
 		Render.run(render);
 
 			Events.on(render, 'afterRender', () => {
-				if (sender) {
+				if (me === RightPlayer) {
 					socket.emit('rightPaddle', 
 					{
 						y: mouse.position.y,
@@ -116,7 +128,7 @@ export default function Game({me} : {me: string}){
 			});
 			socket.on('winner', (data) => {
 				socket.emit('endGame', {room: roomid});
-				if(sender){
+				if(me === RightPlayer){
 					if (data === 'right') router.push('/game/winner')
 					else router.push('/game/loser')
 				}
@@ -142,7 +154,12 @@ export default function Game({me} : {me: string}){
 	return (
     <div className="flex justify-center items-center h-full w-full bg-[#384259]">
 		{/* {PVisible && <p className="absolute font-bold text-[#384259] text-[70px] ">{countDownValue}</p>} */}
-		<PlayersScore left={leftScore} right={rightScore}/>
+		<PlayersScore 
+		left={leftScore} 
+		right={rightScore} 
+		leftPlayer={LeftPlayer}
+		rightPlayer={RightPlayer}
+		/>
     	<div
     	  ref={divRef}
     	  className="h-4/6 w-4/5 mt-20 cursor-none">

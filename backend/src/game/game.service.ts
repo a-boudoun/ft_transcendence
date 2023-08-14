@@ -52,12 +52,12 @@ export class gameService{
   // }
   // TODO add a function to find the user's room based on his username
 
-  // findRoomByPlayer(user: string): Room | undefined {
-  //   const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {
-  //     return room.players.find((player: Player) => player.username === user);
-  //   });
-  //   return room;
-  // }
+  findRoomByPlayer(user: string): Room | undefined {
+    const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {
+      return room.players.find((player: Player) => player.username === user);
+    });
+    return room;
+  }
 
   // findRoom(roomId: string): Room | undefined {
   //   return this.rooms.get(roomId);
