@@ -17,7 +17,8 @@ export default function Game({me} : {me: string}){
 	const [rightScore, setRightScore] = useState<number>(0);
 	const [LeftPlayer, setLeftPlayer] = useState<string>('');
 	const [RightPlayer, setRightPlayer] = useState<string>('');
-	const [roomid, setRoomid] = useState<string>('');
+	// const [roomid, setRoomid] = useState<string>('');
+	let roomid : string = '';
 	let sx : number = 1;
 	let sy : number = 1;
 
@@ -28,9 +29,10 @@ export default function Game({me} : {me: string}){
 			audio.play();
 		});
 		socket.on('game-info', (data) => {
+			roomid = data.room;
 			setLeftPlayer(data.leftPlayer);
 			setRightPlayer(data.rightPlayer);
-			setRoomid(data.room);
+			// setRoomid(data.room);
 		});
 		return () => {
 			socket.off('game-info');
@@ -165,7 +167,14 @@ export default function Game({me} : {me: string}){
     	  className="h-4/6 w-4/5 mt-20 cursor-none">
     	</div>
 		<button 
-			className="absolute bottom-[50px] right-[50px]  m-4  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]" onClick={() => {router.push("/home")}}>
+			className="absolute bottom-[50px] right-[50px]  m-4  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]" 
+			onClick={() => {
+				socket.emit('leave-game', {
+					room: roomid,
+					player: me,
+				});
+				router.push("/home");
+			}}>
 			leave
 		</button>
   </div>
