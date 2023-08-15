@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { Player } from "./interfaces/player.interface";
 import { Room } from "./interfaces/room.interface";
-import { SocketReadyState } from "net";
 
 @Injectable()
 export class gameService{
@@ -29,29 +28,6 @@ export class gameService{
     }
   }
 
-  removePlayerFromQueue(client: Socket) {
-   this.matchMakingQue.delete(client.data.username);
-  }
-
-  // removePlayer(playerSocket: Socket) : string | null {
-  //   const index: number = this.matchmakingQue.indexOf(playerSocket);
-  //   if (index > -1) {
-  //     this.matchmakingQue.splice(index, 1);
-  //   }
-  //   else{
-  //     const room: Room | undefined = this.findRoomByPlayer(playerSocket);
-  //     if (room) {
-  //       this.removePlayerFromRoom(playerSocket, room);
-  //       if (room.players.length === 0) {
-  //         this.removeRoom(room.id);
-  //         return room.id;
-  //       }
-  //     }
-  //   }
-  //   return null;
-  // }
-  // TODO add a function to find the user's room based on his username
-
   findRoomByPlayer(user: string): Room | undefined {
     const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {
       return room.players.find((player: Player) => player.username === user);
@@ -59,20 +35,30 @@ export class gameService{
     return room;
   }
 
-  // findRoom(roomId: string): Room | undefined {
-  //   return this.rooms.get(roomId);
-  // }
+  removePlayerFromQueue(client: Socket) {
+   this.matchMakingQue.delete(client.data.username);
+  }
 
-  // removeRoom(roomId: string) {
-  //   this.rooms.delete(roomId);
-  // }
+  removeRoom(roomId: string) {
+    this.rooms.delete(roomId);
+  }
 
-  // removePlayerFromRoom(playerSocket: Socket, room: Room) {
-  //   const index: number = room.players.findIndex((player: Player) => player.socket === playerSocket);
-  //   if (index > -1) {
-  //     room.players.splice(index, 1);
-  //   }
-  // }
+  findRoom(roomId: string): Room | undefined {
+    return this.rooms.get(roomId);
+  }
+
+  removePlayerFromRoom(username: string, roomId: string) : boolean {
+   
+    const room: Room | undefined = this.findRoom(roomId);
+    const index: number = room.players[0].username === username ? 0 : 1;
+
+    room.players.splice(index, 1);
+    if (room.players.length === 0) {
+      this.removeRoom(room.id);
+      return true;
+    }
+    return false;
+  }
 
   creatRoom(socket1: Array<Socket>, socket2: Array<Socket>, user1:string, user2:string): Room
   {

@@ -23,7 +23,7 @@ interface left{
 
 function MePlayer({ left, leftPlayer} : left) {
 	const {data, isLoading} = useQuery({
-		queryKey: ['user'],
+		queryKey: ['left'],
 		queryFn: async ()=> {
 		  const {data} = await axios.get(`http://localhost:8000/users/${leftPlayer}`, { withCredentials: true })
 		  return data;
@@ -47,7 +47,7 @@ function MePlayer({ left, leftPlayer} : left) {
 
 function OtherPlayer({ right, rightPlayer } : right) {
 	const {data, isLoading} = useQuery({
-		queryKey: ['user'],
+		queryKey: ['right'],
 		queryFn: async ()=> {
 		  const {data} = await axios.get(`http://localhost:8000/users/${rightPlayer}`, { withCredentials: true })
 		  return data;

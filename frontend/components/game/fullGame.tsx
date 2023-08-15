@@ -17,8 +17,7 @@ export default function Game({me} : {me: string}){
 	const [rightScore, setRightScore] = useState<number>(0);
 	const [LeftPlayer, setLeftPlayer] = useState<string>('');
 	const [RightPlayer, setRightPlayer] = useState<string>('');
-	// const [roomid, setRoomid] = useState<string>('');
-	let roomid : string = '';
+	const [roomid, setRoomid] = useState<string>('');
 	let sx : number = 1;
 	let sy : number = 1;
 
@@ -29,10 +28,9 @@ export default function Game({me} : {me: string}){
 			audio.play();
 		});
 		socket.on('game-info', (data) => {
-			roomid = data.room;
 			setLeftPlayer(data.leftPlayer);
 			setRightPlayer(data.rightPlayer);
-			// setRoomid(data.room);
+			setRoomid(data.room);
 		});
 		return () => {
 			socket.off('game-info');
@@ -41,7 +39,8 @@ export default function Game({me} : {me: string}){
 	  }, []);
 
 	useEffect(() => {
-
+		if (roomid!== '')
+		{
 		const handleResize = () => {
 			if (!divRef.current) return;
 
@@ -75,7 +74,6 @@ export default function Game({me} : {me: string}){
 		const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#F73859');
 		const leftBoard = drawRect(35, H / 2, 20, 120, '#F73859');
 
-		
 		const ball = drawCircle(W / 2, H / 2, 15, '#384259');
 		Composite.add(engine.world, [ball, rightBoard, leftBoard]);
 		window.addEventListener("resize", handleResize);
@@ -139,11 +137,12 @@ export default function Game({me} : {me: string}){
 					else router.push('/game/loser')
 				}
 			});
-
-		return () => {
-		  window.removeEventListener("resize", handleResize);
-		};
-		}, []);
+			
+			return () => {
+				window.removeEventListener("resize", handleResize);
+			};
+		}
+		}, [roomid]);
 
 		// useEffect(() => {
 		// 	if (countDownValue == 0) {

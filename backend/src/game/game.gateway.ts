@@ -43,10 +43,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('full-Game')
   handleFullGame(client: Socket, data: any) {
     client.data.username = data;
-    console.log('full game', data);
-    //TODO: emit the place of the players
-    // TODO: emit only the room details to the client
-    // TODO: add the socket id to the player room
     const room: Room = this.gameService.findRoomByPlayer(data);
     if (room !== undefined) {
       const data: any = {
@@ -57,8 +53,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.emit('game-info', data);
     }
   }
-  
-  //TODO: remove player from matchmaking queue
+
+  @SubscribeMessage('leave-game')
+  handleLeaveGame(client: Socket, data: any) {
+    let removedRoom : boolean;
+    removedRoom = this.gameService.removePlayerFromRoom(data.player, data.room);
+    if (removedRoom === true)
+      this.engineService.removeGameSimulation(data.room);
+  }
+
   @SubscribeMessage('cancel-looking')
   handleCancelLooking(client: Socket, user: string) {
     if (!client.data.username) {
