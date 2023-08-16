@@ -57,8 +57,8 @@ export class UsersService {
   }
 
   async getDM(username: string) {
-  const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type = :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
-  return channels;
+      const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type = :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
+      return channels;
   // return this.userRepo.findOne({where: {
     //   username: username,
     // }, relations: ['channels', 'channels.type']});
@@ -95,15 +95,17 @@ export class UsersService {
       fact2Auth : true
     });
   }
-  // getFriends(login: string) {
-  //   const user = this.userRepo.find({
-  //     where: {
-  //       login: login,
-  //     },
-  //     relations: {
-  //       initiatedFriendships: true,
-  //       receivedFriendships: true,
-  //     }
-  //   })
-  // }
+
+  async getFriends(username: string) {
+    const friends = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.initiatedFriendships', 'friendship', 'friendship.status = :status', {status: 'accepted'}).where('user.username = :username', {username}).getMany();
+    // const user = this.userRepo.find({
+    //   where: {
+    //     username: username
+    //   },
+    //   relations: {
+    //     initiatedFriendships: true,
+    //     receivedFriendships: true,
+    //   }
+    // })
+  }
 }
