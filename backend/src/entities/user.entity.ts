@@ -7,7 +7,8 @@ import {
     ManyToMany,
     JoinTable,
     Index,
-    DataSource
+    DataSource,
+    CreateDateColumn
   } from 'typeorm';
 import { Administration, Channel, Message, Sanction } from './channel.entity';
   
@@ -30,9 +31,7 @@ export class User {
     name: string;
 
     
-    @Column({
-        nullable: true,
-    })
+    @Column({nullable: true,})
     image: string;
 
     @Column({
@@ -104,10 +103,12 @@ export class GameHistory {
     @Column()
     loserScore: number;
   
-    @Column({ type: 'timestamp' })
-    createdAt: Date;
+    @CreateDateColumn()
+    created_at: Date;
 }
-  
+
+
+
 @Entity({ name: 'Blockage' })
 export class Blockage {
     @PrimaryGeneratedColumn()
@@ -118,6 +119,12 @@ export class Blockage {
   
     @ManyToOne(() => User, (user) => user.blockedByUsers)
     blocked: User;
+}
+
+export enum Fstatus {
+    PENDING = 'pending',
+    ACCEPTED = 'accepted',
+    REFUSED = 'refused'
 }
   
 @Entity({ name: 'Friendship' })
@@ -131,7 +138,7 @@ export class Friendship {
     @ManyToOne(() => User, (user) => user.receivedFriendships)
     receiver: User;
   
-    @Column({ type: 'boolean' })
-    isAccepted: boolean;
+    @Column( )
+    status: Fstatus;
 }
 export { Channel };

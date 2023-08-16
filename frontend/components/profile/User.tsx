@@ -14,7 +14,7 @@ const User = ({id} : {id : string | null}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const User = useQuery({
-    queryKey: ['user'],
+    queryKey: ['outherUser'],
     queryFn: async ()=> {
       let endpoint = 'http://localhost:8000/users/me';
       if (id)
@@ -25,13 +25,25 @@ const User = ({id} : {id : string | null}) => {
     }
   });
 
+  const sendRequest = useMutation({
+    mutationKey: ['sendRequest'],
+    mutationFn: async(name: string) => {
+      const {data} = await axios.post(`http://localhost:8000/friendship/sendRequest/${name}`, name, { withCredentials: true });
+      console.log(data);
+      return data;
+    }
+  });
+
   const updateBaner = useMutation({
+    mutationKey: ['updateBaner'],
     mutationFn: async(user : userDto) => {
       await axios.patch('http://localhost:8000/users/updateMe', user, { withCredentials: true });
     },
+
     onSuccess: () => {
       Client.refetchQueries('user');
     },
+
   });
 
   const status = 'online';
@@ -44,6 +56,11 @@ const User = ({id} : {id : string | null}) => {
     await updateBaner.mutate(user);
     await Client.refetchQueries('user');
     setIsLoading(false);
+  }
+
+  const handleFriendRequest = async () => {
+    await sendRequest.mutate(id);
+    console.log('send request to' + id);
   }
 
   if (User.isLoading)
@@ -63,7 +80,7 @@ const User = ({id} : {id : string | null}) => {
         <h2 className='text-white text-xl sm:text-3xl'>{User?.data.name}</h2>
         {id && <div className=''>
                   <span className='text-green-500 sm:text-xl'>{status}</span>
-                  <button className='bg-blue text-sm px-4 py-[2px] ml-4 text-black'>add friend </button>
+                  <button className='bg-blue text-sm px-4 py-[2px] ml-4 text-black' onClick={handleFriendRequest}>Add Friend</button>
                 </div>
         }
       </div>

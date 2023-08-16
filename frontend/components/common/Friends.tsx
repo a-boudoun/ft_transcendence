@@ -12,9 +12,9 @@ import { use } from 'react';
 const Friends = () => {
 
     const {data, isLoading} = useQuery({
-        queryKey: ['users'],
+        queryKey: ['friends'],
         queryFn: async ()=> {
-            const { data } = await axios.get('http://localhost:8000/users', { withCredentials: true });
+            const { data } = await axios.get('http://localhost:8000/friendship/getFriends', { withCredentials: true });
             return data;
         }
       });
@@ -25,7 +25,8 @@ const Friends = () => {
         return (
         <div className={'h-full flex flex-col gap-1 overflow-y-scroll rounded-2xl'}>
                 {
-                    data.users?.map((friend: userDto) => {
+                    data.map((friend: userDto) => {
+                        console.log(friend);
                         return (
                             <Link href={`/profile/${friend.name}`} >
                                 <Friend user={friend} /> 
@@ -37,7 +38,6 @@ const Friends = () => {
         );
     }
 }
-
 export default Friends;
 
 export const Friend = ({user}: {user: userDto}) => {
