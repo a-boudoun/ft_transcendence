@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation} from "@tanstack/react-query";
 import axios from "axios";
 import { stat } from "fs";
 import { userDto } from "@/dto/userDto";
@@ -13,9 +13,17 @@ const FriendRequest = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const {data, isLoading} = useQuery({
-    queryKey: ['users'],
+    queryKey: ['friendrequests'],
     queryFn: async() => {
-      const {data} = await axios.get('http://localhost:8000/users', {withCredentials: true});
+      const {data} = await axios.get('http://localhost:8000/friendship/friendrequests', {withCredentials: true});
+      return data;
+    }
+  })
+
+  const Accept = useMutation({
+    mutationKey: ['accept'],
+    mutationFn: async(sender: string) => {
+      const {data} = await axios.patch(`http://localhost:8000/friendship/acceptRequest/${sender}`, sender, {withCredentials: true});
       return data;
     }
   })
@@ -24,17 +32,11 @@ const FriendRequest = () => {
     setNotif(false);
     setIsOpen(!isOpen);
   }
-  
-  const FriendRequestItem = ({user}: {user: userDto}) => {
-      console.log(user);
-      <div className='flex items-center'>
-        <Image src={user.image} alt={user.name} width={28} height={28} />
-        <p className='text-sm font-bold'>{user.name}</p>
-        <button>dine</button>
-        <button>accept</button>
-      </div>
-  }
 
+  const handelAccept = () => {
+      Accept.mutate();
+  }
+  
   return (
     <>
         <button className='relative grid place-content-center mr-[14px] p-1' onClick={handelClick}>
@@ -43,9 +45,9 @@ const FriendRequest = () => {
         </button>
         {
             isOpen  &&
-            (<div className='absolute right-0 top-[56px] flex flex-col justify-around bg-light-gray p-4 rounded-b-xl shadow-2xl'>
+            (<div className='absolute right-0 top-[56px] h-[200px] bg-light-gray p-4 flex flex-col gap-1 overflow-y-scroll rounded-b-2xl'>
                 {
-                     data.users?.map((user: userDto) => {
+                     data.map((user: userDto) => {
                         return (
                           <div className={`flex justify-between bg-dark-gray px-4 py-2 rounded-xl gap-2 sm:gap-8`}>
                               <div className="flex items-center gap-4">
@@ -57,7 +59,8 @@ const FriendRequest = () => {
                               </div>
                               <div className="flex items-center gap-2 text-[12px] sm:gap-4 sm:text[24px]">
                                   <button className="bg-red rounded-xl px-2 py-1 sm:px-4 sm:py-2">Decline</button>
-                                  <button className="bg-blue rounded-xl px-2 py-1 sm:px-4 sm:py-2">Accept</button>
+                                  
+                                  <button className="bg-blue rounded-xl px-2 py-1 sm:px-4 sm:py-2" onClick={() =>  Accept.mutate(user.username)} >Accept</button>
                               </div>
                         </div>
                         );
@@ -68,7 +71,5 @@ const FriendRequest = () => {
     </>
   )
 }
-
-
 
 export default FriendRequest;
