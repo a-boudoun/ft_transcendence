@@ -9,11 +9,6 @@ import con from 'ormconfig';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() userDTO: UserDTO) {
-    return this.usersService.create(userDTO);
-  }
-
   @Get()
   @UseGuards(Jwt2faAuthGuard)
   async findAll() {
@@ -57,7 +52,12 @@ export class UsersController {
   async isUser(@Req() req, @Param('name') name: string) {
     return this.usersService.isUserExist(req.user.username, name);
   }
-
+  
+  @Get('friends/:username')
+  @UseGuards(Jwt2faAuthGuard)
+  async getFriends(@Param('username') username: string) {
+    return this.usersService.getFriends(username);
+  }
 
   @Delete(':login')
   remove(@Param('login') login: string) {

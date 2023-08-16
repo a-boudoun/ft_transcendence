@@ -120,6 +120,12 @@ export class Blockage {
     @ManyToOne(() => User, (user) => user.blockedByUsers)
     blocked: User;
 }
+
+export enum Fstatus {
+    PENDING = 'pending',
+    ACCEPTED = 'accepted',
+    REFUSED = 'refused'
+}
   
 @Entity({ name: 'Friendship' })
 export class Friendship {
@@ -133,6 +139,6 @@ export class Friendship {
     receiver: User;
   
     @Column({ type: 'boolean' })
-    isAccepted: boolean;
+    status: Fstatus;
 }
 export { Channel };
