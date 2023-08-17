@@ -66,15 +66,15 @@ export default function Game({me} : {me: string}){
 				height: H,
 				pixelRatio: 1,
 				wireframes: false,
-				background: "#7AC7C4",
+				background: "#000000",
 			}
 		}),
 		mouse = Mouse.create(render.canvas);
 
-		const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#F73859');
-		const leftBoard = drawRect(35, H / 2, 20, 120, '#F73859');
+		const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#FFFFFF');
+		const leftBoard = drawRect(35, H / 2, 20, 120, '#FFFFFF');
 
-		const ball = drawCircle(W / 2, H / 2, 15, '#384259');
+		const ball = drawCircle(W / 2, H / 2, 15, '#FFFFFF');
 		Composite.add(engine.world, [ball, rightBoard, leftBoard]);
 		window.addEventListener("resize", handleResize);
 		// document.addEventListener('keydown', handleKeyDown);\
@@ -84,14 +84,14 @@ export default function Game({me} : {me: string}){
 				if (me === RightPlayer) {
 					socket.emit('rightPaddle', 
 					{
-						y: mouse.position.y,
+						y: mouse.position.y / sy,
 						room: roomid,
 					});
 				}
 				else {
 					socket.emit('leftPaddle', 
 					{
-						y: mouse.position.y,
+						y: mouse.position.y / sy,
 						room: roomid,
 					});
 				}
@@ -140,6 +140,12 @@ export default function Game({me} : {me: string}){
 			
 			return () => {
 				window.removeEventListener("resize", handleResize);
+				socket.off('positions');
+				socket.off('ball');
+				socket.off('score');
+				socket.off('winner');
+				Engine.clear(engine);
+				Render.stop(render);
 			};
 		}
 		}, [roomid]);
