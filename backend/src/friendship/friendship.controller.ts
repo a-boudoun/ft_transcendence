@@ -35,13 +35,15 @@ export class FriendshipController {
     return await this.friendshipService.getFriends(req.user.username);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateFriendshipDto: UpdateFriendshipDto) {
-  //   return this.friendshipService.update(+id, updateFriendshipDto);
-  // }
+  @Get('status/:name')
+  @UseGuards(Jwt2faAuthGuard)
+  async status(@Param('sender') sender: string, @Req() req){
+    return this.friendshipService.status(req.user.username, sender);
+  }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.friendshipService.remove(+id);
+  @Delete(':name')
+  @UseGuards(Jwt2faAuthGuard)
+  remove(@Param('sender') sender: string, @Req() req) {
+    return this.friendshipService.remove(req.user.username, sender);
   }
 }
