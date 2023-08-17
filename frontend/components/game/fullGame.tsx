@@ -1,14 +1,30 @@
 "use client";
 
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite, Query} from "matter-js";
 import PlayersScore from "@/components/game/score";
 import { drawRect, drawCircle } from "@/components/game/draw";
 import { useRouter } from "next/navigation";
 import socket from "@/components/socketG";
+import axios from "axios";
 
+interface GameH{
+	loserScore: number;
+	loser: string;
+}
 
 export default function Game({me} : {me: string}){
+	const storeGameHistory = useMutation({
+		mutationKey: ["storeGameHistory"],
+		mutationFn: async (a :GameH) => {
+			const { data } = await axios.post(`http://localhost:8000/gameHistory`, a, { withCredentials: true });
+			return data;
+		},
+		onSuccess: () => {
+			console.log("success");
+		}
+	});
 	const divRef = useRef<HTMLDivElement | null>(null);
 	// const [PVisible, setPVisible] = useState<boolean>(true);
 	const router = useRouter();
@@ -41,44 +57,44 @@ export default function Game({me} : {me: string}){
 	useEffect(() => {
 		if (roomid!== '')
 		{
-		const handleResize = () => {
-			if (!divRef.current) return;
+			const handleResize = () => {
+				if (!divRef.current) return;
 
-				render.canvas.width = divRef.current.offsetWidth;
-				render.canvas.height = divRef.current.offsetHeight;
-				sx = divRef.current.offsetWidth / 2048;
-				sy = divRef.current.offsetHeight / 890;
-		}
-		
-		if (!divRef.current) return;
-		
-		const H = divRef.current.offsetHeight;
-		const W = divRef.current.offsetWidth;
-		sx = W / 2048;
-		sy = H / 890;
-		
-		let engine = Engine.create(),
-		render = Render.create({
-			engine: engine,
-			element: divRef.current,
-			options: {
-				width: W,
-				height: H,
-				pixelRatio: 1,
-				wireframes: false,
-				background: "#000000",
+					render.canvas.width = divRef.current.offsetWidth;
+					render.canvas.height = divRef.current.offsetHeight;
+					sx = divRef.current.offsetWidth / 2048;
+					sy = divRef.current.offsetHeight / 890;
 			}
-		}),
-		mouse = Mouse.create(render.canvas);
+			
+			if (!divRef.current) return;
+			
+			const H = divRef.current.offsetHeight;
+			const W = divRef.current.offsetWidth;
+			sx = W / 2048;
+			sy = H / 890;
+			
+			let engine = Engine.create(),
+			render = Render.create({
+				engine: engine,
+				element: divRef.current,
+				options: {
+					width: W,
+					height: H,
+					pixelRatio: 1,
+					wireframes: false,
+					background: "#000000",
+				}
+			}),
+			mouse = Mouse.create(render.canvas);
 
-		const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#FFFFFF');
-		const leftBoard = drawRect(35, H / 2, 20, 120, '#FFFFFF');
+			const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#FFFFFF');
+			const leftBoard = drawRect(35, H / 2, 20, 120, '#FFFFFF');
 
-		const ball = drawCircle(W / 2, H / 2, 15, '#FFFFFF');
-		Composite.add(engine.world, [ball, rightBoard, leftBoard]);
-		window.addEventListener("resize", handleResize);
-		// document.addEventListener('keydown', handleKeyDown);\
-		Render.run(render);
+			const ball = drawCircle(W / 2, H / 2, 15, '#FFFFFF');
+			Composite.add(engine.world, [ball, rightBoard, leftBoard]);
+			window.addEventListener("resize", handleResize);
+			// document.addEventListener('keydown', handleKeyDown);\
+			Render.run(render);
 
 			Events.on(render, 'afterRender', () => {
 				if (me === RightPlayer) {
@@ -122,21 +138,6 @@ export default function Game({me} : {me: string}){
 					}
 				);
 			});
-			socket.on('score', (data) => {
-				setLeftScore(data.leftScore);
-				setRightScore(data.rightScore);
-			});
-			socket.on('winner', (data) => {
-				socket.emit('end-game', {room: roomid});
-				if(me === RightPlayer){
-					if (data === 'right') router.push('/game/winner')
-					else router.push('/game/loser')
-				}
-				else{
-					if (data === 'left') router.push('/game/winner')
-					else router.push('/game/loser')
-				}
-			});
 			
 			return () => {
 				window.removeEventListener("resize", handleResize);
@@ -149,7 +150,35 @@ export default function Game({me} : {me: string}){
 			};
 		}
 		}, [roomid]);
+		
+		socket.on('score', (data) => {
+			setLeftScore(data.leftScore);
+			setRightScore(data.rightScore);
+		});
 
+		socket.on('winner', (data) => {
+			socket.emit('leave-game', {
+				room: roomid,
+				player: me,
+			});
+			if(me === RightPlayer){
+				if (data === 'right') {
+					// post (winner)
+					storeGameHistory.mutate({loserScore: leftScore, loser: LeftPlayer});
+					router.push('/game/winner');
+				}
+				else router.push('/game/loser')
+			}
+			else{
+				if (data === 'left'){
+					storeGameHistory.mutate({loserScore: rightScore, loser: RightPlayer});
+					router.push('/game/winner')
+					// post (winner)	
+				} 
+				else
+					router.push('/game/loser')
+			}
+		});
 		// useEffect(() => {
 		// 	if (countDownValue == 0) {
 		// 	  setPVisible(false);

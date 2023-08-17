@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 // ! why import Matter like this?
 import Matter = require("matter-js");
 import { Room } from "./interfaces/room.interface";
+import { ghReq } from "src/game-history/game-history.controller";
 
 @Injectable()
 export class gameSimulation{
@@ -28,6 +29,8 @@ export class gameSimulation{
 
 	private rightScore: number = 0;
 	private leftScore: number = 0;
+	private rightPlayer: string | string[];
+	private leftPlayer: string | string[];
 
 	constructor() {
 		this.engine = Matter.Engine.create({
@@ -101,7 +104,7 @@ export class gameSimulation{
 					if (this.leftScore === 3)
 					this.server.to(this.roomIn.id).emit('winner', 'left');
 				else
-				this.server.to(this.roomIn.id).emit('winner', 'right');
+					this.server.to(this.roomIn.id).emit('winner', 'right');
 		}
 		Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
 		Matter.Body.setVelocity(this.ball, { x: 0, y: 0 });
@@ -141,7 +144,6 @@ handleCollision(event: Matter.IEventCollision<Matter.Engine>): void {
 
 
 stopEngine() {
-	// ! set the score on database
 	Matter.Engine.clear(this.engine);
 	Matter.World.clear(this.engine.world, false);
 	Matter.Events.off(this.engine, 'collisionStart', this.handleCollision);
@@ -155,6 +157,8 @@ stopEngine() {
 	// TODO: sent the positions normalized to the client
 	sendPosition(room : Room) {
 		this.roomIn = room;
+		this.leftPlayer = room.players[0].position === 'left' ? room.players[0].username : room.players[1].username;
+		this.rightPlayer = room.players[0].position === 'right' ? room.players[0].username : room.players[1].username;
 		this.id = setInterval(() => {
 			this.server.to(room.id).emit('ball', 
 			{
