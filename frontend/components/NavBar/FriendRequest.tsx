@@ -8,13 +8,15 @@ import { userDto } from "@/dto/userDto";
 import { Client } from "@/Providers/QueryProvider";
 
 const FriendRequest = () => {
-  const [notif, setNotif] = useState<boolean>(true);
+  const [notif, setNotif] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const {data, isLoading} = useQuery({
     queryKey: ['friendrequests'],
     queryFn: async() => {
       const {data} = await axios.get('http://localhost:8000/friendship/friendrequests', {withCredentials: true});
+      if (data.length > 0)
+        setNotif(true);
       return data;
     }
   })
@@ -55,7 +57,8 @@ const FriendRequest = () => {
         {
             isOpen  &&
             (<div className='absolute right-0 top-[56px] max-h-[200px] bg-light-gray p-4 flex flex-col gap-1 overflow-y-scroll rounded-b-2xl'>
-                {
+                {data.length === 0 ? <p className="text-center">No friend requests</p> :
+                
                      data.map((user: userDto) => {
                         return (
                           <div className={`flex justify-between bg-dark-gray px-4 py-2 rounded-xl gap-2 sm:gap-8`}>
