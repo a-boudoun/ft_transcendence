@@ -16,9 +16,7 @@ export class gameService{
     return present;
   }
 
-  // TODO: it maybe cause some problems
-  // because when you refresh the button still apears before receiving the 'already-looking' or 'ingame' event
-  addPlayerToQueue(playerSocket: Socket) {
+  addPlayerToQueue(playerSocket: Socket): void {
     const username: string = playerSocket.data.username;
     if (this.matchMakingQue.has(username)) {
       this.matchMakingQue.get(username).push(playerSocket);
@@ -35,11 +33,11 @@ export class gameService{
     return room;
   }
 
-  removePlayerFromQueue(client: Socket) {
+  removePlayerFromQueue(client: Socket): void {
    this.matchMakingQue.delete(client.data.username);
   }
 
-  removeRoom(roomId: string) {
+  removeRoom(roomId: string): void {
     this.rooms.delete(roomId);
   }
 
@@ -48,7 +46,7 @@ export class gameService{
   }
 
   removePlayerFromRoom(username: string, roomId: string) : boolean {
-   
+    
     const room: Room | undefined = this.findRoom(roomId);
     const index: number = room.players[0].username === username ? 0 : 1;
 
@@ -106,19 +104,6 @@ export class gameService{
     }
     return null;
   }
-  // sending the room id and the users in the room to the players
-  // informPlayers(event: string, room: Room) {
-  //   if (room) {
-  //     const users = room.players.map((player) => player.username);
-  //     room.players.forEach((player) => {
-  //       player.socket.emit(event, {room: room.id, us: users});
-  //     });
-  //   }
-  // }
-
-  // printQueue(): void {
-  //   console.log (this.matchmakingQue.length)
-  // }
 
   isInGame(username: string): string | null { 
     const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {

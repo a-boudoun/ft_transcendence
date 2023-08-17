@@ -127,7 +127,7 @@ export default function Game({me} : {me: string}){
 				setRightScore(data.rightScore);
 			});
 			socket.on('winner', (data) => {
-				socket.emit('endGame', {room: roomid});
+				socket.emit('end-game', {room: roomid});
 				if(me === RightPlayer){
 					if (data === 'right') router.push('/game/winner')
 					else router.push('/game/loser')

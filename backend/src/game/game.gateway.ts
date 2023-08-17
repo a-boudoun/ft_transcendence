@@ -62,6 +62,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.engineService.removeGameSimulation(data.room);
   }
 
+  @SubscribeMessage('end-game')
+  handleEndGame(client: Socket, roomId: string) {
+    this.engineService.removeGameSimulation(roomId);
+    this.gameService.removeRoom(roomId);
+  }
+
   @SubscribeMessage('cancel-looking')
   handleCancelLooking(client: Socket, user: string) {
     if (!client.data.username) {
@@ -70,8 +76,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.gameService.removePlayerFromQueue(client);
   }
   
-  //TODO: add player to matchmaking queue
-  //TODO: add username to client.data
   @SubscribeMessage('looking-for-match')
   handleLookingForMatch(client: Socket, user: string) {
     client.data.username = user;
@@ -85,7 +89,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  //TODO: check if the player is already in a matchmaking queue
   @SubscribeMessage('player-status')
   handleAlreadyLooking(client: Socket, data: any) {
     let roomId: string | null;

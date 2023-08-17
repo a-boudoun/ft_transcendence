@@ -97,72 +97,61 @@ export class gameSimulation{
 					vx = 10;
 					vy = 3;
 				}
-				this.server.to(this.roomIn.id).emit('score', 
-					{
-						leftScore: this.leftScore,
-						rightScore: this.rightScore,
-					}
-				);
-				// if (this.leftScore === 3 || this.rightScore === 3){
-				// 	if (this.leftScore === 3){
-				// 		this.roomIn.players.forEach((player) => {
-				// 			player.socket.emit('winner', 'left');
-				// 		});
-				// 	}
-				// 	else{
-				// 		this.roomIn.players.forEach((player) => {
-				// 			player.socket.emit('winner', 'right');
-				// 		});
-				// 	}
-				// }
-				Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
-				Matter.Body.setVelocity(this.ball, { x: 0, y: 0 });
-
-				setTimeout(() => Matter.Body.setVelocity(this.ball, { x: vx, y: vy }), 500);
-			}
-		});
-	}
-	
-	detectCollision() {
-		Matter.Events.on(this.engine, 'collisionStart', (event) => {
-			this.handleCollision(event);
-		});;
-	}
-
-	handleCollision(event: Matter.IEventCollision<Matter.Engine>): void {
-		let pairs = event.pairs;
-		let ballVelocity = this.ball.velocity;
+				if (this.leftScore === 3 || this.rightScore === 3){
+					if (this.leftScore === 3)
+					this.server.to(this.roomIn.id).emit('winner', 'left');
+				else
+				this.server.to(this.roomIn.id).emit('winner', 'right');
+		}
+		Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
+		Matter.Body.setVelocity(this.ball, { x: 0, y: 0 });
 		
-		pairs.forEach((pair) => {
-			if (pair.bodyA === this.leftBoard || pair.bodyB === this.leftBoard) {
-				Matter.Body.setVelocity(this.ball, { 
-					x: -20,
-					y: ballVelocity.y 
-				});
-				this.server.to(this.roomIn.id).emit('sound');
-			}
-			else if (pair.bodyA === this.rightBoard || pair.bodyB === this.rightBoard) {
-				Matter.Body.setVelocity(this.ball, { 
-					x: 20, 
-					y: ballVelocity.y
-				});
-				this.server.to(this.roomIn.id).emit('sound');
-			}
-		});
+		setTimeout(() => Matter.Body.setVelocity(this.ball, { x: vx, y: vy }), 500);
 	}
+});
+}
+
+detectCollision() {
+	Matter.Events.on(this.engine, 'collisionStart', (event) => {
+		this.handleCollision(event);
+	});;
+}
+
+handleCollision(event: Matter.IEventCollision<Matter.Engine>): void {
+	let pairs = event.pairs;
+	let ballVelocity = this.ball.velocity;
 	
+	pairs.forEach((pair) => {
+		if (pair.bodyA === this.leftBoard || pair.bodyB === this.leftBoard) {
+			Matter.Body.setVelocity(this.ball, { 
+				x: -20,
+				y: ballVelocity.y 
+			});
+			this.server.to(this.roomIn.id).emit('sound');
+		}
+		else if (pair.bodyA === this.rightBoard || pair.bodyB === this.rightBoard) {
+			Matter.Body.setVelocity(this.ball, { 
+				x: 20, 
+				y: ballVelocity.y
+			});
+			this.server.to(this.roomIn.id).emit('sound');
+		}
+	});
+}
 
-	stopEngine() {
-		Matter.Engine.clear(this.engine);
-		Matter.World.clear(this.engine.world, false);
-		Matter.Events.off(this.engine, 'collisionStart', this.handleCollision);
-		clearInterval(this.id);
-	}
 
-	// stopRunner() {
+stopEngine() {
+	// ! set the score on database
+	Matter.Engine.clear(this.engine);
+	Matter.World.clear(this.engine.world, false);
+	Matter.Events.off(this.engine, 'collisionStart', this.handleCollision);
+	clearInterval(this.id);
+}
+
+// stopRunner() {
 	// 	Matter.Runner.stop(this.runner);
 	// }
-
+	
 	// TODO: sent the positions normalized to the client
 	sendPosition(room : Room) {
 		this.roomIn = room;
@@ -174,13 +163,19 @@ export class gameSimulation{
 			}
 			);
 			this.server.to(room.id).emit('positions', 
+			{
+				leftBoardX: this.leftBoard.position.x,
+				leftBoardY: this.leftBoard.position.y,
+				rightBoardX: this.rightBoard.position.x,
+				rightBoardY: this.rightBoard.position.y,
+			}
+			);
+			this.server.to(this.roomIn.id).emit('score', 
 				{
-					leftBoardX: this.leftBoard.position.x,
-					leftBoardY: this.leftBoard.position.y,
-					rightBoardX: this.rightBoard.position.x,
-					rightBoardY: this.rightBoard.position.y,
+					leftScore: this.leftScore,
+					rightScore: this.rightScore,
 				}
-				);
+			);
 		}, 15);
 	}
 
