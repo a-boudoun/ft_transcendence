@@ -107,8 +107,6 @@ export class GameHistory {
     created_at: Date;
 }
 
-
-
 @Entity({ name: 'Blockage' })
 export class Blockage {
     @PrimaryGeneratedColumn()
@@ -124,7 +122,7 @@ export class Blockage {
 export enum Fstatus {
     PENDING = 'pending',
     ACCEPTED = 'accepted',
-    REFUSED = 'refused'
+    NONE = 'none'
 }
   
 @Entity({ name: 'Friendship' })

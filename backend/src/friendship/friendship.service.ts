@@ -38,26 +38,28 @@ export class FriendshipService {
     const friendship = await this.friendshipRepo.find({
       where: [
         { initiater: { username: username } , status: Fstatus.ACCEPTED },
-        { receiver: { username: username } , status: Fstatus.ACCEPTED }
       ],
       relations: ['receiver']
     });
-
     const receivers =  friendship.map(f => f.receiver);
-    const senders =  friendship.map(f => f.initiater);
+
+    const friendship1 = await this.friendshipRepo.find({
+      where: [
+        { receiver: { username: username } , status: Fstatus.ACCEPTED },
+      ],
+      relations: ['initiater']
+    });
+
+    const senders =  friendship1.map(f => f.initiater);
 
     if(receivers.length == 0 && senders.length == 0)
       return [];
     else if(receivers.length == 0)
       return senders;
-    else
+    else if (senders.length == 0)
       return receivers;
     
     return receivers.concat(senders);
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} friendship`;
   }
 
   async accept(username: string, sender: string) {
@@ -69,7 +71,32 @@ export class FriendshipService {
     return await this.friendshipRepo.save(friendship);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} friendship`;
+  async status(username: string, sender: string) {
+    const friendship = await this.friendshipRepo.find({
+      where: [
+        { initiater: { username: username } ,  receiver: { username: sender } },
+        { initiater: { username: sender } ,  receiver: { username: username } }
+      ],
+    });
+
+    if(friendship.length == 0)
+      return Fstatus.NONE;
+    else if(friendship[0].status == Fstatus.ACCEPTED)
+      return Fstatus.ACCEPTED;
+    else if(friendship[0].status == Fstatus.PENDING)
+      return Fstatus.PENDING;
+
   }
+
+  async remove(username: string, sender: string) {
+    const friendship = await this.friendshipRepo.find({
+      where: [
+        { initiater: { username: username } ,  receiver: { username: sender } },
+        { initiater: { username: sender } ,  receiver: { username: username } }
+      ],
+    });
+
+    return await this.friendshipRepo.remove(friendship);
+  }
+
 }

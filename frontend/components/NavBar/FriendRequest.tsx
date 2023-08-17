@@ -4,9 +4,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { useQuery, useMutation} from "@tanstack/react-query";
 import axios from "axios";
-import { stat } from "fs";
 import { userDto } from "@/dto/userDto";
-
+import { Client } from "@/Providers/QueryProvider";
 
 const FriendRequest = () => {
   const [notif, setNotif] = useState<boolean>(true);
@@ -21,22 +20,32 @@ const FriendRequest = () => {
   })
 
   const Accept = useMutation({
-    mutationKey: ['accept'],
+    mutationKey: ['acceptFriendRequest'],
     mutationFn: async(sender: string) => {
       const {data} = await axios.patch(`http://localhost:8000/friendship/acceptRequest/${sender}`, sender, {withCredentials: true});
       return data;
+    },
+    onSuccess: () => {
+      Client.refetchQueries('friendrequests');
     }
   })
+
+  const Decline  = useMutation({
+    mutationKey: ['DeclineFriend'],
+    mutationFn: async(name: string) => {
+        const {data} = await axios.delete(`http://localhost:8000/friendship/${name}`, { withCredentials: true });
+        return data;
+    },
+    onSuccess: () => {
+        Client.refetchQueries('friendrequests');
+    }
+});
 
   const handelClick = () => {
     setNotif(false);
     setIsOpen(!isOpen);
   }
 
-  const handelAccept = () => {
-      Accept.mutate();
-  }
-  
   return (
     <>
         <button className='relative grid place-content-center mr-[14px] p-1' onClick={handelClick}>
@@ -45,7 +54,7 @@ const FriendRequest = () => {
         </button>
         {
             isOpen  &&
-            (<div className='absolute right-0 top-[56px] h-[200px] bg-light-gray p-4 flex flex-col gap-1 overflow-y-scroll rounded-b-2xl'>
+            (<div className='absolute right-0 top-[56px] max-h-[200px] bg-light-gray p-4 flex flex-col gap-1 overflow-y-scroll rounded-b-2xl'>
                 {
                      data.map((user: userDto) => {
                         return (
@@ -58,8 +67,7 @@ const FriendRequest = () => {
                                   </div>
                               </div>
                               <div className="flex items-center gap-2 text-[12px] sm:gap-4 sm:text[24px]">
-                                  <button className="bg-red rounded-xl px-2 py-1 sm:px-4 sm:py-2">Decline</button>
-                                  
+                                  <button className="bg-red rounded-xl px-2 py-1 sm:px-4 sm:py-2" onClick={() =>  Decline.mutate(user.username)} >Decline</button>
                                   <button className="bg-blue rounded-xl px-2 py-1 sm:px-4 sm:py-2" onClick={() =>  Accept.mutate(user.username)} >Accept</button>
                               </div>
                         </div>

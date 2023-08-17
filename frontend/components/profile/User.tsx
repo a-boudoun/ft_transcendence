@@ -8,6 +8,7 @@ import axios from 'axios';
 import { Client } from '@/Providers/QueryProvider';
 import { Loader2 } from  'lucide-react';
 import { useState } from 'react';
+import AddFriend from './AddFriend';
 
 const User = ({id} : {id : string | null}) => {
 
@@ -21,15 +22,6 @@ const User = ({id} : {id : string | null}) => {
         endpoint = `http://localhost:8000/users/${id}`;
 
       const {data} = await axios.get(endpoint, { withCredentials: true })
-      return data;
-    }
-  });
-
-  const sendRequest = useMutation({
-    mutationKey: ['sendRequest'],
-    mutationFn: async(name: string) => {
-      const {data} = await axios.post(`http://localhost:8000/friendship/sendRequest/${name}`, name, { withCredentials: true });
-      console.log(data);
       return data;
     }
   });
@@ -58,11 +50,6 @@ const User = ({id} : {id : string | null}) => {
     setIsLoading(false);
   }
 
-  const handleFriendRequest = async () => {
-    await sendRequest.mutate(id);
-    console.log('send request to' + id);
-  }
-
   if (User.isLoading)
     return <div>loading...</div>
   else
@@ -80,7 +67,7 @@ const User = ({id} : {id : string | null}) => {
         <h2 className='text-white text-xl sm:text-3xl'>{User?.data.name}</h2>
         {id && <div className=''>
                   <span className='text-green-500 sm:text-xl'>{status}</span>
-                  <button className='bg-blue text-sm px-4 py-[2px] ml-4 text-black' onClick={handleFriendRequest}>Add Friend</button>
+                  <AddFriend id={id} />
                 </div>
         }
       </div>
