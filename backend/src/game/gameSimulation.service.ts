@@ -39,7 +39,7 @@ export class gameSimulation{
 			gravity:{
 				x:0,
 				y:0,
-				scale:0.001,
+				scale:0.01,
 			},
 		});
 		// this.runner = Matter.Runner.create({
