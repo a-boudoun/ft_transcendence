@@ -18,6 +18,8 @@ export class GameHistoryService {
   async create(ghReq: ghReq) {
     const gameHistory = this.gameHistoryRepo.create();
     gameHistory.winner = await this.userRepo.findOne({where: {username: ghReq.winner}});
+    gameHistory.winner.XP += 10;
+    await this.userRepo.save(gameHistory.winner);
     gameHistory.loser = await this.userRepo.findOne({where: {username: ghReq.loser}});
     gameHistory.loserScore = ghReq.loserScore;
     return this.gameHistoryRepo.save(gameHistory);
