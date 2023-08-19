@@ -8,7 +8,7 @@ import axios from 'axios';
 import  Game  from '@/components/game/fullGame';
 
 export default function MatchPlayers() {
-	const [look, setLook] = useState<number>(2);
+	const [look, setLook] = useState<number>(3);
 	const [player, setPlayer] = useState<string>('');
 	const [isPlayerFetched, setIsPlayerFetched] = useState<boolean>(false);
 	const [gameStart, setGameStart] = useState<boolean>(false);
