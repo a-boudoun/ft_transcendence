@@ -195,7 +195,7 @@ export default function Game({me} : {me: string}){
 		  }, [countDownValue]);
 
 	return (
-    <div className="flex justify-center items-center h-full w-full bg-[#384259]">
+    <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
 		{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] ">{countDownValue}</p>}
 		<PlayersScore 
 		left={leftScore} 

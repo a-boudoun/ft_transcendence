@@ -32,6 +32,8 @@ export class gameSimulation{
 	private rightPlayer: string | string[];
 	private leftPlayer: string | string[];
 
+	private readonly MAX = 140;
+
 	constructor() {
 		this.engine = Matter.Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
@@ -100,8 +102,8 @@ export class gameSimulation{
 					vx = 10;
 					vy = 3;
 				}
-				if (this.leftScore === 3 || this.rightScore === 3){
-					if (this.leftScore === 3)
+				if (this.leftScore === this.MAX || this.rightScore === this.MAX){
+					if (this.leftScore === this.MAX)
 					this.server.to(this.roomIn.id).emit('winner', 'left');
 				else
 					this.server.to(this.roomIn.id).emit('winner', 'right');
