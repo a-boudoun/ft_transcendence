@@ -94,7 +94,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
     else if (roomId = this.gameService.isInGame(data)){
       client.join(roomId);
-      this.gameService.emitToplayer(data, 'player-status', 'already-playing');
+      client.emit('player-status', 'already-playing');
     }
     else 
       client.emit('player-status', 'not-looking');
