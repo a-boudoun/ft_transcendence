@@ -60,6 +60,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     removedRoom = this.gameService.removePlayerFromRoom(data.player, data.room);
     if (removedRoom === true)
       this.engineService.removeGameSimulation(data.room);
+    this.gameService.emitToplayer(data.player, 'leave-game');
   }
 
   // @SubscribeMessage('end-game')
@@ -97,11 +98,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     client.data.username = data;
     if (this.gameService.isInQueue(client)){
-      client.emit('player-status', 'already-looking');
+      this.gameService.emitToplayer(data, 'player-status', 'already-looking');
     }
     else if (roomId = this.gameService.isInGame(data)){
       client.join(roomId);
-      client.emit('player-status', 'already-playing');
+      this.gameService.emitToplayer(data, 'player-status', 'already-playing');
     }
     else 
       client.emit('player-status', 'not-looking');
