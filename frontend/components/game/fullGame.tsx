@@ -161,13 +161,18 @@ export default function Game({me, setGame, setMatch} : Prop){
 			setLeftScore(data.leftScore);
 			setRightScore(data.rightScore);
 		});
-		socket.on('left-game', () => {
-			setGame(false);
-			setMatch(0);
-			router.push('/home');
+		socket.on('left-game', (playerLeft) => {
+			if (playerLeft === RightPlayer) {
+				setRightScore(0);
+				setLeftScore(10);
+			}
+			else {
+				setLeftScore(0);
+				setRightScore(10);
+			}
 		});
 		socket.on('winner', (data) => {
-			socket.emit('leave-game', {
+			socket.emit('end-game', {
 				room: roomid,
 				player: me,
 			});
