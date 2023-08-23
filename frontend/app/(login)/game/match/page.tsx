@@ -8,7 +8,7 @@ import axios from 'axios';
 import  Game  from '@/components/game/fullGame';
 
 export default function MatchPlayers() {
-	const [look, setLook] = useState<number>(3);
+	const [look, setLook] = useState<number>(0);
 	const [player, setPlayer] = useState<string>('');
 	const [isPlayerFetched, setIsPlayerFetched] = useState<boolean>(false);
 	const [gameStart, setGameStart] = useState<boolean>(false);
@@ -35,10 +35,13 @@ export default function MatchPlayers() {
 		socket.on('player-status', (status) => {
 			if (status === 'already-looking')
 		  		setLook(1);
-			else if (status === 'not-looking')
-				setLook(0);
+			else if (status === 'not-looking'){
+				socket.emit('looking-for-match', player)
+				setLook(1);
+			}
 			else
 				setGameStart(true);
+			console.log(status);
 		});
 		return () => {
 		  socket.off('player-status');
@@ -54,7 +57,7 @@ export default function MatchPlayers() {
 				<h1 className = 'text-white text-5xl font-serif'>VS</h1>
 				<RightPlayer clicked={look} setClicked={setLook} setGame={setGameStart}/>
 			</main>
-			{ look !== 2 && <div>
+			{/* { look !== 2 && <div>
 				{ look === 0 && <button 
 				className=" max-w-[320px] sm:max-w-auto  bottom-[40px] right-[40px] text-white text-[30px] bg-red w-[250px] py-2 rounded-[10px] hover:bg-[#FBACB3] font-bold"
 				onClick = {() => {
@@ -62,17 +65,17 @@ export default function MatchPlayers() {
 					setLook(1);
 				}}>
 				find a player
-				</button>}
+				</button>} */}
 
-				{look === 1 && <button 
+				{/* {look === 1 && <button 
 				className=" max-w-[320px] sm:max-w-auto  bottom-[40px] right-[40px] text-white text-[30px] bg-[#fc2e2e] py-2 w-[120px] rounded-[10px] hover:bg-[#f01f2d] font-bold"
 				onClick = {() => {
 					socket.emit('cancel-looking', player);
 					setLook(0);
 				}}>
 				cancel
-				</button>}
-			</div>}
+				</button>} */}
+			{/* </div>} */}
 		</div>}
 		{gameStart && <Game 
 			me = {player} 
