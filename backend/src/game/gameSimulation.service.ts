@@ -32,7 +32,7 @@ export class gameSimulation{
 	private rightPlayer: string | string[];
 	private leftPlayer: string | string[];
 
-	private readonly MAX = 140;
+	private readonly MAX = 10;
 
 	constructor() {
 		this.engine = Matter.Engine.create({

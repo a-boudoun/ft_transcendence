@@ -64,10 +64,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       winner = room.players[0].position;
     this.server.to(data.room).emit('left-game', data.player);
     this.server.to(data.room).emit('winner', winner);
-    this.gameService.removePlayerFromRoom(data.player, data.room);
-    this.gameService.removePlayerFromRoom(winner, data.room);
-    this.gameService.removeRoom(data.room);
-    this.engineService.removeGameSimulation(data.room);
+    // this.gameService.removePlayerFromRoom(data.player, data.room);
+    // this.gameService.removePlayerFromRoom(winner, data.room);
+    // this.gameService.removeRoom(data.room);
+    // this.engineService.removeGameSimulation(data.room);
   }
 
   @SubscribeMessage('end-game')
