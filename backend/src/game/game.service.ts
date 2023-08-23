@@ -68,6 +68,16 @@ export class gameService{
     return false;
   }
 
+  emitToplayer(username: string, event: string, data?: any): void
+  {
+    const player: Array<Socket> | undefined = this.matchMakingQue.get(username);
+    if (player) {
+      player.forEach((socket: Socket) => {
+        socket.emit(event, data);
+      });
+    }
+  }
+
   creatRoom(socket1: Array<Socket>, socket2: Array<Socket>, user1:string, user2:string): Room
   {
       const player1: Player = {sockets: socket1, username: user1, position: 'left'};
@@ -114,6 +124,7 @@ export class gameService{
     }
     return null;
   }
+
 
   isInGame(username: string): string | null { 
     const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {

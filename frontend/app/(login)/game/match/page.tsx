@@ -74,7 +74,11 @@ export default function MatchPlayers() {
 				</button>}
 			</div>}
 		</div>}
-		{gameStart && <Game me = {player} />}
+		{gameStart && <Game 
+			me = {player} 
+			setGame = {setGameStart}
+			setMatch = {setLook}
+		/>}
 		</>
 		)
 }

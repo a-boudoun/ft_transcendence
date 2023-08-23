@@ -8,13 +8,20 @@ import { drawRect, drawCircle } from "@/components/game/draw";
 import { useRouter } from "next/navigation";
 import socket from "@/components/socketG";
 import axios from "axios";
+import { set } from "zod";
 
 interface GameH{
 	loserScore: number;
 	loser: string;
 }
 
-export default function Game({me} : {me: string}){
+interface Prop{
+	me: string;
+	setGame: (val: boolean) => void;
+	setMatch: (val: number) => void;
+}
+
+export default function Game({me, setGame, setMatch} : Prop){
 	const storeGameHistory = useMutation({
 		mutationKey: ["storeGameHistory"],
 		mutationFn: async (a :GameH) => {
@@ -143,56 +150,59 @@ export default function Game({me} : {me: string}){
 				window.removeEventListener("resize", handleResize);
 				socket.off('positions');
 				socket.off('ball');
-				socket.off('score');
-				socket.off('winner');
 				Engine.clear(engine);
 				Render.stop(render);
 			};
 		}
-		}, [roomid]);
-		
-		useEffect(() => {
-			socket.on('score', (data) => {
-				setLeftScore(data.leftScore);
-				setRightScore(data.rightScore);
-			});
+	}, [roomid]);
 	
-			socket.on('winner', (data) => {
-				socket.emit('leave-game', {
-					room: roomid,
-					player: me,
-				});
-				if(me === RightPlayer){
-					if (data === 'right') {
-						// post (winner)
-						storeGameHistory.mutate({loserScore: leftScore, loser: LeftPlayer});
-						router.push('/game/winner');
-					}
-					else router.push('/game/loser')
-				}
-				else{
-					if (data === 'left'){
-						storeGameHistory.mutate({loserScore: rightScore, loser: RightPlayer});
-						router.push('/game/winner')
-						// post (winner)	
-					} 
-					else
-						router.push('/game/loser')
-				}
+	useEffect(() => {
+		socket.on('score', (data) => {
+			setLeftScore(data.leftScore);
+			setRightScore(data.rightScore);
+		});
+		socket.on('left-game', () => {
+			setGame(false);
+			setMatch(0);
+			router.push('/home');
+		});
+		socket.on('winner', (data) => {
+			socket.emit('leave-game', {
+				room: roomid,
+				player: me,
 			});
-			return () => {
-				socket.off('score');
-				socket.off('winner');
+			if(me === RightPlayer){
+				if (data === 'right') {
+					// post (winner)
+					storeGameHistory.mutate({loserScore: leftScore, loser: LeftPlayer});
+					router.push('/game/winner');
+				}
+				else router.push('/game/loser')
 			}
-		}, [rightScore, leftScore, LeftPlayer, RightPlayer]); 
+			else{
+				if (data === 'left'){
+					storeGameHistory.mutate({loserScore: rightScore, loser: RightPlayer});
+					router.push('/game/winner')
+					// post (winner)	
+				} 
+				else
+				router.push('/game/loser')
+		}
+	});
+	return () => {
+		socket.off('score');
+		socket.off('winner');
+		socket.off('left-game');
+	}
+}, [rightScore, leftScore, LeftPlayer, RightPlayer]); 
 
-		useEffect(() => {
-			if (countDownValue == 0) {
-			  setPVisible(false);
-			} else {
-			  setTimeout(() => setCountDownValue(countDownValue - 1), 1000);
-			}
-		  }, [countDownValue]);
+	useEffect(() => {
+		if (countDownValue == 0) {
+		  setPVisible(false);
+		} else {
+		  setTimeout(() => setCountDownValue(countDownValue - 1), 1000);
+		}
+	  }, [countDownValue]);
 
 	return (
     <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
