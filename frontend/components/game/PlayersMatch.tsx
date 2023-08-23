@@ -67,7 +67,6 @@ function LoadingPlayer({setClicked, setGame}: prop){
 					setName(data.username);
 					setImage(data.image);
 					clearInterval(interval);
-					setClicked(2);
 					setTimeout(() => {
 						setGame(true);
 					}, 800);
