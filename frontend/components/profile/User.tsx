@@ -65,7 +65,7 @@ const User = ({id} : {id : string | null}) => {
       <Image className='rounded-full w-[86px] h-[86px] sm:m-4'  src={User?.data.image} alt='img' width={1000} height={1000} />
       <div className='text-left'>
         <h2 className='text-white text-xl sm:text-3xl'>{User?.data.name}</h2>
-        {id && <div className=''>
+        {id && <div className='flex items-center'>
                   <span className='text-green-500 sm:text-xl'>{status}</span>
                   <AddFriend id={id} />
                 </div>

@@ -34,6 +34,17 @@ const AddFriend = ({id} : {id : string}) => {
         }
     });
 
+    const Accept = useMutation({
+        mutationKey: ['acceptFriendRequest'],
+        mutationFn: async(sender: string) => {
+          const {data} = await axios.patch(`http://localhost:8000/friendship/acceptRequest/${sender}`, sender, {withCredentials: true});
+          return data;
+        },
+        onSuccess: () => {
+          Client.refetchQueries('friendrequests');
+        }
+      })
+
     const handleAddFriend = async () => {
         await sendRequest.mutate(id);
     }
@@ -42,15 +53,25 @@ const AddFriend = ({id} : {id : string}) => {
         await removeOrCancelFriend.mutate(id);
     }
 
+    const handleAcceptFriend = async () => {
+        await Accept.mutate(id);
+    }
+
     console.log(Status.data);
     if (Status.isLoading)
         return <div>loading...</div>
-    else if (Status.data === 'none')
+    else if (Status.data.status === 'none')
         return <button className='bg-blue text-sm px-4 py-[2px] ml-4 text-black rounded-md' onClick={handleAddFriend}>Add Friend</button>
-    else if (Status.data === 'pending'){
+    else if (Status.data.status === 'pending' && Status.data.sender != id)
         return <button className='bg-blue text-sm px-4 py-[2px] ml-4 text-black rounded-md' onClick={handleRemoveOrCancelFriend}>Cancel Request</button>
-    }
-    else if (Status.data === 'accepted')
+    else if (Status.data.status === 'pending' && Status.data.sender === id)
+        return (
+            <div className=''>
+                <button className='bg-red text-sm px-4 py-[2px] ml-4 text-white rounded-md' onClick={handleRemoveOrCancelFriend}>Decline</button>
+                <button className='bg-blue text-sm px-4 py-[2px] ml-4 text-black rounded-md' onClick={handleAcceptFriend}>Accept</button>
+            </div>
+        )
+    else if (Status.data.status === 'accepted')
         return <button className='bg-red text-sm px-4 py-[2px] ml-4 text-black rounded-md' onClick={handleRemoveOrCancelFriend}>Remove Friend</button>
 
 }

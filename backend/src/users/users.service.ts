@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '../entities/user.entity'
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import con from 'ormconfig';
@@ -22,14 +22,19 @@ export class UsersService {
     // @InjectRepository(Administration) private administrationRepo: Repository<Administration>,
     ) {}
     
-  create(userDTO: UserDTO) {
-    const user = this.userRepo.create(userDTO);
-    return this.userRepo.save(user);
-  }
-  
-  async findAll() {
-    return await this.userRepo.find();
-  }
+    create(userDTO: UserDTO) {
+      const user = this.userRepo.create(userDTO);
+      return this.userRepo.save(user);
+    }
+    
+    async findAll() {
+      return await this.userRepo.find();
+    }
+   
+    async search(key: string) {
+      const users = await this.userRepo.findBy({name: Like(`%${key}%`)});
+      return users;
+    }
   
   findOne(username: string) {
     const user = this.userRepo.findOneBy({username});
@@ -96,16 +101,5 @@ export class UsersService {
     });
   }
 
-  async getFriends(username: string) {
-    const friends = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.initiatedFriendships', 'friendship', 'friendship.status = :status', {status: 'accepted'}).where('user.username = :username', {username}).getMany();
-    // const user = this.userRepo.find({
-    //   where: {
-    //     username: username
-    //   },
-    //   relations: {
-    //     initiatedFriendships: true,
-    //     receivedFriendships: true,
-    //   }
-    // })
-  }
+
 }

@@ -6,16 +6,20 @@ import NotifDropDown from './FriendRequest';
 import MenuDropDown from './MenuDropDown';
 import AccountDropDown from './AccountDropDown';
 import NavLink from './NavLink';
+import SearchBar from '../common/SearchBar';
 
 const Left = () => {
   return (
-    <div className='ml-[1rem]'>
+    <div className='ml-[1rem] flex items-center'>
       <Image
         src="/img/website_logo.svg" 
         alt="logo"
         width={128}
         height={28}
       />
+      <div className="hidden md:block">
+        <SearchBar />
+      </div>
     </div>
   )
 }
