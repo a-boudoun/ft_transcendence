@@ -4,6 +4,8 @@ import React, { use, useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite, Query} from "matter-js";
 import PlayersScore from "@/components/game/score";
+import Won from "@/components/game/winner";
+import Lost from "@/components/game/loser";
 import { drawRect, drawCircle } from "@/components/game/draw";
 import { useRouter } from "next/navigation";
 import socket from "@/components/socketG";
@@ -41,6 +43,8 @@ export default function Game({me, setGame, setMatch} : Prop){
 	const [LeftPlayer, setLeftPlayer] = useState<string>('');
 	const [RightPlayer, setRightPlayer] = useState<string>('');
 	const [roomid, setRoomid] = useState<string>('');
+	const [Winner, setWinner] = useState<string>('');
+	const [Loser, setLoser] = useState<string>('');
 	let sx : number = 1;
 	let sy : number = 1;
 
@@ -162,14 +166,10 @@ export default function Game({me, setGame, setMatch} : Prop){
 			setRightScore(data.rightScore);
 		});
 		socket.on('left-game', (playerLeft) => {
-			if (playerLeft === RightPlayer) {
+			if (playerLeft === RightPlayer)
 				setRightScore(0);
-				setLeftScore(10);
-			}
-			else {
+			else
 				setLeftScore(0);
-				setRightScore(10);
-			}
 		});
 		socket.on('winner', (data) => {
 			socket.emit('end-game', {
@@ -178,20 +178,18 @@ export default function Game({me, setGame, setMatch} : Prop){
 			});
 			if(me === RightPlayer){
 				if (data === 'right') {
-					// post (winner)
 					storeGameHistory.mutate({loserScore: leftScore, loser: LeftPlayer});
-					router.push('/game/winner');
+					setWinner(RightPlayer);
 				}
-				else router.push('/game/loser')
+				else setLoser(RightPlayer);
 			}
 			else{
 				if (data === 'left'){
 					storeGameHistory.mutate({loserScore: rightScore, loser: RightPlayer});
-					router.push('/game/winner')
-					// post (winner)	
+					setWinner(LeftPlayer);
 				} 
 				else
-				router.push('/game/loser')
+				setLoser(LeftPlayer);
 		}
 	});
 	return () => {
@@ -210,29 +208,33 @@ export default function Game({me, setGame, setMatch} : Prop){
 	  }, [countDownValue]);
 
 	return (
-    <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
-		{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] ">{countDownValue}</p>}
-		<PlayersScore 
-		left={leftScore} 
-		right={rightScore} 
-		leftPlayer={LeftPlayer}
-		rightPlayer={RightPlayer}
-		/>
-    	<div
-    	  ref={divRef}
-    	  className="h-4/6 w-4/5 mt-20 cursor-none">
-    	</div>
-		<button 
-			className="absolute bottom-[50px] right-[50px]  m-4  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]" 
-			onClick={() => {
-				socket.emit('leave-game', {
-					room: roomid,
-					player: me,
-				});
-				router.push("/home");
-			}}>
-			leave
-		</button>
-  </div>
+	<>
+		{Winner === '' && Loser === '' && <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
+			{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] ">{countDownValue}</p>}
+			<PlayersScore 
+			left={leftScore} 
+			right={rightScore} 
+			leftPlayer={LeftPlayer}
+			rightPlayer={RightPlayer}
+			/>
+			<div
+			ref={divRef}
+			className="h-4/6 w-4/5 mt-20 cursor-none">
+			</div>
+			<button 
+				className="absolute bottom-[50px] right-[50px]  m-4  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]" 
+				onClick={() => {
+					socket.emit('leave-game', {
+						room: roomid,
+						player: me,
+					});
+					router.push("/home");
+				}}>
+				leave
+			</button>
+		</div>}
+		{Winner !== '' && <Won winner={Winner}/>}
+		{Loser !== '' && <Lost loser={Loser}/>}
+	</>
 	);
 }
