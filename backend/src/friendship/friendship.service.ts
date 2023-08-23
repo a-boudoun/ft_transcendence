@@ -77,14 +77,15 @@ export class FriendshipService {
         { initiater: { username: username } ,  receiver: { username: sender } },
         { initiater: { username: sender } ,  receiver: { username: username } }
       ],
+      relations: ['initiater']
     });
 
     if(friendship.length == 0)
-      return Fstatus.NONE;
+      return {status: Fstatus.NONE};
     else if(friendship[0].status == Fstatus.ACCEPTED)
-      return Fstatus.ACCEPTED;
+      return {status: Fstatus.ACCEPTED};
     else if(friendship[0].status == Fstatus.PENDING)
-      return Fstatus.PENDING;
+      return {status: Fstatus.PENDING, sender: friendship[0].initiater.name};
 
   }
 

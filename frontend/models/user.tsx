@@ -6,7 +6,8 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/web
 
 export const signInSchema = z.object({
     username: z
-    .string(),
+    .string()
+    .optional(),
     name: z
     .string()
     .trim()
@@ -16,7 +17,8 @@ export const signInSchema = z.object({
         const isUser = await get(`/users/isUserExist/${name}`);
         return !isUser;
     }
-    , "Name already exists."),
+    , "Name already exists.")
+    .optional(),
     image: z
     .any()
     .refine((file) => {

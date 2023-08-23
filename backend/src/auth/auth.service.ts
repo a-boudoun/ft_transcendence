@@ -3,11 +3,7 @@ import { UsersService } from '../users/users.service';
 import { UserDTO } from 'src/users/dto/create-user.dto';
 import { Response } from 'express';
 import { authenticator } from 'otplib';
-import { User } from 'src/entities/user.entity';
 import { toDataURL } from 'qrcode';
-import { generate } from 'rxjs';
-import con from 'ormconfig';
-import { isToken } from 'typescript';
 
   @Injectable()
   export class AuthService {
@@ -31,7 +27,7 @@ import { isToken } from 'typescript';
         return ;
       }
       else if (userExists.fact2Auth === false){ 
-        res.redirect('http://localhost:3000/home');
+        res.redirect('http://localhost:3000/profile');
         return ;
       }
       else if (userExists.fact2Auth === true && fact2Auth === false){
