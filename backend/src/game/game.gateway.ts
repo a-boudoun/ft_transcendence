@@ -60,16 +60,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     removedRoom = this.gameService.removePlayerFromRoom(data.player, data.room);
     if (removedRoom === true)
       this.engineService.removeGameSimulation(data.room);
-    this.gameService.emitToplayer(data.player, 'leave-game');
+    this.gameService.emitToplayer(data.player, 'left-game');
   }
 
-  @SubscribeMessage('cancel-looking')
-  handleCancelLooking(client: Socket, user: string) {
-    if (!client.data.username) {
-      client.data.username = user;
-    }
-    this.gameService.removePlayerFromQueue(client);
-  }
+  // @SubscribeMessage('cancel-looking')
+  // handleCancelLooking(client: Socket, user: string) {
+  //   if (!client.data.username) {
+  //     client.data.username = user;
+  //   }
+  //   this.gameService.removePlayerFromQueue(client);
+  // }
   
   @SubscribeMessage('looking-for-match')
   handleLookingForMatch(client: Socket, user: string) {
