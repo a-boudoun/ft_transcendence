@@ -63,14 +63,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.gameService.emitToplayer(data.player, 'leave-game');
   }
 
-  // @SubscribeMessage('end-game')
-  // handleEndGame(client: Socket, roomId: string) {
-  //   console.log('end game');
-  //   console.log(roomId);
-  //   this.gameService.removeRoom(roomId);
-  //   this.engineService.removeGameSimulation(roomId);
-  // }
-
   @SubscribeMessage('cancel-looking')
   handleCancelLooking(client: Socket, user: string) {
     if (!client.data.username) {
