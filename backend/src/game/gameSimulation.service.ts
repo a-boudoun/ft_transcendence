@@ -11,7 +11,7 @@ export class gameSimulation{
 	private server: Server;
 	//Engine
 	private engine: Matter.Engine;
-	// private runner: Matter.Runner;
+	private runner: Matter.Runner;
 	private Cheight: number = 890;
 	private Cwidth: number = 2048;
 	//Bodies
@@ -26,10 +26,12 @@ export class gameSimulation{
 
 	private rightScore: number = 0;
 	private leftScore: number = 0;
-	private rightPlayer: string | string[];
-	private leftPlayer: string | string[];
 
-	private readonly MAX = 10;
+	private readonly MAX = 5;
+	private readonly Bspeed = 10;
+
+	private rightInt: NodeJS.Timer;
+	private leftInt: NodeJS.Timer;
 
 	constructor() {
 		this.engine = Matter.Engine.create({
@@ -41,8 +43,8 @@ export class gameSimulation{
 				scale:0.01,
 			},
 		});
-		// this.runner = Matter.Runner.create({
-		// });
+		this.runner = Matter.Runner.create({
+		});
 	}
 	addServer(server: Server) {
 		this.server = server;
@@ -61,16 +63,15 @@ export class gameSimulation{
 	
 	setLeftBoardPosition(direction : string) {
 		let y : number;
-		let tim: NodeJS.Timer;
-		console.log('left', direction);
+
 		if (direction === 'stop')
-			clearInterval(tim);
+			clearInterval(this.leftInt);
 		else{
-			tim = setInterval(() => {
+			this.leftInt = setInterval(() => {
 				if (direction === 'ArrowUp')
-					y = this.leftBoard.position.y - 5;
+					y = this.leftBoard.position.y - this.Bspeed;
 				else
-					y = this.leftBoard.position.y + 5;
+					y = this.leftBoard.position.y + this.Bspeed;
 				if (y < 60 || y > this.Cheight - 60)
 					return;
 				Matter.Body.setPosition(this.leftBoard, 
@@ -85,35 +86,42 @@ export class gameSimulation{
 
 	setRightBoardPosition(direction : string) {
 		let y : number;
-		let tim: NodeJS.Timer;
-		console.log('right', direction);
+
 		if (direction === 'stop')
-			clearInterval(tim);
+			clearInterval(this.rightInt);
 		else{
-			tim = setInterval(() => {
+			this.rightInt = setInterval(() => {
 				if (direction === 'ArrowUp')
-					y = this.rightBoard.position.y - 5;
+					y = this.rightBoard.position.y - this.Bspeed;
 				else
-					y = this.rightBoard.position.y + 5;
+					y = this.rightBoard.position.y + this.Bspeed;
 				if (y < 60 || y > this.Cheight - 60)
-					return;
-				Matter.Body.setPosition(this.rightBoard, 
+				return;
+			Matter.Body.setPosition(this.rightBoard, 
 				{ 
 					x: this.Cwidth - 35,
 					y: y,
 				}
 				);
 			}, 15);
+		}
 	}
-}
-
+	
 	runEngine() {
 		this.drawWorld();
 		this.detectCollision();
 		this.restartGame();
-		Matter.Engine.run(this.engine);
+		Matter.Runner.run(this.runner, this.engine);
 	}
 	
+	stopEngine() {
+		Matter.Engine.clear(this.engine);
+		Matter.World.clear(this.engine.world, false);
+		Matter.Events.off(this.engine, 'collisionStart', this.handleCollision);
+		Matter.Runner.stop(this.runner);
+		clearInterval(this.id);
+	}
+
 	restartGame() {
 		let vx : number;
 		let vy: number;
@@ -134,60 +142,45 @@ export class gameSimulation{
 					this.server.to(this.roomIn.id).emit('winner', 'left');
 				else
 					this.server.to(this.roomIn.id).emit('winner', 'right');
-		}
-		Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
-		Matter.Body.setVelocity(this.ball, { x: 0, y: 0 });
-		
-		setTimeout(() => Matter.Body.setVelocity(this.ball, { x: vx, y: vy }), 500);
+				}
+				Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
+				Matter.Body.setVelocity(this.ball, { x: 0, y: 0 });
+				
+				setTimeout(() => Matter.Body.setVelocity(this.ball, { x: vx, y: vy }), 500);
+			}
+		});
 	}
-});
-}
 
-detectCollision() {
-	Matter.Events.on(this.engine, 'collisionStart', (event) => {
-		this.handleCollision(event);
-	});;
-}
+	detectCollision() {
+		Matter.Events.on(this.engine, 'collisionStart', (event) => {
+			this.handleCollision(event);
+		});;
+	}
 
-handleCollision(event: Matter.IEventCollision<Matter.Engine>): void {
-	let pairs = event.pairs;
-	let ballVelocity = this.ball.velocity;
-	
-	pairs.forEach((pair) => {
-		if (pair.bodyA === this.leftBoard || pair.bodyB === this.leftBoard) {
-			Matter.Body.setVelocity(this.ball, { 
-				x: -20,
-				y: ballVelocity.y 
-			});
-			this.server.to(this.roomIn.id).emit('sound');
-		}
-		else if (pair.bodyA === this.rightBoard || pair.bodyB === this.rightBoard) {
-			Matter.Body.setVelocity(this.ball, { 
-				x: 20, 
-				y: ballVelocity.y
-			});
-			this.server.to(this.roomIn.id).emit('sound');
-		}
-	});
-}
+	handleCollision(event: Matter.IEventCollision<Matter.Engine>): void {
+		let pairs = event.pairs;
+		let ballVelocity = this.ball.velocity;
+		
+		pairs.forEach((pair) => {
+			if (pair.bodyA === this.leftBoard || pair.bodyB === this.leftBoard) {
+				Matter.Body.setVelocity(this.ball, { 
+					x: -20,
+					y: ballVelocity.y 
+				});
+				this.server.to(this.roomIn.id).emit('sound');
+			}
+			else if (pair.bodyA === this.rightBoard || pair.bodyB === this.rightBoard) {
+				Matter.Body.setVelocity(this.ball, { 
+					x: 20, 
+					y: ballVelocity.y
+				});
+				this.server.to(this.roomIn.id).emit('sound');
+			}
+		});
+	}
 
-
-stopEngine() {
-	Matter.Engine.clear(this.engine);
-	Matter.World.clear(this.engine.world, false);
-	Matter.Events.off(this.engine, 'collisionStart', this.handleCollision);
-	clearInterval(this.id);
-}
-
-// stopRunner() {
-	// 	Matter.Runner.stop(this.runner);
-	// }
-	
-	// TODO: sent the positions normalized to the client
 	sendPosition(room : Room) {
 		this.roomIn = room;
-		this.leftPlayer = room.players[0].position === 'left' ? room.players[0].username : room.players[1].username;
-		this.rightPlayer = room.players[0].position === 'right' ? room.players[0].username : room.players[1].username;
 		this.id = setInterval(() => {
 			this.server.to(room.id).emit('ball', 
 			{
