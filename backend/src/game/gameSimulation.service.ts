@@ -145,7 +145,6 @@ export class gameSimulation{
 				}
 				Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
 				Matter.Body.setVelocity(this.ball, { x: 0, y: 0 });
-				
 				setTimeout(() => Matter.Body.setVelocity(this.ball, { x: vx, y: vy }), 500);
 			}
 		});
