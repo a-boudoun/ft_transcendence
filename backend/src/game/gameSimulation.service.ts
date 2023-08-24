@@ -1,11 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { Socket } from "socket.io";
-import { Player } from "./interfaces/player.interface";
 import { Server } from "socket.io";
 // ! why import Matter like this?
 import Matter = require("matter-js");
 import { Room } from "./interfaces/room.interface";
-import { ghReq } from "src/game-history/game-history.controller";
 
 @Injectable()
 export class gameSimulation{
@@ -62,23 +59,53 @@ export class gameSimulation{
 		setTimeout(() => Matter.Body.setVelocity(this.ball, { x: 10, y: 5 }), 3900);
 	}
 	
-	setLeftBoardPosition(y : number) {
-		Matter.Body.setPosition(this.leftBoard, 
-			{ 
-				x: 35,
-				y: y,
-			}
-		);
+	setLeftBoardPosition(direction : string) {
+		let y : number;
+		let tim: NodeJS.Timer;
+		console.log('left', direction);
+		if (direction === 'stop')
+			clearInterval(tim);
+		else{
+			tim = setInterval(() => {
+				if (direction === 'ArrowUp')
+					y = this.leftBoard.position.y - 5;
+				else
+					y = this.leftBoard.position.y + 5;
+				if (y < 60 || y > this.Cheight - 60)
+					return;
+				Matter.Body.setPosition(this.leftBoard, 
+					{ 
+						x: 35,
+						y: y,
+					}
+				);
+			}, 15);
+		}
 	}
 
-	setRightBoardPosition(y : number) {
-		Matter.Body.setPosition(this.rightBoard, 
-		{ 
-			x: this.Cwidth - 35,
-			y: y,
-		}
-		);
+	setRightBoardPosition(direction : string) {
+		let y : number;
+		let tim: NodeJS.Timer;
+		console.log('right', direction);
+		if (direction === 'stop')
+			clearInterval(tim);
+		else{
+			tim = setInterval(() => {
+				if (direction === 'ArrowUp')
+					y = this.rightBoard.position.y - 5;
+				else
+					y = this.rightBoard.position.y + 5;
+				if (y < 60 || y > this.Cheight - 60)
+					return;
+				Matter.Body.setPosition(this.rightBoard, 
+				{ 
+					x: this.Cwidth - 35,
+					y: y,
+				}
+				);
+			}, 15);
 	}
+}
 
 	runEngine() {
 		this.drawWorld();

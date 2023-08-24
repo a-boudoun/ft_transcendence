@@ -1,8 +1,8 @@
 "use client";
 
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import {Engine, Render, World, Body, Mouse, MouseConstraint, Events, Bodies, Composite, Query} from "matter-js";
+import {Engine, Render, Body, Events, Composite} from "matter-js";
 import PlayersScore from "@/components/game/score";
 import Won from "@/components/game/winner";
 import Lost from "@/components/game/loser";
@@ -10,7 +10,6 @@ import { drawRect, drawCircle } from "@/components/game/draw";
 import { useRouter } from "next/navigation";
 import socket from "@/components/socketG";
 import axios from "axios";
-import { set } from "zod";
 
 interface GameH{
 	loserScore: number;
@@ -76,6 +75,49 @@ export default function Game({me, setGame, setMatch} : Prop){
 					sx = divRef.current.offsetWidth / 2048;
 					sy = divRef.current.offsetHeight / 890;
 			}
+
+			const handleKeyPress = (e: KeyboardEvent) => {
+				console.log('presed');
+				console.log(e.key);
+				if (e.key === 'ArrowUp' || e.key === 'ArrowDown')
+				{
+					if (me === RightPlayer) {
+						socket.emit('rightPaddle', 
+						{
+							direction: e.key,
+							room: roomid,
+						});
+					}
+					else {
+						socket.emit('leftPaddle', 
+						{
+							direction: e.key,
+							room: roomid,
+						});
+					}
+				}
+			}
+
+			const handlekeyUp = (e: KeyboardEvent) => {
+				if (e.key === 'ArrowUp' || e.key === 'ArrowDown')
+				{
+					if (me === RightPlayer) {
+						socket.emit('rightPaddle', 
+						{
+							direction: 'stop',
+							room: roomid,
+						});
+					}
+					else {
+						socket.emit('leftPaddle', 
+						{
+							direction: 'stop',
+							room: roomid,
+						});
+					}
+				}
+			}
+
 			
 			if (!divRef.current) return;
 			
@@ -95,8 +137,7 @@ export default function Game({me, setGame, setMatch} : Prop){
 					wireframes: false,
 					background: "#000000",
 				}
-			}),
-			mouse = Mouse.create(render.canvas);
+			});
 
 			const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#FFFFFF');
 			const leftBoard = drawRect(35, H / 2, 20, 120, '#FFFFFF');
@@ -104,42 +145,26 @@ export default function Game({me, setGame, setMatch} : Prop){
 			const ball = drawCircle(W / 2, H / 2, 15, '#FFFFFF');
 			Composite.add(engine.world, [ball, rightBoard, leftBoard]);
 			window.addEventListener("resize", handleResize);
-			// document.addEventListener('keydown', handleKeyDown);\
+			document.addEventListener('keyup', handlekeyUp);
+			document.addEventListener('keypress', handleKeyPress);
 			Render.run(render);
 
-			Events.on(render, 'afterRender', () => {
-				if (me === RightPlayer) {
-					socket.emit('rightPaddle', 
+			socket.on('positions', (data) => {
+				Body.setPosition(
+					rightBoard,
 					{
-						y: mouse.position.y / sy,
-						room: roomid,
-					});
-				}
-				else {
-					socket.emit('leftPaddle', 
+						x: data.rightBoardX * sx,
+						y: data.rightBoardY * sy,
+					}
+				);
+				Body.setPosition(
+					leftBoard,
 					{
-						y: mouse.position.y / sy,
-						room: roomid,
-					});
-				}
+						x: data.leftBoardX * sx,
+						y: data.leftBoardY * sy,
+					}
+				);
 			});
-			Events.on(render, 'afterRender', () => {
-			if (!divRef.current || ball.position.y < 0 || ball.position.y > divRef.current.clientHeight) return;
-				socket.on('positions', (data) => {
-					Body.setPosition(
-						rightBoard,
-						{
-							x: data.rightBoardX * sx,
-							y: data.rightBoardY * sy,
-						});
-					Body.setPosition(
-						leftBoard,
-						{
-							x: data.leftBoardX * sx,
-							y: data.leftBoardY * sy,
-						});
-					});
-				});
 			socket.on('ball', ({x, y}) => {
 				Body.setPosition(
 					ball,
@@ -152,6 +177,8 @@ export default function Game({me, setGame, setMatch} : Prop){
 			
 			return () => {
 				window.removeEventListener("resize", handleResize);
+				document.removeEventListener('keyup', handlekeyUp);
+				document.removeEventListener('keypress', handleKeyPress);
 				socket.off('positions');
 				socket.off('ball');
 				Engine.clear(engine);
