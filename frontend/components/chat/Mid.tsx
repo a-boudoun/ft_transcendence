@@ -17,29 +17,27 @@ import Message from '@/dto/Message';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { socket } from './chatSocket';
+import moment from 'moment';
 
 
 
 function Mid() {
     const dispatch = useDispatch<AppDispatch>();
-    
-    
+
     const channel = useSelector((state: any) => state.currentChannel.channel);
     const user = useSelector((state: any) => state.currentChannel.user);
     const isMid = useSelector((state: any) => state.currentChannel.isMid);
+    const messages = useSelector((state: any) => state.currentChannel.channel.messages);
     const [input, setInput] = useState('');
     
+
     useEffect(() => {
-        if (!socket.connected) {
+        if (!socket.connected) 
             socket.connect();
-        }
-        
         dispatch(setisChild(true));
-    }, []);
-    
-    
-    const messages: Message[] = channel.messages;
+    }, []); 
     const messageContainerRef = useRef(null);
+
 
     const joinChannel = useMutation({
         mutationFn: async (user: userDto) => {
@@ -51,6 +49,8 @@ function Mid() {
             console.log("joined")
         }
     });
+
+
 
     const handelchange = (event: any) => {
         const msg = event.target.value;
@@ -64,15 +64,21 @@ function Mid() {
         socket.emit('prevmessage', { channel: channel.id, message: input, from: user.name });
         setInput('');
     }
+    
     useEffect(() => {
         const onMsg = (msg: any) => {
-            dispatch(setMessage({ content: msg.content, from: msg.from }));
+           function ss(member: any) {
+            return (member.member.username === msg.from);
+           }
+            const member = channel.memberships?.find(ss).member;
+            const createdAt = moment().format('yyyy-MM-DDTHH:mm:ssZ');
+            dispatch(setMessage({ content: msg.content, from: member, createdAt: createdAt }));
         }
         socket.on('message', onMsg);
         return () => {
             socket.off('message', onMsg);
         }
-    }, []);
+    }, [channel]);
 
 
     useEffect(() => {
@@ -84,13 +90,11 @@ function Mid() {
     const handleJoinChannel = () => {
         joinChannel.mutate(user);
     }
-
-
-    const isMember = channel.memberships?.some((membership) => membership.member.id === user.id)
-    { if (!channel.image) return <div></div> }
+    const isMember = channel.memberships?.some((membership :any) => membership.member.id === user.id)
+    { if (channel.memberships) 
     return (
-        <div className={`justify-between text-white  rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 ${isMid === true ? 'w-full sm:w-1/2 md:w-7/12 lg:w-5/12 flex flex-col lg:w-5/12' : 'hidden lg:flex lg:flex-col  lg:w-5/12'} `}>
-            <div className="h-fit bg-dark-gray flex items-center py-3  rounded-xl flex justify-between " >
+        <div className={`justify-between text-white  rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 ${isMid === true ? 'w-full sm:w-1/2 md:w-7/12 flex flex-col lg:w-5/12' : 'hidden lg:flex lg:flex-col  lg:w-5/12'} `}>
+            <div className="h-fit bg-dark-gray flex items-center py-3  rounded-xl  justify-between " >
                 <div className="flex items-center space-x-2 ">
 
                     <Link href={`/chat`}>
@@ -126,10 +130,7 @@ function Mid() {
             <div className="overflow-y-auto flex-grow " ref={messageContainerRef}>
                 {
                     messages?.map((msg: Message, id: number) =>
-
-
-                        <Message key={id} msg={msg.content} id={msg.from} user={user.username} />
-
+                        <Message key={id} msg={msg.content} id={msg.from} user={user} date={msg.createdAt} />
                     )
                 }
             </div>
@@ -145,33 +146,46 @@ function Mid() {
                 </button>
             </div>
         </div>
-
-
     );
+            }
 }
 
 export default Mid;
 
 
 export const Message = (msg: any) => {
-    const style = msg.id === msg.user ? "justify-end" : "justify-start";
+   
+    const [style, setStyle] = useState('');
+    const [date, setDate] = useState('');
+    useEffect(() => {
+        setStyle(`${msg.id.username === msg.user?.username ? 'justify-end' : 'justify-start'}`);
+    }, [msg.id]);
+    useEffect(() => {
+    setDate(moment.duration(moment().diff(msg.date)).humanize());
+    }, [moment().diff(msg.date)]);
     return (
-        <div className={`w-full flex ${style}`}>
+        <div className={`w-full flex flex-col `}>
+
+        <div className={`w-full flex ${style} text-xs`}>{date}</div>
+        <div className={`w-full flex ${style} items-center m-0 p-0`}>
             <div className="flex  flex-col bg-dark-gray w-fit  max-w-[250px] rounded-md  py-2 m-2 ">
                 <div className="flex justify-between text-blue">
-                    <div className="text-left px-2 text-xs">
-                        {msg.id}
-                    </div>
-                    <div className="px-2 text-xs">
-                        20:20
-                    </div>
+                  
                 </div>
                 <div key={msg.id} className="px-3 break-words text-left">
                     {msg.msg}
                 </div>
             </div>
+            <div className={`${msg.id.username === msg.user.username ? '' : 'order-first'}`}>
+                <Image
+                    className="h-[30px] w-[30px]  rounded-full"
+                    src={msg.id.image}
+                    width={1000}
+                    height={1000}
+                    alt="" />
+            </div>
         </div>
-
+        </div>
     );
 }
 

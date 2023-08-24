@@ -34,7 +34,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     handleLeaveChannel(@MessageBody() channel: string, @MessageBody() username: string, client: Socket) {
         client.leave(channel);
         this.server.to(channel).emit('message', `${username} left the channel`);
-        }
+    }
 
 
 

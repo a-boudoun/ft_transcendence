@@ -32,7 +32,6 @@ export class SanctionDTO {
 }
 
 export class MessageDTO {
-    createdAt: Date;
     channel: ChannelDTO;
     sender: UserDTO;
     content: string;
