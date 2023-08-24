@@ -6,7 +6,7 @@ import NotifDropDown from './FriendRequest';
 import MenuDropDown from './MenuDropDown';
 import AccountDropDown from './AccountDropDown';
 import NavLink from './NavLink';
-import SearchBar from '../common/SearchBar';
+import GlobalSearch from './GlobalSearch';
 
 const Left = () => {
   return (
@@ -17,8 +17,8 @@ const Left = () => {
         width={128}
         height={28}
       />
-      <div className="hidden md:block">
-        <SearchBar />
+      <div className="hidden md:block w-72">
+        <GlobalSearch />
       </div>
     </div>
   )
