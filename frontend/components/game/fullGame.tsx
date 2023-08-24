@@ -46,6 +46,7 @@ export default function Game({me, setGame, setMatch} : Prop){
 	const [Loser, setLoser] = useState<string>('');
 	let sx : number = 1;
 	let sy : number = 1;
+	let keyClicked : boolean = false;
 
 	useEffect(() => {
 		socket.emit('full-Game', me);
@@ -76,24 +77,26 @@ export default function Game({me, setGame, setMatch} : Prop){
 					sy = divRef.current.offsetHeight / 890;
 			}
 
-			const handleKeyPress = (e: KeyboardEvent) => {
-				console.log('presed');
-				console.log(e.key);
-				if (e.key === 'ArrowUp' || e.key === 'ArrowDown')
+			const handleKeyDown = (e: KeyboardEvent) => {
+				if (!keyClicked)
 				{
-					if (me === RightPlayer) {
-						socket.emit('rightPaddle', 
-						{
-							direction: e.key,
-							room: roomid,
-						});
-					}
-					else {
-						socket.emit('leftPaddle', 
-						{
-							direction: e.key,
-							room: roomid,
-						});
+					if (e.key === 'ArrowUp' || e.key === 'ArrowDown')
+					{
+						keyClicked = true;
+						if (me === RightPlayer) {
+							socket.emit('rightPaddle', 
+							{
+								direction: e.key,
+								room: roomid,
+							});
+						}
+						else {
+							socket.emit('leftPaddle', 
+							{
+								direction: e.key,
+								room: roomid,
+							});
+						}
 					}
 				}
 			}
@@ -101,6 +104,7 @@ export default function Game({me, setGame, setMatch} : Prop){
 			const handlekeyUp = (e: KeyboardEvent) => {
 				if (e.key === 'ArrowUp' || e.key === 'ArrowDown')
 				{
+					keyClicked = false;
 					if (me === RightPlayer) {
 						socket.emit('rightPaddle', 
 						{
@@ -146,7 +150,7 @@ export default function Game({me, setGame, setMatch} : Prop){
 			Composite.add(engine.world, [ball, rightBoard, leftBoard]);
 			window.addEventListener("resize", handleResize);
 			document.addEventListener('keyup', handlekeyUp);
-			document.addEventListener('keypress', handleKeyPress);
+			document.addEventListener('keydown', handleKeyDown);
 			Render.run(render);
 
 			socket.on('positions', (data) => {
@@ -178,7 +182,7 @@ export default function Game({me, setGame, setMatch} : Prop){
 			return () => {
 				window.removeEventListener("resize", handleResize);
 				document.removeEventListener('keyup', handlekeyUp);
-				document.removeEventListener('keypress', handleKeyPress);
+				document.removeEventListener('keydown', handleKeyDown);
 				socket.off('positions');
 				socket.off('ball');
 				Engine.clear(engine);
