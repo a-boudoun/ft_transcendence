@@ -25,6 +25,36 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleDisconnect(client: Socket) {
   }
 
+  @SubscribeMessage('invite-freind')
+  handleInviteFreind(client: Socket, data: any) {
+    /*
+    data = {
+      myUsername: string,
+      freindUsername: string,
+      freindSocketId: string,
+    }
+    freindSocket.emit('invite-freind', myUsername, mySocketId);
+
+    on front end:
+      show th invite notification for 3s
+      hide the invite notification for 3s
+    */
+}
+
+  @SubscribeMessage('accept-invite')
+  handleAcceptInvite(client: Socket, data: any) {
+    /*
+    data = {
+      myUsername: string,
+      freindUsername: string,
+      freindSocketId: string,
+    }
+    create room
+    create game simulation
+    cleint.emit('accept-invite'); //on event accept-invite redirect to match page
+    freindSocket.emit('accept-invite'); //on event accept-invite redirect to match page
+    */
+  }
   @SubscribeMessage('rightPaddle')
   handlerPaddle(client: Socket, data: any) {
     this.engineService.setRightBoardPosition(data.room, data.direction);
