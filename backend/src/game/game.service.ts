@@ -98,13 +98,6 @@ export class gameService{
       return room;
   }
 
-  /*
-  ==>try to copy it to another array to avoid underifined behaviour
-  const palayer1copy: string = player1;
-  const player2copy: string = player2;
-  const value1copy: Array<Socket> = [...value1];
-  const value2copy: Array<Socket> = [...value2];
-  */
   findMatch() : Room | null{
     if (this.matchMakingQue.size >= 2) {
       const iterator: any = this.matchMakingQue.entries();
@@ -124,7 +117,6 @@ export class gameService{
     }
     return null;
   }
-
 
   isInGame(username: string): string | null { 
     const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {

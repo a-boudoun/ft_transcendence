@@ -2,16 +2,12 @@ import { SubscribeMessage, WebSocketGateway, OnGatewayConnection, OnGatewayDisco
 import { Server, Socket } from 'socket.io';
 import { gameService } from './game.service';
 import { engineService } from './engine.service';
-import { Player } from './interfaces/player.interface';
 import { Room } from './interfaces/room.interface';
-import { subscribe } from 'diagnostics_channel';
-import { Interval, Timeout } from '@nestjs/schedule';
 
-@WebSocketGateway({
-	//Cross-Origin-Resource-Sharing (CORS) is a mechanism that uses additional HTTP headers to tell browsers 
-	//to give a web application running at one origin,
-	//access to selected resources from a different origin
-})
+//Cross-Origin-Resource-Sharing (CORS) is a mechanism that uses additional HTTP headers to tell browsers 
+//to give a web application running at one origin,
+//access to selected resources from a different origin
+@WebSocketGateway()
 //TODO: check if the player is authenticated
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
@@ -24,7 +20,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   recentRomm: string | null;
 
   handleConnection(client: Socket, data: any) {
-    console.log('new connection');
   }
   
   handleDisconnect(client: Socket) {
@@ -32,12 +27,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('rightPaddle')
   handlerPaddle(client: Socket, data: any) {
-    this.engineService.setRightBoardPosition(data.room, data.y);
+    this.engineService.setRightBoardPosition(data.room, data.direction);
   }
   
   @SubscribeMessage('leftPaddle')
   handlelPaddle(client: Socket, data: any) {
-    this.engineService.setLeftBoardPosition(data.room, data.y);
+    this.engineService.setLeftBoardPosition(data.room, data.direction);
   }
 
   @SubscribeMessage('full-Game')
@@ -64,10 +59,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       winner = room.players[0].position;
     this.server.to(data.room).emit('left-game', data.player);
     this.server.to(data.room).emit('winner', winner);
-    // this.gameService.removePlayerFromRoom(data.player, data.room);
-    // this.gameService.removePlayerFromRoom(winner, data.room);
-    // this.gameService.removeRoom(data.room);
-    // this.engineService.removeGameSimulation(data.room);
   }
 
   @SubscribeMessage('end-game')
