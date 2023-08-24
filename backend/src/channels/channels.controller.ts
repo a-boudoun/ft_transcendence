@@ -5,6 +5,7 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserDTO } from 'src/users/dto/create-user.dto';
+import { Membership } from 'src/entities/channel.entity';
 
 
 
@@ -50,8 +51,11 @@ export class ChannelsController {
     return this.channelsService.joinChannel(+id, user);
   }
 
+  @Patch(':channelId/memberships/:membershipId')
+  async updateMembershipTitle(@Param('channelId') channelId: number, @Param('membershipId') membershipId: number) {
+    return this.channelsService.updateMembershipTitle(channelId, membershipId);
+  }
+
 }
-function Req(): (target: ChannelsController, propertyKey: "me", parameterIndex: 0) => void {
-  throw new Error('Function not implemented.');
-}
+
 

@@ -20,7 +20,7 @@ const NewChannel = () => {
     const [password , setPassword] = useState('')
     const [type, setType] = useState('Public');
     const [image, setImage] = useState<any>(null);
-    const [imagePreview, setImagePreview] = useState<string>('/img/profile.svg');
+    const [imagePreview, setImagePreview] = useState<string>('/img/back.jpeg');
     const handleclick = () => {
         setIsclicked(!isclicked);
     }
@@ -41,7 +41,7 @@ const NewChannel = () => {
 
       const handleSubmit = async(e: any) => {
         e.preventDefault();
-        setImagePreview('/img/profile.svg');
+        setImagePreview('/img/back.jpeg');
         setName('');
         setPassword('');
 
@@ -63,7 +63,7 @@ const NewChannel = () => {
           channel.image = data.secure_url;
         }
         else
-            channel.image = '/img/profile.svg';
+            channel.image = '/img/back.jpeg';
         
         channel.name = name;
         channel.password = password;

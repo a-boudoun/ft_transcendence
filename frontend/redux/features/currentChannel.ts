@@ -15,7 +15,8 @@ type InitialState = {
 
 interface Message {
     content: string;
-    from: string;
+    from: userDto;
+    createdAt: string;
 }
 
 type userDto  = {
@@ -55,7 +56,9 @@ export const currentChannelSlice = createSlice({
             state.channel  = action.payload;
         },
         setMessage: (state: any, action: PayloadAction<any>) => {
+            console.log("sd",action.payload.from);
             state.channel.messages.push(action.payload );
+            console.log("sd",state.channel.messages);
 
         },
         setChannels: (state: any, action: PayloadAction<any>) => {

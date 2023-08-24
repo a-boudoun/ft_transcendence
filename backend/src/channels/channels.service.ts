@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AdministrationDTO, ChannelDTO } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
-import { Administration, Channel, MemberTitle, Membership } from '../entities/channel.entity';
+import { Administration, Channel, MemberTitle, Membership, Message } from '../entities/channel.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -10,12 +10,15 @@ import { UsersService } from '../users/users.service';
 import { ChannelType } from '../entities/channel.entity';
 import { MembershipDTO } from './dto/create-channel.dto';
 import { UserDTO } from 'src/users/dto/create-user.dto';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class ChannelsService {
   constructor(
     @InjectRepository(Channel) private channelRepo: Repository<Channel>,
+    @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Membership) private membershipRepo: Repository<Membership>
+    @InjectRepository(Message) private messageRepo: Repository<Message>
   ) { }
   async create(channel: ChannelDTO) {
     // const user = await this.userService.findOne(username);
@@ -83,4 +86,42 @@ export class ChannelsService {
   }
 
 
+  
+  async updateMembershipTitle(channelId: number,membershipId: number)
+  {
+    const channel = await this.channelRepo.findOne(({
+      where: {
+        id: channelId,
+      },
+      relations: [ 'memberships'],
+    }));
+
+    
+    const membership = channel.memberships.find(
+      (membership) => membership.id === Number(membershipId),
+    );
+
+    membership.title = MemberTitle.MEMBER;
+    this.membershipRepo.save(membership);
+
+    return  this.membershipRepo.save(membership);
+  }
+
+  async addmessge(channelId: number, message: string, username: string) {
+    const channel = await this.channelRepo.findOne(({
+      where: {
+        id: channelId,
+      }
+    }));
+
+    const user = await this.userRepo.findOne(username);
+
+    const newMessage = await this.messageRepo.create({
+      channel: channel,
+      sender: user,
+      content: message,
+    });
+
+    return this.messageRepo.save(newMessage);
+  }
 }
