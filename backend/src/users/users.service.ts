@@ -34,7 +34,7 @@ export class UsersService {
     async search(key: string) {
       const users = await this.userRepo.findBy({name: Like(`%${key}%`)});
       return users;
-    }
+  }
   
   findOne(username: string) {
     const user = this.userRepo.findOneBy({username});

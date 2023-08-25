@@ -20,51 +20,51 @@ export class FriendshipService {
         ],
         relations: ['initiater']
       });
-
+      
       const senders =  friendship.map(f => f.initiater);
-
+      
       return (senders.length == 0 ? [] : senders);
     }
     
-  async create(sender: string, receiver: string) {
-    const friendship = await this.friendshipRepo.create();
-    friendship.initiater = await this.userRepo.findOneBy({name : sender});
-    friendship.receiver = await this.userRepo.findOneBy({name : receiver});
-    friendship.status = Fstatus.PENDING;
-    return await this.friendshipRepo.save(friendship);
-  }
-
-  async getFriends(username: string) {
-    const friendship = await this.friendshipRepo.find({
-      where: [
-        { initiater: { username: username } , status: Fstatus.ACCEPTED },
-      ],
-      relations: ['receiver']
-    });
-    const receivers =  friendship.map(f => f.receiver);
-
-    const friendship1 = await this.friendshipRepo.find({
-      where: [
-        { receiver: { username: username } , status: Fstatus.ACCEPTED },
-      ],
-      relations: ['initiater']
-    });
-
-    const senders =  friendship1.map(f => f.initiater);
-
-    if(receivers.length == 0 && senders.length == 0)
-      return [];
-    else if(receivers.length == 0)
-      return senders;
-    else if (senders.length == 0)
-      return receivers;
+    async create(sender: string, receiver: string) {
+      const friendship = await this.friendshipRepo.create();
+      friendship.initiater = await this.userRepo.findOneBy({name : sender});
+      friendship.receiver = await this.userRepo.findOneBy({name : receiver});
+      friendship.status = Fstatus.PENDING;
+      return await this.friendshipRepo.save(friendship);
+    }
     
-    return receivers.concat(senders);
-  }
+    async getFriends(username: string) {
+      const friendship = await this.friendshipRepo.find({
+        where: [
+          { initiater: { username: username } , status: Fstatus.ACCEPTED },
+        ],
+        relations: ['receiver']
+      });
+      const receivers =  friendship.map(f => f.receiver);
+      
+      const friendship1 = await this.friendshipRepo.find({
+        where: [
+          { receiver: { username: username } , status: Fstatus.ACCEPTED },
+        ],
+        relations: ['initiater']
+      });
+      
+      const senders =  friendship1.map(f => f.initiater);
+      
+      if(receivers.length == 0 && senders.length == 0)
+        return [];
+      else if(receivers.length == 0)
+        return senders;
+      else if (senders.length == 0)
+        return receivers;
 
-  async accept(username: string, sender: string) {
+      return receivers.concat(senders);
+}
 
-    const friendship = await this.friendshipRepo.findOne({
+async accept(username: string, sender: string) {
+  
+  const friendship = await this.friendshipRepo.findOne({
       where: [ { initiater: { username: sender }, receiver: { username: username } } ],
     });
     friendship.status = Fstatus.ACCEPTED;
