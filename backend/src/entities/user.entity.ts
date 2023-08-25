@@ -107,8 +107,6 @@ export class GameHistory {
     created_at: Date;
 }
 
-
-
 @Entity({ name: 'Blockage' })
 export class Blockage {
     @PrimaryGeneratedColumn()
@@ -119,6 +117,12 @@ export class Blockage {
   
     @ManyToOne(() => User, (user) => user.blockedByUsers)
     blocked: User;
+}
+
+export enum Fstatus {
+    PENDING = 'pending',
+    ACCEPTED = 'accepted',
+    NONE = 'none'
 }
   
 @Entity({ name: 'Friendship' })
@@ -132,7 +136,7 @@ export class Friendship {
     @ManyToOne(() => User, (user) => user.receivedFriendships)
     receiver: User;
   
-    @Column({ type: 'boolean' })
-    isAccepted: boolean;
+    @Column( )
+    status: Fstatus;
 }
 export { Channel };

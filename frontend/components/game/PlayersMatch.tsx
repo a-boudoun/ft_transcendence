@@ -25,8 +25,8 @@ function LeftPlayer(){
 	if (isLoading) return <div>Loading...</div>;
 	else{
 		return (
-			<div className = 'flex flex-col iterms-center justify-center w-[150px] h-[150px]'>
-			<Image src={data.image} width={200} height={200} alt="avatar" className="w-full h-full rounded-full"/>
+		<div className = 'flex flex-col iterms-center justify-center'>
+			<Image src={data.image} width={150} height={150} alt="avatar" className="rounded-full"/>
 			<h1 className = 'pt-2 text-2xl font-bold'> {data.username} </h1>
 		</div>
 	)
@@ -82,17 +82,16 @@ function LoadingPlayer({setClicked, setGame}: prop){
 			
 			return (
 				<>
-				 <Image src={image} width={200} height={200} alt="avatar" className="w-full h-full rounded-full"/>
-				 <h1 className = 'pt-2 text-2xl font-bold '> {name} </h1>
-			</>
+				  <Image src={image} width={150} height={150} alt="avatar" className="rounded-full"/>
+				  <h1 className = 'pt-2 text-2xl font-bold '> {name} </h1>
+				</>
 		)
-		
 	}
 	
 	function RightPlayer({ clicked, setClicked, setGame } : prop){
 		
 		return (
-			<div className = 'flex flex-col iterms-center justify-center  w-[150px] h-[150px]'>
+			<div className = 'flex flex-col iterms-center justify-center'>
 				{clicked === 1 ? <LoadingPlayer setClicked={setClicked} setGame={setGame}/>  :   <Image src="/game/unknown.svg" width={200} height={200} alt="unkown" className="w-full h-full rounded-full"/>}
 			</div>
 		)
