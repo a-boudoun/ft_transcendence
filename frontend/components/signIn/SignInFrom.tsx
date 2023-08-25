@@ -31,7 +31,7 @@ const SignInFrom = ({user} : {user: signInDto}) => {
       await axios.patch('http://localhost:8000/users/updateMe', user, { withCredentials: true });
     },
     onSuccess: () => {
-      Router.push('/home');
+      Router.push('/profile');
     },
   });
 

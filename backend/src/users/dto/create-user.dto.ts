@@ -1,6 +1,7 @@
 import { AdministrationDTO, ChannelDTO, MessageDTO, SanctionDTO } from "src/channels/dto/create-channel.dto";
 import { Status } from "../../entities/user.entity";
 import { GameHistoryDTO } from "src/game-history/dto/create-game-history.dto";
+import { FriendshipDTO } from "src/friendship/dto/create-friendship.dto";
 
 export class UserDTO {
     username: string;
@@ -34,8 +35,4 @@ export class BlockageDTO {
 }
 
 
-export class FriendshipDTO {
-    initiater: UserDTO;
-    receiver: UserDTO;
-    isAccepted: boolean;
-}
+

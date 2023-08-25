@@ -6,42 +6,44 @@ import getData from "@/apis/server/get";
 import userDto from "@/dto/userDto";
 import axios from 'axios';
 import { useQuery } from "@tanstack/react-query";
-import { use } from 'react';
+import SearchBar  from "@/components/common/SearchBar";
+import { useState } from 'react';
 
 
 const Friends = () => {
-
+    const [searchValue, setSearchValue] = useState<string>('');
     const {data, isLoading} = useQuery({
-        queryKey: ['users'],
+        queryKey: ['friends'],
         queryFn: async ()=> {
-            const { data } = await axios.get('http://localhost:8000/users', { withCredentials: true });
+            const { data } = await axios.get('http://localhost:8000/friendship/getFriends', { withCredentials: true });
             return data;
         }
       });
    
       if (isLoading) 
-      return <div className="">loading... </div>
+        return <div className="">loading... </div>
       else {
         return (
-        <div className={'h-full flex flex-col gap-1 overflow-y-scroll rounded-2xl'}>
-                {
-                    data.users?.map((friend: userDto) => {
-                        return (
-                            <Link href={`/profile/${friend.name}`} >
-                                <Friend user={friend} /> 
-                            </Link>
-                        );
-                    })
-                }   
+            <div className="flex flex-col gap-4">
+                <div className={'h-full flex flex-col gap-1 overflow-y-scroll rounded-2xl'}>
+                    {
+                        data.map((friend: userDto) => {
+                            console.log(friend);
+                            return (
+                                <Link href={`/profile/${friend.name}`} >
+                                    <Friend user={friend} /> 
+                                </Link>
+                            );
+                        })
+                    }   
+                </div>
             </div>
         );
     }
 }
-
 export default Friends;
 
 export const Friend = ({user}: {user: userDto}) => {
-
     return (
         <div className={`flex justify-between px-4 py-2 mx-2 rounded-xl text-white bg-dark-gray`}>
             <div className="grow flex items-center gap-4">
