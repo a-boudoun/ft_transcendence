@@ -22,7 +22,7 @@ const Fact2AuthForm = () => {
         const {data} = await axios.patch('http://localhost:8000/auth/2fa/login', body, { withCredentials: true });
         console.log(data);
         if (data.valid === true){
-          router.push('/home');
+          router.push('/profile');
         }
         else {
           setIsLoading(false);

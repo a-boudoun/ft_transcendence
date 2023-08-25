@@ -52,30 +52,13 @@ export default function MatchPlayers() {
 
 		<>
 		{ !gameStart && <div className = 'flex flex-col items-center justify-center w-screen h-screen bg-dark-gray gap-2'>
-			<main className = 'flex flex-row bg-[#384259] w-[500px] h-[300px] items-center justify-between px-8 rounded-[10px]'>
+		<main className="bg-dark-gray  pt-[56px] sm:p-10 sm:pt-[96px] sm:flex sm:justify-center">
+			<div className = 'flex flex-col gap-8 sm:flex-row bg-[#384259] items-center justify-between p-8 rounded-2xl'>
 				<LeftPlayer/>
-				<h1 className = 'text-white text-5xl font-serif'>VS</h1>
+				<h1 className ='text-5xl font-serif'>VS</h1>
 				<RightPlayer clicked={look} setClicked={setLook} setGame={setGameStart}/>
-			</main>
-			{/* { look !== 2 && <div>
-				{ look === 0 && <button 
-				className=" max-w-[320px] sm:max-w-auto  bottom-[40px] right-[40px] text-white text-[30px] bg-red w-[250px] py-2 rounded-[10px] hover:bg-[#FBACB3] font-bold"
-				onClick = {() => {
-					socket.emit('looking-for-match', player);
-					setLook(1);
-				}}>
-				find a player
-				</button>} */}
-
-				{/* {look === 1 && <button 
-				className=" max-w-[320px] sm:max-w-auto  bottom-[40px] right-[40px] text-white text-[30px] bg-[#fc2e2e] py-2 w-[120px] rounded-[10px] hover:bg-[#f01f2d] font-bold"
-				onClick = {() => {
-					socket.emit('cancel-looking', player);
-					setLook(0);
-				}}>
-				cancel
-				</button>} */}
-			{/* </div>} */}
+			</div>
+		</main>
 		</div>}
 		{gameStart && <Game 
 			me = {player} 

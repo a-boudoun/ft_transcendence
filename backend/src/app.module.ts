@@ -10,11 +10,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import con from '../ormconfig';
 import { ChannelsModule } from './channels/channels.module';
 import { GameHistoryModule } from './game-history/game-history.module';
+import { FriendshipModule } from './friendship/friendship.module';
 
 @Module({
   // AuthModule, UsersModule,
   imports: [TypeOrmModule.forRoot(con),
-            AuthModule, UsersModule, ChannelsModule, GameHistoryModule, GameModule],
+  AuthModule, UsersModule, ChannelsModule, GameHistoryModule, FriendshipModule, GameModule],
   controllers: [AppController],
   providers: [AppService],
 })
