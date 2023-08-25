@@ -8,7 +8,7 @@ const ProfileFriends = ({id} : {id : string | null}) => {
                     <Title isActive={true} str='Friends' src='/icons/profile/Friends.svg'/>
                 </div>
                 <div className="h-full grow bg-light-gray rounded-b-3xl overflow-hidden p-4">
-                   <Frineds />   
+                    <Frineds />   
                 </div>
             </div>
         )
