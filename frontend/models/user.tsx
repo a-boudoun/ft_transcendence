@@ -5,6 +5,9 @@ const MAX_FILE_SIZE = 2500000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 export const signInSchema = z.object({
+    username: z
+    .string()
+    .optional(),
     name: z
     .string()
     .trim()
@@ -14,7 +17,8 @@ export const signInSchema = z.object({
         const isUser = await get(`/users/isUserExist/${name}`);
         return !isUser;
     }
-    , "Name already exists."),
+    , "Name already exists.")
+    .optional(),
     image: z
     .any()
     .refine((file) => {

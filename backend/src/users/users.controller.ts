@@ -9,16 +9,18 @@ import con from 'ormconfig';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() userDTO: UserDTO) {
-    return this.usersService.create(userDTO);
-  }
-
   @Get()
   @UseGuards(Jwt2faAuthGuard)
   async findAll() {
     const users =  await this.usersService.findAll();
-    return {'users' : users};
+    return {users};
+  }
+
+  @Get('/search/:key')
+  @UseGuards(Jwt2faAuthGuard)
+  async search(@Param('key') key: string) {
+    const users =  await this.usersService.search(key);
+    return {users: users};
   }
 
   @Get('DM')
@@ -27,7 +29,7 @@ export class UsersController {
     return this.usersService.getDM(req.user.username);
   }
   
-  @Get('DM')
+  @Get('Channels')
   @UseGuards(Jwt2faAuthGuard)
   getChannels(@Req() req) {
     return this.usersService.getChannels(req.user.username);
@@ -57,7 +59,12 @@ export class UsersController {
   async isUser(@Req() req, @Param('name') name: string) {
     return this.usersService.isUserExist(req.user.username, name);
   }
-
+  
+  // @Get('friends/:username')
+  // @UseGuards(Jwt2faAuthGuard)
+  // async getFriends(@Param('username') username: string) {
+  //   return this.usersService.getFriends(username);
+  // }
 
   @Delete(':login')
   remove(@Param('login') login: string) {
