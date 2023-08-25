@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Socket } from "socket.io";
+import { Server } from "socket.io";
 // ! why import Matter like this?
 import Matter = require("matter-js");
 import { Room } from "./interfaces/room.interface";
@@ -7,9 +7,11 @@ import { Room } from "./interfaces/room.interface";
 @Injectable()
 export class gameSimulation{
 
+	//server
+	private server: Server;
 	//Engine
 	private engine: Matter.Engine;
-	// private runner: Matter.Runner;
+	private runner: Matter.Runner;
 	private Cheight: number = 890;
 	private Cwidth: number = 2048;
 	//Bodies
@@ -25,6 +27,12 @@ export class gameSimulation{
 	private rightScore: number = 0;
 	private leftScore: number = 0;
 
+	private readonly MAX = 5;
+	private readonly Bspeed = 10;
+
+	private rightInt: NodeJS.Timer;
+	private leftInt: NodeJS.Timer;
+
 	constructor() {
 		this.engine = Matter.Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
@@ -32,11 +40,14 @@ export class gameSimulation{
 			gravity:{
 				x:0,
 				y:0,
-				scale:0.001,
+				scale:0.01,
 			},
 		});
-		// this.runner = Matter.Runner.create({
-		// });
+		this.runner = Matter.Runner.create({
+		});
+	}
+	addServer(server: Server) {
+		this.server = server;
 	}
 
 	drawWorld() {
@@ -47,34 +58,70 @@ export class gameSimulation{
 		this.ball = this.drawCircle(this.Cwidth / 2, this.Cheight / 2, 20);
 
 		Matter.World.add(this.engine.world, [this.floor, this.ceiling, this.rightBoard, this.leftBoard, this.ball]);
-		setTimeout(() => Matter.Body.setVelocity(this.ball, { x: 10, y: 5 }), 3000);
+		setTimeout(() => Matter.Body.setVelocity(this.ball, { x: 10, y: 5 }), 3900);
 	}
 	
-	setLeftBoardPosition(y : number) {
-		Matter.Body.setPosition(this.leftBoard, 
-			{ 
-				x: 35,
-				y: y,
-			}
-		);
-	}
+	setLeftBoardPosition(direction : string) {
+		let y : number;
 
-	setRightBoardPosition(y : number) {
-		Matter.Body.setPosition(this.rightBoard, 
-		{ 
-			x: this.Cwidth - 35,
-			y: y,
+		if (direction === 'stop')
+			clearInterval(this.leftInt);
+		else{
+			this.leftInt = setInterval(() => {
+				if (direction === 'ArrowUp')
+					y = this.leftBoard.position.y - this.Bspeed;
+				else
+					y = this.leftBoard.position.y + this.Bspeed;
+				if (y < 60 || y > this.Cheight - 60)
+					return;
+				Matter.Body.setPosition(this.leftBoard, 
+					{ 
+						x: 35,
+						y: y,
+					}
+				);
+			}, 15);
 		}
-		);
 	}
 
+	setRightBoardPosition(direction : string) {
+		let y : number;
+
+		if (direction === 'stop')
+			clearInterval(this.rightInt);
+		else{
+			this.rightInt = setInterval(() => {
+				if (direction === 'ArrowUp')
+					y = this.rightBoard.position.y - this.Bspeed;
+				else
+					y = this.rightBoard.position.y + this.Bspeed;
+				if (y < 60 || y > this.Cheight - 60)
+				return;
+			Matter.Body.setPosition(this.rightBoard, 
+				{ 
+					x: this.Cwidth - 35,
+					y: y,
+				}
+				);
+			}, 15);
+		}
+	}
+	
 	runEngine() {
 		this.drawWorld();
 		this.detectCollision();
 		this.restartGame();
-		Matter.Engine.run(this.engine);
+		Matter.Runner.run(this.runner, this.engine);
 	}
 	
+	stopEngine() {
+		Matter.Engine.clear(this.engine);
+		Matter.World.clear(this.engine.world, false);
+		Matter.Events.off(this.engine, 'collisionStart', this.handleCollision);
+		Matter.Runner.stop(this.runner);
+		clearInterval(this.id);
+	}
+
 	restartGame() {
 		let vx : number;
 		let vy: number;
@@ -90,34 +137,19 @@ export class gameSimulation{
 					vx = 10;
 					vy = 3;
 				}
-				this.roomIn.players.forEach((player) => {
-					player.socket.emit('score', 
-					{
-						leftScore: this.leftScore,
-						rightScore: this.rightScore,
-					}
-					);
-				});
-				if (this.leftScore === 3 || this.rightScore === 3){
-					if (this.leftScore === 3){
-						this.roomIn.players.forEach((player) => {
-							player.socket.emit('winner', 'left');
-						});
-					}
-					else{
-						this.roomIn.players.forEach((player) => {
-							player.socket.emit('winner', 'right');
-						});
-					}
+				if (this.leftScore === this.MAX || this.rightScore === this.MAX){
+					if (this.leftScore === this.MAX)
+					this.server.to(this.roomIn.id).emit('winner', 'left');
+				else
+					this.server.to(this.roomIn.id).emit('winner', 'right');
 				}
 				Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
 				Matter.Body.setVelocity(this.ball, { x: 0, y: 0 });
-
 				setTimeout(() => Matter.Body.setVelocity(this.ball, { x: vx, y: vy }), 500);
 			}
 		});
 	}
-	
+
 	detectCollision() {
 		Matter.Events.on(this.engine, 'collisionStart', (event) => {
 			this.handleCollision(event);
@@ -134,54 +166,41 @@ export class gameSimulation{
 					x: -20,
 					y: ballVelocity.y 
 				});
-				this.roomIn.players.forEach((player) => {
-					player.socket.emit('sound');
-				});
+				this.server.to(this.roomIn.id).emit('sound');
 			}
 			else if (pair.bodyA === this.rightBoard || pair.bodyB === this.rightBoard) {
 				Matter.Body.setVelocity(this.ball, { 
 					x: 20, 
 					y: ballVelocity.y
 				});
-				this.roomIn.players.forEach((player) => {
-					player.socket.emit('sound');
-				});
+				this.server.to(this.roomIn.id).emit('sound');
 			}
 		});
 	}
-	
 
-	stopEngine() {
-		Matter.Engine.clear(this.engine);
-		Matter.World.clear(this.engine.world, false);
-		Matter.Events.off(this.engine, 'collisionStart', this.handleCollision);
-		clearInterval(this.id);
-	}
-
-	// stopRunner() {
-	// 	Matter.Runner.stop(this.runner);
-	// }
-
-	// TODO: sent the positions normalized to the client
 	sendPosition(room : Room) {
 		this.roomIn = room;
 		this.id = setInterval(() => {
-			room.players.forEach((player) => {
-				player.socket.emit('ball', 
+			this.server.to(room.id).emit('ball', 
+			{
+				x: this.ball.position.x,
+				y: this.ball.position.y,
+			}
+			);
+			this.server.to(room.id).emit('positions', 
+			{
+				leftBoardX: this.leftBoard.position.x,
+				leftBoardY: this.leftBoard.position.y,
+				rightBoardX: this.rightBoard.position.x,
+				rightBoardY: this.rightBoard.position.y,
+			}
+			);
+			this.server.to(this.roomIn.id).emit('score', 
 				{
-					x: this.ball.position.x,
-					y: this.ball.position.y,
+					leftScore: this.leftScore,
+					rightScore: this.rightScore,
 				}
-				);
-				player.socket.emit('positions', 
-				{
-					leftBoardX: this.leftBoard.position.x,
-					leftBoardY: this.leftBoard.position.y,
-					rightBoardX: this.rightBoard.position.x,
-					rightBoardY: this.rightBoard.position.y,
-				}
-				);
-			});
+			);
 		}, 15);
 	}
 

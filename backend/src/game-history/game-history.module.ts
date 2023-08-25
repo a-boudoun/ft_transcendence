@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { GameHistoryService } from './game-history.service';
 import { GameHistoryController } from './game-history.controller';
 import { GameHistory, User } from 'src/entities/user.entity';
-import { GameHistory, User } from 'src/entities/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
