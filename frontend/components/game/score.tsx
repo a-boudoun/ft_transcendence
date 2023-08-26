@@ -25,7 +25,7 @@ function MePlayer({ left, leftPlayer} : left) {
 	const {data, isLoading} = useQuery({
 		queryKey: ['left'],
 		queryFn: async ()=> {
-		  const {data} = await axios.get(`http://localhost:8000/users/${leftPlayer}`, { withCredentials: true })
+		  const {data} = await axios.get(`http://localhost:8000/users/byUsername/${leftPlayer}`, { withCredentials: true })
 		  return data;
 		}
 	  });
@@ -35,7 +35,7 @@ function MePlayer({ left, leftPlayer} : left) {
 			<div className="flex items-center gap-2">
 				<div className="flex flex-col items-center w-[80px] h-[80px]">
 					<Image src={data.image} width={100} height={100} alt="#" className="w-full h-full rounded-full"/>
-					<h1 className="text-[#F2F2F2] font-bold">{leftPlayer}</h1>
+					<h1 className="text-[#F2F2F2] font-bold">{data.name}</h1>
 				</div>
 				<h1>
 					score: {left}
@@ -49,7 +49,7 @@ function OtherPlayer({ right, rightPlayer } : right) {
 	const {data, isLoading} = useQuery({
 		queryKey: ['right'],
 		queryFn: async ()=> {
-		  const {data} = await axios.get(`http://localhost:8000/users/${rightPlayer}`, { withCredentials: true })
+		  const {data} = await axios.get(`http://localhost:8000/users/byUsername/${rightPlayer}`, { withCredentials: true })
 		  return data;
 		}
 	  });
@@ -62,7 +62,7 @@ function OtherPlayer({ right, rightPlayer } : right) {
 				</h1>
 				<div className="flex flex-col items-center w-[80px] h-[80px]">
 					<Image src={data.image} width={100} height={100} alt="#" className="w-full h-full rounded-full"/>
-					<h1 className="text-[#F2F2F2] font-bold">{rightPlayer}</h1>
+					<h1 className="text-[#F2F2F2] font-bold">{data.name}</h1>
 				</div>
 			</div>
 		);
