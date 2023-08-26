@@ -50,10 +50,15 @@ export class UsersController {
 
 
   @Get(':name')
-  findOne(@Param('name') name: string) {
+  findOneByname(@Param('name') name: string) {
     return this.usersService.findOneByname(name);
   }
-  
+
+  @Get('/byUsername/:username')
+  findOneByusername(@Param('username') username: string) {
+    return this.usersService.findOne(username);
+  }
+
   @Get('isUserExist/:name')
   @UseGuards(Jwt2faAuthGuard)
   async isUser(@Req() req, @Param('name') name: string) {

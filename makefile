@@ -1,4 +1,8 @@
-front: 
-	npm i -C ./frontend
-back: 
-	npm i  -C ./backend
+VOLUMES = $(shell docker volume ls -q)
+
+stop:
+	@docker-compose down
+	@docker volume rm $(VOLUMES)
+
+start:
+	@docker-compose up -d

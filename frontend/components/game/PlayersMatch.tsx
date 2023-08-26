@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import socket from '@/components/socketG';
 import axios from 'axios';
-import Game from './fullGame';
 
 interface prop {
 	clicked?: number;
@@ -27,7 +26,7 @@ function LeftPlayer(){
 		return (
 		<div className = 'flex flex-col iterms-center justify-center'>
 			<Image src={data.image} width={150} height={150} alt="avatar" className="rounded-full"/>
-			<h1 className = 'pt-2 text-2xl font-bold'> {data.username} </h1>
+			<h1 className = 'pt-2 text-2xl font-bold'> {data.name} </h1>
 		</div>
 	)
 }
@@ -63,8 +62,9 @@ function LoadingPlayer({setClicked, setGame}: prop){
 	
 			socket.on('match-found', async (player: string) => {
 				try {
-					const { data } = await axios.get(`http://localhost:8000/users/${player}`, { withCredentials: true });
-					setName(data.username);
+					const { data } = await axios.get(`http://localhost:8000/users/byUsername/${player}`, { withCredentials: true });
+					console.log('data' +  data);
+					setName(data.name);
 					setImage(data.image);
 					clearInterval(interval);
 					setTimeout(() => {
