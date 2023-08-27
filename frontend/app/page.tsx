@@ -1,7 +1,6 @@
 import React from 'react'
 import SingButton from '@/components/SingButton'
 
-
 export default function Home() {
   return (
     <main className="grid place-content-center h-screen w-h-screen bg-ping-pong bg-cover text-base">

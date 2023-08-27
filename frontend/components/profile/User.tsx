@@ -9,6 +9,25 @@ import { Client } from '@/Providers/QueryProvider';
 import { Loader2 } from  'lucide-react';
 import { useState } from 'react';
 import AddFriend from './AddFriend';
+import Link from 'next/link';
+import Block from './Block';
+
+const Challnege = ({id} : {id : string}) => {
+  return(
+    <button className='bg-blue text-sm px-4 py-[2px] text-black rounded-md'>Challnege</button>
+  )
+}
+
+const UserParametres = ({id} : {id : string}) => {
+  return(
+    <div className='flex absolute bottom-0 right-0 p-4  gap-2'>
+      <AddFriend id={id} />
+      <Link className='bg-blue text-sm px-4 py-[2px] text-black rounded-md' href={`/chat/${id}`}>Mesage</Link>
+      <Challnege id={id} />
+      <Block id={id} />
+    </div>
+  )
+}
 
 const User = ({id} : {id : string | null}) => {
 

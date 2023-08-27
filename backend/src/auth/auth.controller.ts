@@ -3,6 +3,7 @@ import { OAuthGuard } from './guards/42.guard';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Jwt2faAuthGuard } from './guards/jwt-2fa-auth.guard';
+import { JwtSigninGuard } from './guards/jwt-signin.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -20,11 +21,18 @@ export class AuthController {
     return this.authService.login(req.user, res, false);
   }
 
-  @Get('isAuth')
+  @Get('/verify/accessToken')
   @UseGuards(Jwt2faAuthGuard)
-  protectedResource(@Req() req) { 
-    return (req.user);
+  accessToken(@Req() req) { 
+    return {message: 'access_token is valid'};
   }
+
+  @Get('/verify/signinToken')
+  @UseGuards(JwtSigninGuard)
+  signinToken(@Req() req) {
+    return {message: 'signin_token is valid'};
+  }
+
 
   @Get('2fa/generate')
   @UseGuards(Jwt2faAuthGuard)
