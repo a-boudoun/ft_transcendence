@@ -61,18 +61,18 @@ const AddFriend = ({id} : {id : string}) => {
     if (Status.isLoading)
         return <div>loading...</div>
     else if (Status.data.status === 'none')
-        return <button className='bg-blue text-sm px-4 py-[2px] ml-4 text-black rounded-md' onClick={handleAddFriend}>Add Friend</button>
+        return <button className='bg-blue text-sm px-4 py-[2px] text-black rounded-md' onClick={handleAddFriend}>Add Friend</button>
     else if (Status.data.status === 'pending' && Status.data.sender != id)
-        return <button className='bg-blue text-sm px-4 py-[2px] ml-4 text-black rounded-md' onClick={handleRemoveOrCancelFriend}>Cancel Request</button>
+        return <button className='bg-blue text-sm px-4 py-[2px]  text-black rounded-md' onClick={handleRemoveOrCancelFriend}>Cancel Request</button>
     else if (Status.data.status === 'pending' && Status.data.sender === id)
         return (
             <div className=''>
-                <button className='bg-red text-sm px-4 py-[2px] ml-4 text-white rounded-md' onClick={handleRemoveOrCancelFriend}>Decline</button>
-                <button className='bg-blue text-sm px-4 py-[2px] ml-4 text-black rounded-md' onClick={handleAcceptFriend}>Accept</button>
+                <button className='bg-red text-sm px-4 py-[2px]  text-white rounded-md' onClick={handleRemoveOrCancelFriend}>Decline</button>
+                <button className='bg-blue text-sm px-4 py-[2px]  text-black rounded-md' onClick={handleAcceptFriend}>Accept</button>
             </div>
         )
     else if (Status.data.status === 'accepted')
-        return <button className='bg-red text-sm px-4 py-[2px] ml-4 text-black rounded-md' onClick={handleRemoveOrCancelFriend}>Remove Friend</button>
+        return <button className='bg-red text-sm px-4 py-[2px]  text-black rounded-md' onClick={handleRemoveOrCancelFriend}>Remove Friend</button>
 
 }
 
