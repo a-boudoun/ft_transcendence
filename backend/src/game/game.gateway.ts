@@ -23,6 +23,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   
   handleDisconnect(client: Socket) {
+
   }
 
   @SubscribeMessage('invite-freind')
@@ -93,10 +94,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('end-game')
   handleCancelLooking(client: Socket, data: any) {
-    let removedRoom : boolean;
-    removedRoom = this.gameService.removePlayerFromRoom(data.player, data.room);
-    if (removedRoom === true)
-      this.engineService.removeGameSimulation(data.room);
+    this.gameService.removePlayerFromRoom(data.player, data.room);
+    this.gameService.removeRoom(data.room);
+    this.engineService.removeGameSimulation(data.room);
   }
   
   @SubscribeMessage('looking-for-match')

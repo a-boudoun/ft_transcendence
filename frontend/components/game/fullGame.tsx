@@ -10,6 +10,7 @@ import { drawRect, drawCircle } from "@/components/game/draw";
 import { useRouter } from "next/navigation";
 import socket from "@/components/socketG";
 import axios from "axios";
+import { set } from "zod";
 
 interface GameH{
 	loserScore: number;
@@ -29,9 +30,6 @@ export default function Game({me, setGame, setMatch} : Prop){
 			const { data } = await axios.post(`http://localhost:8000/gameHistory`, a, { withCredentials: true });
 			return data;
 		},
-		onSuccess: () => {
-			console.log("success");
-		}
 	});
 	const divRef = useRef<HTMLDivElement | null>(null);
 	const [PVisible, setPVisible] = useState<boolean>(true);
@@ -49,6 +47,7 @@ export default function Game({me, setGame, setMatch} : Prop){
 	let keyClicked : boolean = false;
 
 	useEffect(() => {
+
 		socket.emit('full-Game', me);
 		socket.on('sound', () => {
 			const audio = new Audio('/game/bounce.mp3');
@@ -187,6 +186,7 @@ export default function Game({me, setGame, setMatch} : Prop){
 				socket.off('ball');
 				Engine.clear(engine);
 				Render.stop(render);
+				setGame(false);
 			};
 		}
 	}, [roomid]);
