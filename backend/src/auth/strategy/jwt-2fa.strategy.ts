@@ -1,9 +1,10 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { Injectable, Req } from '@nestjs/common';
+import { Injectable, Res } from '@nestjs/common';
 import { config } from 'dotenv';
 import { Request } from 'express';
 import { UsersService } from 'src/users/users.service';
+import { Response } from 'express';
 
 config();
 
@@ -23,10 +24,19 @@ export class Jwt2faStrategy extends PassportStrategy(Strategy, 'jwt-2fa') {
         });
     }
 
-    async validate(payload: any) {
+    async validate(payload: any, @Res() res: Response) {
         
         const user = await this.usersService.findOne(payload.username);
 
+        // if (payload.firtTime === true)
+        // {
+        //     res.cookie('firstTime', true, {httpOnly: true,
+        //         maxAge: 60 * 60 * 24 * 7,
+        //         sameSite: 'strict',
+        //         path: '/'
+        //       });
+        // }
+        
         if (!user.fact2Auth)
             return user;
         if (payload.fact2Auth === true) 
