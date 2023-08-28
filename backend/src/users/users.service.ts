@@ -11,15 +11,6 @@ import con from 'ormconfig';
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
-    private jwtService: JwtService
-    // @InjectRepository(Channel) private channelRepo: Repository<Channel>,
-    // @InjectRepository(Message) private messageRepo: Repository<Message>,
-    // @InjectRepository(GameHistory) private gamehistoryRepo: Repository<GameHistory>,
-    // @InjectRepository(Friendship) private friendshipRepo: Repository<Friendship>,
-    // @InjectRepository(Sanction) private sanctionRepo: Repository<Sanction>,
-    // @InjectRepository(Membership) private membershipRepo: Repository<Membership>,
-    // @InjectRepository(Blockage) private blockageRepo: Repository<Blockage>,
-    // @InjectRepository(Administration) private administrationRepo: Repository<Administration>,
     ) {}
     
     create(userDTO: UserDTO) {
@@ -82,11 +73,6 @@ export class UsersService {
   async remove(login: string) {
     const user = await this.findOne(login);
     return this.userRepo.remove(user);
-  }
-
-  async genarateToken(user: UserDTO, fact2Auth: boolean) {
-    const payload = {username: user.username, sub: user.XP, fact2Auth: fact2Auth};
-    return this.jwtService.signAsync(payload);
   }
 
   async set2FAsecret(secret: string, login: string) {

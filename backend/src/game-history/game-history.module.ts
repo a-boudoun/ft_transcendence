@@ -4,6 +4,7 @@ import { GameHistoryController } from './game-history.controller';
 import { GameHistory, User } from 'src/entities/user.entity';
 import { GameHistory, User } from 'src/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([GameHistory, User]),
@@ -12,6 +13,6 @@ import { JwtModule } from '@nestjs/jwt';
     signOptions: { expiresIn: process.env.JWT_EXP_D},
   })],
   controllers: [GameHistoryController],
-  providers: [GameHistoryService]
+  providers: [GameHistoryService,UsersService]
 })
 export class GameHistoryModule {}

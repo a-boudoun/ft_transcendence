@@ -8,28 +8,25 @@ import { UsersService } from 'src/users/users.service';
 config();
 
 const extractCookie = (req: Request): string | null => {
-    if (req.cookies && req.cookies.access_token) {
-      return req.cookies.access_token;
+    if (req.cookies && req.cookies.signin_token) {
+
+      return req.cookies.signin_token;
     }
     return null;
 }
+
 @Injectable()
-export class Jwt2faStrategy extends PassportStrategy(Strategy, 'jwt-2fa') {
+export class JwtSigninStrategy extends PassportStrategy(Strategy, 'jwt-signin') {
     constructor(private readonly usersService: UsersService) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([extractCookie]),
             ignoreExpiration: false,
-            secretOrKey: process.env.ACCESS_TOKEN_SECRET,
+            secretOrKey: process.env.SIGNIN_TOKEN_SECRET,
         });
     }
 
     async validate(payload: any) {
-        
         const user = await this.usersService.findOne(payload.username);
-
-        if (!user.fact2Auth)
-            return user;
-        if (payload.fact2Auth === true) 
-            return user;
+        return user;
     }
 }

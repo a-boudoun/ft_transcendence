@@ -9,16 +9,17 @@ import { useQuery } from "@tanstack/react-query";
 import SearchBar  from "@/components/common/SearchBar";
 import { useState } from 'react';
 
-
-const Friends = () => {
+const Friends = ({id} : {id : string | null}) => {
+    
     const [searchValue, setSearchValue] = useState<string>('');
     const {data, isLoading} = useQuery({
         queryKey: ['friends'],
         queryFn: async ()=> {
-            const { data } = await axios.get('http://localhost:8000/friendship/getFriends', { withCredentials: true });
+            (id ? id = id : id = 'me')
+            const { data } = await axios.get(`http://localhost:8000/friendship/getFriends/${id}`, { withCredentials: true });
             return data;
         }
-      });
+    });
    
       if (isLoading) 
         return <div className="">loading... </div>

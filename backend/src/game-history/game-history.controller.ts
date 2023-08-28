@@ -12,14 +12,16 @@ export class GameHistoryController {
     return this.gameHistoryService.create(GameHistoryDTO);
   }
 
-  @Get()
-  findAll() {
-    return this.gameHistoryService.findAll();
+  @Get('getHistory/me')
+  @UseGuards(Jwt2faAuthGuard)
+  getMyHistory(@Req() req) {
+    return this.gameHistoryService.findOne(req.user.username);
   }
 
-  @Get(':username')
-  findOne(@Param('username') username: string) {
-    return this.gameHistoryService.findOne(username);
+  @Get('getHistory/:name')
+  @UseGuards(Jwt2faAuthGuard)
+  getHistory(@Param('name') name: string) {
+    return this.gameHistoryService.findOne(name);
   }
 
   // @Patch(':id')
