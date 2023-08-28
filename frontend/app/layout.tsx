@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Inter } from 'next/font/google'
 import QueryProvider from "@/Providers/QueryProvider";
+import Invite from "@/components/game/Invite";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html className="" lang="en">
       <body className={`${inter.className} h-screen w-screen text-center  text-white`}>
         <QueryProvider>
+          <Invite/>
           {children}
         </QueryProvider>
       </body>
