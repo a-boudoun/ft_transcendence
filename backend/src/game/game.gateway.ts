@@ -20,7 +20,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   recentRomm: string | null;
 
   handleConnection(client: Socket, data: any) {
-    const username : string = client.handshake.headers.cookie.split('_username=')[1];
+    const username : string = client.handshake.headers.cookie.split("_username=")[1].split(";")[0];
     client.data.username = username;
     client.join(username);
   }
@@ -29,14 +29,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('invite-freind')
-  handleInviteFreind(client: Socket, data: any) {
+  handleInviteFreind(client: Socket, reciever: string) {
+    console.log(`${client.data.username} invited ${reciever} to play`);
     //TODO: data = {reciever: string, sender: string, senderSocketId: string}
     //TODO: check if player is online and not in game
-    this.server.to(data.reciever).emit('game-invitation', {sender: data.sender.username, senderSocketId: client.id});
+    this.server.to(reciever).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id});
   }
 
-  @SubscribeMessage('accept-invite')
+  @SubscribeMessage('accept-invitation')
   handleAcceptInvite(client: Socket, data: any) {
+    console.log(`${client.data.username} accepted ${data.senderUsername} invitation`);
     //  TODO data = {senderUsername: string, senderSocketId: string }
     const freindSocket: Socket = this.server.sockets.sockets.get(data.senderSocketId);
     const player1: string = client.data.username;
