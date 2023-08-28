@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { gameSimulation } from "./gameSimulation.service";
+import { gameService } from "./game.service";
 import { Room } from "./interfaces/room.interface";
-import { Server } from "socket.io";
 
 @Injectable()
 export class engineService {
@@ -20,24 +20,17 @@ export class engineService {
 		}
 	}
 
-	addServerToGame(roomId: string, server: Server) {
+	setLeftBoardPosition(roomId: string, y: number) {
 		const game: gameSimulation | undefined = this.gameSimulations.get(roomId);
 		if (game) {
-			game.addServer(server);
+			game.setLeftBoardPosition(y);
 		}
 	}
 
-	setLeftBoardPosition(roomId: string, direction: string) {
+	setRightBoardPosition(roomId: string, y: number) {
 		const game: gameSimulation | undefined = this.gameSimulations.get(roomId);
 		if (game) {
-			game.setLeftBoardPosition(direction);
-		}
-	}
-
-	setRightBoardPosition(roomId: string, direction: string) {
-		const game: gameSimulation | undefined = this.gameSimulations.get(roomId);
-		if (game) {
-			game.setRightBoardPosition(direction);
+			game.setRightBoardPosition(y);
 		}
 	}
 

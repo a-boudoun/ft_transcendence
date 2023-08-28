@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/entities/user.entity';
 import { UserDTO } from 'src/users/dto/create-user.dto';
-import { ghReq } from './game-history.controller';
+
 @Injectable()
 export class GameHistoryService {
   constructor(
@@ -15,13 +15,8 @@ export class GameHistoryService {
     private jwtService: JwtService
   ) {}
 
-  async create(ghReq: ghReq) {
-    const gameHistory = this.gameHistoryRepo.create();
-    gameHistory.winner = await this.userRepo.findOne({where: {username: ghReq.winner}});
-    gameHistory.winner.XP += 10;
-    await this.userRepo.save(gameHistory.winner);
-    gameHistory.loser = await this.userRepo.findOne({where: {username: ghReq.loser}});
-    gameHistory.loserScore = ghReq.loserScore;
+  create(GameHistoryDto: GameHistoryDTO) {
+    const gameHistory = this.gameHistoryRepo.create(GameHistoryDto);
     return this.gameHistoryRepo.save(gameHistory);
   }
 
