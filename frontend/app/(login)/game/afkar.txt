@@ -1,0 +1,22 @@
+#set the friction to a small value and reset the vilocity of the ball every time it collids with the boards
+#sent the x and w of the {boards, ball} on the sockets according to the dimensions of the canvas
+	something like:
+			{	x:(Xball / canvasWidth)
+	ball
+			}	y:(Yball / canvasHeight)
+	
+# you don't need to send the x and y of the ball to the server, just send it in the beginning and then send the velocity
+and after every collition with the boards. OR you just have to send the oponent board position 
+BUT the walls could move so IT IS A PROBLEM
+
+# create a backend object to hold the game elements positions;
+	one for the ball {x, y, w, h, vx, vy}
+	one for the boards [ {x, y}, {x, y} ]
+	one for the walls
+	one for the score
+
+asign every board to the player with the player with the same index in the players array
+	players[0] -> board[0]
+	players[1] -> board[1]
+
+
