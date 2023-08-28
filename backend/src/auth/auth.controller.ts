@@ -16,15 +16,21 @@ export class AuthController {
 
   @Get('redirect')  
   @UseGuards(OAuthGuard)
-  async AuthCallback(@Req() req, @Res({ passthrough: true }) res) {
+  AuthCallback(@Req() req, @Res({ passthrough: true }) res) {
     return this.authService.login(req.user, res, false);
   }
 
-  @Get('isAuth')
-  @UseGuards(Jwt2faAuthGuard)
-  protectedResource(@Req() req) { 
-    return (req.user);
-  }
+  @Patch('singin')
+  @UseGuards(JwtAuthGuard) 
+  signin(@Req() req, @Res({ passthrough: true }) res, @Body() body) {
+    return this.authService.signin(req.user.username, res, body);
+  }  
+
+  // @Get('isAuth')
+  // @UseGuards(Jwt2faAuthGuard)
+  // protectedResource(@Req() req) { 
+  //   return (req.user);
+  // }
 
   @Get('2fa/generate')
   @UseGuards(Jwt2faAuthGuard)

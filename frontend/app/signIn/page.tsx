@@ -8,8 +8,6 @@ import SignInFrom from '@/components/signIn/SignInFrom';
 const singIn = async() => {
 
   const data: userDto | null = await getData('/users/me');
-  if (!data)
-    redirect('/');
 
   return (
     <main className="grid place-content-center h-screen w-h-screen bg-ping-pong bg-cover text-base">

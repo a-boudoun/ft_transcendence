@@ -11,39 +11,56 @@ import { JwtService } from '@nestjs/jwt';
     constructor(
       private userService: UsersService,
       private jwtService: JwtService
-    ) {}
-  
+      ) {}
+      
+    signin(username: string, res: Response, body: any) {
+      this.userService.update(username, body);
+
+      res.clearCookie('firstTime');
+    }
+
     async login(user : UserDTO, res: Response, fact2Auth: boolean) {
       const userExists : UserDTO =  await this.userService.findOne(user.username);
 
-      const token = await this.genarateToken(user, fact2Auth);
-
-      res.cookie('access_token', token, {httpOnly: true,
-        maxAge: 60 * 60 * 24 * 7,
-        sameSite: 'strict',
-        path: '/'
-      });
-
       if (!userExists){
+        const token = await this.genarateToken(user, fact2Auth, true);
+
+        res.cookie('access_token', token, {httpOnly: true,
+          maxAge: 60 * 60 * 24 * 7,
+          sameSite: 'strict',
+          path: '/'
+        });
+
+        res.cookie('firstTime', true, {httpOnly: true,
+          maxAge: 60 * 60 * 24 * 7,
+          sameSite: 'strict',
+          path: '/'
+        });
+
         await this.userService.create(user);
-        res.redirect('http://localhost:3000/signIn');
-        return ;
       }
       else if (userExists.fact2Auth === false){ 
-        res.redirect('http://localhost:3000/profile');
-        return ;
+        const token = await this.genarateToken(user, fact2Auth, false);
+        res.cookie('access_token', token, {httpOnly: true,
+          maxAge: 60 * 60 * 24 * 7,
+          sameSite: 'strict',
+          path: '/'
+        });
       }
       else if (userExists.fact2Auth === true && fact2Auth === false){
-        res.redirect('http://localhost:3000/fact2auth');
-        return ;
+        const token = await this.genarateToken(user, fact2Auth, false);
+        res.cookie('access_token', token, {httpOnly: true,
+          maxAge: 60 * 60 * 24 * 7,
+          sameSite: 'strict',
+          path: '/'
+        });
       }
 
-      return ;
-    }
+      res.redirect('http://localhost:3000');
+  }
 
-    
-  async genarateToken(user: UserDTO, fact2Auth: boolean) {
-    const payload = {username: user.username, sub: user.XP, fact2Auth: fact2Auth};
+  async genarateToken(user: UserDTO, fact2Auth: boolean, firtTime: boolean) {
+    const payload = {username: user.username, sub: user.XP, fact2Auth: fact2Auth, firtTime: firtTime};
     return this.jwtService.signAsync(payload);
   }
 
