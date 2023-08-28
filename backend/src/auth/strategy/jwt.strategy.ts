@@ -5,7 +5,6 @@ import { config } from 'dotenv';
 import { Request } from 'express';
 import { UsersService } from 'src/users/users.service';
 
-
 config();
 
 const extractCookie = (req: Request): string | null => {
@@ -20,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([extractCookie]),
             ignoreExpiration: false,
-            secretOrKey: process.env.JWT_SECRET,
+            secretOrKey: process.env.ACCESS_TOKEN_SECRET,
         });
     }
 

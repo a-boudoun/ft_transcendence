@@ -103,8 +103,8 @@ export class GameHistory {
     @Column()
     loserScore: number;
   
-    @CreateDateColumn()
-    created_at: Date;
+    // @CreateDateColumn()
+    // created_at: Date;
 }
 
 @Entity({ name: 'Blockage' })
