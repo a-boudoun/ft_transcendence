@@ -11,21 +11,16 @@ interface score{
 	rightPlayer: string
 }
 
-interface right{
-	right: number,
-	rightPlayer: string,
+interface pScore{
+	score: number,
+	name: string,
 }
 
-interface left{
-	left: number,
-	leftPlayer: string,
-}
-
-function MePlayer({ left, leftPlayer} : left) {
+function MePlayer({ score, name} : pScore) {
 	const {data, isLoading} = useQuery({
 		queryKey: ['left'],
 		queryFn: async ()=> {
-		  const {data} = await axios.get(`http://localhost:8000/users/byUsername/${leftPlayer}`, { withCredentials: true })
+		  const {data} = await axios.get(`http://localhost:8000/users/byUsername/${name}`, { withCredentials: true })
 		  return data;
 		}
 	  });
@@ -38,18 +33,18 @@ function MePlayer({ left, leftPlayer} : left) {
 					<h1 className="text-[#F2F2F2] font-bold">{data.name}</h1>
 				</div>
 				<h1>
-					score: {left}
+					score: {score}
 				</h1>
 			</div>
 		);
 	}
 }
 
-function OtherPlayer({ right, rightPlayer } : right) {
+function OtherPlayer({ score, name } : pScore) {
 	const {data, isLoading} = useQuery({
 		queryKey: ['right'],
 		queryFn: async ()=> {
-		  const {data} = await axios.get(`http://localhost:8000/users/byUsername/${rightPlayer}`, { withCredentials: true })
+		  const {data} = await axios.get(`http://localhost:8000/users/byUsername/${name}`, { withCredentials: true })
 		  return data;
 		}
 	  });
@@ -58,7 +53,7 @@ function OtherPlayer({ right, rightPlayer } : right) {
 		return (
 			<div className="flex items-center gap-2">
 				<h1>
-					score: {right}
+					score: {score}
 				</h1>
 				<div className="flex flex-col items-center w-[80px] h-[80px]">
 					<Image src={data.image} width={100} height={100} alt="#" className="w-full h-full rounded-full"/>
@@ -73,8 +68,8 @@ function PlayersScore({ left, right, leftPlayer, rightPlayer } : score) {
 
 	return (
 	  <div className="flex justify-between absolute top-[160px] left-[100px] right-[100px]">
-		<MePlayer left={left} leftPlayer={leftPlayer}/>
-		<OtherPlayer right={right} rightPlayer={rightPlayer}/>
+		<MePlayer score={left} name={leftPlayer}/>
+		<OtherPlayer score={right} name={rightPlayer}/>
 	  </div>
 	);
 }
