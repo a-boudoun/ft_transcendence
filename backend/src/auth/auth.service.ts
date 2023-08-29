@@ -6,7 +6,6 @@ import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
 import { JwtService } from '@nestjs/jwt';
 import { config } from 'dotenv';
-import con from 'ormconfig';
 
 config();
   @Injectable()
@@ -29,10 +28,9 @@ config();
         await this.userService.create(user);
         
         const token = await this.genarateToken(user, false, {secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: process.env.ACCESS_TOKEN_EXP_D});
-        res.cookie('access_token', token, {httpOnly: true,
+        res.cookie('access_token', token, {
+          httpOnly: true,
           maxAge: 604800,
-          sameSite: 'strict',
-          path: '/'
         });
         res.clearCookie('signin_token');
       }
@@ -43,33 +41,30 @@ config();
         if (!userExists){
           const token = await this.genarateToken(user, fact2Auth, {secret: process.env.SIGNIN_TOKEN_SECRET, expiresIn: process.env.SIGNIN_TOKEN_EXP_D}); 
           
-          res.cookie('signin_token', token, {httpOnly: true,
+          await res.cookie('signin_token', token, {
+            httpOnly: true,
             maxAge: 604800,
-            sameSite: 'strict',
-            path: '/'
           });
           
         }
         else if (userExists.fact2Auth === false){ 
           const token = await this.genarateToken(user, fact2Auth, {secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: process.env.ACCESS_TOKEN_EXP_D});
-          res.cookie('access_token', token, {httpOnly: true,
+          await res.cookie('access_token', token, {
+            httpOnly: true,
             maxAge: 604800,
-            sameSite: 'strict',
-            path: '/'
           });
-          
         }
+
         else if (userExists.fact2Auth === true && fact2Auth === false){
           const token = await this.genarateToken(user, fact2Auth, {secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: process.env.ACCESS_TOKEN_EXP_D});
-          res.cookie('tow_fact_token', token, {httpOnly: true,
+          await res.cookie('tow_fact_token', token, {
+            httpOnly: true,
             maxAge: 604800,
-            sameSite: 'strict',
-            path: '/'
           });
         }
-        
+
         res.redirect('http://localhost:3000');
-        
+    
       }
       
       async genarateToken(user: UserDTO, fact2Auth: boolean, config: {secret: string, expiresIn: string}) {
@@ -111,10 +106,9 @@ config();
 
       const token = await this.genarateToken(user, true, {secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: process.env.ACCESS_TOKEN_EXP_D});
       
-      res.cookie('access_token', token, {httpOnly: true,
+      res.cookie('access_token', token, {
+        httpOnly: true,
         maxAge: 604800,
-        sameSite: 'strict',
-        path: '/'
       });
       
       res.clearCookie('tow_fact_token');

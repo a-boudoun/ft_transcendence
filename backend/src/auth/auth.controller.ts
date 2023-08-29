@@ -1,23 +1,22 @@
-import { Controller, Get, Patch, Req, Res, Body, UseGuards } from '@nestjs/common';
-import { OAuthGuard } from './guards/42.guard';
+import { Controller, Get, Patch, Delete, Req, Res, Body, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Jwt2faAuthGuard } from './guards/jwt-2fa-auth.guard';
 import { JwtSigninGuard } from './guards/jwt-signin.guard';
-import con from 'ormconfig';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
 
   constructor(private readonly authService: AuthService) {}
 
-  @Get('42')
-  @UseGuards(OAuthGuard)
-  async Auth(@Req() req) {
-  }
+  // @Get('42')
+  // @UseGuards(OAuthGuard)
+  // async Auth(@Req() req) {
+  // }
 
-  @Get('redirect')  
-  @UseGuards(OAuthGuard)
+  @Get('42')  
+  @UseGuards(AuthGuard('42'))
   AuthCallback(@Req() req, @Res({ passthrough: true }) res) {
     return this.authService.login(req.user, res, false);
   }
@@ -28,10 +27,10 @@ export class AuthController {
     return this.authService.signin(req.user, res, body);
   }  
 
-  @Get('logout')
+  @Delete('logout')
   @UseGuards(Jwt2faAuthGuard)
   logout(@Req() req, @Res({ passthrough: true }) res) {
-    return  res.clearCookie('access_token');
+    res.clearCookie('access_token');
   }
   // @Get('isAuth')
   // @UseGuards(Jwt2faAuthGuard)
