@@ -21,6 +21,12 @@ import { toDataURL } from 'qrcode';
         path: '/'
       });
 
+      res.cookie('_username', user.username, {
+        maxAge: 60 * 60 * 24 * 7,
+        sameSite: 'strict',
+        path: '/'
+      });
+
       if (!userExists){
         await this.userService.create(user);
         res.redirect('http://localhost:3000/signIn');
