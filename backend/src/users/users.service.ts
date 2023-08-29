@@ -1,12 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Blockage, Channel, Friendship, 
-  GameHistory, 
-  User } from '../entities/user.entity'
-import { Repository } from 'typeorm';
+import { User } from '../entities/user.entity'
+import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
+import con from 'ormconfig';
 
 @Injectable()
 export class UsersService {
@@ -23,13 +22,18 @@ export class UsersService {
     // @InjectRepository(Administration) private administrationRepo: Repository<Administration>,
     ) {}
     
-  create(userDTO: UserDTO) {
-    const user = this.userRepo.create(userDTO);
-    return this.userRepo.save(user);
-  }
-  
-  findAll() {
-    return this.userRepo.find();
+    create(userDTO: UserDTO) {
+      const user = this.userRepo.create(userDTO);
+      return this.userRepo.save(user);
+    }
+    
+    async findAll() {
+      return await this.userRepo.find();
+    }
+   
+    async search(key: string) {
+      const users = await this.userRepo.findBy({name: Like(`%${key}%`)});
+      return users;
   }
   
   findOne(username: string) {
@@ -37,10 +41,29 @@ export class UsersService {
     
     return user;
   }
-  
+
+  findOneByname(name: string) {
+    const user = this.userRepo.findOneBy({name});
+
+    return user;
+  }
+
+  async isUserExist(myName: string,  name: string) {
+    const user = await this.userRepo.findOneBy({name});
+
+    if (user) {
+      if (user.name === myName)
+      {
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
   async getDM(username: string) {
-  const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type = :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
-  return channels;
+      const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type = :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
+      return channels;
   // return this.userRepo.findOne({where: {
     //   username: username,
     // }, relations: ['channels', 'channels.type']});
@@ -50,6 +73,7 @@ export class UsersService {
   const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type != :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
   return channels;
   }
+
   async update(login: string, updateUser: UpdateUserDto) {
     const user = await this.findOne(login);
     return this.userRepo.save({...user, ...updateUser})
@@ -60,19 +84,22 @@ export class UsersService {
     return this.userRepo.remove(user);
   }
 
-  async genarateToken(user: UserDTO) {
-    const payload = {username: user.username, sub: user.XP};
+  async genarateToken(user: UserDTO, fact2Auth: boolean) {
+    const payload = {username: user.username, sub: user.XP, fact2Auth: fact2Auth};
     return this.jwtService.signAsync(payload);
   }
-  // getFriends(login: string) {
-  //   const user = this.userRepo.find({
-  //     where: {
-  //       login: login,
-  //     },
-  //     relations: {
-  //       initiatedFriendships: true,
-  //       receivedFriendships: true,
-  //     }
-  //   })
-  // }
+
+  async set2FAsecret(secret: string, login: string) {
+    const user = await this.findOne(login);
+    return await this.userRepo.save({...user, ...{fact2Secret: secret}})
+  }
+
+  async turnON2FA(login: string) {
+    const user = await this.findOne(login);
+    await this.userRepo.update(user, { 
+      fact2Auth : true
+    });
+  }
+
+
 }
