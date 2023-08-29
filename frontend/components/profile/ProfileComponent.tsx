@@ -8,7 +8,7 @@ import MidButtom from '@/components/profile/MidBottom'
 
 export const ProfileComponent = ({id = null} : {id ?: string | null }) => {
   return (
-    <main className="h-full w-full bg-dark-gray to-60% pt-[56px] sm:p-10 sm:pt-[96px] sm:flex sm:justify-center gap-8">
+    <main className="h-full w-full bg-dark-gray  pt-[56px] sm:p-10 sm:pt-[96px] sm:flex sm:justify-center gap-8">
     <div className='hidden xl:flex w-[340px] flex-col gap-8  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 rounded-[2.5rem] shadow-2xl'>
       <Achievements id={id}/>
       <Matches id={id}/>

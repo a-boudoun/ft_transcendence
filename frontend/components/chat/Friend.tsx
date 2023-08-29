@@ -1,5 +1,4 @@
 
-import getData from  "@/apis/getData";
 import userDto from "@/dto/userDto";
 
 
