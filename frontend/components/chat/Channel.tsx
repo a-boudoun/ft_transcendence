@@ -1,6 +1,5 @@
 "use client";
-import getData from "@/apis/getData";
-import ChNav from "./ChNav";
+
 import Messeges from "./ChannelItems";
 import Friends from "@/components/common/Friends";
 import userDto from "@/dto/userDto";
