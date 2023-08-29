@@ -10,7 +10,6 @@ import { drawRect, drawCircle } from "@/components/game/draw";
 import { useRouter } from "next/navigation";
 import socket from "@/components/socketG";
 import axios from "axios";
-import { set } from "zod";
 
 interface GameH{
 	loserScore: number;

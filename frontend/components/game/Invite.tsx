@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import { set } from 'zod';
+import { clear } from 'console';
 
 interface prop {
 	username: string;
@@ -17,8 +18,19 @@ interface prop {
 const InviteDisplay = ({username, socketId, setdisplay}: prop) => {
 
 	const [timeLeft, setTimeLeft] = useState(4);
+	const [image, setImage] = useState<string>('/game/unknown.svg');
+	const [name, setName] = useState<string>('');
 	let loadingBarWidth: string = '0%';
 	
+	useQuery({
+		queryKey: ['left'],
+		queryFn: async ()=> {
+		  const {data} = await axios.get(`http://localhost:8000/users/byUsername/${username}`, { withCredentials: true })
+		  setName(data.name);
+		  setImage(data.image);
+		}
+	});
+
 	useEffect(() => {
 		const timer = setInterval(() => {
 			setTimeLeft(prevTime => prevTime - 0.01);
@@ -34,9 +46,9 @@ const InviteDisplay = ({username, socketId, setdisplay}: prop) => {
 		<>
 		<div className={`flex  mt-1 justify-between bg-dark-gray px-4 py-2 rounded-xl gap-2 sm:gap-8`}>
 				<div className="flex items-center gap-4">
-					<Image  className=" sm:w-[48px] sm:h-[48px] rounded-full self-center"  src='/game/man.png' width={36}  height={36} alt="user image"/>
+					<Image  className=" sm:w-[48px] sm:h-[48px] rounded-full self-center"  src={image} width={36}  height={36} alt="user image"/>
 					<div className="text-left">
-					<h3 className="text-[12px] sm:text-[20px]" >{username}</h3> 
+					<h3 className="text-[12px] sm:text-[20px]" >{name}</h3> 
 					<p className="text-[8px] sm:text-[10px] ">wants to play with you</p>
 					</div>
 				</div>
@@ -86,8 +98,7 @@ const Invite = () => {
 
 	useEffect(() => {
 		let timer: NodeJS.Timeout;
-		if (username) {
-			setDisplay(username);
+		if (display !== null) {
 			timer = setTimeout(() => {
 				setDisplay(null);
 			}, 4000);
@@ -95,11 +106,11 @@ const Invite = () => {
 		return () => {
 			clearTimeout(timer);
 		}
-	}, [username]);
+	}, [display]);
 
 	return (
     <div className='absolute right-3 bottom-10 z-10'>
-	 {display && <InviteDisplay 
+	 {display !== null && <InviteDisplay 
 	 	username={username} 
 		socketId={socketId}
 		setdisplay={setDisplay}
