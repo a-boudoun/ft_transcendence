@@ -5,7 +5,8 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserDTO } from 'src/users/dto/create-user.dto';
-import { Membership } from 'src/entities/channel.entity';
+import { MemberTitle, Membership } from 'src/entities/channel.entity';
+import con from 'ormconfig';
 
 
 
@@ -37,12 +38,18 @@ export class ChannelsController {
   
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateChannelDto: UpdateChannelDto) {
+    console.log(id, updateChannelDto);
+  
     return this.channelsService.update(+id, updateChannelDto);
   }
   
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.channelsService.remove(+id);
+  }
+  @Delete(':id/:membershipId/')
+  removeMembership(@Param('id') id: number, @Param('membershipId') membershipId: number) {
+    return this.channelsService.removeMembership(id, membershipId);
   }
   
   @Patch(':id/joinChannel') 
@@ -51,11 +58,10 @@ export class ChannelsController {
     return this.channelsService.joinChannel(+id, user);
   }
 
-  @Patch(':channelId/memberships/:membershipId')
-  async updateMembershipTitle(@Param('channelId') channelId: number, @Param('membershipId') membershipId: number) {
-    return this.channelsService.updateMembershipTitle(channelId, membershipId);
+  @Patch(':channelId/updateMembershipTitle/:memberid')
+  async updateMembershipTitle(@Param('channelId') channelId: string,@Param('memberid') memberid: string) {
+    return this.channelsService.updateMembershipTitle(+channelId,+memberid);
   }
-
 }
 
 

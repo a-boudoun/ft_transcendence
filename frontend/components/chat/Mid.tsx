@@ -9,7 +9,7 @@ import userDto from "@/dto/userDto";
 import channelDto from '@/dto/channelDto';
 import { useSelector } from 'react-redux';
 import { set } from 'zod';
-import { setMembership, setMessage, setisMid, setisChild } from '@/redux/features/currentChannel';
+import { setMembership, setlastDate, setMessage, setisMid, setisChild, setisopen, setmodaltype } from '@/redux/features/currentChannel';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import Channel from '@/dto/Channel';
@@ -18,6 +18,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { socket } from './chatSocket';
 import moment from 'moment';
+import Modal from './Modal';
 
 
 
@@ -35,7 +36,8 @@ function Mid() {
         if (!socket.connected) 
             socket.connect();
         dispatch(setisChild(true));
-    }, []); 
+    }, []);
+    
     const messageContainerRef = useRef(null);
 
 
@@ -43,19 +45,8 @@ function Mid() {
         mutationFn: async (user: userDto) => {
             const { data } = await axios.patch(`http://localhost:8000/channels/${channel.id}/joinChannel`, user, { withCredentials: true });
             dispatch(setMembership(data));
-            return data;
-        },
-        onSuccess: () => {
-            console.log("joined")
         }
     });
-
-
-
-    const handelchange = (event: any) => {
-        const msg = event.target.value;
-        setInput(msg);
-    }
 
 
     const handelSubmit = (event: any) => {
@@ -72,7 +63,7 @@ function Mid() {
            }
             const member = channel.memberships?.find(ss).member;
             const createdAt = moment().format('yyyy-MM-DDTHH:mm:ssZ');
-            dispatch(setMessage({ content: msg.content, from: member, createdAt: createdAt }));
+            dispatch(setMessage({ content: msg.content, sender: member, date: createdAt }));
         }
         socket.on('message', onMsg);
         return () => {
@@ -88,9 +79,11 @@ function Mid() {
     }, [messages]);
 
     const handleJoinChannel = () => {
-        joinChannel.mutate(user);
+        dispatch(setisopen(true));
+        dispatch(setmodaltype('joinchannel'));
+       
     }
-    const isMember = channel.memberships?.some((membership :any) => membership.member.id === user.id)
+    const isMember = channel.memberships?.some((membership :any) => membership?.member?.id === user.id)
     { if (channel.memberships) 
     return (
         <div className={`justify-between text-white  rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 ${isMid === true ? 'w-full sm:w-1/2 md:w-7/12 flex flex-col lg:w-5/12' : 'hidden lg:flex lg:flex-col  lg:w-5/12'} `}>
@@ -107,10 +100,10 @@ function Mid() {
                         />
                     </Link>
                     <Image
-                        className="h-full rounded-full  "
+                        className="h-10 w-10 rounded-full  "
                         src={channel.image}
-                        width={30}
-                        height={30}
+                        width={100}
+                        height={100}
                         alt=""
                     />
                     <span className="text-center h-fit">{channel.name}</span>
@@ -127,16 +120,16 @@ function Mid() {
                     </button>
                 </div>
             </div>
-            <div className="overflow-y-auto flex-grow " ref={messageContainerRef}>
+            <div className="overflow-y-auto flex-grow py-3 px-2" ref={messageContainerRef}>
                 {
                     messages?.map((msg: Message, id: number) =>
-                        <Message key={id} msg={msg.content} id={msg.from} user={user} date={msg.createdAt} />
+                        <Message key={id} msg={msg.content} id={msg.sender} user={user} date={msg.date} />
                     )
                 }
             </div>
             <div className="h-[56px] flex justify-between bg-dark-gray items-center px-3 py-2  rounded-lg">
                 <form onSubmit={handelSubmit} className={` ${isMember === true ? '' : 'hidden'} flex bg-inherit justify-between items-center w-full`}>
-                    <input type="text" value={input} onChange={handelchange} className="w-full bg-inherit h-10 rounded-md px-2 outline-none" placeholder="Send Message.." />
+                    <input type="text" value={input} onChange={(e: any) => setInput(e.target.value)} className="w-full bg-inherit h-10 rounded-md px-2 outline-none" placeholder="Send Message.." />
                     <button type="submit" className="  px-3 rounded-md">
                         <Image src="/img/send.svg" width={20} height={20} alt="" />
                     </button>
@@ -155,31 +148,27 @@ export default Mid;
 
 export const Message = (msg: any) => {
    
+
     const [style, setStyle] = useState('');
     const [date, setDate] = useState('');
     useEffect(() => {
-        setStyle(`${msg.id.username === msg.user?.username ? 'justify-end' : 'justify-start'}`);
-    }, [msg.id]);
-    useEffect(() => {
-    setDate(moment.duration(moment().diff(msg.date)).humanize());
-    }, [moment().diff(msg.date)]);
+        setStyle(`${msg.id.username === msg.user.username ? 'justify-end' : 'justify-start'}`);
+        setDate(moment.duration(moment().diff(msg.date)).humanize());   
+    }, []);
+   
     return (
         <div className={`w-full flex flex-col `}>
-
-        <div className={`w-full flex ${style} text-xs`}>{date}</div>
-        <div className={`w-full flex ${style} items-center m-0 p-0`}>
-            <div className="flex  flex-col bg-dark-gray w-fit  max-w-[250px] rounded-md  py-2 m-2 ">
-                <div className="flex justify-between text-blue">
-                  
-                </div>
-                <div key={msg.id} className="px-3 break-words text-left">
+        <div className={` w-full flex ${style} text-[10px] pr-10 text-gray-300`}>{date} ago</div>
+        <div className={`w-full flex ${style} items-center space-x-2`}>
+            <div className="flex  flex-col bg-dark-gray w-fit  max-w-[250px] rounded-lg  py-2 my-2 min-w-[75px]">
+                <div key={msg.id} className="px-5 break-words text-left text-sm">
                     {msg.msg}
                 </div>
             </div>
             <div className={`${msg.id.username === msg.user.username ? '' : 'order-first'}`}>
                 <Image
                     className="h-[30px] w-[30px]  rounded-full"
-                    src={msg.id.image}
+                    src={msg.id?.image}
                     width={1000}
                     height={1000}
                     alt="" />

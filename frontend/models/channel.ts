@@ -31,5 +31,9 @@ export const channelSchema = z.object({
     .number()
     .int()
     .positive()
-    .optional()
+    .optional(),
+    owner: z
+    .any()
+    .optional(),
+
 });
