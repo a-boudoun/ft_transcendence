@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '../entities/user.entity'
 import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import con from 'ormconfig';
 
 @Injectable()
 export class UsersService {
@@ -65,7 +66,7 @@ export class UsersService {
 
   async update(login: string, updateUser: UpdateUserDto) {
     const user = await this.findOne(login);
-    return this.userRepo.save({...user, ...updateUser})
+    return await this.userRepo.save({...user, ...updateUser})
   }
 
   async remove(login: string) {
@@ -78,12 +79,9 @@ export class UsersService {
     return await this.userRepo.save({...user, ...{fact2Secret: secret}})
   }
 
-  async turnON2FA(login: string) {
-    const user = await this.findOne(login);
-    await this.userRepo.update(user, { 
-      fact2Auth : true
-    });
+  async turnON2FA(username: string) {
+    const user = await this.findOne(username);
+    return await this.userRepo.save({...user, ...{fact2Auth: true}})
   }
-
 
 }

@@ -20,23 +20,14 @@ export class Jwt2faStrategy extends PassportStrategy(Strategy, 'jwt-2fa') {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([extractCookie]),
             ignoreExpiration: false,
-            secretOrKey: process.env.JWT_SECRET,
+            secretOrKey: process.env.ACCESS_TOKEN_SECRET,
         });
     }
 
-    async validate(payload: any, @Res() res: Response) {
+    async validate(payload: any, res: Response) {
         
         const user = await this.usersService.findOne(payload.username);
 
-        // if (payload.firtTime === true)
-        // {
-        //     res.cookie('firstTime', true, {httpOnly: true,
-        //         maxAge: 60 * 60 * 24 * 7,
-        //         sameSite: 'strict',
-        //         path: '/'
-        //       });
-        // }
-        
         if (!user.fact2Auth)
             return user;
         if (payload.fact2Auth === true) 

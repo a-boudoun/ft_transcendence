@@ -5,10 +5,28 @@ import Image from 'next/image'
 import NavLink from './NavLink';
 import { useState, useEffect } from 'react';
 import useCloseOutSide from '@/hookes/useCloseOutSide';
-
+import { LogOut } from 'lucide-react';
+import { useQuery } from "@tanstack/react-query";
+import axios from 'axios';
+import { useRouter } from 'next/router';
 interface Props {
   src: string;
   setIsOpen: (isOpen: boolean) => void;
+}
+
+const handlelogout = async () => {
+    const router = useRouter();
+    
+    const logout = useQuery({
+        queryKey: ['logout'],
+        queryFn: async () => {
+            const {data} = await axios.get('http://localhost:8000/auth/logout', {withCredentials: true});
+            return data;
+        },
+        onSuccess: () => {
+            router.push('/');
+        }
+    });
 }
 
 function DropDown({src, setIsOpen}: Props) {
@@ -25,7 +43,10 @@ function DropDown({src, setIsOpen}: Props) {
                             <Image src={'/icons/navBar/settings.svg'} alt={'settings'} width={28} height={28} /> 
                           </button> */}
                           <NavLink route={'/settings'} src={'/icons/navBar/settings.svg'} alt={'settings'} setIsOpen={setIsOpen}/>
-                          <NavLink route={'/'} src={'/icons/navBar/logout.svg'} alt={'logout'} setIsOpen={setIsOpen}/>
+                          {/* <NavLink route={'/'} src={'/icons/navBar/logout.svg'} alt={'logout'} setIsOpen={setIsOpen}/> */}
+                          <button className='flex justify-center items-center bg-dark-gray h-[56px] w-[56px] hover:bg-light-gray' onClick={handlelogout}> 
+                              <LogOut size={28} color="#7ac7c4" strokeWidth={1.5} />
+                          </button>
                       </div>
   )
 }
@@ -36,8 +57,6 @@ const AccountDropDown = () => {
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
-
-
 
   return (
     <>
