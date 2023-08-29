@@ -61,7 +61,7 @@ function Mid() {
            function ss(member: any) {
             return (member.member.username === msg.from);
            }
-            const member = channel.memberships?.find(ss).member;
+            const member = channel.memberships?.find(ss)?.member;
             const createdAt = moment().format('yyyy-MM-DDTHH:mm:ssZ');
             dispatch(setMessage({ content: msg.content, sender: member, date: createdAt }));
         }
@@ -152,7 +152,7 @@ export const Message = (msg: any) => {
     const [style, setStyle] = useState('');
     const [date, setDate] = useState('');
     useEffect(() => {
-        setStyle(`${msg.id.username === msg.user.username ? 'justify-end' : 'justify-start'}`);
+        setStyle(`${msg.id?.username === msg.user?.username ? 'justify-end' : 'justify-start'}`);
         setDate(moment.duration(moment().diff(msg.date)).humanize());   
     }, []);
    
@@ -165,7 +165,7 @@ export const Message = (msg: any) => {
                     {msg.msg}
                 </div>
             </div>
-            <div className={`${msg.id.username === msg.user.username ? '' : 'order-first'}`}>
+            <div className={`${msg.id?.username === msg.user?.username ? '' : 'order-first'}`}>
                 <Image
                     className="h-[30px] w-[30px]  rounded-full"
                     src={msg.id?.image}

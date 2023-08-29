@@ -7,7 +7,8 @@ import {
     ManyToMany,
     JoinTable,
     Index,
-    DataSource
+    DataSource,
+    CreateDateColumn
   } from 'typeorm';
 import { Administration, Channel, Message, Sanction } from './channel.entity';
   
@@ -23,16 +24,20 @@ export class User {
     id: number;
 
     @Column({ length: 25 })
-    @Index()
+    @Index({unique: true})
     username: string;
 
-    @Column()
+    @Column({unique: true})
     name: string;
+
     
+    @Column({nullable: true,})
+    image: string;
+
     @Column({
         nullable: true,
     })
-    image: string;
+    baner: string;
     
     @Column('text' , { nullable: true })
     status: Status;
@@ -45,6 +50,9 @@ export class User {
     
     @Column()
     XP: number;
+
+    @Column({ nullable: true })
+    fact2Secret: string;
     
     @OneToMany(() => Channel, channel => channel.owner)
     ownedChannels: Channel[];
@@ -81,8 +89,6 @@ export class User {
     administratedChannels: Administration[];
 }
 
-
-    
 @Entity({ name: 'GameHistory' })
 export class GameHistory {
     @PrimaryGeneratedColumn()
@@ -97,10 +103,10 @@ export class GameHistory {
     @Column()
     loserScore: number;
   
-    @Column({ type: 'timestamp' })
-    createdAt: Date;
+    @CreateDateColumn()
+    created_at: Date;
 }
-  
+
 @Entity({ name: 'Blockage' })
 export class Blockage {
     @PrimaryGeneratedColumn()
@@ -111,6 +117,12 @@ export class Blockage {
   
     @ManyToOne(() => User, (user) => user.blockedByUsers)
     blocked: User;
+}
+
+export enum Fstatus {
+    PENDING = 'pending',
+    ACCEPTED = 'accepted',
+    NONE = 'none'
 }
   
 @Entity({ name: 'Friendship' })
@@ -124,8 +136,7 @@ export class Friendship {
     @ManyToOne(() => User, (user) => user.receivedFriendships)
     receiver: User;
   
-    @Column({ type: 'boolean' })
-    isAccepted: boolean;
+    @Column( )
+    status: Fstatus;
 }
 export { Channel };
-

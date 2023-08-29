@@ -1,7 +1,8 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Req, Res, Body, UseGuards } from '@nestjs/common';
 import { OAuthGuard } from './guards/42.guard';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { Jwt2faAuthGuard } from './guards/jwt-2fa-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -16,14 +17,50 @@ export class AuthController {
   @Get('redirect')  
   @UseGuards(OAuthGuard)
   async AuthCallback(@Req() req, @Res({ passthrough: true }) res) {
-    console.log('AuthCallback');
-    return this.authService.login(req.user, res);
+    return this.authService.login(req.user, res, false);
   }
 
   @Get('isAuth')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(Jwt2faAuthGuard)
   protectedResource(@Req() req) { 
     return (req.user);
+  }
+
+  @Get('2fa/generate')
+  @UseGuards(Jwt2faAuthGuard)
+  async generate2FAsecret(@Req() req) {
+    const { otpauthUrl } = await this.authService.generate2FAsecret(req.user.username);
+
+    return this.authService.generateQR(otpauthUrl);
+  }
+
+  @Patch('2fa/turnOn')
+  @UseGuards(Jwt2faAuthGuard)
+  async turnOn(@Req() req, @Body() {code} : {code: string}) {
+    try {
+      await this.authService.validate2FA(code, req.user.username);
+    }
+    catch (e) {
+      if (e instanceof Error)
+        return {valid: false, message: e.message};
+    }
+
+    return {valid: true, message: 'Valid 2FA code'};
+  }
+
+  @Patch('2fa/login')
+  @UseGuards(JwtAuthGuard)
+  async login2FA(@Req() req, @Body() {code} : {code: string}, @Res({ passthrough: true }) res) {
+      try {
+        await this.authService.validate2FA(code, req.user.username);
+      }
+      catch (e) {
+        if (e instanceof Error)
+          return {valid: false, message: e.message};
+      }
+  
+      await this.authService.login(req.user, res, true);
+      return {valid: true, message: 'Valid 2FA code'};
   }
 
 }
