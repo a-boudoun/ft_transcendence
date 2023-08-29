@@ -7,11 +7,17 @@ import postChannel from '@/apis/client/postChannel';
 import userDto from '@/dto/userDto';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
-import { setnewchannel } from '@/redux/features/currentChannel';
+import { setcurrentChannel, setnewchannel } from '@/redux/features/currentChannel';
 import { set } from 'zod';
 import { useSelector } from 'react-redux';
+import { useMutation } from '@tanstack/react-query';
+import { channel } from 'diagnostics_channel';
+import axios from 'axios';
+import { Client } from '@/providers/QueryProvider';
+import { useRouter } from 'next/navigation';
 
 const NewChannel = () => {
+    const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
     const owner = useSelector((state: any) => state.currentChannel.user);
@@ -20,7 +26,8 @@ const NewChannel = () => {
     const [password , setPassword] = useState('')
     const [type, setType] = useState('Public');
     const [image, setImage] = useState<any>(null);
-    const [imagePreview, setImagePreview] = useState<string>('/img/back.jpeg');
+    const [imagePreview, setImagePreview] = useState<string>('/img/a.jpeg');
+    // const [channel, setChannel] = useState<channelDto>({});
     const handleclick = () => {
         setIsclicked(!isclicked);
     }
@@ -38,14 +45,26 @@ const NewChannel = () => {
       };
 
 
+      const NewChannel = useMutation(async(channel : channelDto) => {
+            const res = await axios.post('http://localhost:8000/channels/createChannel', {name : channel.name, image: channel.image,  type: channel.type, password: channel.password, owner: channel.owner}, { withCredentials: true });
+            return res.data;
+        },
+        {
+        onSuccess: (data: any) => {
+            Client.invalidateQueries('channels');
+            dispatch(setnewchannel(data));
+            dispatch(setcurrentChannel(data));
+            router.push(`/channel/${data.id}`);
 
+        },           
+    });
       const handleSubmit = async(e: any) => {
         e.preventDefault();
-        setImagePreview('/img/back.jpeg');
+        setImagePreview('/img/a.jpeg');
         setName('');
         setPassword('');
 
-        let channel : channelDto = {}
+        let channel:channelDto = {};
 
         const formdata = new FormData();
 
@@ -63,15 +82,13 @@ const NewChannel = () => {
           channel.image = data.secure_url;
         }
         else
-            channel.image = '/img/back.jpeg';
+            channel.image = '/img/a.jpeg';
         
         channel.name = name;
         channel.password = password;
         channel.type = type;
         channel.owner = owner;
-        
-        const dt = await postChannel('/channels/createChannel', channel);
-        dispatch(setnewchannel(dt));
+        NewChannel.mutate(channel);
 
     }
     return (
@@ -80,7 +97,8 @@ const NewChannel = () => {
             <div className='w-fit mx-auto my-3 hover:opacity-60'>
                 <label htmlFor="id" className='bg-red'>
                 <Image className='rounded-full cursor-pointer w-[150px] h-[150px]' src={imagePreview} width={150} height={150} alt="avatar" />
-              </label>  <input type="file" className="hidden" id='id' onChange={handleChange} />
+              </label> 
+              <input type="file" className="hidden" id='id' onChange={handleChange} />
             </div>
             <input required id={'name'} className='w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none' placeholder='Name of channel' value={name} onChange={(e:any)=> setName(e.target.value)}/>
             <button type='button'  className="hover:opacity-60 text-white w-full  rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center justify-center bg-blue" onClick={handleclick}>

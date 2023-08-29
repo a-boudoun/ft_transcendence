@@ -11,14 +11,14 @@ type InitialState = {
     isopen: boolean;
     isMid: boolean;
     isChild: boolean;
+    modalTYpe: string;
 };
 
 interface Message {
     content: string;
-    from: userDto;
-    createdAt: string;
+    sender: userDto;
+    date: string;
 }
-
 type userDto  = {
     id: number;
     username: string; 
@@ -45,6 +45,7 @@ const initialState = {
     isopen: false,
     isMid: true,
     isChild: false,
+    modalTYpe: '',
 
 } as InitialState
 
@@ -56,10 +57,7 @@ export const currentChannelSlice = createSlice({
             state.channel  = action.payload;
         },
         setMessage: (state: any, action: PayloadAction<any>) => {
-            console.log("sd",action.payload.from);
             state.channel.messages.push(action.payload );
-            console.log("sd",state.channel.messages);
-
         },
         setChannels: (state: any, action: PayloadAction<any>) => {
             state.channels = action.payload;
@@ -74,20 +72,19 @@ export const currentChannelSlice = createSlice({
             state.user = action.payload;
         },
         setMembership: (state: any, action: PayloadAction<any>) => {
-            state.channel.memberships.push(action.payload);
+            state.channels.find((channel: any) => channel.id === state.channel.id).memberships.push(action.payload);
         },
         setisMid: (state: any, action: PayloadAction<any>) => {
             state.isMid = action.payload;
         },
         setisChild: (state: any, action: PayloadAction<any>) => {
             state.isChild= action.payload;
+        },
+        setmodaltype: (state: any, action: PayloadAction<any>) => {
+            state.modalTYpe = action.payload;
         }
-
-
-
     }
 })
 
-
-export const {setcurrentChannel, setMessage, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisChild} = currentChannelSlice.actions;
+export const {setcurrentChannel, setMessage, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisChild, setmodaltype} = currentChannelSlice.actions;
 export default currentChannelSlice.reducer;

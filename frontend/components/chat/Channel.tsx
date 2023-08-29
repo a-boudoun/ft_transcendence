@@ -4,7 +4,7 @@ import ChNav from "./ChNav";
 import Messeges from "./ChannelItems";
 import Friends from "@/components/common/Friends";
 import userDto from "@/dto/userDto";
-import { useMutation } from '@tanstack/react-query';
+import { hashQueryKey, useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -19,26 +19,17 @@ const Channel = () => {
     const [newchannel, setNewchannel] = useState(false);
     const activeStyle = "border-b-4 text-blue border-blue";
 
-    const fetchData = useMutation(async () => {
-        const channelsResponse = await axios.get('http://localhost:8000/channels', { withCredentials: true });
-        const userDataResponse = await axios.get('http://localhost:8000/users/me', { withCredentials: true });
-        
-        return {
-          channels: channelsResponse.data,
-          owner: userDataResponse.data,
-        };
-      }, {
-        onSuccess: (data: any) => {
-            console.log('Data fetched successfully');
-            dispatch(setuser(data.owner));
-            dispatch(setChannels(data.channels));
-        },
-      });
-      
-      useEffect(() => {
-        fetchData.mutate();
-      }, []);
-      
+    const fetchData = useQuery(
+        {
+          queryKey: ['channels'],
+          queryFn: async () => {
+            const channelsResponse = await axios.get('http://localhost:8000/channels', { withCredentials: true });
+            const userDataResponse = await axios.get('http://localhost:8000/users/me', { withCredentials: true });
+            dispatch(setChannels(channelsResponse.data));
+            dispatch(setuser(userDataResponse.data));
+          }
+        });
+
       const handleclick = (buttonNumber : number) => {
         buttonNumber === 1 ?  setNewchannel(false) : setNewchannel(true);
       }

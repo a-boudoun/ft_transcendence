@@ -11,23 +11,30 @@ import { useParams, usePathname } from 'next/navigation';
 import Channel from '@/dto/Channel';
 import Modal from '@/components/chat/Modal';
 import { socket } from '@/components/chat/chatSocket';
+import { useRouter } from 'next/navigation';
 
 
 const Page =  ({ params }: { params: number }) => {
 
-
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  useEffect(() => {
-    fetchData();
-  }, [params]);
 
-  const fetchData = async () => {
-      const response = await axios.get(`http://localhost:8000/channels/${params.id}`); 
-      const dt = response.data;
-        dispatch(setcurrentChannel(dt as Channel));
-        socket.emit('join', { channel: dt.id })
-  };
- 
+  const fetchData = useQuery(
+    {
+      queryKey: ['channel'],
+      queryFn: async () => {
+        const channel = await axios.get(`http://localhost:8000/channels/${params.id}`, { withCredentials: true });
+        if(!channel.data)
+        {
+          // alert('Channel not found');
+          router.push('/channel');
+          return;
+        }
+        dispatch(setcurrentChannel(channel.data));
+        socket.emit('join', { channel: channel.data.id })
+      }
+    });
+
   return (
     <>
       <Mid />

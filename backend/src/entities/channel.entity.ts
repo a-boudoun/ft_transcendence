@@ -30,7 +30,6 @@ export class Channel {
     id: number;
     
     @Column({ length: 25 })
-    @Index({ unique: true })
     name: string;
     
     @Column()
