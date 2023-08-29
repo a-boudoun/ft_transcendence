@@ -6,32 +6,29 @@ import NavLink from './NavLink';
 import { useState, useEffect } from 'react';
 import useCloseOutSide from '@/hookes/useCloseOutSide';
 import { LogOut } from 'lucide-react';
-import { useQuery } from "@tanstack/react-query";
+import {useMutation} from "@tanstack/react-query";
 import axios from 'axios';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 interface Props {
   src: string;
   setIsOpen: (isOpen: boolean) => void;
 }
 
-const handlelogout = async () => {
-    const router = useRouter();
-    
-    const logout = useQuery({
-        queryKey: ['logout'],
-        queryFn: async () => {
-            const {data} = await axios.get('http://localhost:8000/auth/logout', {withCredentials: true});
-            return data;
-        },
-        onSuccess: () => {
-            router.push('/');
-        }
-    });
-}
 
 function DropDown({src, setIsOpen}: Props) {
-
+  const router = useRouter();
   const {divref} = useCloseOutSide({setIsOpen});
+  
+  const logout = useMutation({
+      mutationFn: async() => {
+        const {data} = await axios.delete('http://localhost:8000/auth/logout', {withCredentials: true});
+        return data;
+      },
+      onSuccess: () => {
+        router.push('/');
+      }
+  });
+
 
   return (
     <div
@@ -44,8 +41,8 @@ function DropDown({src, setIsOpen}: Props) {
                           </button> */}
                           <NavLink route={'/settings'} src={'/icons/navBar/settings.svg'} alt={'settings'} setIsOpen={setIsOpen}/>
                           {/* <NavLink route={'/'} src={'/icons/navBar/logout.svg'} alt={'logout'} setIsOpen={setIsOpen}/> */}
-                          <button className='flex justify-center items-center bg-dark-gray h-[56px] w-[56px] hover:bg-light-gray' onClick={handlelogout}> 
-                              <LogOut size={28} color="#7ac7c4" strokeWidth={1.5} />
+                          <button className='flex justify-center items-center bg-dark-gray h-[56px] w-[56px] hover:bg-light-gray' onClick={() => logout.mutate()}> 
+                              <LogOut size={28} color="#EA5581" strokeWidth={1.5} />
                           </button>
                       </div>
   )

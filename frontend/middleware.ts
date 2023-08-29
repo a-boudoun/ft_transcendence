@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-
+import next from 'next/types';
 // This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  const accessToken = request.cookies.get('access_token');
-  const signInToken = request.cookies.get('signin_token');
-  const twoFactorToken = request.cookies.get('tow_fact_token');
+  const accessToken = await request.cookies.get('access_token');
+  const signInToken = await request.cookies.get('signin_token');
+  const twoFactorToken = await request.cookies.get('tow_fact_token');
+  
 
   if (pathname !== '/' && !accessToken && !signInToken && !twoFactorToken) {
     return NextResponse.redirect(new URL('/', request.url));
