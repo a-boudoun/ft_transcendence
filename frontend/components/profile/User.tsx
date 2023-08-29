@@ -61,7 +61,7 @@ const User = ({id} : {id : string | null}) => {
                 <input type="file" className='hidden' accept="image/jpeg, image/jpg, image/png, image/webp" onChange={handleChange}/>
             </label>
     }
-      <div className='absolute flex gap-3 items-center bottom-0 w-full bg-black/70 p-[14px]'> 
+    <div className='absolute flex gap-3 items-center bottom-0 w-full bg-black/70 p-[14px]'> 
       <Image className='rounded-full w-[86px] h-[86px] sm:m-4'  src={User?.data.image} alt='img' width={1000} height={1000} />
       <div className='text-left'>
         <h2 className='text-white text-xl sm:text-3xl'>{User?.data.name}</h2>
