@@ -98,7 +98,7 @@ const Invite = () => {
 	}, [username]);
 
 	return (
-    <div className='absolute right-3 bottom-10'>
+    <div className='absolute right-3 bottom-10 z-10'>
 	 {display && <InviteDisplay 
 	 	username={username} 
 		socketId={socketId}

@@ -20,7 +20,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   recentRomm: string | null;
 
   handleConnection(client: Socket, data: any) {
-    const username : string = client.handshake.headers.cookie.split("_username=")[1].split(";")[0];
+    const cookie: string = client.handshake.headers.cookie;
+    if (cookie === undefined)
+      return;
+    const username: string = cookie.split('_username=')[1].split(';')[0];
     client.data.username = username;
     client.join(username);
   }
@@ -30,7 +33,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('invite-freind')
   handleInviteFreind(client: Socket, reciever: string) {
-    console.log(`${client.data.username} invited ${reciever} to play`);
     //TODO: data = {reciever: string, sender: string, senderSocketId: string}
     //TODO: check if player is online and not in game
     this.server.to(reciever).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id});
@@ -38,8 +40,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('accept-invitation')
   handleAcceptInvite(client: Socket, data: any) {
-    console.log(`${client.data.username} accepted ${data.senderUsername} invitation`);
     //  TODO data = {senderUsername: string, senderSocketId: string }
+    if (this.gameService.isInGame(client.data.username)) {
+      client.emit('play-a-friend');
+      return;
+    }
     const freindSocket: Socket = this.server.sockets.sockets.get(data.senderSocketId);
     const player1: string = client.data.username;
     const player2: string = data.senderUsername;
@@ -48,6 +53,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room: Room = this.gameService.creatRoom(socket1, socket2, player1, player2);
     
     if (room) {
+      this.gameService.removePlayerFromQueue(client);
+      this.gameService.removePlayerFromQueue(freindSocket);
       this.engineService.createGameSimulation(room.id);
       this.engineService.sendPosition(room);
       this.engineService.addServerToGame(room.id, this.server);
