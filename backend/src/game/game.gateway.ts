@@ -33,6 +33,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('invite-freind')
   handleInviteFreind(client: Socket, reciever: string) {
+    if (client.data.username === reciever)
+      return;
     //TODO: data = {reciever: string, sender: string, senderSocketId: string}
     //TODO: check if player is online and not in game
     this.server.to(reciever).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id});
