@@ -1,5 +1,6 @@
 import "@/app/globals.css";
 import NavBar  from "@/components/NavBar/NavBar";
+import Invite from "@/components/game/Invite";
 import { redirect } from 'next/navigation';
 import get  from '@/apis/server/get';
 import userDto from "@/dto/userDto";
@@ -23,9 +24,8 @@ export default async function RootLayout({
   
   return (
     <>
-      
-
         <NavBar />
+        <Invite/>
         {children}
        
     </>  

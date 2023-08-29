@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google'
 import QueryProvider from "@/providers/QueryProvider";
 import ReduxProvider from "@/redux/provider";
 import Modal from "@/components/chat/Modal";
-import Invite from "@/components/game/Invite";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -25,7 +24,6 @@ export default function RootLayout({
       
       <ReduxProvider>
         <QueryProvider>
-        <Invite/>
         {children}
         </QueryProvider>
         </ReduxProvider>
