@@ -72,6 +72,7 @@ async accept(username: string, sender: string) {
   }
 
   async status(username: string, sender: string) {
+    console.log(username, sender);
     const friendship = await this.friendshipRepo.find({
       where: [
         { initiater: { username: username } ,  receiver: { username: sender } },
