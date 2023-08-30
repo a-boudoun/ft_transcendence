@@ -6,7 +6,7 @@ import { Loader2 } from  'lucide-react';
 import { userSchema } from '@/models/user';
 import { userDto } from '@/dto/userDto';
 import uploadImage from '@/apis/uploadImage';
-import { Client } from '@/Providers/QueryProvider';
+import { Client } from '@/providers/QueryProvider';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 

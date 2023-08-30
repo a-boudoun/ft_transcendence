@@ -6,12 +6,10 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import channelDto from '@/dto/channelDto';
 import { useState, useEffect, useRef, use } from 'react';
-import Modal from '@/components/chat/Modal';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { setisMid, setisopen, setmodaltype } from '@/redux/features/currentChannel';
 import { useMutation } from '@tanstack/react-query';
-import userDto from '@/dto/userDto';
 import { Client } from '@/providers/QueryProvider';
 
 
@@ -25,11 +23,6 @@ const Right = () => {
   const [input, setInput] = useState('');
   const [userType, setUserType] = useState('');
   const [me, setMe] = useState<any>({});
-
-
-
-
-
 
   const handleChange = (e: any) => {
     setInput(e.target.value);
