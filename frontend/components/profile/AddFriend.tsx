@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useMutation, useQuery} from "@tanstack/react-query";
-import { Client } from '@/Providers/QueryProvider';
+import { Client } from '@/providers/QueryProvider';
 
 const AddFriend = ({id} : {id : string}) => {
 

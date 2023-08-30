@@ -3,15 +3,11 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import  channelDto  from '@/dto/channelDto'
-import postChannel from '@/apis/client/postChannel';
-import userDto from '@/dto/userDto';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { setcurrentChannel, setnewchannel } from '@/redux/features/currentChannel';
-import { set } from 'zod';
 import { useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
-import { channel } from 'diagnostics_channel';
 import axios from 'axios';
 import { Client } from '@/providers/QueryProvider';
 import { useRouter } from 'next/navigation';
