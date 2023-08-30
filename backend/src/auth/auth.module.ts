@@ -12,5 +12,6 @@ import { JwtSigninStrategy } from './strategy/jwt-signin.strategy';
   imports: [UsersModule, JwtModule],
   controllers: [AuthController],
   providers: [AuthStratedy, JwtStrategy, Jwt2faStrategy, JwtSigninStrategy,  AuthService],
+  exports: [AuthService]
 })
 export class AuthModule {}

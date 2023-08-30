@@ -20,8 +20,8 @@ export class gameSimulation{
 	private rightBoard: Matter.Body;
 	private leftBoard: Matter.Body;
 	private ball: Matter.Body;
-
-	private id: NodeJS.Timer;
+	// TODO : change any to the right type
+	private id: any;
 	private roomIn: Room;
 
 	private rightScore: number = 0;
@@ -30,8 +30,8 @@ export class gameSimulation{
 	private readonly MAX = 5;
 	private readonly Bspeed = 10;
 
-	private rightInt: NodeJS.Timer;
-	private leftInt: NodeJS.Timer;
+	private rightInt: any;
+	private leftInt: any;
 
 	constructor() {
 		this.engine = Matter.Engine.create({

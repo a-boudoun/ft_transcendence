@@ -1,116 +1,93 @@
 "use client";
 import { useParams } from 'next/navigation'
-import { useState } from "react";
+import { use, useState } from "react";
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import io from 'socket.io-client';
 import userDto from "@/dto/userDto";
-
-const socket = io('http://localhost:8000', {
-    autoConnect: false,
-    transports: ['websocket'],
-});
-
-
-interface User {
-    userID: string;
-    username: string;
-}
-
-interface Message {
-    content: string;
-    from: string;
-}
+import channelDto from '@/dto/channelDto';
+import { useSelector } from 'react-redux';
+import { set } from 'zod';
+import { setMembership, setlastDate, setMessage, setisMid, setisChild, setisopen, setmodaltype } from '@/redux/features/currentChannel';
+import { AppDispatch } from '@/redux/store';
+import { useDispatch } from 'react-redux';
+import Channel from '@/dto/Channel';
+import Message from '@/dto/Message';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { socket } from './chatSocket';
+import moment from 'moment';
+import Modal from './Modal';
 
 
 
-const Mid = ({ user }: { user: userDto }) => {
+function Mid() {
+    const dispatch = useDispatch<AppDispatch>();
 
-    const receiver = useParams();
-    const username: string = user.username;
+    const channel = useSelector((state: any) => state.currentChannel.channel);
+    const user = useSelector((state: any) => state.currentChannel.user);
+    const isMid = useSelector((state: any) => state.currentChannel.isMid);
+    const messages = useSelector((state: any) => state.currentChannel.channel.messages);
+    const [input, setInput] = useState('');
     
-    const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [myusers, setMyusers] = useState<User[]>([]);
 
-    socket.auth = { username };
-    socket.connect();
+    useEffect(() => {
+        if (!socket.connected) 
+            socket.connect();
+        dispatch(setisChild(true));
+    }, []);
+    
     const messageContainerRef = useRef(null);
-   
-    // fetch all messages
 
 
-
-    const handelchange = (event: any) => {
-        const msg = event.target.value;
-        setMessage(msg);
-    }
+    const joinChannel = useMutation({
+        mutationFn: async (user: userDto) => {
+            const { data } = await axios.patch(`http://localhost:8000/channels/${channel.id}/joinChannel`, user, { withCredentials: true });
+            dispatch(setMembership(data));
+        }
+    });
 
 
     const handelSubmit = (event: any) => {
         event.preventDefault();
-
-        const receiverIds = myusers
-            .filter((tuser: User) => (tuser.username === receiver.id || (tuser.username === username)))
-            .map((tuser: User) => tuser.userID);
-
-
-            if (receiverIds.length > 0) { receiverIds.forEach((receiverId: string) => {
-
-                    socket.emit("private message", {
-                        content: message,
-                        to: receiverId,
-                        from: username,
-                    });
-
-                });
-
-            setMessages((messages: Message[]) => [...messages, { content: message, from: "me" }]);
-            setMessage('')
-        }
+        if (!input.trim()) return;
+        socket.emit('prevmessage', { channel: channel.id, message: input, from: user.username });
+        setInput('');
     }
-
+    
     useEffect(() => {
-        socket.on("users", (users: User[]) => {
-            setMyusers(users);
-        });
-
-        socket.on("user connected", (users: User[]) => {
-            setMyusers(users)
-        });
-
-
-        socket.on("private message", ({ content, from }: { content: string, from: string }) => {
-            setMessages((messages: Message[]) => [...messages, { content, from }]);
-        });
-
-    }, []);
-
-
-
-
-
-
-
-
-
+        const onMsg = (msg: any) => {
+           function ss(member: any) {
+            return (member.member.username === msg.from);
+           }
+            const member = channel.memberships?.find(ss)?.member;
+            const createdAt = moment().format('yyyy-MM-DDTHH:mm:ssZ');
+            dispatch(setMessage({ content: msg.content, sender: member, date: createdAt }));
+        }
+        socket.on('message', onMsg);
+        return () => {
+            socket.off('message', onMsg);
+        }
+    }, [channel]);
 
 
     useEffect(() => {
         if (messageContainerRef.current) {
             messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
         }
-    }, []);
-    useEffect(() => {
-       console.log(myusers)
-    }, []);
+    }, [messages]);
 
-
-
+    const handleJoinChannel = () => {
+        dispatch(setisopen(true));
+        dispatch(setmodaltype('joinchannel'));
+       
+    }
+    const isMember = channel.memberships?.some((membership :any) => membership?.member?.id === user.id)
+    { if (channel.memberships) 
     return (
-        <div className={` h-full w-full flex sm:w-1/2 lg:w-5/12 flex-col text-white  rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4`}>
-            <div className="h-fit bg-dark-gray flex items-center py-3  rounded-xl" >
+        <div className={`justify-between text-white  rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 ${isMid === true ? 'w-full sm:w-1/2 md:w-7/12 flex flex-col lg:w-5/12' : 'hidden lg:flex lg:flex-col  lg:w-5/12'} `}>
+            <div className="h-fit bg-dark-gray flex items-center py-3  rounded-xl  justify-between " >
                 <div className="flex items-center space-x-2 ">
 
                     <Link href={`/chat`}>
@@ -123,58 +100,85 @@ const Mid = ({ user }: { user: userDto }) => {
                         />
                     </Link>
                     <Image
-                        className="h-full  "
-                        src={"/img/profile.svg"}
-                        width={30}
-                        height={30}
+                        className="h-10 w-10 rounded-full  "
+                        src={channel.image}
+                        width={100}
+                        height={100}
                         alt=""
                     />
-                    <span className="text-center h-fit">{receiver.id}</span>
+                    <span className="text-center h-fit">{channel.name}</span>
+                </div>
+                <div className="text-3xl mr-5 flex items-center justify-center lg:hidden ">
+                    <button onClick={() => dispatch(setisMid(false))}>
+                        <Image
+                            className="h-full rounded-full  "
+                            src={"/img/info.svg"}
+                            width={24}
+                            height={24}
+                            alt=""
+                        />
+                    </button>
                 </div>
             </div>
-            <div className="overflow-y-auto flex-grow " ref={messageContainerRef}>
+            <div className="overflow-y-auto flex-grow py-3 px-2" ref={messageContainerRef}>
                 {
-                    messages.map((msg: Message) => (
-                        <Message msg={msg.content} id={msg.from} />
-                    ))
-
+                    messages?.map((msg: Message, id: number) =>
+                        <Message key={id} msg={msg.content} id={msg.sender} user={user} date={msg.date} />
+                    )
                 }
             </div>
             <div className="h-[56px] flex justify-between bg-dark-gray items-center px-3 py-2  rounded-lg">
-                <form onSubmit={handelSubmit} className="flex bg-inherit justify-between items-center w-full">
-                    <input type="text" value={message} onChange={handelchange} className="w-full bg-inherit h-10 rounded-md px-2 outline-none" placeholder="Send Message.." />
+                <form onSubmit={handelSubmit} className={` ${isMember === true ? '' : 'hidden'} flex bg-inherit justify-between items-center w-full`}>
+                    <input type="text" value={input} onChange={(e: any) => setInput(e.target.value)} className="w-full bg-inherit h-10 rounded-md px-2 outline-none" placeholder="Send Message.." />
                     <button type="submit" className="  px-3 rounded-md">
                         <Image src="/img/send.svg" width={20} height={20} alt="" />
                     </button>
                 </form>
+                <button className={` ${isMember === false ? '' : 'hidden'} flex  justify-center items-center  w-full h-full text-blue`} onClick={handleJoinChannel} >
+                    Join
+                </button>
             </div>
         </div>
-
-
     );
+            }
 }
 
 export default Mid;
 
 
 export const Message = (msg: any) => {
-    return (
+   
 
-        <div className="flex  flex-col bg-dark-gray w-fit  max-w-[250px] rounded-md  py-2 m-2">
-            <div className="flex justify-between text-blue">
-                <div className="text-left px-2 text-xs">
-                    {msg.id}
-                </div>
-                <div className="px-2 text-xs">
-                    20:20
+    const [style, setStyle] = useState('');
+    const [date, setDate] = useState('');
+    useEffect(() => {
+        setStyle(`${msg.id?.username === msg.user?.username ? 'justify-end' : 'justify-start'}`);
+        setDate(moment.duration(moment().diff(msg.date)).humanize());   
+    }, []);
+   
+    return (
+        <div className={`w-full flex flex-col `}>
+        <div className={` w-full flex ${style} text-[10px] pr-10 text-gray-300`}>{date} ago</div>
+        <div className={`w-full flex ${style} items-center space-x-2`}>
+            <div className="flex  flex-col bg-dark-gray w-fit  max-w-[250px] rounded-lg  py-2 my-2 min-w-[75px]">
+                <div key={msg.id} className="px-5 break-words text-left text-sm">
+                    {msg.msg}
                 </div>
             </div>
-            <div key={msg.id} className="px-3 break-words text-left">
-                {msg.msg}
+            <div className={`${msg.id?.username === msg.user?.username ? '' : 'order-first'}`}>
+                <Image
+                    className="h-[30px] w-[30px]  rounded-full"
+                    src={msg.id?.image}
+                    width={1000}
+                    height={1000}
+                    alt="" />
             </div>
+        </div>
         </div>
     );
 }
+
+
 
 
 

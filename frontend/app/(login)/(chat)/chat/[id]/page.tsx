@@ -8,6 +8,7 @@ const page = async() => {
         <>
             <Mid user={user} />
             <div className={`hidden lg:flex lg:w-3/12 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-xl`}>
+              
             </div>
         </>
     );

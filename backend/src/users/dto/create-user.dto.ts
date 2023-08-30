@@ -4,6 +4,7 @@ import { GameHistoryDTO } from "src/game-history/dto/create-game-history.dto";
 import { FriendshipDTO } from "src/friendship/dto/create-friendship.dto";
 
 export class UserDTO {
+    id: number;
     username: string;
     name: string;
     image: string;

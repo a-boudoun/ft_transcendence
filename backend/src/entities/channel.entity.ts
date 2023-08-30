@@ -18,6 +18,11 @@ export enum ChannelType {
     PRIVATE = 'private',
     PROTECTED = 'protected'
 }
+export enum MemberTitle {
+    MEMBER = 'member',
+    ADMIN = 'admin',
+    OWNER = 'owner'
+}
 
 @Entity({ name: 'Channel' })
 export class Channel {
@@ -25,16 +30,19 @@ export class Channel {
     id: number;
     
     @Column({ length: 25 })
-    @Index({ unique: true })
     name: string;
     
+    @Column()
+    image : string;
+
     @Column('text')
     type: ChannelType;
     
     @ManyToOne(() => User, user => user.ownedChannels)
     owner: User;
     
-    @Column({ length: 25 })
+    @Column({ length: 25 ,
+    nullable : true})
     password: string;
     
     @OneToMany(() => Administration, administration => administration.channel)
@@ -56,7 +64,7 @@ export class Message {
     id: number;
     
     @CreateDateColumn()
-    created_at: Date;
+    date: Date;
   
     @ManyToOne(() => Channel, (channel) => channel.messages)
     channel: Channel;
@@ -90,6 +98,9 @@ export class Membership {
     
     @ManyToOne(() => User, (user) => user.channels)
     member: User;
+
+    @Column({ length: 25 })
+    title: MemberTitle;
 }
 
 export enum SanctionType {
