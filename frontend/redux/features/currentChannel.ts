@@ -12,6 +12,7 @@ type InitialState = {
     isMid: boolean;
     isChild: boolean;
     modalTYpe: string;
+    visitedUser: userDto;
 };
 
 interface Message {
@@ -46,6 +47,7 @@ const initialState = {
     isMid: true,
     isChild: false,
     modalTYpe: '',
+    visitedUser: {} as userDto,
 
 } as InitialState
 
@@ -82,9 +84,12 @@ export const currentChannelSlice = createSlice({
         },
         setmodaltype: (state: any, action: PayloadAction<any>) => {
             state.modalTYpe = action.payload;
+        },
+        setVisitedUser: (state: any, action: PayloadAction<any>) => {
+            state.visitedUser = action.payload;
         }
     }
 })
 
-export const {setcurrentChannel, setMessage, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisChild, setmodaltype} = currentChannelSlice.actions;
+export const {setcurrentChannel, setMessage, setVisitedUser, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisChild, setmodaltype} = currentChannelSlice.actions;
 export default currentChannelSlice.reducer;

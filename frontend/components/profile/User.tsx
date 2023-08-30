@@ -9,19 +9,21 @@ import { Client } from '@/providers/QueryProvider';
 import { Loader2 } from  'lucide-react';
 import { useState } from 'react';
 import AddFriend from './AddFriend';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { setVisitedUser } from '@/redux/features/currentChannel';
 
 const User = ({id} : {id : string | null}) => {
+  const dispatch = useDispatch<AppDispatch>();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const User = useQuery({
-    queryKey: ['outherUser'],
+    queryKey: ['User'],
     queryFn: async ()=> {
-      let endpoint = 'http://localhost:8000/users/me';
-      if (id)
-        endpoint = `http://localhost:8000/users/${id}`;
-
-      const {data} = await axios.get(endpoint, { withCredentials: true })
+      (id ? id = id : id = 'me')
+      const {data} = await axios.get(`http://localhost:8000/users/${id}`, { withCredentials: true })
+      dispatch(setVisitedUser(data));
       return data;
     }
   });
@@ -33,7 +35,7 @@ const User = ({id} : {id : string | null}) => {
     },
 
     onSuccess: () => {
-      Client.refetchQueries('user');
+      Client.refetchQueries('User');
     },
 
   });
@@ -46,7 +48,7 @@ const User = ({id} : {id : string | null}) => {
     const uploadimage = await uploadImage(e.target.files[0]);
     user.baner = uploadimage;
     await updateBaner.mutate(user);
-    await Client.refetchQueries('user');
+    await Client.refetchQueries('User');
     setIsLoading(false);
   }
 
