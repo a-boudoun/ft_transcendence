@@ -5,7 +5,7 @@ import {userDto}  from '@/dto/userDto'
 import uploadImage from '@/apis/uploadImage'
 import { useQuery, useMutation} from "@tanstack/react-query";
 import axios from 'axios';
-import { Client } from '@/Providers/QueryProvider';
+import { Client } from '@/providers/QueryProvider';
 import { Loader2 } from  'lucide-react';
 import { useState } from 'react';
 import AddFriend from './AddFriend';

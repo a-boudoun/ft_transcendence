@@ -3,10 +3,10 @@ import { ChannelsService } from './channels.service';
 import { ChannelDTO } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserDTO } from 'src/users/dto/create-user.dto';
 import { MemberTitle, Membership } from 'src/entities/channel.entity';
 import con from 'ormconfig';
+import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
 
 
 
@@ -15,7 +15,7 @@ export class ChannelsController {
   constructor(private readonly channelsService: ChannelsService) {}
 
   @Post('/createChannel')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(Jwt2faAuthGuard)
   create( @Body() channelDTO: ChannelDTO) {
     return this.channelsService.create(channelDTO);
   }
@@ -53,7 +53,7 @@ export class ChannelsController {
   }
   
   @Patch(':id/joinChannel') 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(Jwt2faAuthGuard)
   joinChannel(@Param('id') id: string, @Body() user: UserDTO) {
     return this.channelsService.joinChannel(+id, user);
   }

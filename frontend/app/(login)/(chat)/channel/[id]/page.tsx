@@ -20,7 +20,7 @@ const Page =  ({ params }: { params: number }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const fetchData = useQuery(
-    {
+  {
       queryKey: ['channel'],
       queryFn: async () => {
         const channel = await axios.get(`http://localhost:8000/channels/${params.id}`, { withCredentials: true });
@@ -32,8 +32,9 @@ const Page =  ({ params }: { params: number }) => {
         }
         dispatch(setcurrentChannel(channel.data));
         socket.emit('join', { channel: channel.data.id })
+        return channel.data;
       }
-    });
+  });
 
   return (
     <>
