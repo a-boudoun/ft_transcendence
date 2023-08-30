@@ -1,11 +1,12 @@
-import { ChannelType, SanctionType } from "src/entities/channel.entity";
+import { ChannelType, MemberTitle, SanctionType } from "src/entities/channel.entity";
 import { UserDTO } from "src/users/dto/create-user.dto";
 
 export class ChannelDTO {
-    name: string;
-    type: ChannelType;
-    owner: UserDTO;
-    password: string;
+    name?: string;
+    image?: string;
+    type?: ChannelType;
+    password?: string;
+    owner?: UserDTO;
     administrators: AdministrationDTO[];
     memberships: MembershipDTO[];
     sanctions: SanctionDTO[];
@@ -20,6 +21,7 @@ export class AdministrationDTO {
 export class MembershipDTO {
     channel: ChannelDTO;
     member: UserDTO;
+    title: MemberTitle;
 }
 
 export class SanctionDTO {

@@ -41,7 +41,6 @@ export default function MatchPlayers() {
 			}
 			else
 				setGameStart(true);
-			console.log(status);
 		});
 		return () => {
 		  socket.off('player-status');

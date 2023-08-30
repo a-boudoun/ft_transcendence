@@ -1,19 +1,50 @@
 "use client";
-import React from 'react'
-import Image from 'next/image'
-import Messeges from '@/components/chat/Messeges';
-import Link from 'next/link';
+import React, { useEffect } from 'react'
 import Mid from '@/components/chat/Mid';
-import { usePathname } from 'next/navigation';
+import Right from '@/components/chat/Right';
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios';
+import { setcurrentChannel, resetcurrent } from "@/redux/features/currentChannel";
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { useParams, usePathname } from 'next/navigation';
+import Channel from '@/dto/Channel';
+import Modal from '@/components/chat/Modal';
+import { socket } from '@/components/chat/chatSocket';
+import { useRouter } from 'next/navigation';
 
-const Page = () => {
-    return (
-        <>
-            <Mid />
-            <div className={`hidden lg:flex lg:w-3/12 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-xl`}>
-            </div>
-        </>
-    );
+
+const Page =  ({ params }: { params: number }) => {
+
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const fetchData = useQuery(
+    {
+      queryKey: ['channel'],
+      queryFn: async () => {
+        const channel = await axios.get(`http://localhost:8000/channels/${params.id}`, { withCredentials: true });
+        if(!channel.data)
+        {
+          // alert('Channel not found');
+          router.push('/channel');
+          return;
+        }
+        dispatch(setcurrentChannel(channel.data));
+        socket.emit('join', { channel: channel.data.id })
+      }
+    });
+
+  return (
+    <>
+      <Mid />
+      <Right />
+      <Modal />
+    </>
+  );
 }
 
+
 export default Page;
+
+

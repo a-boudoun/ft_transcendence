@@ -6,6 +6,7 @@ import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
 import { JwtService } from '@nestjs/jwt';
 import { config } from 'dotenv';
+import con from 'ormconfig';
 
 config();
   @Injectable()
@@ -112,5 +113,13 @@ config();
       });
       
       res.clearCookie('tow_fact_token');
+    }
+
+    getUsername(cookie: string) {
+      const token = cookie.split('=')[1];
+      
+      const decodedJwt = this.jwtService.decode(token) as UserDTO;
+
+      return decodedJwt.username;
     }
 }

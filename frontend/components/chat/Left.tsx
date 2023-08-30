@@ -1,20 +1,20 @@
-// "use client";
+"use client";
 import Image from 'next/image'
 import Link from 'next/link';
-// import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import Channel from './Channel';
 import Friend from './Friend';
-const MiniNav = () => {
+import { useParams, usePathname } from 'next/navigation'
+const Left = () => {
 
 
-    // const usepathname = usePathname();
-    // console.log(usepathname);
-    const isFriend = true;
    
+    const isFriend = usePathname().slice(0, 5) === '/chat' ? true : false;
+    const ischild = useParams().id ? true : false;
+    console.log("parmam", usePathname().slice(0, 5));
     console.log(isFriend);
     return (
-        <>
+        <div className={`h-full w-full ${ischild === true ? 'hidden': ''} sm:block sm:w-1/2  lg:w-4/12    sm:rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4`}>
             <div className=' flex bg-light-gray h-[59px] rounded-md'>
                 <div className='flex py-2 justify-between gap-1 items-center w-1/4'>
                     <div className={`box-border h-full py-3 px-2 ${isFriend === true ? 'border-b-2 border-blue' : ''}`}>
@@ -35,12 +35,16 @@ const MiniNav = () => {
                     />
                 </div>
             </div>
-            {/* <Friend /> */}
-            <Channel  />
-        </>
+            <>
+                {
+                    isFriend === true ? <Friend /> : <Channel />
+                    
+                }
+            </>            
+        </div>
     );
 }
 
-export default MiniNav;
+export default Left;
 
 

@@ -1,6 +1,8 @@
 import "./globals.css";
 import { Inter } from 'next/font/google'
-import QueryProvider from "@/Providers/QueryProvider";
+import QueryProvider from "@/providers/QueryProvider";
+import ReduxProvider from "@/redux/provider";
+import Modal from "@/components/chat/Modal";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,10 +19,13 @@ export default function RootLayout({
 }) {
   return (
     <html className="" lang="en">
-      <body className={`${inter.className} h-screen w-screen text-center  text-white`}>
+      <body className={`${inter.className}  h-screen w-screen bg-red text-center  text-white`}>
+      
+      <ReduxProvider>
         <QueryProvider>
           {children}
         </QueryProvider>
+      </ReduxProvider>
       </body>
     </html>
   )

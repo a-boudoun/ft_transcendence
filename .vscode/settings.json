@@ -1,0 +1,10 @@
+{
+    "typescript.autoClosingTags": false,
+    "typescript.check.npmIsInstalled": false,
+    "typescript.format.indentSwitchCase": false,
+    "typescript.format.enable": false,
+    "typescript.format.insertSpaceAfterCommaDelimiter": false,
+    "typescript.disableAutomaticTypeAcquisition": true,
+    "typescript.experimental.aiQuickFix": false,
+    "typescript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": true
+}
