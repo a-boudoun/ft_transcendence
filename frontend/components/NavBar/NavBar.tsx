@@ -26,7 +26,7 @@ const Left = () => {
 
 const Mid = () =>{
 
-  const navigationRoutes: string[] = ["home", "leaderboard", "game", "chat"];
+  const navigationRoutes: string[] = ["./home", "./leaderboard", "./game", "./chat"];
 
   return (
     <div className='hidden md:basis-1/3 md:flex md:justify-between'>
