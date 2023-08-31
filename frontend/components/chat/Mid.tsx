@@ -52,7 +52,7 @@ function Mid() {
     const handelSubmit = (event: any) => {
         event.preventDefault();
         if (!input.trim()) return;
-        socket.emit('prevmessage', { channel: channel.id, message: input, from: user.name });
+        socket.emit('prevmessage', { channel: channel.id, message: input, from: user.username });
         setInput('');
     }
     
