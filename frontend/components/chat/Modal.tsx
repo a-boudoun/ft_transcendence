@@ -109,20 +109,26 @@ function Modal() {
   export const UpdateChannel = ({type}:{type:string}) => {
     const dispatch = useDispatch<AppDispatch>();
     const channel = useSelector((state: any) => state.currentChannel.channel);
-    const uchannel : updateChannel = { name: channel.name, image: channel.image, type: channel.type, password:channel.password};
+    const uchannel : updateChannel = { };
     const [name, setName] = useState<string>('');
-    const [imagePreview, setImagePreview] = useState<string>(channel.image);
+    const [imagePreview, setImagePreview] = useState<string>('');
     const [image, setImage] = useState<any>(null);
     const [isclicked, setIsclicked] = useState<boolean>(false);
     const [typeCh, setTypeCh] = useState<string>(channel.type);
     const [password, setPassword] = useState('');
     
     useEffect(() => {
+      uchannel.name = channel.name;
+      uchannel.image = channel.image;
+      uchannel.type = channel.type;
+      uchannel.password = channel.password;
+
       setTypeCh(channel.type);
-      setImagePreview(channel.image);
+      setImagePreview(uchannel.image);
       setName(channel.name);
+      // setImage(channel.image);
       // setPassword(channel.password);
-    }, [channel]);
+    }, []);
 
     const handleChange = (e: any) => {
         setImage(e.target.files[0]);
@@ -136,17 +142,19 @@ function Modal() {
     const updatchanel = useMutation({
       mutationFn: async (uchannel: updateChannel) => {
           const { data } = await axios.patch(`http://localhost:8000/channels/${channel.id}`, uchannel, { withCredentials: true });
+          Client.refetchQueries('channel');
           return data;
       },
-      onSuccess: () => {
+      onSuccess: (data: any) => {
           Client.refetchQueries('channels');
-          Client.refetchQueries('channel');
+
+          // dispatch(setcurrentChannel(data));
           console.log("joined")
       }
   }); 
     const handelsubmit = async(e: any) => {
       e.preventDefault();
-      setImagePreview(channel.image);
+      setImagePreview(uchannel.image);
       setName('');
       setPassword('');
 

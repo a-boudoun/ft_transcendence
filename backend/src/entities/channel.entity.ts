@@ -72,7 +72,7 @@ export class Message {
     @ManyToOne(() => User, (user) => user.messages)
     sender: User;
   
-    @Column({ length: 250 })
+    @Column()
     content: string;
 }
 

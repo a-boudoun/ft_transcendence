@@ -79,9 +79,9 @@ const Right = () => {
               height={1000}
               alt="" />
           </button>
-          <button onClick={()=> handelClick("settings")}>
+          <button onClick={()=> handelClick("settings")} className='rounded-full hover:bg-light-gray'>
             <Image
-              className={`h-[29px] w-[56px]  rounded-full my-3 hover:opacity-60 ${me.title === 'owner' ? '': 'hidden'}`}
+              className={`h-[29px] w-[56px]  rounded-full my-3 ${me.title === 'owner' ? '': 'hidden'}`}
               src={'/icons/navBar/settings.svg'}
               width={1000}
               height={1000}

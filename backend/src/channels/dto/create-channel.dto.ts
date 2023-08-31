@@ -7,10 +7,10 @@ export class ChannelDTO {
     type?: ChannelType;
     password?: string;
     owner?: UserDTO;
-    administrators: AdministrationDTO[];
-    memberships: MembershipDTO[];
-    sanctions: SanctionDTO[];
-    messages: MessageDTO[];
+    administrators?: AdministrationDTO[];
+    memberships?: MembershipDTO[];
+    sanctions?: SanctionDTO[];
+    messages?: MessageDTO[];
 }
 
 export class AdministrationDTO {
