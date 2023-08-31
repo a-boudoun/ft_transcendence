@@ -95,10 +95,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleLeaveGame(client: Socket, data: any) {
     let winner: string;
     let room: Room = this.gameService.findRoom(data.room);
+	
     if (room.players[0].username === data.player)
-      winner = room.players[1].position;
+    	winner = room.players[1].position;
     else
-      winner = room.players[0].position;
+    	winner = room.players[0].position;
     this.server.to(data.room).emit('left-game', data.player);
     this.server.to(data.room).emit('winner', winner);
   }
