@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { FriendshipDTO } from './dto/create-friendship.dto';
-import { Friendship, Fstatus, User } from 'src/entities/user.entity';
+import { Channel, Friendship, Fstatus, User } from 'src/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserDTO } from 'src/users/dto/create-user.dto';
 import con from 'ormconfig';
+import { ChannelsService } from 'src/channels/channels.service';
+import { ChannelType } from 'src/entities/channel.entity';
 
 @Injectable()
 export class FriendshipService {
   constructor(
     @InjectRepository(Friendship) private friendshipRepo: Repository<Friendship>,
     @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Channel) private channelRepo: Repository<Channel>,
     ) {}
     
     async friendReq(username : string) {
@@ -68,6 +71,13 @@ async accept(username: string, sender: string) {
       where: [ { initiater: { username: sender }, receiver: { username: username } } ],
     });
     friendship.status = Fstatus.ACCEPTED;
+    const user1 = await this.userRepo.findOneBy({name: username});
+    const user2 = await this.userRepo.findOneBy({name: sender});
+    const channelName : string =  (user1.id < user2.id) ? user1.username + user2.username : user2.username + user1.username;
+    const channelExists = await this.channelRepo.createQueryBuilder('channel').where({name: channelName}).andWhere({type: ChannelType.DIRECT});
+    if (!channelExists) {
+    const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" ,memberships: [user1, user2]});
+    const rt = await this.channelRepo.save(channel);}
     return await this.friendshipRepo.save(friendship);
   }
 
@@ -96,6 +106,8 @@ async accept(username: string, sender: string) {
         { initiater: { username: sender } ,  receiver: { username: username } }
       ],
     });
+
+   
 
     return await this.friendshipRepo.remove(friendship);
   }

@@ -1,4 +1,3 @@
-// "use client";
 import Mid from "@/components/chat/Mid";
 import Left from "@/components/chat/Left";
 import Right from "@/components/chat/Right";
@@ -11,8 +10,6 @@ import Friend from "@/components/chat/Friend";
 import Modal from "@/components/chat/Modal";
 import { useSelector } from 'react-redux';
 import ReduxProvider from "@/redux/provider";
-
-
 
 export default function LoginLayout({
   children,
@@ -27,7 +24,7 @@ export default function LoginLayout({
 
   return (
    
-    <main className={`h-full  pt-[56px] lg:p-[30px] lg:pt-[86px] flex   bg-dark-gray  justify-center `}>
+    <main className={`h-full  pt-[56px] lg:p-[30px] lg:pt-[86px] flex   justify-center `}>
       <div className=" w-full  flex gap-2 max-w-7xl overflow-hidden">
         <Left />
         {children}

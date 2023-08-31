@@ -65,11 +65,10 @@ export class UsersController {
     return this.usersService.isUserExist(req.user.username, name);
   }
   
-  // @Get('friends/:username')
-  // @UseGuards(Jwt2faAuthGuard)
-  // async getFriends(@Param('username') username: string) {
-  //   return this.usersService.getFriends(username);
-  // }
+  @Get('/find/:id')
+  findonebyid(@Param('id') id: string) {
+    return this.usersService.findonebyid(+id);
+  }
 
   @Delete(':login')
   remove(@Param('login') login: string) {

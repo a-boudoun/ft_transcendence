@@ -61,7 +61,7 @@ function Mid() {
            function ss(member: any) {
             return (member.member.username === msg.from);
            }
-            const member = channel.memberships?.find(ss)?.member;
+            const member = channel.memberships?.find(ss).member;
             const createdAt = moment().format('yyyy-MM-DDTHH:mm:ssZ');
             dispatch(setMessage({ content: msg.content, sender: member, date: createdAt }));
         }
@@ -86,7 +86,7 @@ function Mid() {
     const isMember = channel.memberships?.some((membership :any) => membership?.member?.id === user.id)
     { if (channel.memberships) 
     return (
-        <div className={`justify-between text-white  rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 ${isMid === true ? 'w-full sm:w-1/2 md:w-7/12 flex flex-col lg:w-5/12' : 'hidden lg:flex lg:flex-col  lg:w-5/12'} `}>
+        <div className={`justify-between text-white  rounded-xl   bg-white bg-opacity-20 ackdrop-blur-lg  drop-shadow-lg p-4 ${isMid === true ? 'w-full sm:w-1/2 md:w-7/12 flex flex-col lg:w-5/12' : 'hidden lg:flex lg:flex-col  lg:w-5/12'} `}>
             <div className="h-fit bg-dark-gray flex items-center py-3  rounded-xl  justify-between " >
                 <div className="flex items-center space-x-2 ">
 
