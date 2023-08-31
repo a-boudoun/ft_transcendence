@@ -39,8 +39,9 @@ export class gameService{
   
   removeRoom(roomId: string): void {
     const room: Room | undefined = this.findRoom(roomId);
-    if (room)
-    this.rooms.delete(roomId);
+    if (room){
+      this.rooms.delete(roomId);
+    }
 }
 
 findRoom(roomId: string): Room | undefined {
@@ -48,24 +49,25 @@ findRoom(roomId: string): Room | undefined {
 }
 
 removePlayerFromRoom(username: string, roomId: string) : boolean {
-  
   const room: Room | undefined = this.findRoom(roomId);
-  if (!room)
+  let index: number = -1;
+
+  if (room === undefined){
+    return false;
+  }
+  if (room.players[0] && room.players[0].username === username) {
+    index = 0;
+  }
+  else if (room.players[1] && room.players[1].username === username) {
+    index = 1;
+  }
+  if (index !== -1)
+  room.players.splice(index, 1);
+  if (room.players.length === 0) {
+    this.removeRoom(room.id);
+    return true;
+  }
   return false;
-let index: number = -1;
-if (room.players[0] && room.players[0].username === username) {
-  index = 0;
-}
-else if (room.players[1] && room.players[1].username === username) {
-  index = 1;
-}
-if (index !== -1)
-room.players.splice(index, 1);
-if (room.players.length === 0) {
-  this.removeRoom(room.id);
-  return true;
-}
-return false;
 }
 
 emitToplayer(username: string, event: string, data?: any): void

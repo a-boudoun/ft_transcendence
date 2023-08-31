@@ -1,8 +1,19 @@
 import { Injectable } from "@nestjs/common";
 import { Server } from "socket.io";
+import { engineService } from "./engine.service";
 // ! why import Matter like this?
 import Matter = require("matter-js");
 import { Room } from "./interfaces/room.interface";
+import { Player } from "./interfaces/player.interface";
+import { GameHistory, User } from "src/entities/user.entity";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { UserDTO } from "src/users/dto/create-user.dto";
+import { GameHistoryService } from "src/game-history/game-history.service";
+import { getRepository } from "typeorm";
+
+
+
 
 @Injectable()
 export class gameSimulation{
@@ -26,6 +37,12 @@ export class gameSimulation{
 
 	private rightScore: number = 0;
 	private leftScore: number = 0;
+	private leftName: string | string[];
+	private rightName: string | string[];
+
+	private won: string;
+	private lost: string;
+	private lostscore: number;
 
 	private readonly MAX = 5;
 	private readonly Bspeed = 10;
@@ -33,7 +50,11 @@ export class gameSimulation{
 	private rightInt: any;
 	private leftInt: any;
 
-	constructor() {
+	constructor(
+		// @InjectRepository(GameHistory) private gameHistoryRepo: Repository<GameHistory>,
+		// @InjectRepository(User) private userRepo: Repository<User>,
+	) {
+		
 		this.engine = Matter.Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
 			constraintIterations: 4, // he higher quality the simulation will be at the expense of performance.
@@ -122,27 +143,54 @@ export class gameSimulation{
 		clearInterval(this.id);
 	}
 
+	async saveGameScore() {
+		const userRepo = await getRepository(User);
+		const gameHistoryRepo = await getRepository(GameHistory);
+		const gameHistory = await gameHistoryRepo.create();
+		const winner = await userRepo.findOneBy({username: this.won});
+		const loser = await userRepo.findOneBy({username: this.lost});
+		gameHistory.winner = winner;
+		gameHistory.loser = loser;
+		gameHistory.loserScore = this.lostscore;
+		await gameHistoryRepo.save(gameHistory);
+		// if (this.won === this.leftName.toString())
+		// 	this.server.to(this.roomIn.id).emit('winner', 'left');
+		// else
+		// 	this.server.to(this.roomIn.id).emit('winner', 'right');
+		// stop the game here
+	}
+
 	restartGame() {
 		let vx : number;
 		let vy: number;
 		Matter.Events.on(this.engine, 'afterUpdate', () => {
 			if (this.ball.position.x < 0 || this.ball.position.x > this.Cwidth) {
-				if (this.ball.position.x < 0){
+				if (this.ball.position.x < 0 && this.leftScore <= this.MAX && this.rightScore <= this.MAX){
 					this.rightScore++;
 					vx = -10;
 					vy = -3;
 				}
-				else{
+				else if (this.rightScore <= this.MAX && this.leftScore <= this.MAX){
 					this.leftScore++;
 					vx = 10;
 					vy = 3;
 				}
-				if (this.leftScore === this.MAX || this.rightScore === this.MAX){
-					if (this.leftScore === this.MAX)
-					this.server.to(this.roomIn.id).emit('winner', 'left');
-				else
-					this.server.to(this.roomIn.id).emit('winner', 'right');
+				if (this.leftScore >= this.MAX || this.rightScore >= this.MAX){
+					if (this.leftScore >= this.MAX){
+						this.server.to(this.roomIn.id).emit('winner', 'left');
+						this.won = this.leftName.toString();
+						this.lost = this.rightName.toString();
+						this.lostscore = this.rightScore;
+					}
+					else{
+						this.server.to(this.roomIn.id).emit('winner', 'right');
+						this.won = this.rightName.toString();
+						this.lost = this.leftName.toString();
+						this.lostscore = this.leftScore;
+					}
+					// this.saveGameScore();
 				}
+			
 				Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
 				Matter.Body.setVelocity(this.ball, { x: 0, y: 0 });
 				setTimeout(() => Matter.Body.setVelocity(this.ball, { x: vx, y: vy }), 500);
@@ -180,6 +228,8 @@ export class gameSimulation{
 
 	sendPosition(room : Room) {
 		this.roomIn = room;
+		this.leftName = room.players[0].position === 'left' ? room.players[0].username : room.players[1].username;
+		this.rightName = room.players[0].position === 'right' ? room.players[0].username : room.players[1].username;
 		this.id = setInterval(() => {
 			this.server.to(room.id).emit('ball', 
 			{
