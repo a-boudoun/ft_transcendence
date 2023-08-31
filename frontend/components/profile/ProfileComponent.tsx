@@ -10,15 +10,15 @@ export const ProfileComponent = ({id = null} : {id ?: string | null }) => {
 
   return (
     <main className="h-full w-full bg-dark-gray  pt-[56px] sm:p-10 sm:pt-[96px] sm:flex sm:justify-center gap-8">
-      <div className='hidden xl:flex w-[340px] flex-col gap-8  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 rounded-[2.5rem] shadow-2xl'>
+      <div className='hidden xl:flex w-[380px] min-w-[320px] flex-col gap-8  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 rounded-[2.5rem] shadow-2xl'>
         <Achievements id={id}/>
         <Matches id={id}/>
       </div>
-      <div className='h-full max-w-[640px] grow flex flex-col sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg sm:drop-shadow-lg sm:p-4 sm:rounded-[2.5rem] sm:shadow-2xl'>
+      <div className='h-full max-w-[660px] grow flex flex-col sm:gap-4 sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg sm:drop-shadow-lg sm:p-4 sm:rounded-[2.5rem] sm:shadow-2xl'>
         <User id={id}/>
         <UserDetails Stats={<MidButtom id={id}/>} Archievement={<Achievements id={id}/>} Matches={<Matches id={id}/>} Friends={<ProfileFriends id={id}/>}/>
       </div>
-      <div className='hidden lg:flex w-[340px]  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 rounded-[2.5rem] shadow-2xl'>
+      <div className='hidden lg:flex w-[380px] min-w-[320px] bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 rounded-[2.5rem] shadow-2xl'>
         <ProfileFriends id={id} />
       </div>
     </main>

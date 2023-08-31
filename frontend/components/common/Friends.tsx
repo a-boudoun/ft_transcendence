@@ -9,13 +9,13 @@ import { useQuery } from "@tanstack/react-query";
 import SearchBar  from "@/components/common/SearchBar";
 import { useState } from 'react';
 
-
-const Friends = () => {
+const Friends = ({id} : {id : string | null}) => {
     const [searchValue, setSearchValue] = useState<string>('');
     const {data, isLoading} = useQuery({
         queryKey: ['friends'],
         queryFn: async ()=> {
-            const { data } = await axios.get('http://localhost:8000/friendship/getFriends', { withCredentials: true });
+            (id ? id = id : id = 'me')
+            const { data } = await axios.get(`http://localhost:8000/friendship/getFriends/${id}`, { withCredentials: true });
             return data;
         }
       });
@@ -31,7 +31,7 @@ const Friends = () => {
                             console.log(friend);
                             return (
                                 <Link href={`/profile/${friend.name}`} >
-                                    <Friend user={friend} /> 
+                                    <Friend user={friend} id={id} /> 
                                 </Link>
                             );
                         })
@@ -43,7 +43,7 @@ const Friends = () => {
 }
 export default Friends;
 
-export const Friend = ({user}: {user: userDto}) => {
+export const Friend = ({user, id}: {user: userDto, id: string}) => {
     return (
         <div className={`flex justify-between px-4 py-2 mx-2 rounded-xl text-white bg-dark-gray`}>
             <div className="grow flex items-center gap-4">
@@ -51,11 +51,12 @@ export const Friend = ({user}: {user: userDto}) => {
                 />
                 <h3>{user.name}</h3> 
             </div>
-            <div className="flex items-center gap-4">
-                <Image className="" src="/icons/navBar/chat.svg" width={24} height={24} alt="chat"/>
-                <Image className="" src="/icons/navBar/game.svg" width={24} height={24} alt="challenge"
-                />
-            </div>
+            {
+               !id &&  <div className="flex items-center gap-4">
+                    <Image className="" src="/icons/navBar/chat.svg" width={24} height={24} alt="chat"/>
+                    <Image className="" src="/icons/navBar/game.svg" width={24} height={24} alt="challenge"/>
+                </div>
+            }
         </div>
     );
 }

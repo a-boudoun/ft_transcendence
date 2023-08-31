@@ -29,10 +29,16 @@ export class FriendshipController {
     return await this.friendshipService.accept(req.user.username, sender);
   }
 
-  @Get('getFriends')
+  @Get('getFriends/me')
   @UseGuards(Jwt2faAuthGuard)
   async getMyFriends(@Req() req) {
-      return await this.friendshipService.getFriends(req.user.username);
+      return await this.friendshipService.getFriends(req.user.name);
+  }
+
+  @Get('getFriends/:name')
+  @UseGuards(Jwt2faAuthGuard)
+  async getFriends(@Req() req, @Param('name') name: string) {
+      return await this.friendshipService.getFriends(name);
   }
 
   @Get('status/:name')

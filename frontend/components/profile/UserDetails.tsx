@@ -38,7 +38,7 @@ const UserDetails = (props : UserDetailsProps) => {
       }, []);
     
     return (
-        <div className='grow flex flex-col overflow-hidden sm:mt-8 xl:w-auto rounded-3xl shadow-2xl'>
+        <div className='grow flex flex-col overflow-hidden xl:w-auto rounded-3xl shadow-2xl'>
             <div className='flex justify-around bg-dark-gray xl:p-4 sm:rounded-t-3xl xl:bg-light-gray'>
                 <button onClick={() => {setStats(true); setAchievements(false); setMatches(false); setFriends(false);}}>
                     <Title isActive={Stats} str='Stats' src='/icons/profile/stats.svg'/>
