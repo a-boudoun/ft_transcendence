@@ -5,12 +5,6 @@ import { engineService } from "./engine.service";
 import Matter = require("matter-js");
 import { Room } from "./interfaces/room.interface";
 import { Player } from "./interfaces/player.interface";
-import { GameHistory, User } from "src/entities/user.entity";
-import { Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
-import { UserDTO } from "src/users/dto/create-user.dto";
-import { GameHistoryService } from "src/game-history/game-history.service";
-import { getRepository } from "typeorm";
 
 
 
@@ -20,6 +14,8 @@ export class gameSimulation{
 
 	//server
 	private server: Server;
+	//endGame function
+	private endGameSimulation: (roomId: string) => void;
 	//Engine
 	private engine: Matter.Engine;
 	private runner: Matter.Runner;
@@ -32,28 +28,25 @@ export class gameSimulation{
 	private leftBoard: Matter.Body;
 	private ball: Matter.Body;
 	// TODO : change any to the right type
-	private id: any;
 	private roomIn: Room;
-
+	//score
 	private rightScore: number = 0;
 	private leftScore: number = 0;
 	private leftName: string | string[];
 	private rightName: string | string[];
-
+	//end game
 	private won: string;
 	private lost: string;
 	private lostscore: number;
-
+	//limits
 	private readonly MAX = 5;
 	private readonly Bspeed = 10;
-
+	// intervals
+	private id: any;
 	private rightInt: any;
 	private leftInt: any;
 
-	constructor(
-		// @InjectRepository(GameHistory) private gameHistoryRepo: Repository<GameHistory>,
-		// @InjectRepository(User) private userRepo: Repository<User>,
-	) {
+	constructor() {
 		
 		this.engine = Matter.Engine.create({
 			enableSleeping: false, // Sleep the object when it is not moving
@@ -135,6 +128,35 @@ export class gameSimulation{
 		Matter.Runner.run(this.runner, this.engine);
 	}
 	
+	getLeftScore() {
+		return this.leftScore;
+	}
+
+	getWinner() {
+		return this.won;
+	}
+
+	getLoser() {
+		return this.lost;
+	}
+	
+	getLoserScore() {
+		return this.lostscore;
+	}
+
+	setLoser(loser : string) {
+		if (loser === 'left'){
+			this.lost = this.leftName.toString();
+			this.won = this.rightName.toString();
+			this.lostscore = 0;
+		}
+		else{
+			this.lost = this.rightName.toString();
+			this.won = this.leftName.toString();
+			this.lostscore = 0;
+		}
+	}
+
 	stopEngine() {
 		Matter.Engine.clear(this.engine);
 		Matter.World.clear(this.engine.world, false);
@@ -143,40 +165,23 @@ export class gameSimulation{
 		clearInterval(this.id);
 	}
 
-	async saveGameScore() {
-		const userRepo = await getRepository(User);
-		const gameHistoryRepo = await getRepository(GameHistory);
-		const gameHistory = await gameHistoryRepo.create();
-		const winner = await userRepo.findOneBy({username: this.won});
-		const loser = await userRepo.findOneBy({username: this.lost});
-		gameHistory.winner = winner;
-		gameHistory.loser = loser;
-		gameHistory.loserScore = this.lostscore;
-		await gameHistoryRepo.save(gameHistory);
-		// if (this.won === this.leftName.toString())
-		// 	this.server.to(this.roomIn.id).emit('winner', 'left');
-		// else
-		// 	this.server.to(this.roomIn.id).emit('winner', 'right');
-		// stop the game here
-	}
-
 	restartGame() {
 		let vx : number;
 		let vy: number;
 		Matter.Events.on(this.engine, 'afterUpdate', () => {
 			if (this.ball.position.x < 0 || this.ball.position.x > this.Cwidth) {
-				if (this.ball.position.x < 0 && this.leftScore <= this.MAX && this.rightScore <= this.MAX){
+				if (this.ball.position.x < 0){
 					this.rightScore++;
 					vx = -10;
 					vy = -3;
 				}
-				else if (this.rightScore <= this.MAX && this.leftScore <= this.MAX){
+				else if (this.ball.position.x > this.Cwidth){
 					this.leftScore++;
 					vx = 10;
 					vy = 3;
 				}
-				if (this.leftScore >= this.MAX || this.rightScore >= this.MAX){
-					if (this.leftScore >= this.MAX){
+				if (this.leftScore === this.MAX || this.rightScore === this.MAX){
+					if (this.leftScore === this.MAX){
 						this.server.to(this.roomIn.id).emit('winner', 'left');
 						this.won = this.leftName.toString();
 						this.lost = this.rightName.toString();
@@ -188,9 +193,8 @@ export class gameSimulation{
 						this.lost = this.leftName.toString();
 						this.lostscore = this.leftScore;
 					}
-					// this.saveGameScore();
+					this.endGameSimulation(this.roomIn.id);
 				}
-			
 				Matter.Body.setPosition(this.ball, { x: this.Cwidth / 2, y: this.Cheight / 2 });
 				Matter.Body.setVelocity(this.ball, { x: 0, y: 0 });
 				setTimeout(() => Matter.Body.setVelocity(this.ball, { x: vx, y: vy }), 500);
@@ -226,7 +230,8 @@ export class gameSimulation{
 		});
 	}
 
-	sendPosition(room : Room) {
+	sendPosition(room : Room, endGameSimulation: (roomId: string) => void) {
+		this.endGameSimulation = endGameSimulation;
 		this.roomIn = room;
 		this.leftName = room.players[0].position === 'left' ? room.players[0].username : room.players[1].username;
 		this.rightName = room.players[0].position === 'right' ? room.players[0].username : room.players[1].username;

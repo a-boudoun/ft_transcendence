@@ -15,15 +15,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private gameService: gameService,
     private engineService: engineService,
     private auth: AuthService,
-  ) {}
-@WebSocketServer()
-  server: Server;
-  
-  recentRomm: string | null;
-  
-  handleConnection(client: Socket, data: any) {
-    const cookie: string = client.handshake.headers.cookie;
-    if (cookie === undefined)
+    ) {}
+    @WebSocketServer()
+    server: Server;
+    
+    recentRomm: string | null;
+    
+    handleConnection(client: Socket, data: any) {
+      const cookie: string = client.handshake.headers.cookie;
+      if (cookie === undefined)
       return;
     const username: string = this.auth.getUsername(cookie);
     client.data.username = username;
@@ -31,6 +31,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   
   handleDisconnect(client: Socket) {
+  }
+  
+  async endGameSimulation(roomId: string) {
+    this.gameService.removeRoom(roomId);
+    await this.engineService.removeGameSimulation(roomId);
   }
 
   @SubscribeMessage('invite-freind')
@@ -45,10 +50,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('accept-invitation')
   handleAcceptInvite(client: Socket, data: any) {
     //  TODO data = {senderUsername: string, senderSocketId: string }
-    if (this.gameService.isInGame(client.data.username)) {
-      client.emit('play-a-friend');
-      return;
-    }
+    // if (this.gameService.isInGame(client.data.username)) {
+    //   client.emit('play-a-friend');
+    //   return;
+    // }
     const freindSocket: Socket = this.server.sockets.sockets.get(data.senderSocketId);
     const player1: string = client.data.username;
     const player2: string = data.senderUsername;
@@ -60,7 +65,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.gameService.removePlayerFromQueue(client);
       this.gameService.removePlayerFromQueue(freindSocket);
       this.engineService.createGameSimulation(room.id);
-      this.engineService.sendPosition(room);
+      this.engineService.sendPosition(room, this.endGameSimulation.bind(this));
       this.engineService.addServerToGame(room.id, this.server);
       client.emit('play-a-friend');
       freindSocket.emit('play-a-friend');
@@ -79,7 +84,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('full-Game')
   handleFullGame(client: Socket, data: any) {
-    // client.data.username = data;
     const room: Room = this.gameService.findRoomByPlayer(data);
     if (room !== undefined) {
       const data: any = {
@@ -91,35 +95,34 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
+
   @SubscribeMessage('leave-game')
   handleLeaveGame(client: Socket, data: any) {
     let winner: string;
+    let loser: string;
     let room: Room = this.gameService.findRoom(data.room);
 	
-    if (room.players[0].username === data.player)
+    if (room.players[0].username === data.player){
     	winner = room.players[1].position;
-    else
+      loser = room.players[0].position;
+    }
+    else{
     	winner = room.players[0].position;
-    this.server.to(data.room).emit('left-game', data.player);
+      loser = room.players[1].position;
+    }
     this.server.to(data.room).emit('winner', winner);
-  }
-
-  @SubscribeMessage('end-game')
-  handleCancelLooking(client: Socket, data: any) {
-    this.gameService.removePlayerFromRoom(data.player, data.room);
-    this.gameService.removeRoom(data.room);
-    this.engineService.removeGameSimulation(data.room);
+    this.engineService.setLoser(data.room, loser);
+    this.endGameSimulation(data.room);
   }
   
   @SubscribeMessage('looking-for-match')
   handleLookingForMatch(client: Socket, user: string) {
-    // client.data.username = user;
     let found: Room | null;
     this.gameService.addPlayerToQueue(client);
     found = this.gameService.findMatch();
     if (found !== null) {
       this.engineService.createGameSimulation(found.id);
-      this.engineService.sendPosition(found);
+      this.engineService.sendPosition(found, this.endGameSimulation.bind(this));
       this.engineService.addServerToGame(found.id, this.server);
     }
   }

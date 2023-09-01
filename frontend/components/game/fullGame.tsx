@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import {Engine, Render, Body, Events, Composite} from "matter-js";
 import PlayersScore from "@/components/game/score";
 import Won from "@/components/game/winner";
@@ -9,7 +8,6 @@ import Lost from "@/components/game/loser";
 import { drawRect, drawCircle } from "@/components/game/draw";
 import { useRouter } from "next/navigation";
 import socket from "@/components/socketG";
-import axios from "axios";
 
 interface GameH{
 	loserScore: number;
@@ -23,13 +21,6 @@ interface Prop{
 }
 
 export default function Game({me, setGame, setMatch} : Prop){
-	const storeGameHistory = useMutation({
-		mutationKey: ["storeGameHistory"],
-		mutationFn: async (a :GameH) => {
-			const { data } = await axios.post(`http://localhost:8000/gameHistory`, a, { withCredentials: true });
-			return data;
-		},
-	});
 	const divRef = useRef<HTMLDivElement | null>(null);
 	const [PVisible, setPVisible] = useState<boolean>(true);
 	const router = useRouter();
@@ -195,37 +186,19 @@ export default function Game({me, setGame, setMatch} : Prop){
 			setLeftScore(data.leftScore);
 			setRightScore(data.rightScore);
 		});
-		socket.on('left-game', (playerLeft) => {
-			if (playerLeft === RightPlayer)
-				setRightScore(0);
-			else
-				setLeftScore(0);
-		});
 		socket.on('winner', (data) => {
-			socket.emit('end-game', {
-				room: roomid,
-				player: me,
-			});
 			if(me === RightPlayer){
-				if (data === 'right') {
-					storeGameHistory.mutate({loserScore: leftScore, loser: LeftPlayer});
-					setWinner(RightPlayer);
-				}
+				if (data === 'right') setWinner(RightPlayer);
 				else setLoser(RightPlayer);
 			}
 			else{
-				if (data === 'left'){
-					storeGameHistory.mutate({loserScore: rightScore, loser: RightPlayer});
-					setWinner(LeftPlayer);
-				} 
-				else
-				setLoser(LeftPlayer);
-		}
+				if (data === 'left') setWinner(LeftPlayer);
+				else setLoser(LeftPlayer);
+			}
 	});
 	return () => {
 		socket.off('score');
 		socket.off('winner');
-		socket.off('left-game');
 	}
 }, [rightScore, leftScore, LeftPlayer, RightPlayer]); 
 
