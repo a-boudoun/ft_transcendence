@@ -13,7 +13,7 @@ export default function Gamehome(){
   				<button className="text-white text-[35px] bg-red w-1/2 h-[90px] rounded-[20px] hover:bg-[#FBACB3]" onClick={() => {router.push('http://localhost:3000/game/table')}}>
    				 offline game
   				</button>
-  				<button className="text-white text-[35px] bg-red w-1/2 h-[90px] rounded-[20px] hover:bg-[#FBACB3]" onClick={() => {router.push('http://localhost:3000/game/table')}}>
+  				<button className="text-white text-[35px] bg-red w-1/2 h-[90px] rounded-[20px] hover:bg-[#FBACB3]" onClick={() => {router.push('http://localhost:3000/game/ai-game')}}>
    				 play with AI
   				</button>
 			</div>
