@@ -32,14 +32,14 @@ export class gameSimulation{
 	//score
 	private rightScore: number = 0;
 	private leftScore: number = 0;
-	private leftName: string | string[];
-	private rightName: string | string[];
+	private leftName: string;
+	private rightName: string;
 	//end game
 	private won: string;
 	private lost: string;
 	private lostscore: number;
 	//limits
-	private readonly MAX = 5;
+	private readonly MAX = 15;
 	private readonly Bspeed = 10;
 	// intervals
 	private id: any;
@@ -146,13 +146,13 @@ export class gameSimulation{
 
 	setLoser(loser : string) {
 		if (loser === 'left'){
-			this.lost = this.leftName.toString();
-			this.won = this.rightName.toString();
+			this.lost = this.leftName;
+			this.won = this.rightName;
 			this.lostscore = 0;
 		}
 		else{
-			this.lost = this.rightName.toString();
-			this.won = this.leftName.toString();
+			this.lost = this.rightName;
+			this.won = this.leftName;
 			this.lostscore = 0;
 		}
 	}
@@ -183,14 +183,14 @@ export class gameSimulation{
 				if (this.leftScore === this.MAX || this.rightScore === this.MAX){
 					if (this.leftScore === this.MAX){
 						this.server.to(this.roomIn.id).emit('winner', 'left');
-						this.won = this.leftName.toString();
-						this.lost = this.rightName.toString();
+						this.won = this.leftName;
+						this.lost = this.rightName;
 						this.lostscore = this.rightScore;
 					}
 					else{
 						this.server.to(this.roomIn.id).emit('winner', 'right');
-						this.won = this.rightName.toString();
-						this.lost = this.leftName.toString();
+						this.won = this.rightName;
+						this.lost = this.leftName;
 						this.lostscore = this.leftScore;
 					}
 					this.endGameSimulation(this.roomIn.id);

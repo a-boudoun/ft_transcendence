@@ -1,18 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import {Engine, Render, Body, Events, Composite} from "matter-js";
+import {Engine, Render, Body, Composite} from "matter-js";
 import PlayersScore from "@/components/game/score";
 import Won from "@/components/game/winner";
 import Lost from "@/components/game/loser";
 import { drawRect, drawCircle } from "@/components/game/draw";
 import { useRouter } from "next/navigation";
 import socket from "@/components/socketG";
-
-interface GameH{
-	loserScore: number;
-	loser: string;
-}
 
 interface Prop{
 	me: string;
