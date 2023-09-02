@@ -15,6 +15,8 @@ export default function Game(){
 	const [countDownValue, setCountDownValue] = useState<number>(3);
 	const [leftScore, setLeftScore] = useState<number>(0);
 	const [rightScore, setRightScore] = useState<number>(0);
+	var lScore = 0;
+	var rScore = 0;
 	let keyClicked : boolean = false;
 	let leftInterval : number;
 	let keyInterval : number;
@@ -90,8 +92,6 @@ export default function Game(){
 		const handlekeyUp = (e: KeyboardEvent) => {
 				keyClicked = false;
 				clearInterval(keyInterval);
-				console.log("leftScore", leftScore);
-				console.log("rightScore", rightScore);
 		}
 		
 		let engine = Engine.create({
@@ -138,14 +138,14 @@ export default function Game(){
 						});
 				}
 
-			}, 10);
+			}, 35);
 		}
 
 		function handleCollision(event: any): void {
 			let pairs = event.pairs;
 			let ballVelocity = ball.velocity;
 			let audio = new Audio('/game/bounce.mp3');
-			
+
 			pairs.forEach((pair) => {
 				if (pair.bodyA === leftBoard || pair.bodyB === leftBoard) {
 					clearInterval(leftInterval);
@@ -168,6 +168,8 @@ export default function Game(){
 		}
 
 		function resetPosition(): void {
+			if (lScore === 5 || rScore === 5)
+				return;
 			let vx: number;
 			let vy: number;
 
@@ -175,6 +177,7 @@ export default function Game(){
 				if (ball.position.x < 0) {
 					clearInterval(leftInterval);
 					handleLeftBoard();
+					rScore++;
 					setRightScore((prevScore) => prevScore + 1);
 					vx = -8;
 					vy = -4;
@@ -182,13 +185,14 @@ export default function Game(){
 				else {
 					clearInterval(leftInterval);
 					setLeftScore((prevScore) => prevScore + 1);
+					lScore++;
 					vx = 8;
 					vy = 4;
 				}
-				if (leftScore === 5 || rightScore === 5)
+				if (lScore === 5 || rScore === 5)
 				{
-					Events.off(engine, 'collisionStart', handleCollision);
 					Events.off(engine, 'beforeUpdate', resetPosition);
+					Events.off(engine, 'collisionStart', handleCollision);
 					window.removeEventListener("resize", handleResize);
 					document.removeEventListener('keyup', handlekeyUp);
 					document.removeEventListener('keydown', handleKeyDown);
