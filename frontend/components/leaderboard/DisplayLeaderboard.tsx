@@ -27,30 +27,17 @@ const UserStats = ({user} : {user : userDto}) => {
     )
 }
 
-const Me = () => {
-    const Rank = 1;
-    const User = useQuery({
-      queryKey: ['User'],
-      queryFn: async () => {
-        const {data} = await axios.get('http://localhost:8000/users/me', {withCredentials: true});
-        return data;
-      }
-    });
-    
-    if (User.isLoading) {
-      return <div>Loading...</div>
-    }
-
+const Me = ({user, rank} : {user : userDto, rank : number}) => {
     return (
       <div className="flex flex-wrap sm:items-center gap-4 bg-dark-gray p-4 rounded-3xl sm:p-8 sm:shadow-2xl sm:gap-8">
-          <Image className="rounded-full sm:w-[128px] " src={User.data.image} width={64} height={64} alt={'user image'}  />
+          <Image className="rounded-full sm:w-[128px] " src={user.image} width={64} height={64} alt={'user image'}  />
           <div className='text-left'>
-            <h1 className="text-3xl font-bold ">{User.data.name}</h1>
-            <span className='text-2xl'> {`#${Rank}`}</span>
+            <h1 className="text-3xl font-bold ">{user.name}</h1>
+            <span className='text-2xl'> {`#${rank}`}</span>
             <span className='text-blue text-xl'> lvl </span>
-            <span className='text-xl'>{User.data.level}</span>
+            <span className='text-xl'>{user.level}</span>
           </div>
-        <UserStats user={User.data} />
+        <UserStats user={user} />
       </div>
     )
 }
@@ -72,6 +59,7 @@ const User = ({user, rank}: {user : userDto, rank: number}) => {
 }
 
 const DisplayLeaderboard = () => {
+  let rank = 1;
 
   const {data, isLoading} = useQuery({
     queryKey: ['Users'],
@@ -81,13 +69,26 @@ const DisplayLeaderboard = () => {
     }
   });
 
-  if (isLoading) {
+  const currentUser = useQuery({
+    queryKey: ['Me'],
+    queryFn: async () => {
+      const {data} = await axios.get('http://localhost:8000/users/me', {withCredentials: true});
+      return data;
+    }
+  });
+
+  if (isLoading || currentUser.isLoading) {
     return <div>Loading...</div>
   }
 
+  data.users?.map((user: userDto, index: number) =>{
+      if (currentUser.data.name === user.name)
+        rank = index + 1;
+  })
+
   return (
     <div className='h-full max-w-[860px] grow flex flex-col gap-2 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 sm:rounded-[2.5rem] sm:shadow-2xl'>
-      <Me />
+      <Me user={currentUser.data} rank={rank}/>
       <div className='bg-light-gray grow p-4 rounded-3xl'>
         {
           data.users?.map((user: userDto, index: number) => {
