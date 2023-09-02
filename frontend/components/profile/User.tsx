@@ -4,7 +4,7 @@ import Image from 'next/image'
 import {userDto}  from '@/dto/userDto'
 import uploadImage from '@/apis/uploadImage'
 import { useQuery, useMutation} from "@tanstack/react-query";
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { Client } from '@/providers/QueryProvider';
 import { Loader2 } from  'lucide-react';
 import { useState } from 'react';
@@ -23,7 +23,7 @@ const User = ({id} : {id : string | null}) => {
     queryKey: ['User'],
     queryFn: async ()=> {
       (id ? id = id : id = 'me')
-      const {data} = await axios.get(`http://localhost:8000/users/${id}`, { withCredentials: true })
+      const {data} = await axios.get(`/users/${id}`)
       dispatch(setVisitedUser(data));
       return data;
     }
@@ -32,7 +32,7 @@ const User = ({id} : {id : string | null}) => {
   const updateBaner = useMutation({
     mutationKey: ['updateBaner'],
     mutationFn: async(user : userDto) => {
-      await axios.patch('http://localhost:8000/users/updateMe', user, { withCredentials: true });
+      await axios.patch('/users/updateMe', user);
     },
 
     onSuccess: () => {
