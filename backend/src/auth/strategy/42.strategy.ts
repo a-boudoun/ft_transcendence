@@ -29,7 +29,10 @@ export class AuthStratedy extends PassportStrategy(Strategy, '42') {
       status: Status.ONLINE,
       XP: 0,
       level: 0,
+      wins: 0,
+      loses: 0,
       fact2Auth: false,
+      fact2Secret: null,
       accessToken ,
     }
   

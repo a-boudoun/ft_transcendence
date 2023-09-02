@@ -21,10 +21,12 @@ config();
         user.name = body.name;
         user.image = body.image;
         user.baner = '/img/baner.webp';
-        user.fact2Auth = false;
-        user.fact2Secret = null;
         user.level = 0;
         user.XP = 0;
+        user.wins = 0;
+        user.loses = 0;
+        user.fact2Auth = false;
+        user.fact2Secret = null;
         
         await this.userService.create(user);
         

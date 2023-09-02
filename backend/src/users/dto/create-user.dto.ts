@@ -10,9 +10,11 @@ export class UserDTO {
     image: string;
     baner: string;
     status: Status;
-    fact2Auth: boolean;
     level: number;
     XP: number;
+    wins: number;
+    loses: number;
+    fact2Auth: boolean;
     fact2Secret: string;
     ownedChannels: ChannelDTO[];
     channels: ChannelDTO[];
@@ -27,13 +29,7 @@ export class UserDTO {
     administratedChannels: AdministrationDTO[];
 }
 
-
-
-
 export class BlockageDTO {
     blocker: UserDTO;
     blocked: UserDTO;
 }
-
-
-
