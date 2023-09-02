@@ -18,7 +18,11 @@ export class UsersService {
     }
     
     async findAll() {
-      return await this.userRepo.find();
+      return await this.userRepo.find({
+        order: {
+          level: 'DESC',
+        },
+      });
     }
     
     async search(key: string) {

@@ -13,7 +13,7 @@ export class UsersController {
   @UseGuards(Jwt2faAuthGuard)
   async findAll() {
     const users =  await this.usersService.findAll();
-    return {users};
+    return {users: users};
   }
 
   @Get('/search/:key')
