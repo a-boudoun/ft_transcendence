@@ -7,7 +7,6 @@ config();
 const patch = async (endpoint: string, user: userDto) =>
 {
     const url = `http://localhost:8000${endpoint}`;
-    console.log(user);
     
     const res = await fetch(url , {
         method: 'PATCH', 

@@ -5,11 +5,12 @@ WORKDIR /trans
 # Copy package.json and package-lock.json
 COPY package.json ./
 
+# Copy the entire project to the container
+COPY . .
+
 # Install all dependencies including development dependencies
 RUN npm install
 
-# Copy the entire project to the container
-COPY . .
 
 # Expose the port that the NextJS application listens on
 EXPOSE 3000

@@ -5,23 +5,25 @@ import {userDto}  from '@/dto/userDto'
 import uploadImage from '@/apis/uploadImage'
 import { useQuery, useMutation} from "@tanstack/react-query";
 import axios from 'axios';
-import { Client } from '@/Providers/QueryProvider';
+import { Client } from '@/providers/QueryProvider';
 import { Loader2 } from  'lucide-react';
 import { useState } from 'react';
 import AddFriend from './AddFriend';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { setVisitedUser } from '@/redux/features/currentChannel';
 
 const User = ({id} : {id : string | null}) => {
+  const dispatch = useDispatch<AppDispatch>();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const User = useQuery({
-    queryKey: ['outherUser'],
+    queryKey: ['User'],
     queryFn: async ()=> {
-      let endpoint = 'http://localhost:8000/users/me';
-      if (id)
-        endpoint = `http://localhost:8000/users/${id}`;
-
-      const {data} = await axios.get(endpoint, { withCredentials: true })
+      (id ? id = id : id = 'me')
+      const {data} = await axios.get(`http://localhost:8000/users/${id}`, { withCredentials: true })
+      dispatch(setVisitedUser(data));
       return data;
     }
   });
@@ -33,7 +35,7 @@ const User = ({id} : {id : string | null}) => {
     },
 
     onSuccess: () => {
-      Client.refetchQueries('user');
+      Client.refetchQueries('User');
     },
 
   });
@@ -46,7 +48,7 @@ const User = ({id} : {id : string | null}) => {
     const uploadimage = await uploadImage(e.target.files[0]);
     user.baner = uploadimage;
     await updateBaner.mutate(user);
-    await Client.refetchQueries('user');
+    await Client.refetchQueries('User');
     setIsLoading(false);
   }
 
@@ -61,7 +63,7 @@ const User = ({id} : {id : string | null}) => {
                 <input type="file" className='hidden' accept="image/jpeg, image/jpg, image/png, image/webp" onChange={handleChange}/>
             </label>
     }
-      <div className='absolute flex gap-3 items-center bottom-0 w-full bg-black/70 p-[14px]'> 
+    <div className='absolute flex gap-3 items-center bottom-0 w-full bg-black/70 p-[14px]'> 
       <Image className='rounded-full w-[86px] h-[86px] sm:m-4'  src={User?.data.image} alt='img' width={1000} height={1000} />
       <div className='text-left'>
         <h2 className='text-white text-xl sm:text-3xl'>{User?.data.name}</h2>

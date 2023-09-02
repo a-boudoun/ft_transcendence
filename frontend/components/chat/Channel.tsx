@@ -16,7 +16,7 @@ const Channel = () => {
    
     const dispatch = useDispatch<AppDispatch>();
     const [newchannel, setNewchannel] = useState(false);
-    const activeStyle = "border-b-4 text-blue border-blue";
+    const activeStyle = "bg-blue rounded-lg";
 
     const fetchData = useQuery(
         {
@@ -26,6 +26,8 @@ const Channel = () => {
             const userDataResponse = await axios.get('http://localhost:8000/users/me', { withCredentials: true });
             dispatch(setChannels(channelsResponse.data));
             dispatch(setuser(userDataResponse.data));
+
+            return channelsResponse.data;
           }
         });
 
@@ -34,13 +36,13 @@ const Channel = () => {
       }
     
       return (
-        <div className={`h-full`}>
+        <div className={`h-full mt-2`}>
   
-          <div className={` w-full bg-dark-gray+ h-10 flex justify-between  py-2 text-white gap-1`} >
-              <button className={`w-1/2 flex items-center justify-center text-lg  ${newchannel === false ? activeStyle: ''}`} onClick={()=> handleclick(1)}>
+          <div className={` w-full bg-dark-gray+ h-fit flex justify-between mb-3   text-white gap-1`} >
+              <button className={`w-1/2 flex items-center justify-center text-base py-1 font-semibold  ${newchannel === false ? activeStyle: 'text-blue'}`} onClick={()=> handleclick(1)}>
                 Channel 
               </button>
-              <button className={`w-1/2 flex items-center justify-center  text-lg  ${newchannel === true ? activeStyle: ''}`} onClick={()=> handleclick(2)}>
+              <button className={`w-1/2 flex items-center justify-center  text-base font-semibold   ${newchannel === true ? activeStyle: 'text-blue'}`} onClick={()=> handleclick(2)}>
                 New Channel
               </button>
           </div>
@@ -48,7 +50,7 @@ const Channel = () => {
             <ChannelItems  path="/chat"/>
           </div>
           <div className={`${newchannel === false ? 'hidden': ''}  `}>
-            <NewChannel  />
+            <NewChannel />
           </div>
         </div>
       );

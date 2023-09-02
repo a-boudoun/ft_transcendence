@@ -4,10 +4,10 @@ import { FriendshipController } from './friendship.controller';
 import { TypeOrmModule} from '@nestjs/typeorm';
 import { Friendship, User } from 'src/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { Channel } from 'src/entities/channel.entity';
+import { Channel, Bannation } from 'src/entities/channel.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Friendship, Channel, User]),
+  imports: [TypeOrmModule.forFeature([Friendship, Channel, User, Bannation]),
   JwtModule.register({
     secret: process.env.JWT_SECRET,
     signOptions: { expiresIn: process.env.JWT_EXP_D},

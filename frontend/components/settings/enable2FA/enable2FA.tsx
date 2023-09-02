@@ -31,7 +31,6 @@ export const Enable2FA = () => {
   const turnON = useMutation({
     mutationFn: async(body : body) => {
     const {data} = await axios.patch('http://localhost:8000/auth/2fa/turnOn', body, { withCredentials: true });
-    console.log(data.valid);
     if (data.valid === true)
       router.push('/settings');
     else {

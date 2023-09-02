@@ -13,10 +13,10 @@ import {
 import { User } from './user.entity';
   
 export enum ChannelType {
-    DIRECT = 'direct',
-    PUBLIC = 'public',
-    PRIVATE = 'private',
-    PROTECTED = 'protected'
+    DIRECT = 'Direct',
+    PUBLIC = 'Public',
+    PRIVATE = 'Rrivate',
+    PROTECTED = 'Protected'
 }
 export enum MemberTitle {
     MEMBER = 'member',
@@ -41,8 +41,7 @@ export class Channel {
     @ManyToOne(() => User, user => user.ownedChannels)
     owner: User;
     
-    @Column({ length: 25 ,
-    nullable : true})
+    @Column({nullable : true})
     password: string;
     
     @OneToMany(() => Administration, administration => administration.channel)
@@ -51,11 +50,27 @@ export class Channel {
     @OneToMany(() => Membership, membership => membership.channel)
     memberships: Membership[];
     
-    @OneToMany(() => Sanction, sanction => sanction.channel)
-    sanctions: Sanction[];
+    @OneToMany(() => Mutation, mutation => mutation.channel)
+    mutations: Mutation[];
     
     @OneToMany(() => Message, message => message.channel)
     messages: Message[];
+
+    @OneToMany(() => Bannation, bannation => bannation.channel)
+    bannations: Bannation[];
+
+}
+
+@Entity({ name: 'Bannation' })
+export class Bannation {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @ManyToOne(() => Channel, (channel) => channel.bannations)
+    channel: Channel;
+
+    @ManyToOne(() => User, (user) => user.bannations)
+    member: User;
 }
 
 @Entity({ name: 'Message' })
@@ -109,20 +124,20 @@ export enum SanctionType {
     MUTED = 'muted'
 }
 
-@Entity({ name: 'Sanction' })
-export class Sanction {
+@Entity({ name: 'Mutation' })
+export class Mutation {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @ManyToOne(() => Channel, (channel) => channel.sanctions)
+    @ManyToOne(() => Channel, (channel) => channel.mutations)
     channel: Channel;
     
-    @ManyToOne(() => User, (user) => user.sanctions)
+    @ManyToOne(() => User, (user) => user.mutations)
     member: User;
 
-    @Column('text')
-    type: SanctionType;
-
     @Column({ type: 'date' })
-    duration: Date;
+    mut_date: Date;
+    
+    @Column()
+    duration: number;
 }

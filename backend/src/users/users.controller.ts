@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Jwt2faAuthGuard } from '../auth/guards/jwt-2fa-auth.guard';
-import con from 'ormconfig';
+import { JwtSigninGuard } from '../auth/guards/jwt-signin.guard';
 
 @Controller('users')
 export class UsersController {
@@ -41,6 +41,12 @@ export class UsersController {
     return this.usersService.findOne(req.user.username);
   }
 
+  @Get('signin')
+  @UseGuards(JwtSigninGuard)
+  async signin(@Req() req) {
+      return req.user;
+  }
+
   @Patch('updateMe')
   @UseGuards(Jwt2faAuthGuard)
   updateMe(@Req() req, @Res() res, @Body() updateUserDto: UpdateUserDto) {
@@ -60,7 +66,7 @@ export class UsersController {
   }
 
   @Get('isUserExist/:name')
-  @UseGuards(Jwt2faAuthGuard)
+  @UseGuards(JwtSigninGuard)
   async isUser(@Req() req, @Param('name') name: string) {
     return this.usersService.isUserExist(req.user.username, name);
   }

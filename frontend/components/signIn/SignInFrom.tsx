@@ -13,7 +13,6 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { Loader2 } from  'lucide-react';
 
-
 config();
 
 const SignInFrom = ({user} : {user: signInDto}) => {
@@ -21,14 +20,15 @@ const SignInFrom = ({user} : {user: signInDto}) => {
   const Router = useRouter();
 
   const [image, setImage] = useState<any>(null);
-  const [name, setName] = useState<string>(user.name);
+  const [name, setName] = useState<string>(user.username);
   const [imagePreview, setImagePreview] = useState<string>(user.image);
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const updateUser = useMutation({
     mutationFn: async(user : signInDto) => {
-      await axios.patch('http://localhost:8000/users/updateMe', user, { withCredentials: true });
+  
+      await axios.patch('http://localhost:8000/auth/singin', user, { withCredentials: true });
     },
     onSuccess: () => {
       Router.push('/profile');
@@ -74,7 +74,7 @@ const SignInFrom = ({user} : {user: signInDto}) => {
             <input type="file" className="hidden" accept="image/jpeg, image/jpg, image/png, image/webp" />
         </div>
       </label>
-      <input id={'name'} className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-black focus:border-[2px] hover:opacity-60" type="text" placeholder={user.name}/>
+      <input id={'name'} className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-black focus:border-[2px] hover:opacity-60" type="text" placeholder={user.username}/>
       <button className="relative mt-12 h-16 rounded-2xl text-black text-center bg-blue px-14 hover:opacity-60" type='submit' onClick={ () => setIsLoading(true)} >let's play
       {isLoading && <Loader2 className="absolute top-6 right-6 animate-spin" size={20} strokeWidth={1.2} />}
       </button>
