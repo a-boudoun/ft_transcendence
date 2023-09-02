@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 
+
 interface Props {
     setIsOpen: (isOpen: boolean) => void;
 }

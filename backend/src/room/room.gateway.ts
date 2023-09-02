@@ -12,11 +12,9 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     
 
     handleConnection(socket: Socket) {
-        console.log(`Client connected: ${socket.id}`);
     }
 
     handleDisconnect(socket: Socket) {
-        console.log(`Client disconnected: ${socket.id}`);
     }
 
     @SubscribeMessage('join')

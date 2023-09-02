@@ -44,7 +44,7 @@ const InviteDisplay = ({username, socketId, setdisplay}: prop) => {
 	loadingBarWidth = `${((timeLeft) / 4) * 100}%`;
 	return(
 		<>
-		<div className={`flex  mt-1 justify-between bg-dark-gray px-4 py-2 rounded-xl gap-2 sm:gap-8`}>
+		<div className={`flex  mt-1 justify-between bg-[rgb(78,113,163)] px-4 py-2 rounded-xl gap-2 sm:gap-8`}>
 				<div className="flex items-center gap-4">
 					<Image  className=" sm:w-[48px] sm:h-[48px] rounded-full self-center"  src={image} width={36}  height={36} alt="user image"/>
 					<div className="text-left">
@@ -53,12 +53,12 @@ const InviteDisplay = ({username, socketId, setdisplay}: prop) => {
 					</div>
 				</div>
 				<div className="flex items-center gap-2 text-[12px] sm:gap-4 sm:text[24px]">
-					<button className="bg-red rounded-xl px-2 py-1 sm:px-4 sm:py-2"
+					<button className="bg-[rgb(248,72,72)] rounded-xl px-2 py-1 sm:px-4 sm:py-2"
 					onClick={() => {
 						setdisplay(null);
 					}}
 					>Decline</button>
-					<button className="bg-blue rounded-xl px-2 py-1 sm:px-4 sm:py-2"
+					<button className="bg-[rgba(86,245,65,0.75)] rounded-xl px-2 py-1 sm:px-4 sm:py-2"
 					onClick={() => {
 						socket.emit('accept-invitation', {senderUsername: username, senderSocketId: socketId});
 						setdisplay(null);

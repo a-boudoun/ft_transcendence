@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useQuery, useMutation} from "@tanstack/react-query";
 import axios from "axios";
 import { userDto } from "@/dto/userDto";
-import { Client } from "@/Providers/QueryProvider";
+import { Client } from "@/providers/QueryProvider";
 import useCloseOutSide from "@/hookes/useCloseOutSide";
 interface Props {
   users : userDto[];

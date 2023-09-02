@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { UserDTO } from 'src/users/dto/create-user.dto';
 import con from 'ormconfig';
 import { ChannelsService } from 'src/channels/channels.service';
-import { ChannelType } from 'src/entities/channel.entity';
+import { Bannation, ChannelType } from 'src/entities/channel.entity';
 
 @Injectable()
 export class FriendshipService {
@@ -14,6 +14,7 @@ export class FriendshipService {
     @InjectRepository(Friendship) private friendshipRepo: Repository<Friendship>,
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Channel) private channelRepo: Repository<Channel>,
+    @InjectRepository(Bannation) private bannationRepo: Repository<Bannation>,
     ) {}
     
     async friendReq(username : string) {
@@ -74,14 +75,21 @@ async accept(username: string, sender: string) {
     const user1 = await this.userRepo.findOneBy({name: username});
     const user2 = await this.userRepo.findOneBy({name: sender});
     const channelName : string =  (user1.id < user2.id) ? user1.username + user2.username : user2.username + user1.username;
-    const channelExists = await this.channelRepo.createQueryBuilder('channel').where({name: channelName}).andWhere({type: ChannelType.DIRECT});
-    if (!channelExists) {
+    console.log(channelName);
+    const ch = await this.channelRepo.findOne({
+      where: {name: channelName, type: ChannelType.DIRECT},
+    });
+    // const channelExists = await this.channelRepo.createQueryBuilder('channel').where({name: channelName}).andWhere({type: ChannelType.DIRECT});
+    if (ch == null) {
     const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" ,memberships: [user1, user2]});
-    const rt = await this.channelRepo.save(channel);}
+    const rt = await this.channelRepo.save(channel);
+  
+  }
     return await this.friendshipRepo.save(friendship);
   }
 
   async status(username: string, sender: string) {
+    console.log(username, sender);
     const friendship = await this.friendshipRepo.find({
       where: [
         { initiater: { username: username } ,  receiver: { username: sender } },
@@ -112,4 +120,18 @@ async accept(username: string, sender: string) {
     return await this.friendshipRepo.remove(friendship);
   }
 
+  async search(channelid: number,username: string, query: string) {
+
+    const friends = await this.getFriends(username);
+    const findInFriends = friends.filter(f => f.username.toLowerCase().includes(query.toLowerCase()) && f.username != username);
+    console.log(findInFriends);
+    const channel = await this.channelRepo.findOne({
+      where: {id: channelid},
+      relations: ['memberships.member', "bannations.member"]
+    });
+    const banedUsers = channel?.bannations?.map(b => b.member).map(m => m.username);
+    const members = channel?.memberships?.map(m => m.member).map(m => m.username);
+    const rt = findInFriends.filter(f => (!banedUsers.includes(f.username) && !members.includes(f.username)));
+    return rt;
+  }
 }

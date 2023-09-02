@@ -18,7 +18,7 @@ interface pScore{
 
 function MePlayer({ score, name} : pScore) {
 	const {data, isLoading} = useQuery({
-		queryKey: ['left'],
+		queryKey: ['scoreleft'],
 		queryFn: async ()=> {
 		  const {data} = await axios.get(`http://localhost:8000/users/byUsername/${name}`, { withCredentials: true })
 		  return data;
@@ -42,7 +42,7 @@ function MePlayer({ score, name} : pScore) {
 
 function OtherPlayer({ score, name } : pScore) {
 	const {data, isLoading} = useQuery({
-		queryKey: ['right'],
+		queryKey: ['scoreright'],
 		queryFn: async ()=> {
 		  const {data} = await axios.get(`http://localhost:8000/users/byUsername/${name}`, { withCredentials: true })
 		  return data;

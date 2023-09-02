@@ -1,14 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Param, UseGuards} from '@nestjs/common';
 import { GameHistoryService } from './game-history.service';
-import { GameHistoryDTO } from './dto/create-game-history.dto';
-import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
-import con from 'ormconfig';
+import { Jwt2faAuthGuard } from '../auth/guards/jwt-2fa-auth.guard';
 
 export class ghReq {
   winner: string;
   loser: string;
   loserScore: number;
 }
+
 @Controller('gameHistory')
 export class GameHistoryController {
   constructor(private readonly gameHistoryService: GameHistoryService) {}
@@ -26,14 +25,16 @@ export class GameHistoryController {
     return this.gameHistoryService.create(GameHistory);
   }
 
-  @Get()
-  findAll() {
-    return this.gameHistoryService.findAll();
+  @Get('getHistory/me')
+  @UseGuards(Jwt2faAuthGuard)
+  getMyHistory(@Req() req) {
+    return this.gameHistoryService.findOne(req.user.username);
   }
 
-  @Get(':username')
-  findOne(@Param('username') username: string) {
-    return this.gameHistoryService.findOne(username);
+  @Get('getHistory/:name')
+  @UseGuards(Jwt2faAuthGuard)
+  getHistory(@Param('name') name: string) {
+    return this.gameHistoryService.findOne(name);
   }
 
   // @Patch(':id')

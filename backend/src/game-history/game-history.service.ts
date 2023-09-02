@@ -1,26 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { GameHistoryDTO } from './dto/create-game-history.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GameHistory } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/entities/user.entity';
-import { UserDTO } from 'src/users/dto/create-user.dto';
 import { ghReq } from './game-history.controller';
+import { UsersService } from 'src/users/users.service';
 @Injectable()
 export class GameHistoryService {
   constructor(
     @InjectRepository(GameHistory) private gameHistoryRepo: Repository<GameHistory>,
-    @InjectRepository(User) private userRepo: Repository<User>,
-    private jwtService: JwtService
+    private userService: UsersService,
   ) {}
 
   async create(ghReq: ghReq) {
     const gameHistory = this.gameHistoryRepo.create();
-    gameHistory.winner = await this.userRepo.findOne({where: {username: ghReq.winner}});
+    gameHistory.winner = await this.userService.findOne(ghReq.winner);
     gameHistory.winner.XP += 10;
-    await this.userRepo.save(gameHistory.winner);
-    gameHistory.loser = await this.userRepo.findOne({where: {username: ghReq.loser}});
+    gameHistory.loser = await this.userService.findOne(ghReq.loser);
     gameHistory.loserScore = ghReq.loserScore;
     return this.gameHistoryRepo.save(gameHistory);
   }
@@ -29,9 +24,9 @@ export class GameHistoryService {
     return this.gameHistoryRepo.find();
   }
 
-  async findOne(username: string) {
-    const user = await this.userRepo.find({where: {username: username}});
-    return this.gameHistoryRepo.find({where: [{winner: user}, {loser: user}]});
+  async findOne(name: string) {
+    const user = await this.userService.findOneByname(name);
+    return this.gameHistoryRepo.find({where: [{winner: user}, {loser: user}], relations: ['winner', 'loser']});
   }
 
   // update(id: number, updateGameHistoryDTO: UpdateGameHistoryDto) {

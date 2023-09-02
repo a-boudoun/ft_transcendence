@@ -6,50 +6,54 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import channelDto from '@/dto/channelDto';
 import { useState, useEffect, useRef, use } from 'react';
-import Modal from '@/components/chat/Modal';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { setisMid, setisopen, setmodaltype } from '@/redux/features/currentChannel';
 import { useMutation } from '@tanstack/react-query';
-import userDto from '@/dto/userDto';
 import { Client } from '@/providers/QueryProvider';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import useCloseOutSide from '@/hookes/useCloseOutSide';
 
 
 
 const Right = () => {
 
   const dispatch = useDispatch<AppDispatch>();
+  Client.prefetchQuery('channel');
   const data = useSelector((state: any) => state.currentChannel.channel);
   const isMid = useSelector((state: any) => state.currentChannel.isMid);
   const user = useSelector((state: any) => state.currentChannel.user);
+
   const [input, setInput] = useState('');
   const [userType, setUserType] = useState('');
   const [me, setMe] = useState<any>({});
-
-
-
-
-
 
   const handleChange = (e: any) => {
     setInput(e.target.value);
   }
   const isMember = data.memberships?.some((membership :any) => membership?.member?.id === user.id)
   useEffect(() => {
-    if(!data.memberships) return;
+    console.log("datta",data);
+    if(!data.memberships)
+      return;
     const member = data.memberships?.find((item: any) => item.member?.id === user.id);
-    if(!member) return;
+    if(!member)
+      return;
     setMe(member);
-  }, [data]);
+  }, [data.memberships]);
 
 
   const handelClick = (type: string) => {
     dispatch(setmodaltype(type));
     dispatch(setisopen(true));
+   
   }
+
   
   return (
     <div className={`${isMid === false ? 'w-full sm:w-1/2 md:w-7/12 lg:w-3/12 ' : 'hidden lg:w-3/12 lg:flex lg:flex-col'}  bg-white bg-opacity-20 ackdrop-blur-lg  drop-shadow-lg rounded-xl`}>
+
       <button onClick={() => dispatch(setisMid(true))}>
         <Image
           className="h-[28px] w-[28px]  rounded-full  m-4 lg:hidden absolute top-0 left-0 "
@@ -114,11 +118,12 @@ const Right = () => {
 }
 
 
+
 export default Right;
 
 
 export const Items = ({ member , user, id}: { member: any, user: any, id: number}) => {
- const [isClicked, setIsClicked] = useState(false);
+ const [isOpen, setIsOpen] = useState(false);
  
   
   return (
@@ -136,7 +141,7 @@ export const Items = ({ member , user, id}: { member: any, user: any, id: number
           <div className=" text-xs text-red" >{member.title}</div>
         </div>
         {member.title === 'owner' || user.title === 'member' || user.member === undefined || member.member.username === user.member?.username ?
-       null:  <button className={`ml-auto mr-2 `} onClick={()=> setIsClicked(!isClicked)}>
+       null:  <button className={`ml-auto mr-2 `} onClick={()=> setIsOpen(!isOpen)}>
        <Image
          className="h-[30px] w-[30px]"
          src={'/img/more.svg'}
@@ -144,8 +149,8 @@ export const Items = ({ member , user, id}: { member: any, user: any, id: number
          height={1000}
          alt="" />
        </button>}
-          <div className={`relative ${isClicked ? '' : 'hidden'}`}>
-            <More member={member} user={user} id={id}/>
+          <div className={`relative ${isOpen ? '' : 'hidden'}`}>
+            { isOpen && <More member={member} user={user} id={id} setIsOpen={setIsOpen}/> }
           </div>
       </div>
     </>
@@ -154,10 +159,12 @@ export const Items = ({ member , user, id}: { member: any, user: any, id: number
 }
 
 
-export const  More = ({ member , user, id}: { member: any, user: any, id: number}) => {
+export const  More = ({ member , user, id, setIsOpen}: { member: any, user: any, id: number, setIsOpen: (isOpen: boolean) => void;}) => {
+  const {divref} = useCloseOutSide({setIsOpen});
 
   return (
-    <div className="absolute w-56  h-fit rounded-md  top-4 right-4 bg-gray-600 z-50">
+    <div ref={divref}
+    className="absolute w-56  h-fit rounded-md  top-4 right-4 bg-gray-600 z-50">
         <Admin  member={member} user={user} id={id}/>
         <Ban    member={member} user={user} id={id}/>
         <Kick   member={member} user={user} id={id}/>
@@ -252,7 +259,22 @@ export const Kick = ({ member , user, id}: { member: any, user: any, id: number}
     )
 }
 export const Ban = ({ member , user, id}: { member: any, user: any, id: number}) => {
-  
+    const ban = useMutation({
+      mutationFn: async (username: string) => {
+        const { data } = await axios.patch(`http://localhost:8000/channels/${id}/ban/${username}`,  { withCredentials: true })
+        console.log(data);  
+        return data;
+      },
+      onSuccess: () => {
+       Client.refetchQueries('channels');
+       Client.refetchQueries('channel');
+      }
+     
+    });
+
+    const handelClick = () => {
+      ban.mutate(member.member?.username);
+    }
     return (
       <div className="w-[90%] h-fit m-2 px-2 py-1 rounded-md z-50 hover:bg-gray-500 flex items-center cursor-pointer">
           <Image
@@ -262,7 +284,7 @@ export const Ban = ({ member , user, id}: { member: any, user: any, id: number})
             height={1000}
             alt="" />
 
-            <h6 className='text-sm ml-4 '>Ban user </h6>
+            <button className='text-sm ml-4 ' onClick={handelClick}>Ban user </button>
       </div>
     )
 }

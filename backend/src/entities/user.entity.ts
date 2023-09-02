@@ -10,7 +10,7 @@ import {
     DataSource,
     CreateDateColumn
   } from 'typeorm';
-import { Administration, Channel, Message, Sanction } from './channel.entity';
+import { Administration, Channel, Message, Mutation, Bannation } from './channel.entity';
   
 export enum Status {
     ONLINE = 'online',
@@ -73,8 +73,8 @@ export class User {
     @OneToMany(() => Blockage, (blockage) => blockage.blocked)
     blockedByUsers: User[];
     
-    @OneToMany(() => Sanction, (sanction) => sanction.member)
-    sanctions: Sanction[];
+    @OneToMany(() => Mutation, (mutation) => mutation.member)
+    mutations: Mutation[];
     
     @OneToMany(() => GameHistory, (gameHistory) => gameHistory.winner)
     wonGames: GameHistory[];
@@ -87,6 +87,9 @@ export class User {
     
     @OneToMany(() => Administration, (administration) => administration.admin)
     administratedChannels: Administration[];
+
+    @OneToMany(() => Bannation, (bannation) => bannation.member)
+    bannations: Bannation[];
 }
 
 @Entity({ name: 'GameHistory' })

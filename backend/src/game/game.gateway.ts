@@ -3,6 +3,7 @@ import { Server, Socket } from 'socket.io';
 import { gameService } from './game.service';
 import { engineService } from './engine.service';
 import { Room } from './interfaces/room.interface';
+import { AuthService } from 'src/auth/auth.service';
 
 //Cross-Origin-Resource-Sharing (CORS) is a mechanism that uses additional HTTP headers to tell browsers 
 //to give a web application running at one origin,
@@ -13,17 +14,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private gameService: gameService,
     private engineService: engineService,
+    private auth: AuthService,
   ) {}
 @WebSocketServer()
   server: Server;
   
   recentRomm: string | null;
-
+  
   handleConnection(client: Socket, data: any) {
     const cookie: string = client.handshake.headers.cookie;
     if (cookie === undefined)
       return;
-    const username: string = cookie.split('_username=')[1].split(';')[0];
+    const username: string = this.auth.getUsername(cookie);
     client.data.username = username;
     client.join(username);
   }
@@ -33,6 +35,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('invite-freind')
   handleInviteFreind(client: Socket, reciever: string) {
+    if (client.data.username === reciever)
+      return;
     //TODO: data = {reciever: string, sender: string, senderSocketId: string}
     //TODO: check if player is online and not in game
     this.server.to(reciever).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id});

@@ -12,6 +12,9 @@ type InitialState = {
     isMid: boolean;
     isChild: boolean;
     modalTYpe: string;
+    visitedUser: userDto;
+    Membership: any[];
+    isNewMember: boolean;
 };
 
 interface Message {
@@ -27,6 +30,7 @@ type userDto  = {
     fact2Auth: boolean;
     level: number;
     XP: number;
+
 }
 type Channel = {
     id: number;
@@ -36,6 +40,7 @@ type Channel = {
     password: string;
     messages: Message[];
     memberships: any[];
+    bannations: any[];
 };
 const initialState = {
 
@@ -46,6 +51,9 @@ const initialState = {
     isMid: true,
     isChild: false,
     modalTYpe: '',
+    visitedUser: {} as userDto,
+    Membership: [] as any[],
+    isNewMember: false,
 
 } as InitialState
 
@@ -83,9 +91,18 @@ export const currentChannelSlice = createSlice({
         },
         setmodaltype: (state: any, action: PayloadAction<any>) => {
             state.modalTYpe = action.payload;
-        }
+        },
+        setVisitedUser: (state: any, action: PayloadAction<any>) => {
+            state.visitedUser = action.payload;
+        },
+        setMemberships: (state: any, action: PayloadAction<any>) => {
+            state.Membership = action.payload;
+        },
+        setisNewMember: (state: any, action: PayloadAction<any>) => {
+            state.isNewMember = action.payload;
+        },
     }
 })
 
-export const {setcurrentChannel, setMessage, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisChild, setmodaltype} = currentChannelSlice.actions;
+export const {setcurrentChannel,setisNewMember, setMessage,setMemberships, setVisitedUser, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisChild, setmodaltype} = currentChannelSlice.actions;
 export default currentChannelSlice.reducer;

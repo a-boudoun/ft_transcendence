@@ -6,9 +6,9 @@ import Fact2AuthForm from '@/components/fact2Auth/Fact2AuthForm'
 
 const Fact2Auth = async() => {
 
-  const data: userDto | null = await getData('/users/me');
-  if (!data)
-    redirect('/');
+  // const data: userDto | null = await getData('/users/me');
+  // if (!data)
+  //   redirect('/');
 
   return (
     <main className="grid place-content-center h-screen w-h-screen bg-ping-pong bg-cover text-base">
