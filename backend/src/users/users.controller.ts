@@ -78,6 +78,7 @@ export class UsersController {
   // }
 
   @Delete(':login')
+  @UseGuards(JwtSigninGuard)
   remove(@Param('login') login: string) {
     return this.usersService.remove(login);
   }
