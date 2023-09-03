@@ -26,6 +26,8 @@ const Channel = () => {
             const userDataResponse = await axios.get('http://localhost:8000/users/me', { withCredentials: true });
             dispatch(setChannels(channelsResponse.data));
             dispatch(setuser(userDataResponse.data));
+
+            return channelsResponse.data;
           }
         });
 

@@ -13,7 +13,7 @@ export class UsersController {
   @UseGuards(Jwt2faAuthGuard)
   async findAll() {
     const users =  await this.usersService.findAll();
-    return {users};
+    return {users: users};
   }
 
   @Get('/search/:key')
@@ -78,6 +78,7 @@ export class UsersController {
   // }
 
   @Delete(':login')
+  @UseGuards(JwtSigninGuard)
   remove(@Param('login') login: string) {
     return this.usersService.remove(login);
   }

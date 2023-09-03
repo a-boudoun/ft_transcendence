@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useQuery, useMutation} from "@tanstack/react-query";
-import axios from "axios";
+import axios from "@/apis/axios";
 import { userDto } from "@/dto/userDto";
 import { Client } from "@/providers/QueryProvider";
 import useCloseOutSide from "@/hookes/useCloseOutSide";
@@ -18,7 +18,7 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
   const Accept = useMutation({
     mutationKey: ['acceptFriendRequest'],
     mutationFn: async(sender: string) => {
-      const {data} = await axios.patch(`http://localhost:8000/friendship/acceptRequest/${sender}`, sender, {withCredentials: true});
+      const {data} = await axios.patch(`/friendship/acceptRequest`, {sender: sender});
       return data;
     },
     onSuccess: () => {
@@ -29,7 +29,7 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
   const Decline  = useMutation({
     mutationKey: ['DeclineFriend'],
     mutationFn: async(name: string) => {
-        const {data} = await axios.delete(`http://localhost:8000/friendship/${name}`, { withCredentials: true });
+        const {data} = await axios.delete(`/friendship/${name}`);
         return data;
     },
     onSuccess: () => {
@@ -69,7 +69,7 @@ const FriendRequest = () => {
   const {data} = useQuery({
     queryKey: ['friendrequests'],
     queryFn: async() => {
-      const {data} = await axios.get('http://localhost:8000/friendship/friendrequests', {withCredentials: true});
+      const {data} = await axios.get('/friendship/friendrequests');
       if (data.length > 0)
         setNotif(true);
       return data;

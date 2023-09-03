@@ -34,10 +34,10 @@ export class FriendshipService {
       return await this.friendshipRepo.save(friendship);
     }
     
-    async getFriends(username: string) {
+    async getFriends(name: string) {
       const friendship = await this.friendshipRepo.find({
         where: [
-          { initiater: { username: username } , status: Fstatus.ACCEPTED },
+          { initiater: { name: name } , status: Fstatus.ACCEPTED },
         ],
         relations: ['receiver']
       });
@@ -45,7 +45,7 @@ export class FriendshipService {
       
       const friendship1 = await this.friendshipRepo.find({
         where: [
-          { receiver: { username: username } , status: Fstatus.ACCEPTED },
+          { receiver: { name: name } , status: Fstatus.ACCEPTED },
         ],
         relations: ['initiater']
       });

@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html className="" lang="en">
-      <body className={`${inter.className}  h-screen w-screen bg-red text-center  text-white`}>
+      <body className={`${inter.className}  h-screen w-screen bg-dark-gray text-center  text-white`}>
       
       <ReduxProvider>
         <QueryProvider>

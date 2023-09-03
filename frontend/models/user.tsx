@@ -50,4 +50,10 @@ export const userSchema = signInSchema.extend({
     XP: z
     .number()
     .optional(),
+    wins:  z
+    .number()
+    .optional(),
+    loses: z
+    .number()
+    .optional()
 });
