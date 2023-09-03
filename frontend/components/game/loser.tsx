@@ -3,7 +3,7 @@ import Image from "next/image";
 import axios from 'axios';
 import { useQuery } from "@tanstack/react-query";
 
-export default function Lost({loser} : {loser: string}){
+export default function Lost(){
   const {data, isLoading} = useQuery({
 		queryKey: ['user'],
 		queryFn: async ()=> {
