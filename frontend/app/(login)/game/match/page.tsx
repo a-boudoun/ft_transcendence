@@ -61,8 +61,6 @@ export default function MatchPlayers() {
 		</div>}
 		{gameStart && <Game 
 			me = {player} 
-			setGame = {setGameStart}
-			setMatch = {setLook}
 		/>}
 		</>
 		)
