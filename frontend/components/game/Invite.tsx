@@ -82,7 +82,10 @@ const Invite = () => {
 	
 	useEffect(() => {
 		socket.on('play-a-friend', () =>{
-			router.push('http://localhost:3000/game/match');
+			if (router.pathname !== '/game/match')
+				router.push('http://localhost:3000/game/match');
+			else
+				router.reload();
 		});
 		socket.on('game-invitation', (data: any) => {
 			setUsername(data.sender);
@@ -97,7 +100,7 @@ const Invite = () => {
 	}, []);
 
 	useEffect(() => {
-		let timer: NodeJS.Timeout;
+		let timer: number;
 		if (display !== null) {
 			timer = setTimeout(() => {
 				setDisplay(null);
