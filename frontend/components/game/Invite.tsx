@@ -6,8 +6,7 @@ import axios from 'axios';
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
-import { set } from 'zod';
-import { clear } from 'console';
+import { usePathname } from 'next/navigation';
 
 interface prop {
 	username: string;
@@ -79,13 +78,15 @@ const Invite = () => {
 	const [username, setUsername] = useState<string>('');
 	const [socketId, setSocketId] = useState<string>('');
 	const router = useRouter();
+	const pathname = usePathname();
 	
 	useEffect(() => {
 		socket.on('play-a-friend', () =>{
-			if (router.pathname !== '/game/match')
-				router.push('http://localhost:3000/game/match');
-			else
-				router.reload();
+			if (pathname !== '/game/match')
+				router.push('/game/match');
+			else {
+				router.refresh();
+			}
 		});
 		socket.on('game-invitation', (data: any) => {
 			setUsername(data.sender);
