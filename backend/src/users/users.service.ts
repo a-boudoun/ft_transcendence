@@ -1,33 +1,56 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from '../entities/user.entity'
+import { Blockage, User } from '../entities/user.entity'
 import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import con from 'ormconfig';
+import { isBlock } from 'typescript';
 
 @Injectable()
 export class UsersService {
+
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Blockage) private blockRepo: Repository<Blockage>,
     ) {}
     
+    async block(bloker: any, blocked: any) {
+      const block = await this.blockRepo.create();
+      block.blocker = await this.findOne(bloker);
+      block.blocked = await this.findOne(blocked);
+      return this.blockRepo.save(block);
+    }
+
     create(userDTO: UserDTO) {
       const user = this.userRepo.create(userDTO);
       return this.userRepo.save(user);
     }
     
-    async findAll() {
-      return await this.userRepo.find({
+    async findAll(username: string) {
+
+      const allUsers =  await this.userRepo.find({
         order: {
           level: 'DESC',
         },
       });
+      return  allUsers;
+
     }
     
-    async search(key: string) {
-      const users = await this.userRepo.findBy({name: Like(`%${key}%`)});
-      return users;
+    async search(username:string,  key: string) {
+      const blockedUsers = await this.blockRepo.find({where: [{blocker : {username: username }}],  relations: ['blocked']});
+      const blockedByUsers = await this.blockRepo.find({where: [{blocked : {username: username }}],  relations: ['blocker']});
+      const blocked = blockedUsers.map(b => b.blocked);
+      const blockedBy = blockedByUsers.map(b => b.blocker);
+      const blockedAndBlocker = [...blocked, ...blockedBy];
+
+      const allUsers = await this.userRepo.findBy({name: Like(`%${key}%`)});
+      return  allUsers.filter(user => !blockedAndBlocker.some(b => b.username === user.username));
+
+      // const blockedByUsers = await this.blockRepo.find({where: [{blocked : {username: username }}],  relations: ['blocker']});
+      // const blocked = blockedByUsers.map(b => b.blocker);
+
+      //  users = await this.userRepo.findBy({name: Like(`%${key}%`)});
     }
     
     findOne(username: string) {
@@ -42,17 +65,25 @@ export class UsersService {
       return user;
     }
     
-    async isUserExist(myName: string,  name: string) {
+    async isNameExist(name: string) {
       const user = await this.userRepo.findOneBy({name});
       
       if (user) {
-        if (user.name === myName)
-        {
-          return false;
-        }
         return true;
       }
       return false;
+    }
+
+    async isBlocked(username: string, name: string) {
+      const blockedUsers = await this.blockRepo.find({where: [{blocker : {username: username}}],  relations: ['blocked']});
+      const blockedByUsers = await this.blockRepo.find({where: [{blocked : {username: username}}],  relations: ['blocker']});
+      const blocked = blockedUsers.map(b => b.blocked);``
+      const blockedBy = blockedByUsers.map(b => b.blocker);
+      const blockedAndBlocker = [...blocked, ...blockedBy];
+
+      const cnt = blockedAndBlocker.some(b => b.name === name);
+
+      return cnt ? true : false;
     }
     
     async getDM(username: string) {

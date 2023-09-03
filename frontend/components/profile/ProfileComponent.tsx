@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react'
 import User from '@/components/profile/User'
 import UserDetails from '@/components/profile/UserDetails'
@@ -5,8 +7,36 @@ import Achievements from '@/components/profile/Achievements'
 import Matches from '@/components/profile/Matches'
 import ProfileFriends from '@/components/profile/ProfileFriends'
 import MidButtom from '@/components/profile/MidBottom'
+import { useQuery } from '@tanstack/react-query'
+import axios from '@/apis/axios'
+import { useRouter } from 'next/navigation'
 
 export const ProfileComponent = ({id = null} : {id ?: string | null }) => {
+
+  const router = useRouter();
+
+  if (id){
+    const isExist = useQuery({
+      queryKey: ['isExist'],
+      queryFn: async () => {
+        const {data} = await axios.get(`/users/isNameExist/${id}`);
+        return data;
+      }
+    });
+
+    const isBlocked = useQuery({
+      queryKey: ['isBlocked'],
+      queryFn: async () => {
+        const {data} = await axios.get(`/users/isBlocked/${id}`);
+        return data;
+      }
+    });
+
+    if (isExist.isLoading || isBlocked.isLoading)
+      return <div>Loading...</div>;
+    if (isExist.data === false || isBlocked.data === true)
+      router.push('/profile');
+  }
 
   return (
     <main className="h-full w-full bg-dark-gray  pt-[56px] sm:p-10 sm:pt-[96px] sm:flex sm:justify-center gap-8">

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import get from "@/apis/client/get";
+import axios from '@/apis/axios';
 
 const MAX_FILE_SIZE = 2500000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -14,8 +14,8 @@ export const signInSchema = z.object({
     .min(3, { message: "Username must be at least 3 characters long." })
     .max(10, { message: "Username must be at most 10 characters long." })
     .refine(async (name) =>  {
-        const isUser = await get(`/users/isUserExist/${name}`);
-        return !isUser;
+        const {data} = await  axios.get(`/users/isNameExist/${name}`);
+        return !data;
     }
     , "Name already exists.")
     .optional(),
