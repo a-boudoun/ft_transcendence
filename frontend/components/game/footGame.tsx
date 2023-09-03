@@ -109,7 +109,7 @@ function FootGame({roomid, me, RightPlayer} : Prop){
 				const audio = new Audio('/game/bounce.mp3');
 				audio.play();
 			});
-			
+
 			socket.on('positions', (data) => {
 				Body.setPosition(
 					rightBoard,
@@ -149,10 +149,11 @@ function FootGame({roomid, me, RightPlayer} : Prop){
 	}, [roomid]);
 
 	return (
-		<div
-			ref={divRef}
-			className="h-4/6 w-4/5 mt-20">
+		<div ref={divRef} className="h-4/6 w-4/5 mt-20 relative">
+			<div className="h-full w-1 bg-white absolute left-1/2 transform -translate-x-1/2">
+			<div className="bg-white w-full" style={{backgroundImage: 'repeating-linear-gradient(2deg, transparent, transparent 40px, white 40px, white 80px)'}}></div>
 			</div>
+		</div>
 	);
 }
 export default FootGame;
