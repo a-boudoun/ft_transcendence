@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { useMutation, useQuery} from "@tanstack/react-query";
 import { Client } from '@/providers/QueryProvider';
 
@@ -7,7 +7,7 @@ const AddFriend = ({id} : {id : string}) => {
     const Status = useQuery({
         queryKey: ['friendStatus'],
         queryFn: async ()=> {
-          const {data} = await axios.get(`http://localhost:8000/friendship/status/${id}`, { withCredentials: true })
+          const {data} = await axios.get(`/friendship/status/${id}`)
           return data;
         }
     });
@@ -15,7 +15,7 @@ const AddFriend = ({id} : {id : string}) => {
     const sendRequest = useMutation({
         mutationKey: ['sendRequest'],
         mutationFn: async(name: string) => {
-          const {data} = await axios.post(`http://localhost:8000/friendship/sendRequest/${name}`, name, { withCredentials: true });
+          const {data} = await axios.post(`/friendship/sendRequest`, {receiver: name});
           return data;
         },
         onSuccess: () => {
@@ -26,7 +26,7 @@ const AddFriend = ({id} : {id : string}) => {
     const removeOrCancelFriend = useMutation({
         mutationKey: ['removeOrCancelFriend'],
         mutationFn: async(name: string) => {
-            const {data} = await axios.delete(`http://localhost:8000/friendship/${name}`, { withCredentials: true });
+            const {data} = await axios.delete(`/friendship/${name}`);
             return data;
         },
         onSuccess: () => {
@@ -37,13 +37,13 @@ const AddFriend = ({id} : {id : string}) => {
     const Accept = useMutation({
         mutationKey: ['acceptFriendRequest'],
         mutationFn: async(sender: string) => {
-          const {data} = await axios.patch(`http://localhost:8000/friendship/acceptRequest/${sender}`, sender, {withCredentials: true});
+          const {data} = await axios.patch(`/friendship/acceptRequest`, {sender: sender});
           return data;
         },
         onSuccess: () => {
           Client.refetchQueries('friendrequests');
         }
-      })
+    })
 
     const handleAddFriend = async () => {
         await sendRequest.mutate(id);
