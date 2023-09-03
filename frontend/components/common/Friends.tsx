@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useQuery } from "@tanstack/react-query";
 import SearchBar  from "@/components/common/SearchBar";
 import { useState } from 'react';
+import socket from '../socketG';
 
 const Friends = ({id} : {id : string | null}) => {
     const [searchValue, setSearchValue] = useState<string>('');
@@ -54,7 +55,9 @@ export const Friend = ({user, id}: {user: userDto, id: string}) => {
             {
                !id &&  <div className="flex items-center gap-4">
                     <Image className="" src="/icons/navBar/chat.svg" width={24} height={24} alt="chat"/>
-                    <Image className="" src="/icons/navBar/game.svg" width={24} height={24} alt="challenge"/>
+                    <button onClick={() => {socket.emit('invite-freind', user.username)}}>
+                        <Image className="" src="/icons/navBar/game.svg" width={24} height={24} alt="challenge"/>
+                    </button>
                 </div>
             }
         </div>

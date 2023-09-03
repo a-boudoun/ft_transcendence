@@ -4,10 +4,13 @@ import Link from 'next/link'
 import AddFriend  from '@/components/profile/AddFriend'
 import { useState } from 'react';
 import { MoreVertical } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import socket from '../socketG';
 
 const Challnege = ({id} : {id : string}) => {
+  const visitedUser  = useSelector((state: any) => state.currentChannel.visitedUser);
     return(
-      <button className='bg-blue px-3 py-1 text-black rounded-xl'>Challnege</button>
+      <button className='bg-blue px-3 py-1 text-black rounded-xl' onClick={() => {socket.emit('invite-freind', visitedUser.username)}}>Challnege</button>
     )
   }
   
@@ -19,7 +22,6 @@ const Challnege = ({id} : {id : string}) => {
   
 const UserParametres = ({id} : {id : string}) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
-
 
     return(
       <div className='absolute bottom-6 right-6'>

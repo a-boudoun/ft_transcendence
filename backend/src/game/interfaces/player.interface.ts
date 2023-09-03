@@ -3,5 +3,5 @@ import { User } from '../../interfaces/User';
 export interface Player {
 	position: string;
 	sockets: Array<Socket>;
-	username: string | string[];
+	username: string;
 }

@@ -36,6 +36,7 @@ export class GameHistoryController {
   getHistory(@Param('name') name: string) {
     return this.gameHistoryService.findOne(name);
   }
+  
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateGameHistoryDto: UpdateGameHistoryDto) {
