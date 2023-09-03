@@ -17,26 +17,52 @@ interface pScore{
 }
 
 function MePlayer({ score, name} : pScore) {
-	const {data, isLoading} = useQuery({
-		queryKey: ['scoreleft'],
-		queryFn: async ()=> {
-		  const {data} = await axios.get(`http://localhost:8000/users/byUsername/${name}`, { withCredentials: true })
-		  return data;
-		}
-	  });
-	if (isLoading) return <div>Loading...</div>;
+	
+	if (name === "me"){
+		const {data, isLoading} = useQuery({
+			queryKey: ['scoreleft'],
+			queryFn: async ()=> {
+			  const {data} = await axios.get(`http://localhost:8000/users/me`, { withCredentials: true })
+			  return data;
+			}
+		  });
+		  if (isLoading) return <div>Loading...</div>;
+		  else{
+			  return (
+				  <div className="flex items-center gap-2">
+					  <div className="flex flex-col items-center w-[80px] h-[80px]">
+						  <Image src={data.image} width={100} height={100} alt="#" className="w-full h-full rounded-full"/>
+						  <h1 className="text-[#F2F2F2] font-bold">{data.name}</h1>
+					  </div>
+					  <h1>
+						  score: {score}
+					  </h1>
+				  </div>
+			  );
+		  }
+	}
 	else{
-		return (
-			<div className="flex items-center gap-2">
-				<div className="flex flex-col items-center w-[80px] h-[80px]">
-					<Image src={data.image} width={100} height={100} alt="#" className="w-full h-full rounded-full"/>
-					<h1 className="text-[#F2F2F2] font-bold">{data.name}</h1>
+		const {data, isLoading} = useQuery({
+			queryKey: ['scoreleft'],
+			queryFn: async ()=> {
+				const {data} = await axios.get(`http://localhost:8000/users/byUsername/${name}`, { withCredentials: true })
+				return data;
+			}
+		});
+		if (isLoading) return <div>Loading...</div>;
+		else{
+			return (
+				<div className="flex items-center gap-2">
+					<div className="flex flex-col items-center w-[80px] h-[80px]">
+						<Image src={data.image} width={100} height={100} alt="#" className="w-full h-full rounded-full"/>
+						<h1 className="text-[#F2F2F2] font-bold">{data.name}</h1>
+					</div>
+					<h1>
+						score: {score}
+					</h1>
 				</div>
-				<h1>
-					score: {score}
-				</h1>
-			</div>
-		);
+			);
+		}
 	}
 }
 
@@ -45,7 +71,7 @@ function OtherPlayer({ score, name } : pScore) {
 		return (
 			<div className="flex items-center gap-2">
 				<div className="flex flex-col items-center w-[80px] h-[80px]">
-					<Image src="/game/computer.svg" width={100} height={100} alt="#" className="w-full h-full rounded-full"/>
+					<Image src="/game/robot.svg" width={100} height={100} alt="#" className="w-full h-full rounded-full"/>
 					<h1 className="text-[#F2F2F2] font-bold">{name}</h1>
 				</div>
 				<h1>

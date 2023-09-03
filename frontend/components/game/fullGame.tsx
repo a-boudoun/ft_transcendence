@@ -111,8 +111,8 @@ export default function Game({me} : Prop){
 				leave
 			</button>
 		</div>}
-		{Winner !== '' && <Won winner={Winner}/>}
-		{Loser !== '' && <Lost loser={Loser}/>}
+		{Winner !== '' && <Won/>}
+		{Loser !== '' && <Lost/>}
 	</>
 	);
 }

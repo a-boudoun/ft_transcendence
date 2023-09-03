@@ -258,7 +258,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 			left={leftScore} 
 			right={rightScore}
 			leftPlayer={"robot"}
-			rightPlayer={"aboudoun"}
+			rightPlayer={"me"}
 			/>
 			<div
 			ref={divRef}
@@ -272,8 +272,8 @@ function RobotGame({difficulty} : {difficulty: number}){
 				leave
 			</button>
 		</div>}
-		{rightScore >= 5 && <Won winner={"aboudoun"}/>}
-		{leftScore >=  5 && <Lost loser={"aboudoun"}/>}
+		{rightScore >= 5 && <Won/>}
+		{leftScore >=  5 && <Lost/>}
 	</>
 	);
 }
