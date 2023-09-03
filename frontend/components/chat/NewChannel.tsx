@@ -47,7 +47,7 @@ const NewChannel = () => {
         },
         {
         onSuccess: (data: any) => {
-            Client.invalidateQueries('channels');
+            Client.refetchQueries('channels');
             dispatch(setnewchannel(data));
             dispatch(setcurrentChannel(data));
             router.push(`/channel/${data.id}`);

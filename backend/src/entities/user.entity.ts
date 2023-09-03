@@ -42,14 +42,21 @@ export class User {
     @Column('text' , { nullable: true })
     status: Status;
     
-    @Column({ type: 'boolean', nullable: true})
-    fact2Auth: boolean;
-    
     @Column()
     level: number;
     
     @Column()
     XP: number;
+
+    @Column({ nullable: true })
+    wins: number;
+
+    @Column({ nullable: true })
+    loses: number;
+
+
+    @Column({ type: 'boolean', nullable: true})
+    fact2Auth: boolean;
 
     @Column({ nullable: true })
     fact2Secret: string;

@@ -1,16 +1,15 @@
-import getData from "@/apis/server/get";
-import userDto from "@/dto/userDto";
+"use client";
 
-const Stats = async({id} : {id : string | null}) => {
+import { useSelector } from "react-redux";
 
-  const data: userDto = await getData('/users/me');
+const Stats = ({id} : {id : string | null}) => {
 
+  const user = useSelector((state: any) => state.currentChannel.visitedUser);
 
-    const games = '100';
-    const win = '50%';
-    const lose = '50%';
-    const rank = '#5';
-  
+  const games  = '100'
+  const win = '50'
+  const lose = '50'
+  const rank = '#1'
   
     return(
       <div className='grid grid-cols-2 content-center w-[90%] capitalize mx-auto mt-[30%] xl:z-40 '>
@@ -27,11 +26,11 @@ const Stats = async({id} : {id : string | null}) => {
           <h3 className='text-blue'>lose</h3>
         </div>
         <div className='stats-div-mobile'>
-          <span className='font-bold text-lg' >{data.XP}</span>
+          <span className='font-bold text-lg' >{user.XP}</span>
           <h3 className='text-blue'>xp</h3>
         </div>
         <div className='stats-div-mobile'>
-          <span className='font-bold text-lg' >{data.level}</span>
+          <span className='font-bold text-lg' >{user.level}</span>
           <h3 className='text-blue'>level</h3>
         </div>
         <div className='stats-div-mobile'>

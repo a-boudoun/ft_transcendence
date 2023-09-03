@@ -73,8 +73,11 @@ export class engineService {
 			game.stopEngine();
 			const gameHistory = await this.gameHistoryRepo.create();
 			const winner = await this.userRepo.findOneBy({username: game.getWinner()});
-			const loser = await this.userRepo.findOneBy({username: game.getLoser()});
+			winner.wins += 1;
+			winner.XP += 10;
 			winner.status = Status.ONLINE;
+			const loser = await this.userRepo.findOneBy({username: game.getLoser()});
+			loser.loses += 1;
 			loser.status = Status.ONLINE;
 			gameHistory.winner = winner;
 			gameHistory.loser = loser;
