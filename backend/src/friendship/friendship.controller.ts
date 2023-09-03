@@ -1,20 +1,16 @@
-import { Controller, Get, Post, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, Delete, UseGuards, Req } from '@nestjs/common';
 import { FriendshipService } from './friendship.service';
-import { FriendshipDTO } from './dto/create-friendship.dto';
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
-import { find } from 'rxjs';
-import { User } from 'src/entities/user.entity';
-import { UserDTO } from 'src/users/dto/create-user.dto';
-import con from 'ormconfig';
 
 @Controller('friendship')
 export class FriendshipController {
   constructor(private readonly friendshipService: FriendshipService) {}
 
-  @Post('sendRequest/:receiver')
+  @Post('sendRequest')
   @UseGuards(Jwt2faAuthGuard)
-  async create(@Param('receiver') receiver: string, @Req() Req) {
-    return await this.friendshipService.create(Req.user.name, receiver);
+  async create(@Body() body: any, @Req() Req) {
+    console.log(`--------------------`);
+    return await this.friendshipService.create(Req.user.name, body.receiver);
   }
 
   @Get('friendrequests')
@@ -23,10 +19,10 @@ export class FriendshipController {
     return this.friendshipService.friendReq(req.user.username);
   }
 
-  @Patch('acceptRequest/:sender')
+  @Patch('acceptRequest')
   @UseGuards(Jwt2faAuthGuard)
-  async accept(@Param('sender') sender: string, @Req() req) {
-    return await this.friendshipService.accept(req.user.username, sender);
+  async accept(@Body() body: any, string, @Req() req) {
+    return await this.friendshipService.accept(req.user.username, body.sender);
   }
 
   @Get('getFriends/me')
