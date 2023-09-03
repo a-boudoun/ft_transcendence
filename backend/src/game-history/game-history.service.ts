@@ -26,7 +26,7 @@ export class GameHistoryService {
 
   async findOne(name: string) {
     const user = await this.userService.findOneByname(name);
-    if(!user)
+    if (!user)
       return [];
     return this.gameHistoryRepo.find({where: [{winner: user}, {loser: user}], relations: ['winner', 'loser']});
   }

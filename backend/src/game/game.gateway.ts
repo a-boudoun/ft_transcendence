@@ -11,7 +11,6 @@ import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
 //to give a web application running at one origin,
 //access to selected resources from a different origin
 @WebSocketGateway()
-//TODO: check if the player is authenticated
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private gameService: gameService,
@@ -35,20 +34,24 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   
   handleDisconnect(client: Socket) {
   }
+  
+ async endGameSimulation(roomId: string) {
+    this.gameService.removeRoom(roomId);
+    await this.engineService.removeGameSimulation(roomId);
+  }
 
   @SubscribeMessage('invite-freind')
   handleInviteFreind(client: Socket, reciever: string) {
-    if (client.data.username === reciever)
+    if (client.data.username === reciever || this.gameService.isInGame(reciever) !== null)
       return;
-    //TODO: data = {reciever: string, sender: string, senderSocketId: string}
-    //TODO: check if player is online and not in game
     this.server.to(reciever).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id});
   }
 
   @SubscribeMessage('accept-invitation')
-  handleAcceptInvite(client: Socket, data: any) {
-    //  TODO data = {senderUsername: string, senderSocketId: string }
-    if (this.gameService.isInGame(client.data.username)) {
+  async handleAcceptInvite(client: Socket, data: any) {
+    // if invite is already accepted
+    // send the player to the game direct without creating a new room
+    if (this.gameService.isInGame(client.data.username) !== null){
       client.emit('play-a-friend');
       return;
     }
@@ -62,8 +65,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (room) {
       this.gameService.removePlayerFromQueue(client);
       this.gameService.removePlayerFromQueue(freindSocket);
-      this.engineService.createGameSimulation(room.id);
-      this.engineService.sendPosition(room);
+      await this.engineService.createGameSimulation(room);
+      this.engineService.sendPosition(room, this.endGameSimulation.bind(this));
       this.engineService.addServerToGame(room.id, this.server);
       client.emit('play-a-friend');
       freindSocket.emit('play-a-friend');
@@ -82,7 +85,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('full-Game')
   handleFullGame(client: Socket, data: any) {
-    // client.data.username = data;
     const room: Room = this.gameService.findRoomByPlayer(data);
     if (room !== undefined) {
       const data: any = {
@@ -94,34 +96,34 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
+
   @SubscribeMessage('leave-game')
   handleLeaveGame(client: Socket, data: any) {
     let winner: string;
+    let loser: string;
     let room: Room = this.gameService.findRoom(data.room);
-    if (room.players[0].username === data.player)
-      winner = room.players[1].position;
-    else
-      winner = room.players[0].position;
-    this.server.to(data.room).emit('left-game', data.player);
+	
+    if (room.players[0].username === data.player){
+    	winner = room.players[1].position;
+      loser = room.players[0].position;
+    }
+    else{
+    	winner = room.players[0].position;
+      loser = room.players[1].position;
+    }
     this.server.to(data.room).emit('winner', winner);
-  }
-
-  @SubscribeMessage('end-game')
-  handleCancelLooking(client: Socket, data: any) {
-    this.gameService.removePlayerFromRoom(data.player, data.room);
-    this.gameService.removeRoom(data.room);
-    this.engineService.removeGameSimulation(data.room);
+    this.engineService.setLoser(data.room, loser);
+    this.endGameSimulation(data.room);
   }
   
   @SubscribeMessage('looking-for-match')
-  handleLookingForMatch(client: Socket, user: string) {
-    // client.data.username = user;
+  async handleLookingForMatch(client: Socket, user: string) {
     let found: Room | null;
     this.gameService.addPlayerToQueue(client);
     found = this.gameService.findMatch();
     if (found !== null) {
-      this.engineService.createGameSimulation(found.id);
-      this.engineService.sendPosition(found);
+      await this.engineService.createGameSimulation(found);
+      this.engineService.sendPosition(found, this.endGameSimulation.bind(this));
       this.engineService.addServerToGame(found.id, this.server);
     }
   }
@@ -130,7 +132,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleAlreadyLooking(client: Socket, data: any) {
     let roomId: string | null;
 
-    // client.data.username = data;
     if (this.gameService.isInQueue(client)){
       client.emit(data, 'player-status', 'already-looking');
     }
