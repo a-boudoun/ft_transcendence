@@ -2,8 +2,18 @@ import React from 'react';
 import Image from "next/image";
 import axios from 'axios';
 import { useQuery } from "@tanstack/react-query";
+import socket from '../socketG';
 
-export default function Won(){
+interface prop {
+  setWon: (val: string) => void;
+  setLost: (val: string) => void;
+}
+
+export default function Won({setWon, setLost} : prop){
+  socket.on('refresh-page', () => {
+    setWon('');
+    setLost('');
+  });
   const {data, isLoading} = useQuery({
 		queryKey: ['user'],
 		queryFn: async ()=> {

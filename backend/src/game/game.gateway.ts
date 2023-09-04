@@ -68,8 +68,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       await this.engineService.createGameSimulation(room);
       this.engineService.sendPosition(room, this.endGameSimulation.bind(this));
       this.engineService.addServerToGame(room.id, this.server);
-      client.emit('play-a-friend');
-      freindSocket.emit('play-a-friend');
+      client.emit('play-a-friend'); // to avoid sending all the sockets to game
+      freindSocket.emit('play-a-friend'); // to avoid sending all the sockets to game
+      const data: any = {
+        room: room.id,
+        leftPlayer: room.players[0].position === 'left' ? room.players[0].username : room.players[1].username,
+        rightPlayer: room.players[0].position === 'right' ? room.players[0].username : room.players[1].username,
+      }
+      client.emit('game-info', data);
+      client.emit('refresh-page');
     }
   }
   
@@ -85,6 +92,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('full-Game')
   handleFullGame(client: Socket, data: any) {
+
     const room: Room = this.gameService.findRoomByPlayer(data);
     if (room !== undefined) {
       const data: any = {
