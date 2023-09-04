@@ -75,12 +75,12 @@ export default function Game({me} : Prop){
 	<>
 		{(Winner === '' && Loser === '') && <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
 			{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] ">{countDownValue}</p>}
-			<PlayersScore 
+			{LeftPlayer !== '' && RightPlayer !== '' && <PlayersScore 
 			left={leftScore} 
 			right={rightScore} 
 			leftPlayer={LeftPlayer}
 			rightPlayer={RightPlayer}
-			/>
+			/>}
 
 			{map === "default" && <DefaultGame
 			roomid={roomid}
