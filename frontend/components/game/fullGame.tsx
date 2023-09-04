@@ -30,6 +30,7 @@ export default function Game({me} : Prop){
 	useEffect(() => {
 		let seleted: string | null = localStorage.getItem('map');
 		if (seleted !== null) setMap(seleted);
+
 		socket.emit('full-Game', me);
 		socket.on('game-info', (data) => {
 			setLeftPlayer(data.leftPlayer);
@@ -72,7 +73,7 @@ export default function Game({me} : Prop){
 
 	return (
 	<>
-		{Winner === '' && Loser === '' && <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
+		{(Winner === '' && Loser === '') && <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
 			{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] ">{countDownValue}</p>}
 			<PlayersScore 
 			left={leftScore} 
@@ -111,8 +112,8 @@ export default function Game({me} : Prop){
 				leave
 			</button>
 		</div>}
-		{Winner !== '' && <Won/>}
-		{Loser !== '' && <Lost/>}
+		{Winner !== '' && <Won setLost={setLoser} setWon={setWinner} />}
+		{Loser !== '' && <Lost setLost={setLoser} setWon={setWinner} />}
 	</>
 	);
 }

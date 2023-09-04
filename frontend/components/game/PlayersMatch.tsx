@@ -59,6 +59,10 @@ function LoadingPlayer({setClicked, setGame}: prop){
 			const interval = setInterval(() => {
 				setImage(iamges[Math.floor(Math.random() * iamges.length)]);
 			}, 200);
+
+			socket.on('refresh-page', () => {
+				setGame(true);
+			});
 	
 			socket.on('match-found', async (player: string) => {
 				try {

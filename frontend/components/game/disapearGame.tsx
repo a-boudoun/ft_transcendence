@@ -142,6 +142,7 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 				document.removeEventListener('keydown', handleKeyDown);
 				socket.off('positions');
 				socket.off('ball');
+				socket.off('sound');
 				Engine.clear(engine);
 				Render.stop(render);
 			};
