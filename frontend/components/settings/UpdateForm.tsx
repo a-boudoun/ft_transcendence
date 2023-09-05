@@ -6,6 +6,7 @@ import { userDto } from '@/dto/userDto';
 import { useRouter } from 'next/navigation'
 import Frineds from "@/components/common/Friends";
 import ChangeNameImage from './ChangeNameImage';
+import BlockList from './BlockList';
 
 const UpdateForm = () => {
 
@@ -14,7 +15,7 @@ const UpdateForm = () => {
   const User = useQuery({
     queryKey: ['user'],
     queryFn: async ()=> {
-      const {data} = await axios.get('http://localhost:8000/users/me', { withCredentials: true })
+      const {data} = await axios.get('http://localhost:8000/users/getUser/me', { withCredentials: true })
       return data;
     }
   });
@@ -57,7 +58,7 @@ const UpdateForm = () => {
             <div className='grow flex flex-col'>
               <h3 className='mb-6 text-xl font-bold text-blue' >blocked users</h3> 
               <div className='h-[400px] w-[280px] sm:w-[400px] bg-light-gray grow rounded-3xl shadow-2xl overflow-hidden p-8'> 
-                <Frineds /> 
+                <BlockList />
               </div>
             </div>
         </div>

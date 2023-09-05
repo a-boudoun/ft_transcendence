@@ -72,7 +72,7 @@ const DisplayLeaderboard = () => {
   const currentUser = useQuery({
     queryKey: ['Me'],
     queryFn: async () => {
-      const {data} = await axios.get('http://localhost:8000/users/me', {withCredentials: true});
+      const {data} = await axios.get('http://localhost:8000/users/getUser/me', {withCredentials: true});
       return data;
     }
   });

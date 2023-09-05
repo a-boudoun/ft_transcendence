@@ -2,21 +2,17 @@
 
 import Image from 'next/image';
 import Link from "next/link";
-import getData from "@/apis/server/get";
 import userDto from "@/dto/userDto";
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { useQuery } from "@tanstack/react-query";
-import SearchBar  from "@/components/common/SearchBar";
-import { useState } from 'react';
 import socket from '../socketG';
 
 const Friends = ({id} : {id : string | null}) => {
-    const [searchValue, setSearchValue] = useState<string>('');
     const {data, isLoading} = useQuery({
         queryKey: ['friends'],
         queryFn: async ()=> {
             (id ? id = id : id = 'me')
-            const { data } = await axios.get(`http://localhost:8000/friendship/getFriends/${id}`, { withCredentials: true });
+            const { data } = await axios.get(`/friendship/getFriends/${id}`);
             return data;
         }
       });
@@ -46,7 +42,7 @@ export default Friends;
 
 export const Friend = ({user, id}: {user: userDto, id: string}) => {
     return (
-        <div className={`flex justify-between px-4 py-2 mx-2 rounded-xl text-white bg-dark-gray`}>
+        <div className='flex justify-between px-4 py-2 mx-2 rounded-xl bg-dark-gray'>
             <div className="grow flex items-center gap-4">
                 <Image  className="w-[48px] h-[48px] rounded-full self-center"  src={user.image}    width={1000}  height={1000}   alt="user image"
                 />

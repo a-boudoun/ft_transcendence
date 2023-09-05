@@ -22,7 +22,7 @@ function MePlayer({ score, name} : pScore) {
 		const {data, isLoading} = useQuery({
 			queryKey: ['scoreleft'],
 			queryFn: async ()=> {
-			  const {data} = await axios.get(`http://localhost:8000/users/me`, { withCredentials: true })
+			  const {data} = await axios.get(`http://localhost:8000/users/getUser/me`, { withCredentials: true })
 			  return data;
 			}
 		  });

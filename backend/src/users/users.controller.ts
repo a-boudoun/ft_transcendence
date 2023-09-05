@@ -13,12 +13,11 @@ export class UsersController {
   @Get()
   @UseGuards(Jwt2faAuthGuard)
   async findAll(@Req() req) {
-    const users =  await this.usersService.findAll(req.user.username);
+    const users =  await this.usersService.findAll();
     return {users: users};
   }
 
-  
-  @Get('/search/:key')
+  @Get('search/:key')
   @UseGuards(Jwt2faAuthGuard)
   async search(@Param('key') key: string, @Req() req) {
     const users =  await this.usersService.search(req.user.username, key);
@@ -37,12 +36,17 @@ export class UsersController {
     return this.usersService.getChannels(req.user.username);
   }
   
-  @Get('me')
+  @Get('getUser/me')
   @UseGuards(Jwt2faAuthGuard)
   me(@Req() req) {
     return this.usersService.findOne(req.user.username);
   }
   
+  @Get('getUser/:name')
+  findOneByname(@Param('name') name: string) {
+    return this.usersService.findOneByname(name);
+  }
+
   @Get('signin')
   @UseGuards(JwtSigninGuard)
   async signin(@Req() req) {
@@ -56,10 +60,6 @@ export class UsersController {
     res.status(200).send({message: 'User updated'});
   }
   
-  @Get(':name')
-  findOneByname(@Param('name') name: string) {
-    return this.usersService.findOneByname(name);
-  }
   
   @Get('isNameExist/:name')
   async isNameExist(@Param('name') name: string) {
@@ -73,22 +73,22 @@ export class UsersController {
     await this.usersService.block(req.user.username, body.username);
   }
 
+  @Delete('unblock/:username')
+  @UseGuards(Jwt2faAuthGuard)
+  async unblock(@Req() req, @Param('username') username: string) {
+    await this.usersService.unblock(req.user.username, username);
+  }
+
   @Get('isBlocked/:name')
   @UseGuards(Jwt2faAuthGuard)
   async isBlocked(@Req() req, @Param('name') name: string) {
     return this.usersService.isBlocked(req.user.username, name);
   }
-
-
-  // @Get('friends/:username')
-  // @UseGuards(Jwt2faAuthGuard)
-  // async getFriends(@Param('username') username: string) {
-  //   return this.usersService.getFriends(username);
-  // }
-
-  @Delete(':login')
-  @UseGuards(JwtSigninGuard)
-  remove(@Param('login') login: string) {
-    return this.usersService.remove(login);
+  
+  @Get('blockedUsers')
+  @UseGuards(Jwt2faAuthGuard)
+  async blockedUsers(@Req() req) {
+    return this.usersService.blockedUsers(req.user.username);
   }
+
 }

@@ -20,10 +20,10 @@ const User = ({id} : {id : string | null}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const User = useQuery({
-    queryKey: ['User'],
+    queryKey: ['user'],
     queryFn: async ()=> {
       (id ? id = id : id = 'me')
-      const {data} = await axios.get(`/users/${id}`)
+      const {data} = await axios.get(`/users/getUser/${id}`)
       dispatch(setVisitedUser(data));
       return data;
     }
