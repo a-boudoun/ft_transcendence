@@ -11,7 +11,7 @@ import { useState } from 'react';
 import AddFriend from './AddFriend';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
-import { setVisitedUser } from '@/redux/features/currentChannel';
+import { setVisitedUser } from '@/redux/features/globalState';
 
 const User = ({id} : {id : string | null}) => {
   const dispatch = useDispatch<AppDispatch>();

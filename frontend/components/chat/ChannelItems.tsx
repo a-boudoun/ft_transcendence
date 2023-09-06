@@ -10,7 +10,11 @@ import { useSelector } from "react-redux";
 import Channel from "@/dto/Channel";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { setisMember } from "@/redux/features/currentChannel";
+import { setisMember } from "@/redux/features/globalState";
+import { usePathname, useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { setChannels, setuser } from "@/redux/features/globalState";
+
 
 interface Data{
     id: number;
@@ -24,17 +28,18 @@ interface Data{
 
 const ChannelItems = ({path}:{path:string}) => {
 
-    const data :channelDto[] = useSelector((state: any) => state.currentChannel.channels);
-    const user = useSelector((state: any) => state.currentChannel.user);
+    const dispatch = useDispatch<AppDispatch>();
+    const data1 :channelDto[] = useSelector((state: any) => state.globalState.channels);
+    const user = useSelector((state: any) => state.globalState.user);
     return (
         
         <div className="h-[90%] overflow-y-scroll py-2 ">
             {
-            data?.map((data: channelDto) =>(
-                <Link  key={data.id} href={`/channel/${data.id}` }>
-                    <ChannelItem channel={data} user={user} />
-                </Link>
-            ))
+                data1.map((data: channelDto) =>(
+                    <Link  key={data.id} href={`/channel/${data.id}` }>
+                        <ChannelItem channel={data} user={user} />
+                    </Link>
+                ))
         
             }
         </div>
@@ -46,7 +51,7 @@ export default ChannelItems;
 export const ChannelItem = ({channel, user}:{channel:any , user:userDto}) => { 
     const dispatch: AppDispatch = useDispatch();
     const [isMember, setIsMember] = useState(false);
-    const channels = useSelector((state: any) => state.currentChannel.channels);
+    const channels = useSelector((state: any) => state.globalState.channels);
    
     useEffect(() => {
             function ss(member: any) {

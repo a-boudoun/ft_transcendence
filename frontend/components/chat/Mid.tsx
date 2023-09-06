@@ -9,28 +9,41 @@ import userDto from "@/dto/userDto";
 import channelDto from '@/dto/channelDto';
 import { useSelector } from 'react-redux';
 import { set } from 'zod';
-import { setMembership, setlastDate, setMessage, setisMid, setisChild, setisopen, setmodaltype } from '@/redux/features/currentChannel';
+import { setMembership, setlastDate, setMessage, setisMid, setisChild, setisopen, setmodaltype } from '@/redux/features/globalState';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import Channel from '@/dto/Channel';
 import Message from '@/dto/Message';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { socket } from './chatSocket';
 import moment from 'moment';
 import Modal from './Modal';
-
+import { ToastContainer, toast } from 'react-toastify';
+import { Client } from '@/providers/QueryProvider';
 
 
 function Mid() {
     const dispatch = useDispatch<AppDispatch>();
 
-    const channel = useSelector((state: any) => state.currentChannel.channel);
-    const user = useSelector((state: any) => state.currentChannel.user);
-    const isMid = useSelector((state: any) => state.currentChannel.isMid);
-    const messages = useSelector((state: any) => state.currentChannel.channel.messages);
+    const channel = useSelector((state: any) => state.globalState.channel);
+    const user = useSelector((state: any) => state.globalState.user);
+    const isMid = useSelector((state: any) => state.globalState.isMid);
+    const messages = useSelector((state: any) => state.globalState.channel.messages);
     const [input, setInput] = useState('');
+    const [isMuted, setIsMuted] = useState(false);
     
+    const showToast = () => {
+        toast.error('you are muted', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      };
 
     useEffect(() => {
         if (!socket.connected) 
@@ -49,9 +62,29 @@ function Mid() {
     });
 
 
+    const isMuted1 = useMutation({
+        mutationFn: async (user: userDto) => {
+            const { data } = await axios.get(`http://localhost:8000/channels/isMuted/${channel.id}/${user.username}`, { withCredentials: true });
+            return data;
+        },
+        onSuccess: (data) => {
+            setIsMuted(data);
+        }
+    });
+    useEffect(() => {
+        if(!user || !channel) return;
+        isMuted1.mutate(user);
+    }, [user]);
+
     const handelSubmit = (event: any) => {
         event.preventDefault();
         if (!input.trim()) return;
+        isMuted1.mutate(user);
+        if (isMuted)
+        {
+            showToast();
+            return;
+        }
         socket.emit('prevmessage', { channel: channel.id, message: input, from: user.username });
         setInput('');
     }
@@ -86,18 +119,22 @@ function Mid() {
     const isMember = channel.memberships?.some((membership :any) => membership?.member?.id === user.id)
     { if (channel.memberships && user.id)
     return (
-        <div className={`justify-between text-white  rounded-xl   bg-white bg-opacity-20 ackdrop-blur-lg  drop-shadow-lg p-4 ${isMid === true ? 'w-full sm:w-1/2 md:w-7/12 flex flex-col lg:w-5/12' : 'hidden lg:flex lg:flex-col  lg:w-5/12'} `}>
-            <div className="h-fit bg-dark-gray flex items-center py-3  rounded-xl  justify-between " >
+        <>
+        <ToastContainer />
+        <div className={` text-white  rounded-[2.5rem] sm:mr-6    sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:p-4 ${isMid === true ? 'w-full md:w-1/2 lg:w-7/12 flex flex-col xl:w-5/12' : 'hidden lg:flex lg:flex-col  lg:w-5/12'} `}>
+            <div className='flex flex-col justify-between bg-light-gray h-full rounded-[2rem] overflow-hidden'>
+
+            <div className="h-fit bg-dark-gray flex items-center py-3    justify-between px-3" >
                 <div className="flex items-center space-x-2 ">
 
                     <Link href={`/channel`}>
                         <Image
-                            className="h-full  sm:hidden"
+                            className="h-full  md:hidden"
                             src={"/img/back.svg"}
                             width={18}
                             height={18}
                             alt=""
-                        />
+                            />
                     </Link>
                     <Image
                         className="h-10 w-10 rounded-full  "
@@ -105,7 +142,7 @@ function Mid() {
                         width={100}
                         height={100}
                         alt=""
-                    />
+                        />
                     <span className="text-center h-fit">{channel.name}</span>
                 </div>
                 <div className="text-3xl mr-5 flex items-center justify-center lg:hidden ">
@@ -116,14 +153,14 @@ function Mid() {
                             width={24}
                             height={24}
                             alt=""
-                        />
+                            />
                     </button>
                 </div>
             </div>
             <div className="overflow-y-auto flex-grow py-3 px-2" ref={messageContainerRef}>
                 {
                     messages?.map((msg: Message, id: number) =>
-                        <Message key={id} msg={msg.content} id={msg.sender} user={user} date={msg.date} />
+                    <Message key={id} msg={msg.content} id={msg.sender} user={user} date={msg.date} />
                     )
                 }
             </div>
@@ -138,7 +175,9 @@ function Mid() {
                     Join
                 </button>
             </div>
+            </div>
         </div>
+    </>
     );
             }
 }
@@ -158,14 +197,14 @@ export const Message = (msg: any) => {
    
     return (
         <div className={`w-full flex flex-col `}>
-        <div className={` w-full flex ${style} text-[10px] pr-10 text-gray-300`}>{date} ago</div>
-        <div className={`w-full flex ${style} items-center space-x-2`}>
-            <div className="flex  flex-col bg-dark-gray w-fit  max-w-[250px] rounded-lg  py-2 my-2 min-w-[75px]">
-                <div key={msg.id} className="px-5 break-words text-left text-sm">
+        <div className={` w-full flex ${style} text-[10px] px-3  text-blue`}>{date} ago</div>
+        <div className={`w-full flex ${style}    `}>
+            <div className={` bg-dark-gray  w-fit  max-w-[250px] ${msg.id?.username === msg.user?.username ? " rounded-tl-xl" : "rounded-tr-xl"}  rounded-b-xl py-2 m-2 min-w-[75px] `}>
+                <div key={msg.id} className="px-5 break-words text-left text-sm ">
                     {msg.msg}
                 </div>
             </div>
-            <div className={`${msg.id?.username === msg.user?.username ? '' : 'order-first'}`}>
+            <div className={`${msg.id?.username === msg.user?.username ? 'top-0' : 'order-first'} m-2 ` }>
                 <Image
                     className="h-[30px] w-[30px]  rounded-full"
                     src={msg.id?.image}

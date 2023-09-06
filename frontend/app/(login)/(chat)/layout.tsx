@@ -24,11 +24,11 @@ export default function LoginLayout({
 
   return (
    
-    <main className={`h-full  pt-[56px] lg:p-[30px] lg:pt-[86px] flex   justify-center `}>
-      <div className=" w-full  flex gap-2 max-w-7xl overflow-hidden">
+    <main className={`h-screen w-full pt-[56px]  sm:p-10 sm:pt-[96px] mx-auto flex  max-w-7xl `}>
+     
         <Left />
         {children}
-      </div>
+  
     </main>
   
   )

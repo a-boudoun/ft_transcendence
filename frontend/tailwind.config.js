@@ -12,10 +12,10 @@ module.exports = {
         'bg': "url('/img/bg1.png')",
       },
       colors: {
-        'dark-gray': '#2F3B58',
-        'light-gray': '#384259',
-        'red': '#EA5581',
-        'blue': '#7AC7C4',
+        'dark-gray': '#222831',
+        'light-gray': '#393E46',
+        'red': '#EB5353',
+        'blue': '#43D8C9',
 
     },
     keyframes: {
@@ -38,7 +38,6 @@ module.exports = {
       'left-rocekt': 'left 10s linear infinite',
       'ball': 'ball 8s linear infinite',
     },
-     
   },
   plugins: [],
   }

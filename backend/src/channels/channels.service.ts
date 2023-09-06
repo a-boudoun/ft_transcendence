@@ -14,6 +14,8 @@ import { User } from 'src/entities/user.entity';
 
 import * as bcrypt from 'bcrypt';
 import { Not } from 'typeorm';
+import { use } from 'matter-js';
+import { Console } from 'console';
 
 @Injectable()
 export class ChannelsService {
@@ -40,11 +42,14 @@ export class ChannelsService {
       newChannel.password = '';
     const cchannel = this.channelRepo.create(newChannel);
     const ret = await this.channelRepo.save(cchannel);
+
     const membership : MembershipDTO  = this.membershipRepo.create();
     membership.channel = ret;
     membership.member = channel.owner;
     membership.title = MemberTitle.OWNER;
     await this.membershipRepo.save(membership);
+
+
     const channel1 = await this.channelRepo.findOne({
       where: {
         id: ret.id,
@@ -55,16 +60,47 @@ export class ChannelsService {
     return channel1;
   }
 
-  async findAll() {
-    const channels = await this.channelRepo.find({
+  async findAll(username: string) {
+    const banedid : number[] = await this.bannationRepo
+      .createQueryBuilder('bannation')
+      .innerJoin('bannation.channel', 'channel')
+      .innerJoin('bannation.member', 'member')
+      .select('channel.id')
+      .where('member.username = :username', { username: username })
+      .getRawMany()
+      .then((res) => res.map((res) => res.channel_id));
+  
+  
+    let channels = await this.channelRepo.find({
       where: {
         type: Not(ChannelType.DIRECT),
+      
       },
       relations: ['messages', 'memberships.member', 'bannations.member'],
     });
-    return channels
+    channels = channels.filter((channel) => !banedid.includes(channel.id));
+    return channels;
   }
+  
+  
 
+  async findOne1(id: number, username: string) {
+
+    let channel= await this.channelRepo.findOne({
+      where: {
+        id: id,
+      },
+      relations: ['messages.sender', 'memberships.member', 'bannations.member', 'mutations.member'],
+    });
+    if(!channel)
+      return null;
+    const ban = await this.isBanned(id, username);
+    if (ban) {
+      return null;
+    }
+    return channel;
+
+  }
   async findOne(id: number) {
     return this.channelRepo.findOne({
       where: {
@@ -80,8 +116,12 @@ export class ChannelsService {
      channel.name = updateChannelDto.name;
     if(updateChannelDto.image != channel.image)
       channel.image = updateChannelDto.image;
-    if(updateChannelDto.password != channel.password)
-      channel.password = updateChannelDto.password;
+    if(!(await bcrypt.compare(updateChannelDto.password, channel.password)))
+    {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(updateChannelDto.password, salt);
+      channel.password = hashedPassword;
+    }
     if(updateChannelDto.type != channel.type)
       channel.type = updateChannelDto.type;
 
@@ -89,13 +129,26 @@ export class ChannelsService {
   }
 
   async remove(id: number) {
-     const membership = await this.findOne(id);
-      membership.memberships.forEach(async (membership) => {
-        await this.membershipRepo.delete(membership.id);
-      });
-      membership.messages.forEach(async (message) => {
-        await this.messageRepo.delete(message.id);
-      });
+     const channel = await this.findOne(id);
+      
+       
+        this.messageRepo.createQueryBuilder('message')
+        .delete()
+        .where('channel.id = :id', { id: id })
+        .execute();
+        
+      this.membershipRepo.createQueryBuilder('membership')
+        .delete()
+        .where('channel.id = :id', { id: id })
+        .execute();
+      this.bannationRepo.createQueryBuilder('bannation')
+        .delete()
+        .where('channel.id = :id', { id: id })
+        .execute();
+      this.mutationRepo.createQueryBuilder('mutation')
+        .delete()
+        .where('channel.id = :id', { id: id })
+        .execute();
       
      
     return this.channelRepo.delete(id);
@@ -143,10 +196,7 @@ export class ChannelsService {
   async addmessge(channelId: number, message: string, username: string) {
     
     const channel = await this.channelRepo.findOne(({
-      where: {
-        id: channelId,
-        
-      },
+      where: {id: channelId,},
       relations: [ 'memberships.member'],
     }));
 
@@ -173,12 +223,17 @@ export class ChannelsService {
   }
 
 
-  async mut(channelId: number, username: string, duration: number) {
+  async mut(channelId: number, id: number, duration: number) {
     const channel = await this.findOne(channelId);
     const memship = await channel.memberships.find(
-      (membership : MembershipDTO) => membership.member.username === username,
+      (membership : MembershipDTO) => membership.member.id === id,
     );
-    const userMutation = await this.mutationRepo.findOne( { where: { member: memship.member , channel: channel} } );
+    const userMutation = await this.mutationRepo.findOne({
+      where: {
+        channel: { id: channel.id},
+        member: { id: memship.member.id},
+      },
+    });
     if (userMutation) {
       userMutation.duration = duration;
       userMutation.mut_date = new Date();
@@ -193,8 +248,10 @@ export class ChannelsService {
     return this.mutationRepo.save(mut);
   }
 
-  async isMUted(channelId: number, username: string) {
+  async isMuted(channelId: number, username: string) {
     const channel = await this.findOne(channelId);
+    if(!channel || !channel.mutations || channel.mutations.length === 0)
+      return false; 
     const mut = await channel.mutations.find(
       (mutation : Mutation) => mutation.member.username === username,
     );
@@ -208,6 +265,38 @@ export class ChannelsService {
     return false;
   }
 
+  async getDirectChannel(username: string) {
+    const channel = await this.channelRepo.find({
+      where: {
+        type: ChannelType.DIRECT,
+      },
+    
+
+    });
+    return channel;
+  }
+
+  async unban(banId: number) {
+    const ban = await this.bannationRepo.findOne({
+      where: {
+        id: banId,
+      },
+      relations: ['channel', 'member'],
+    });
+    this.addFriendtoChannel(ban.channel.id, ban.member);
+    return this.bannationRepo.delete(banId);
+  }
+
+  async isBanned(channelId: number, username: string) {
+    const channel = await this.findOne(channelId);
+    const ban = await channel.bannations.find(
+      (bannation : Bannation) => bannation.member.username === username,
+    );
+    if (ban) {
+      return true;
+    }
+    return false;
+  }
 
 }
 

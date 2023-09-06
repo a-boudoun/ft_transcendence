@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import Modal from '@/components/chat/Modal';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
-import { setisChild } from '@/redux/features/currentChannel';
+import { setisChild } from '@/redux/features/globalState';
 import { useEffect } from 'react';
 
 const Page = () => {
@@ -18,9 +18,11 @@ const Page = () => {
     dispatch(setisChild(false));
   }, []);
   return (
-    <div className={` hidden sm:flex justify-center items-center sm:w-1/2 lg:w-8/12  text-white  rounded-xl  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg`}>
+    <div className={` hidden md:flex justify-center items-center md:w-1/2 lg:w-8/12  text-white  rounded-[2.5rem]  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4`}>
+      <div className='w-full h-full bg-light-gray rounded-[2rem] flex justify-center items-center'>
+
       <span className='text-md md:text-lg text-blue'>Select a chat or start a new conversation </span>
-      {/* <Modal isOpen={true}/> */}
+      </div>
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { UserDTO } from 'src/users/dto/create-user.dto';
 import con from 'ormconfig';
 import { ChannelsService } from 'src/channels/channels.service';
-import { Bannation, ChannelType } from 'src/entities/channel.entity';
+import { Bannation, ChannelType, MemberTitle, Membership } from 'src/entities/channel.entity';
 
 @Injectable()
 export class FriendshipService {
@@ -15,6 +15,8 @@ export class FriendshipService {
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Channel) private channelRepo: Repository<Channel>,
     @InjectRepository(Bannation) private bannationRepo: Repository<Bannation>,
+    @InjectRepository(Membership) private memRepo: Repository<Membership>,
+
     ) {}
     
     async friendReq(username : string) {
@@ -79,11 +81,13 @@ async accept(username: string, sender: string) {
     const ch = await this.channelRepo.findOne({
       where: {name: channelName, type: ChannelType.DIRECT},
     });
-    // const channelExists = await this.channelRepo.createQueryBuilder('channel').where({name: channelName}).andWhere({type: ChannelType.DIRECT});
     if (ch == null) {
-    const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" ,memberships: [user1, user2]});
+    const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" });
     const rt = await this.channelRepo.save(channel);
-  
+  const membership1 = await this.memRepo.create({channel: rt, member: user1, title: MemberTitle.MEMBER});
+  const membership2 = await this.memRepo.create({channel: rt, member: user2, title: MemberTitle.MEMBER});
+  await this.memRepo.save(membership1);
+  await this.memRepo.save(membership2);      
   }
     return await this.friendshipRepo.save(friendship);
   }

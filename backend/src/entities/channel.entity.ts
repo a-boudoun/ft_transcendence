@@ -135,7 +135,7 @@ export class Mutation {
     @ManyToOne(() => User, (user) => user.mutations)
     member: User;
 
-    @Column({ type: 'date' })
+    @Column({ type: 'timestamp' })
     mut_date: Date;
     
     @Column()
