@@ -57,7 +57,6 @@ const AddFriend = ({id} : {id : string}) => {
         await Accept.mutate(id);
     }
 
-    console.log(Status.data);
     if (Status.isLoading)
         return <div>loading...</div>
     else if (Status.data.status === 'none')

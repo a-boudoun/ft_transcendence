@@ -5,34 +5,39 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
 
 const Friends = () => {
-    const[friends, setFriends] = useState<userDto[]>([]);
-    const {data, isLoading} = useQuery({
-        queryKey: ['friends'],
-        queryFn: async ()=> {
-            const { data } = await axios.get('http://localhost:8000/friendship/getFriends', { withCredentials: true });
-            return data;
-        }
-      });
+ 
+    // const user = useSelector((state: any) => state.globalState.user);
+    // const channels = useSelector((state: any) => state.globalState.channels);
+    // const {data, isLoading} = useQuery({
+    //     queryKey: ['friends'],
+    //     queryFn: async ()=> {
+    //         const { data } = await axios.get(`http://localhost:8000/direct/${user.username}`, { withCredentials: true });
+    //         return data;
+    //     }
+    //   });
 
-    useEffect(() => {
-        if (data) {
-            setFriends(data);
-        }
-    }, [data]);
-    console.log(friends);
+    // useEffect(() => {
+    //     if (data) {
+    //     console.log(data);
+    //     }
+    // }, [data, user]);
+    
     return (
 
         <div className="h-[90%] overflow-y-scroll py-2 ">
             {
-                friends?.map((friend: userDto) => (
-                    <Link key={friend.id} href={`/chat/${friend.id}`}>
-                        <Friend key={friend.id} friend={friend} />
-                    </Link>
-                ))
+            //     friends?.map((friend: userDto) => (
+            //         <Link key={friend.id} href={`/chat/${friend.id}`}>
+            //             <Friend key={friend.id} friend={friend} />
+            //         </Link>
+            //     ))
+            
             }
+           
         </div>
 
     );

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req} from '@nestjs/common';
 import { ChannelsService } from './channels.service';
 import { ChannelDTO } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
@@ -21,19 +21,17 @@ export class ChannelsController {
   }
   
   @Get()
+  @UseGuards(Jwt2faAuthGuard)
   findAll() {
-    return this.channelsService.findAll();
+    return this.channelsService.findAll('amiski');
   }
   
-  @Get('/me')
-  me() {
-    return this.channelsService.findOne(2);
-  }
   
   
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.channelsService.findOne(+id);
+  @UseGuards(Jwt2faAuthGuard)
+  findOne(@Param('id') id: string, @Req() req: any) {
+    return this.channelsService.findOne1(+id, req.user.username);
   }
   
   @Patch(':id')
@@ -60,7 +58,6 @@ export class ChannelsController {
   @Patch(':id/addFriendtoChannel')
   @UseGuards(Jwt2faAuthGuard)
   async addFriendtoChannel(@Param('id') id: string, @Body() friend: UserDTO) {
-    console.log(friend, "--------------------------");
     return this.channelsService.addFriendtoChannel(+id, friend);
   }
 
@@ -73,6 +70,23 @@ export class ChannelsController {
   async ban(@Param('channelId') channelId: string,@Param('username') username: string) {
     return this.channelsService.banner(+channelId,username);
   }
+  @Get('direct/:username')
+  async getDirectChannel(@Param('username') username: string) {
+    return this.channelsService.getDirectChannel(username);
+  }
+  @Patch('unban/:banId')
+  async unban(@Param('banId') banId: string) {
+    return this.channelsService.unban(+banId);
+  }
+  @Patch('muteUser/:channelId')
+   mute( @Param('channelId') channelId: string, @Body() dt: any) {
+    return this.channelsService.mut(+channelId,+dt.id, 1);
+  }
+  @Get('isMuted/:channelId/:username')
+  isMuted(@Param('channelId') channelId: string, @Param('username') username: string) {
+    return this.channelsService.isMuted(+channelId,username);
+  }
+
 }
 
 

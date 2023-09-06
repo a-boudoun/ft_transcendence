@@ -1,8 +1,8 @@
 import {configureStore} from '@reduxjs/toolkit';
-import currentChannelReducer from './features/currentChannel';
+import globalStateReducer from './features/globalState';
 export const store = configureStore({
     reducer: {
-        currentChannel: currentChannelReducer,
+        globalState: globalStateReducer,
     },
 });
 

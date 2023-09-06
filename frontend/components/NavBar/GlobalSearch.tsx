@@ -44,7 +44,6 @@ const GlobalSearch = () => {
     queryKey: ['search', search],
     queryFn: async () => {
       const { data } = await axios.get(`http://localhost:8000/users/search/${search}`, { withCredentials: true });
-      console.log(data);
       return data;
     }
   });

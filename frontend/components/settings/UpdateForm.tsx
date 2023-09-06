@@ -40,8 +40,6 @@ const UpdateForm = () => {
   if (User.isLoading)
   return <div>loading...</div>
   else {
-      console.log(User.data);
-
       return (
           <div className='my-8  flex flex-col items-center gap-8 overf'>
             <ChangeNameImage />

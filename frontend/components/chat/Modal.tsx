@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
-import { setMembership, setisopen , setisMember, setmodaltype, setcurrentChannel, setisNewMember} from "@/redux/features/currentChannel";
+import { setMembership, setisopen , setisMember, setmodaltype, setcurrentchannel, setisNewMember} from "@/redux/features/globalState";
 import Image from "next/image";
 import axios from 'axios';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -31,8 +31,8 @@ function Modal() {
       progress: undefined,
     });
   };
-    const modalType:string = useSelector((state: any) => state.currentChannel.modalTYpe);
-    const isopen:boolean = useSelector((state: any) => state.currentChannel.isopen);
+    const modalType:string = useSelector((state: any) => state.globalState.modalTYpe);
+    const isopen:boolean = useSelector((state: any) => state.globalState.isopen);
     const {divref} = useAmiski();
     return (
      
@@ -53,10 +53,11 @@ function Modal() {
                   />
                 </button>
                    <>
-                      <JoinChannel type={modalType}/>
-                      <UpdateChannel type={modalType}/>
-                      <AddFriend type={modalType}/>
-                      <LeaveChannel type={modalType}/>
+                      { modalType === 'joinchannel' ? <JoinChannel type={modalType}/> : null}
+                      { modalType === 'settings' ? <UpdateChannel type={modalType}/>: null}
+                      { modalType === 'addFriend' ? <AddFriend type={modalType}/>: null}
+                      { modalType === 'leaveChannel' ? <LeaveChannel type={modalType}/>: null}
+                      { modalType === 'mute' ? <Mute type={modalType}/> : null}
                 </>
               </div>
             </div>
@@ -84,8 +85,8 @@ function Modal() {
     };
    
     const [input, setInput] = useState("");
-    const channel = useSelector((state: any) => state.currentChannel.channel);
-    const user = useSelector((state: any) => state.currentChannel.user);
+    const channel = useSelector((state: any) => state.globalState.channel);
+    const user = useSelector((state: any) => state.globalState.user);
     const [error, setError] = useState('');
     const [isDelayed, setIsDelayed] = useState(false);
 
@@ -97,7 +98,6 @@ function Modal() {
           user: user,
           password: input,
         }
-        console.log(user);
           const { data } = await axios.patch(`http://localhost:8000/channels/${channel.id}/joinChannel`, dt, { withCredentials: true });
           if(data === "Wrong password")
           {
@@ -111,7 +111,7 @@ function Modal() {
           {
             const membership = data.memberships?.find((member: any) => member.member?.username === user.username);
             dispatch(setMembership(membership));
-            dispatch(setcurrentChannel(data));
+            dispatch(setcurrentchannel(data));
             dispatch(setisopen(false));
           }
           return data;
@@ -131,7 +131,7 @@ function Modal() {
     }
 
     return(
-      <div className={`shadow-2xl w-96 h-96 bg-slate-700 rounded-lg ${type !== 'joinchannel' ? 'hidden': ''}`}>
+      <div className={`shadow-2xl w-96 h-96 bg-dark-gray rounded-lg ${type !== 'joinchannel' ? 'hidden': ''}`}>
         <Image
           className="absolute left-0 right-0 top-10 h-32 w-32  rounded-full mx-auto my-3"
           src={channel.image}
@@ -156,7 +156,7 @@ function Modal() {
 
   export const UpdateChannel = ({type}:{type:string}) => {
     const dispatch = useDispatch<AppDispatch>();
-    const channel = useSelector((state: any) => state.currentChannel.channel);
+    const channel = useSelector((state: any) => state.globalState.channel);
     const uchannel : updateChannel = { };
     const [name, setName] = useState<string>('');
     const [imagePreview, setImagePreview] = useState<string>(channel.image);
@@ -164,7 +164,7 @@ function Modal() {
     const [isclicked, setIsclicked] = useState<boolean>(false);
     const [typeCh, setTypeCh] = useState<string>(channel.type);
     const [password, setPassword] = useState('');
-    const isopen = useSelector((state: any) => state.currentChannel.isopen);
+    const isopen = useSelector((state: any) => state.globalState.isopen);
     const {divref} = useAmiski();
     
     useEffect(() => {
@@ -239,11 +239,10 @@ function Modal() {
       dispatch(setisopen(false));
       
     }
-    console.log(typeCh);
     return(
       <div >
         <form 
-        className={`w-96 h-[490px]  bg-slate-700 rounded-lg ${type !== 'settings' ? 'hidden': ''}`} onSubmit={handelsubmit}>
+        className={`w-96 h-[490px]  bg-dark-gray rounded-lg ${type !== 'settings' ? 'hidden': ''}`} onSubmit={handelsubmit}>
           <h1 className="absolute left-0 right-0 top-5 text-blue font-semibold">Update Channel</h1>
           <div className="absolute left-0 right-0 top-14  w-32 h-32 mx-auto ">
             <label htmlFor="update" className="">
@@ -257,7 +256,7 @@ function Modal() {
             </label>
             <input type="file" className="hidden" id="update" onChange={handleChange}/>
           </div>
-          <input type="txt" className={`w-3/4 absolute top-[46%] left-0 right-0 mx-auto rounded-md py-2 px-2 outline-none text-md bg-gray-500 text-white`} placeholder="Change Name" onChange={(e: any)=> setName(e.target.value)}/>
+          <input type="txt" className={`w-3/4 absolute top-[46%] left-0 right-0 mx-auto rounded-md py-2 px-2 outline-none text-md bg-light-gray text-white`} placeholder="Change Name" onChange={(e: any)=> setName(e.target.value)}/>
           <button type='button'  className="absolute top-[56%] right-0 left-0 mx-auto w-3/4 py-1.5 rounded-md text-md inline-flex items-center justify-center bg-blue text-white"  onClick={()=> setIsclicked(!isclicked)}>
                   <span>{typeCh}</span>
                   <svg
@@ -283,7 +282,7 @@ function Modal() {
                   <button type='button' onClick={handleType}><h1 className='hover:bg-white hover:bg-opacity-10 py-1'>Protected</h1></button>
               </div>
           </div>
-          <input  required={typeCh === 'Protected'} type='password' value={password} className={`${typeCh !== 'Protected' ? 'hidden' : ''} absolute top-[66%] left-0 right-0 mx-auto w-3/4 text-md  rounded-md  py-2 px-2   bg-gray-500 text-white outline-none z-10`} placeholder='Password'  onChange={(e:any)=> setPassword(e.target.value)}/>
+          <input  required={typeCh === 'Protected'} type='password' value={password} className={`${typeCh !== 'Protected' ? 'hidden' : ''} absolute top-[66%] left-0 right-0 mx-auto w-3/4 text-md  rounded-md  py-2 px-2   bg-light-gray text-white outline-none z-10`} placeholder='Password'  onChange={(e:any)=> setPassword(e.target.value)}/>
           <div className="absolute bottom-0 left-0 right-0 mx-auto ">
               <button className=" w-[46%] absolute bottom-0 left-1 bg-blue text-white font-semibold text-base my-2 py-1  rounded-lg" onClick={()=> dispatch(setisopen(false))} >Cancel</button>
               <button className=" w-[46%] absolute bottom-0 right-1 bg-red text-white font-semibold text-base my-2 py-1 rounded-lg"  >Update</button>
@@ -297,7 +296,7 @@ function Modal() {
     const dispatch = useDispatch<AppDispatch>();
     const [friends, setFriends] = useState<any>([]);
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const channel = useSelector((state: any) => state.currentChannel.channel);
+    const channel = useSelector((state: any) => state.globalState.channel);
     
 
     const debouncedSearchQuery = useDebounce(searchQuery, 600);
@@ -315,20 +314,20 @@ function Modal() {
       });
 
       useEffect(() => {
-        if(!channel?.id)
+        if(!channel?.id || !debouncedSearchQuery)
           return;
-       getFriends.mutate(channel.id);
-      }, [debouncedSearchQuery, channel]);
+          getFriends.mutate(channel.id);
+      }, [debouncedSearchQuery]);
 
     return(
-      <div className={`w-96 h-96  bg-slate-700 rounded-lg ${type !== 'addFriend' ? 'hidden': ''}`}>
+      <div className={`w-96 h-96  bg-dark-gray rounded-lg ${type !== 'addFriend' ? 'hidden': ''}`}>
          <h1 className="absolute left-0 right-0 top-5 text-blue font-semibold mx-auto">Invite to chat</h1>
          <input type="txt" className="w-11/12 absolute top-14 left-0 right-0 mx-auto rounded-md py-1.5 px-2 outline-none text-md bg-gray-500 text-white" placeholder="Enter Username" value={searchQuery}  onChange={handleInputChange}/>
-          <div className="w-11/12 h-[72%] absolute top-[26%] left-0 right-0 mx-auto rounded-md bg-slate-600 overflow-y-scroll">
-            { friends &&
+          <div className="w-11/12 h-[72%] absolute top-[26%] left-0 right-0 mx-auto rounded-md bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg  overflow-y-scroll">
+            { friends.length === 0 ? <h1 className="text-white text-center mt-5">No Friends</h1> : 
               friends?.map((friend: any) => (
                 <Friend key={friend.id} friend={friend}/>
-              )) 
+              ))
             }
           </div>
       </div>
@@ -337,22 +336,22 @@ function Modal() {
 
   }
   export const Friend = ({friend}:{friend: any}) => {
-
-    const channel = useSelector((state: any) => state.currentChannel.channel);
+    const dispatch = useDispatch<AppDispatch>();
+    const channel = useSelector((state: any) => state.globalState.channel);
     const addFriend = useMutation({
       mutationFn: async (channelid: number) => {
           const { data } = await axios.patch(`http://localhost:8000/channels/${channelid}/addFriendtoChannel`, friend, { withCredentials: true });
           return data;
       },
       onSuccess: () => {
-          console.log("joined")
+          dispatch(setisopen(false));
           Client.refetchQueries('channels');
           Client.refetchQueries('channel');
       }
   });
  
     return(
-      <div className="my-2 mx-auto w-[92%] h-12 bg-dark-gray rounded-md flex items-center justify-between">
+      <div className="my-2 mx-auto w-[92%] h-12 bg-light-gray rounded-md flex items-center justify-between">
         <div className="flex items-center">
           <Image
             className="mx-2 h-8 w-8 rounded-full"
@@ -371,8 +370,8 @@ function Modal() {
   export const LeaveChannel = ({type}:{type:string}) => {
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
-    const user = useSelector((state: any) => state.currentChannel.user);
-    const channel = useSelector((state: any) => state.currentChannel.channel);
+    const user = useSelector((state: any) => state.globalState.user);
+    const channel = useSelector((state: any) => state.globalState.channel);
     const [isowner, setIsowner] = useState(false);
 
     useEffect(() => {
@@ -398,9 +397,9 @@ function Modal() {
     });
     
     return(
-      <div className={`w-96 h-44  bg-slate-700 rounded-lg ${type !== 'leaveChannel' ? 'hidden': ''}`}>
+      <div className={`w-96 h-44  bg-dark-gray rounded-lg ${type !== 'leaveChannel' ? 'hidden': ''}`}>
          <h1 className="absolute left-0 right-0 top-5 text-blue font-semibold mx-auto">Leave Channel ?</h1>
-         <h5 className="absolute top-16 text-white text-sm px-4">Leaving means you can't send or receive messages in this chat. You can rejoin at any time.</h5>
+         <h5 className="absolute top-16 text-white text-base px-4">Leaving means you can't send or receive messages in this chat. You can rejoin at any time.</h5>
          <div className="absolute bottom-0 left-0 right-0 mx-auto ">
             <button className=" w-[46%] absolute bottom-0 left-1 bg-blue text-white font-semibold text-base my-2 py-1  rounded-lg" onClick={()=> dispatch(setisopen(false))} >Cancel</button>
             <button className=" w-[46%] absolute bottom-0 right-1 bg-red text-white font-semibold text-base my-2 py-1 rounded-lg" onClick={()=> leaveChannel.mutate(user)} >Leave</button>
@@ -408,4 +407,61 @@ function Modal() {
          </div>
       </div>
     );
+  }
+
+  export const Mute = ({type}:{type:string}) => {
+  
+    const dispatch = useDispatch<AppDispatch>();
+    const mutedid = useSelector((state: any) => state.globalState.id);
+    const channel = useSelector((state: any) => state.globalState.channel);
+    const [duration, setDuration] = useState<string>('');
+  
+    const muteUser = useMutation({
+      mutationFn: async ({channelid,duration, muted}:{channelid:number,duration:string, muted: number}) => {
+        const dt = {
+          id: muted,
+          duration: duration,
+        }  
+        const { data } = await axios.patch(`http://localhost:8000/channels/muteUser/${channelid}`,dt, { withCredentials: true });
+          return data;
+      },
+      onSuccess: () => {
+          console.log("joined")
+      }
+  });
+
+    const handelClick = (duration: string) => {
+      setDuration(duration);
+    }
+    const mute = () =>
+    {
+      muteUser.mutate({channelid: channel.id, duration: duration, muted: mutedid});
+      setDuration('');
+      dispatch(setisopen(false));
+    }
+
+    return(
+      <div className={`w-80 h-80 z-50  bg-dark-gray rounded-lg ${type !== 'mute' ? 'hidden': ''}`}>
+         <h1 className="absolute left-0 right-0 top-5 text-blue font-semibold mx-auto">Mute User</h1>
+     
+        <div className="absolute top-14 left-0 right-0 mx-auto w-[90%] h-52 bg-light-gray rounded-xl">
+         <div className="h-[46%] mt-1.5 ml-2 w-[95%] relative">
+          <button className={`w-[46%] h-[90%] bg-dark-gray absolute top-0 bottom-0 left-1 my-auto rounded-lg text-base font-bold text-blue flex justify-center items-center ${duration === '15' ? 'border-2 border-red' : ''}`} onClick={()=> handelClick('15')}> 15 minutes</button>
+          <button className={`w-[46%] h-[90%] bg-dark-gray absolute top-0 bottom-0 right-1 my-auto rounded-lg text-base font-bold text-blue flex justify-center items-center ${duration === '30' ? 'border-2 border-red' : ''}`} onClick={()=> handelClick('30')}>30 minutes</button>
+         </div>
+         <div className=" h-[46%] mt-1 ml-2 w-[95%] relative">
+          <button className={`w-[46%] h-[90%] bg-dark-gray absolute top-0 bottom-0 left-1 my-auto rounded-lg text-base font-bold text-blue flex justify-center items-center ${duration === '60' ? 'border-2 border-red' : ''}`} onClick={()=> handelClick('60')}>1 Hour</button>
+          <button className={`w-[46%] h-[90%] bg-dark-gray absolute top-0 bottom-0 right-1 my-auto rounded-lg text-base font-bold text-blue flex justify-center items-center ${duration === '1440' ? 'border-2 border-red' : ''}` } onClick={()=> handelClick('1440')}>24 Hours</button>
+         </div>
+        </div>
+        <button className=" w-[44%] absolute bottom-0 left-3 bg-blue text-white font-semibold text-base my-2 py-1  rounded-lg" onClick={()=> dispatch(setisopen(false))} >Cancel</button>
+        <button className={`w-[44%] absolute bottom-0 right-3 bg-red text-white font-semibold text-base my-2 py-1 rounded-lg ${duration === '' ? 'cursor-not-allowed': ''}`} disabled={duration === ''} onClick={mute}>Mute</button>
+
+       </div>
+         
+    
+          
+
+    );
+  
   }

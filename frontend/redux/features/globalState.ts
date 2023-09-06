@@ -15,6 +15,7 @@ type InitialState = {
     visitedUser: userDto;
     Membership: any[];
     isNewMember: boolean;
+    id: number;
 };
 
 interface Message {
@@ -54,16 +55,18 @@ const initialState = {
     visitedUser: {} as userDto,
     Membership: [] as any[],
     isNewMember: false,
+    id: 0,
 
 } as InitialState
 
-export const currentChannelSlice = createSlice({
-    name: 'currentChannel',
+export const globalStateSlice = createSlice({
+    name: 'globalState',
     initialState,
     reducers: {
-        setcurrentChannel: (state , action: PayloadAction<any>) => {
+        setcurrentchannel: (state , action: PayloadAction<any>) => {
             state.channel  = action.payload;
-            state.channel.messages = state.channel.messages.sort((a, b) => new Date(a.date) - new Date(b.date));
+            if(state.channel.messages)
+                state.channel.messages = state.channel.messages.sort((a, b) => new Date(a.date) - new Date(b.date));
         },
         setMessage: (state: any, action: PayloadAction<any>) => {
             state.channel.messages.push(action.payload );
@@ -101,8 +104,11 @@ export const currentChannelSlice = createSlice({
         setisNewMember: (state: any, action: PayloadAction<any>) => {
             state.isNewMember = action.payload;
         },
+        setid: (state: any, action: PayloadAction<any>) => {
+            state.id = action.payload;
+        },
     }
 })
 
-export const {setcurrentChannel,setisNewMember, setMessage,setMemberships, setVisitedUser, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisChild, setmodaltype} = currentChannelSlice.actions;
-export default currentChannelSlice.reducer;
+export const {setcurrentchannel,setid, setisNewMember, setMessage,setMemberships, setVisitedUser, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisChild, setmodaltype} = globalStateSlice.actions;
+export default globalStateSlice.reducer;
