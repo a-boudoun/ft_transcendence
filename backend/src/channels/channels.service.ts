@@ -98,6 +98,8 @@ export class ChannelsService {
     if (ban) {
       return null;
     }
+    const messages = channel.messages.sort((a, b) => (a.date).getTime() - b.date.getTime());
+    channel.messages = messages;
     return channel;
 
   }
@@ -129,35 +131,13 @@ export class ChannelsService {
   }
 
   async remove(id: number) {
-     const channel = await this.findOne(id);
-      
-       
-        this.messageRepo.createQueryBuilder('message')
-        .delete()
-        .where('channel.id = :id', { id: id })
-        .execute();
-        
-      this.membershipRepo.createQueryBuilder('membership')
-        .delete()
-        .where('channel.id = :id', { id: id })
-        .execute();
-      this.bannationRepo.createQueryBuilder('bannation')
-        .delete()
-        .where('channel.id = :id', { id: id })
-        .execute();
-      this.mutationRepo.createQueryBuilder('mutation')
-        .delete()
-        .where('channel.id = :id', { id: id })
-        .execute();
-      
-     
     return this.channelRepo.delete(id);
   }
 
   async removeMembership(channelId: number, membershipId: number) {
     
     return this.membershipRepo.delete(membershipId);
-  }
+  } 
 
 
   async joinChannel(id: number, user: UserDTO, password: string) {
@@ -266,14 +246,26 @@ export class ChannelsService {
   }
 
   async getDirectChannel(username: string) {
-    const channel = await this.channelRepo.find({
+    const channels = await this.channelRepo.find({
       where: {
-        type: ChannelType.DIRECT,
+        type: ChannelType.DIRECT, memberships: { member: { username: username } },
       },
-    
-
     });
-    return channel;
+
+ 
+    return await  Promise.all(channels.map(async (channel) => {
+      const member = await  this.membershipRepo.findOne({
+        where : {channel : channel, member: {username : Not(username)}},
+        relations: ['member'],
+      });
+     
+      return  {
+        id: channel.id, member:  member,
+      };
+    }));
+    
+   
+
   }
 
   async unban(banId: number) {

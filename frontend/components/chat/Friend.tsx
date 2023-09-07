@@ -8,58 +8,55 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 
 
-const Friends = () => {
+const Friends = ({user}:{user:userDto}) => {
  
     // const user = useSelector((state: any) => state.globalState.user);
     // const channels = useSelector((state: any) => state.globalState.channels);
-    // const {data, isLoading} = useQuery({
-    //     queryKey: ['friends'],
-    //     queryFn: async ()=> {
-    //         const { data } = await axios.get(`http://localhost:8000/direct/${user.username}`, { withCredentials: true });
-    //         return data;
-    //     }
-    //   });
+    const [friends, setFriends] = useState<[]>([]);
+    const {data, isLoading} = useQuery({
+        queryKey: ['friends'],
+        queryFn: async ()=> {
+            const { data } = await axios.get(`http://localhost:8000/channels/direct/${user.username}`, { withCredentials: true });
+            console.log("datatt",data);
+            setFriends(data);
+            return data;
+        }
+      });
 
-    // useEffect(() => {
-    //     if (data) {
-    //     console.log(data);
-    //     }
-    // }, [data, user]);
-    
-    return (
+      if(isLoading) return <div >loading...</div>
+      else if(!data || data.length === 0) return <div className="text-blue pt-10">No friends</div>
+      else
+        return (
 
-        <div className="h-[90%] overflow-y-scroll py-2 ">
-            {
-            //     friends?.map((friend: userDto) => (
-            //         <Link key={friend.id} href={`/chat/${friend.id}`}>
-            //             <Friend key={friend.id} friend={friend} />
-            //         </Link>
-            //     ))
-            
-            }
-           
-        </div>
-
+            <div className="h-[90%] overflow-y-scroll py-2 ">
+                {
+                    data.map((friend: any) => (
+                        <Link key={friend.id} href={`/chat/${friend.id}`}>
+                            <Friend key={friend.id} friend={friend.member} />
+                        </Link>
+                    ))
+                }
+            </div>
     );
 }
 
 export default Friends;
 
 
-export const Friend = ({friend}:{friend:userDto}) => {
+export const Friend = ({friend}:{friend:any}) => {
     return (
         <div className={`bg-dark-gray h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white flex justify-between`}>
             <div className="flex items-center space-x-5">
-                <div className="flex items-center space-x-5">
-                    <Image
-                        className="w-10 h-10 rounded-full self-center"
-                        src={friend.image}
-                        alt="user"
-                        width={100}
-                        height={100}
-                    />
-                    <h1>{friend.username}</h1>
-                </div>
+            <div className="flex items-center space-x-5">
+                <Image
+                    className="w-10 h-10 rounded-full self-center"
+                    src={friend?.member?.image}
+                    alt="user"
+                    width={100}
+                    height={100}
+                />
+                <h1>{friend?.member?.username}</h1>
+            </div>
             </div>
         </div>
 

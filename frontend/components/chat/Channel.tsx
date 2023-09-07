@@ -13,6 +13,7 @@ import NewChannel from "./NewChannel";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import Friends from "./Friend";
+import { set } from "zod";
 
 const Channel = () => {
    
@@ -21,6 +22,7 @@ const Channel = () => {
     const [isChannel, setIsChannel] = useState(false);
     const [isFriend, setIsFriend] = useState(false);
     const activeStyle = " border-blue text-blue ";
+    const [user, setUser] = useState<userDto>({} as userDto);
     const path = usePathname();
     const router = useRouter();
     const {data, isLoading} = useQuery(
@@ -32,6 +34,7 @@ const Channel = () => {
             const userDataResponse = await axios.get('http://localhost:8000/users/me', { withCredentials: true });
             dispatch(setChannels(channelsResponse.data));
             dispatch(setuser(userDataResponse.data));
+            setUser(userDataResponse.data);
 
             return channelsResponse.data;
           }
@@ -85,7 +88,7 @@ const Channel = () => {
           {
           isLoading ? <div className="text-blue">Loading...</div> :
             <>
-            <> {isFriend && <Friends/>}</>
+            <> {isFriend && <Friends user={user}/>}</>
             <> {isChannel && <ChannelItems  path="/chat"/>}</>
             <> {newchannel && <NewChannel />}</>
             </>
