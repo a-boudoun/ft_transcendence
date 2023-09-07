@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import socket from '../socketG';
 import useCloseOutSide from '@/hookes/useCloseOutSide';
 import axios from '@/apis/axios';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
   const Challnege = ({username} : {username: string}) => {
@@ -43,16 +43,26 @@ import { useRouter } from 'next/navigation';
     const user  = useSelector((state: any) => state.currentChannel.visitedUser);
     const {divref} = useCloseOutSide({setIsOpen});
 
+    const Status = useQuery({
+        queryKey: ['friendStatus'],
+        queryFn: async ()=> {
+          const {data} = await axios.get(`/friendship/status/${user.name}`)
+          return data;
+        }
+    });
+
     return(
         <div ref={divref}
           className='w-36 absolute bottom-6 right-6 text-sm flex flex-col gap-2 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-2 rounded-2xl'>
-          <AddFriend name={user.name}/>
+          <AddFriend name={user.name} Status={Status}/>
           <Link className='bg-blue px-3 py-[5px] text-black rounded-xl' href={`/chat/${user.name}`}>Mesage</Link>
-          <Challnege username={user.username} />
+          {
+            Status.data?.status === 'accepted' && <Challnege username={user.username} />
+          }
           <Block username={user.username} />
-       </div>  
+      </div>  
     )
-  } 
+} 
   
 const UserParametres = () => {
    
