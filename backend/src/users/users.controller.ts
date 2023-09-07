@@ -60,7 +60,7 @@ export class UsersController {
     res.status(200).send({message: 'User updated'});
   }
   
-  
+
   @Get('isNameExist/:name')
   async isNameExist(@Param('name') name: string) {
     return this.usersService.isNameExist(name);

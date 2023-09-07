@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useQuery , useMutation } from "@tanstack/react-query";
 import { userDto } from '@/dto/userDto';
 import { useRouter } from 'next/navigation'
-import Frineds from "@/components/common/Friends";
 import ChangeNameImage from './ChangeNameImage';
 import BlockList from './BlockList';
 

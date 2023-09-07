@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Blockage, User } from '../entities/user.entity'
 import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FriendshipService } from '../friendship/friendship.service';
 
 @Injectable()
 export class UsersService {
@@ -11,6 +12,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Blockage) private blockRepo: Repository<Blockage>,
+    private readonly friendService: FriendshipService,
     ) {}
     
     create(userDTO: UserDTO) {
@@ -51,7 +53,8 @@ export class UsersService {
       const user = await this.userRepo.findOneBy({name});
       
       if (user) {
-        return true;
+        if (user.name === name)
+          return true;
       }
       return false;
     }
@@ -105,6 +108,7 @@ export class UsersService {
         const block = await this.blockRepo.create();
         block.blocker = await this.findOne(bloker);
         block.blocked = await this.findOne(blocked);
+        await this.friendService.remove(bloker, blocked);
         return this.blockRepo.save(block);
       }
       
@@ -119,6 +123,8 @@ export class UsersService {
   
       async blockedUsers(username: string) {
         const blockedUsers = await this.blockRepo.find({where: [{blocker : {username: username }}],  relations: ['blocked']});
+        if (blockedUsers.length === 0)
+          return [];
         return blockedUsers.map(b => b.blocked);
       }
   
@@ -132,5 +138,4 @@ export class UsersService {
         const blockedBy = await this.blockedByUsers(username);
         return [...blocked, ...blockedBy];
       }
-
-    }
+}

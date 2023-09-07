@@ -1,13 +1,12 @@
 "use client";
 import React, { useState } from 'react';
 import { useQuery } from "@tanstack/react-query";
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { userDto } from '@/dto/userDto';
 import Link from 'next/link';
 import Image from 'next/image';
 import Bar from '@/components/common/SearchBar';
 import useCloseOutSide from '@/hookes/useCloseOutSide';
-
 
 const User = ({ user }: { user: userDto }) => {
   return (
@@ -18,8 +17,19 @@ const User = ({ user }: { user: userDto }) => {
   )
 }
 
-const SearchBarDropDown = ({users}: {users: any}) => {
+const SearchBarDropDown = ({search} : {search : string}) => {
+  
+  const users = useQuery({
+    queryKey: ['search', search],
+    queryFn: async () => {
+      const { data } = await axios.get(`/users/search/${search}`);
+      console.log(data);
+      return data;
+    }
+  });
 
+  if (users.isloading) 
+    return (<p>loading...</p>)
   return (
       <div 
       className='absolute top-11 w-52 sm:w-72 max-h-56 bg-light-gray rbg-light-gray p-4 flex flex-col gap-1 overflow-y-scroll rounded-2xl'>
@@ -40,26 +50,14 @@ const GlobalSearch = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const {divref} = useCloseOutSide({setIsOpen});
 
-  const users = useQuery({
-    queryKey: ['search', search],
-    queryFn: async () => {
-      const { data } = await axios.get(`http://localhost:8000/users/search/${search}`, { withCredentials: true });
-      console.log(data);
-      return data;
-    }
-  });
-
   return (
     <div 
       ref={divref}
       className='md:block relative'>
         <Bar setIsOpen={setIsOpen} setSearchValue={setSearch} />
-        { users.isloading && 
-                            <p>loading...</p>
-        }
         {
           isOpen && (search.length != 0) &&  
-                                          <SearchBarDropDown users={users}/>
+                                          <SearchBarDropDown search={search}/>
         }
     </div>
   )

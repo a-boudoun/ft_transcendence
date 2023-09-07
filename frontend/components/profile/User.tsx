@@ -11,7 +11,6 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { setVisitedUser } from '@/redux/features/currentChannel';
-import AddFriend from '@/components/profile/AddFriend';
 import UserParametres from '@/components/profile/UserParametres';
 
 const User = ({id} : {id : string | null}) => {
