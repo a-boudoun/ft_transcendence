@@ -8,7 +8,7 @@ import {
     JoinTable,
     Index,
     DataSource,
-    CreateDateColumn
+    CreateDateColumn,
   } from 'typeorm';
 import { User } from './user.entity';
   
@@ -66,7 +66,9 @@ export class Bannation {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => Channel, (channel) => channel.bannations)
+    @ManyToOne(() => Channel, (channel) => channel.bannations, {
+        onDelete: 'CASCADE',
+    })
     channel: Channel;
 
     @ManyToOne(() => User, (user) => user.bannations)
@@ -81,7 +83,9 @@ export class Message {
     @CreateDateColumn()
     date: Date;
   
-    @ManyToOne(() => Channel, (channel) => channel.messages)
+    @ManyToOne(() => Channel, (channel) => channel.messages, {
+        onDelete: 'CASCADE',
+    })
     channel: Channel;
   
     @ManyToOne(() => User, (user) => user.messages)
@@ -96,7 +100,9 @@ export class Administration {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @ManyToOne(() => Channel, (channel) => channel.administrators)
+    @ManyToOne(() => Channel, (channel) => channel.administrators, {
+        onDelete: 'CASCADE',
+    })
     channel: Channel;
     
     @ManyToOne(() => User, (user) => user.administratedChannels)
@@ -108,7 +114,9 @@ export class Membership {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @ManyToOne(() => Channel, (channel) => channel.memberships)
+    @ManyToOne(() => Channel, (channel) => channel.memberships, {
+        onDelete: 'CASCADE',
+    })
     channel: Channel;
     
     @ManyToOne(() => User, (user) => user.channels)
@@ -129,7 +137,9 @@ export class Mutation {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @ManyToOne(() => Channel, (channel) => channel.mutations)
+    @ManyToOne(() => Channel, (channel) => channel.mutations, {
+        onDelete: 'CASCADE',
+    })
     channel: Channel;
     
     @ManyToOne(() => User, (user) => user.mutations)

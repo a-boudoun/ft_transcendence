@@ -11,17 +11,16 @@ import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
 
 
 @Controller('channels')
+@UseGuards(Jwt2faAuthGuard)
 export class ChannelsController {
   constructor(private readonly channelsService: ChannelsService) {}
 
   @Post('/createChannel')
-  @UseGuards(Jwt2faAuthGuard)
   create( @Body() channelDTO: ChannelDTO) {
     return this.channelsService.create(channelDTO);
   }
   
   @Get()
-  @UseGuards(Jwt2faAuthGuard)
   findAll() {
     return this.channelsService.findAll('amiski');
   }
@@ -29,7 +28,6 @@ export class ChannelsController {
   
   
   @Get(':id')
-  @UseGuards(Jwt2faAuthGuard)
   findOne(@Param('id') id: string, @Req() req: any) {
     return this.channelsService.findOne1(+id, req.user.username);
   }
@@ -50,13 +48,11 @@ export class ChannelsController {
   }
   
   @Patch(':id/joinChannel') 
-  @UseGuards(Jwt2faAuthGuard)
   joinChannel(@Param('id') id: string, @Body() dt: any) {
     return this.channelsService.joinChannel(+id, dt.user, dt.password);
   }
 
   @Patch(':id/addFriendtoChannel')
-  @UseGuards(Jwt2faAuthGuard)
   async addFriendtoChannel(@Param('id') id: string, @Body() friend: UserDTO) {
     return this.channelsService.addFriendtoChannel(+id, friend);
   }

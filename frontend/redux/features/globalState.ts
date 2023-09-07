@@ -65,8 +65,6 @@ export const globalStateSlice = createSlice({
     reducers: {
         setcurrentchannel: (state , action: PayloadAction<any>) => {
             state.channel  = action.payload;
-            if(state.channel.messages)
-                state.channel.messages = state.channel.messages.sort((a, b) => new Date(a.date) - new Date(b.date));
         },
         setMessage: (state: any, action: PayloadAction<any>) => {
             state.channel.messages.push(action.payload );
