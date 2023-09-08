@@ -73,7 +73,7 @@ const User = ({id} : {id : string | null}) => {
             }
         </div>
     </div>
-    {id && <UserParametres id={id}/> }
+    {id && <UserParametres/> }
   </div>
   )
 }

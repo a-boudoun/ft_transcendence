@@ -7,7 +7,7 @@ interface PercentageLineProps {
 const PercentageLine: React.FC<PercentageLineProps> = ({
     value,
 }: PercentageLineProps) => {
-
+ 
     const w = ((value -  Math.floor(value)) * 100).toFixed(0);
 
     return (

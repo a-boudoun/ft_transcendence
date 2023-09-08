@@ -56,7 +56,7 @@ const UpdateForm = () => {
             </div>
             <div className='grow flex flex-col'>
               <h3 className='mb-6 text-xl font-bold text-blue' >blocked users</h3> 
-              <div className='h-[400px] w-[280px] sm:w-[400px] bg-light-gray grow rounded-3xl shadow-2xl overflow-hidden p-8'> 
+              <div className='h-[400px] w-[280px] sm:w-[400px] grow rounded-3xl shadow-2xl overflow-hidden p-8 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'> 
                 <BlockList />
               </div>
             </div>
