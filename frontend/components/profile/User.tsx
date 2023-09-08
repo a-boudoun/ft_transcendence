@@ -11,7 +11,6 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { setVisitedUser } from '@/redux/features/currentChannel';
-import AddFriend from '@/components/profile/AddFriend';
 import UserParametres from '@/components/profile/UserParametres';
 
 const User = ({id} : {id : string | null}) => {
@@ -20,10 +19,10 @@ const User = ({id} : {id : string | null}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const User = useQuery({
-    queryKey: ['User'],
+    queryKey: ['user'],
     queryFn: async ()=> {
       (id ? id = id : id = 'me')
-      const {data} = await axios.get(`/users/${id}`)
+      const {data} = await axios.get(`/users/getUser/${id}`)
       dispatch(setVisitedUser(data));
       return data;
     }
@@ -74,7 +73,7 @@ const User = ({id} : {id : string | null}) => {
             }
         </div>
     </div>
-    {id && <UserParametres id={id}/> }
+    {id && <UserParametres/> }
   </div>
   )
 }

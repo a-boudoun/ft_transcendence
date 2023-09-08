@@ -39,7 +39,7 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
 
   return (
   <div ref={divref}
-  className='absolute right-0 top-[56px] max-h-[200px] bg-light-gray p-4 flex flex-col gap-1 overflow-y-scroll rounded-b-2xl'>
+  className='absolute right-0 top-[56px] max-h-[200px] p-4 flex flex-col gap-1 overflow-y-scroll rounded-b-2xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
     {users.length === 0 ? <p className="text-center">No friend requests</p> :
         users.map((user: userDto) => {
             return (

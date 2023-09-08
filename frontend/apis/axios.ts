@@ -9,7 +9,6 @@ axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 axios.defaults.headers.common["Content-Type"] =  'application/json';
 axios.defaults.withCredentials = true;
 
-
 axios.interceptors.request.use(
 	async function (config) {
 		

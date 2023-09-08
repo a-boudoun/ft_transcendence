@@ -1,11 +1,8 @@
 "use client";
 
-import Messeges from "./ChannelItems";
-import Friends from "@/components/common/Friends";
-import userDto from "@/dto/userDto";
-import { hashQueryKey, useMutation, useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { useEffect, useState } from "react";
+import { useQuery } from '@tanstack/react-query';
+import axios from '@/apis/axios';
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { setChannels, setuser } from "@/redux/features/currentChannel";
@@ -22,8 +19,8 @@ const Channel = () => {
         {
           queryKey: ['channels'],
           queryFn: async () => {
-            const channelsResponse = await axios.get('http://localhost:8000/channels', { withCredentials: true });
-            const userDataResponse = await axios.get('http://localhost:8000/users/me', { withCredentials: true });
+            const channelsResponse = await axios.get('/channels');
+            const userDataResponse = await axios.get('/users/getUser/me');
             dispatch(setChannels(channelsResponse.data));
             dispatch(setuser(userDataResponse.data));
 

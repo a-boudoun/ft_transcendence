@@ -3,7 +3,7 @@
 import { RightPlayer, LeftPlayer } from '@/components/game/PlayersMatch';
 import { useEffect, useState } from 'react';
 import socket from '@/components/socketG';
-import axios from 'axios';
+import axios from '@/apis/axios';
 
 import  Game  from '@/components/game/fullGame';
 
@@ -16,7 +16,7 @@ export default function MatchPlayers() {
 	useEffect(() => {
 	  const fetchData = async () => {
 		try {
-		  const { data } = await axios.get(`http://localhost:8000/users/me`, { withCredentials: true });
+		  const { data } = await axios.get(`/users/getUser/me`);
 		  if (data) {
 			setPlayer(data.username);
 			setIsPlayerFetched(true);

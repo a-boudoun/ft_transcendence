@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 const singIn = () => {
 
   const User = useQuery({
-    queryKey: ['User'],
+    queryKey: ['signin'],
     queryFn: async ()=> {
       const {data} = await axios.get(`http://localhost:8000/users/signin`, { withCredentials: true })
       return data;
