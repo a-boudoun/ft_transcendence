@@ -23,7 +23,7 @@ const NewChannel = () => {
     const [type, setType] = useState('Public');
     const [image, setImage] = useState<any>(null);
     const [imagePreview, setImagePreview] = useState<string>('/img/a.jpeg');
-    // const [channel, setChannel] = useState<channelDto>({});
+    
     const handleclick = () => {
         setIsclicked(!isclicked);
     }

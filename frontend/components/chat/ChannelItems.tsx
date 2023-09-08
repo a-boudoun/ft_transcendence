@@ -27,7 +27,6 @@ interface Data{
 
 
 const ChannelItems = ({path}:{path:string}) => {
-
     const dispatch = useDispatch<AppDispatch>();
     const data1 :channelDto[] = useSelector((state: any) => state.globalState.channels);
     const user = useSelector((state: any) => state.globalState.user);

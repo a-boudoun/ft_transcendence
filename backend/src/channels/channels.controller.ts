@@ -21,12 +21,9 @@ export class ChannelsController {
   }
   
   @Get()
-  findAll() {
-    return this.channelsService.findAll('amiski');
+  findAll(@Req() req: any) {
+    return this.channelsService.findAll(req.user.username);
   }
-  
-  
-  
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req: any) {
     return this.channelsService.findOne1(+id, req.user.username);

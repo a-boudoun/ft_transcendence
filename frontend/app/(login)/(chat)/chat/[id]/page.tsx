@@ -22,6 +22,7 @@ const page = ({ params }: { params: any }) => {
     const [otherUser, setOtherUser] = useState<userDto>();
     const [messages, setMessages] = useState<MessageDto[]>([]);
     const [input, setInput] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
     
 
     const {data, isLoading} = useQuery({
@@ -30,6 +31,11 @@ const page = ({ params }: { params: any }) => {
             const {data} = await axios.get(`http://localhost:8000/channels/${params.id}`, { withCredentials: true });
             setMessages(data.messages);
             socket.emit('join', { channel: data.id})
+            if(!data || data.type !== 'Direct')
+            {
+                router.push('/chat');
+                return data;
+            }
             return data;
         }
     });
@@ -75,24 +81,6 @@ const page = ({ params }: { params: any }) => {
         
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     if (isLoading)
         return (
             <div className='w-full  md:w-1/2 lg:w-8/12 h-full bg-light-gray rounded-[2.5rem] sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:p-4'>
@@ -100,7 +88,7 @@ const page = ({ params }: { params: any }) => {
                     Loading...
                 </div>
             </div>);
-    else if(!data)
+    else if(!data || data.type !== 'Direct')
             router.push('/chat');
     else
         return (
@@ -120,17 +108,17 @@ const page = ({ params }: { params: any }) => {
                                 alt=""
                                 />
                         </Link>
-                        <Image
+                       { otherUser?.image && <Image
                             className="h-10 w-10 rounded-full  "
                             src={otherUser?.image}
-                            width={100}
+                            width={100} 
                             height={100}
                             alt=""
-                            />
+                            />}
                         <span className="text-center h-fit">{otherUser?.name}</span>
                     </div>
-                    <div className="text-3xl mr-5 flex items-center justify-center ">
-                        <button  className="rounded-full hover:bg-light-gray p-1">
+                    <div className="text-3xl mr-5 flex items-center justify-center relative">
+                        <button  className="rounded-full hover:bg-light-gray p-1" onClick={()=> setIsOpen(!isOpen)}>
                             <Image
                                 className="h-full rounded-full  "
                                 src={"/img/more.svg"}
@@ -139,6 +127,11 @@ const page = ({ params }: { params: any }) => {
                                 alt=""
                                 />
                         </button>
+                        <div className="relative">
+
+                        {isOpen && <More /> }
+                        </div>
+        
                     </div>
                 
                 </div>
@@ -169,3 +162,36 @@ const page = ({ params }: { params: any }) => {
 }
  
 export default page;
+
+
+export const  More = () => {
+  
+  
+    return (
+      <div className="absolute w-44  h-fit rounded-lg bg-slate-900  top-4 right-3 shadow-inner  ">
+    
+            <div className="flex items-center justify-start px-4 py-2 hover:bg-slate-800 rounded-t-lg">
+                <Image
+                    className="h-6 w-6   "
+                    src={"/img/profile.svg"}
+                    width={100}
+                    height={100}
+                    alt=""
+                    />
+                <span className="pl-6 text-base font-semibold text-blue" >view Profile</span>
+            </div>
+            <div className="flex items-center justify-start px-4 py-2 hover:bg-slate-800  rounded-b-lg">
+                <Image
+                    className="h-6 w-6   "
+                    src={"/icons/profile/matches.svg"}
+                    width={100}
+                    height={100}
+                    alt=""
+                    />
+                    <span className="px-6 text-base font-semibold text-blue" >Play</span>
+            </div>
+
+
+      </div>
+    )
+  }

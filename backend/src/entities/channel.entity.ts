@@ -15,7 +15,7 @@ import { User } from './user.entity';
 export enum ChannelType {
     DIRECT = 'Direct',
     PUBLIC = 'Public',
-    PRIVATE = 'Rrivate',
+    PRIVATE = 'Private',
     PROTECTED = 'Protected'
 }
 export enum MemberTitle {
