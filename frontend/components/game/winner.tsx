@@ -7,7 +7,7 @@ export default function Won(){
   const {data, isLoading} = useQuery({
 		queryKey: ['user'],
 		queryFn: async ()=> {
-		  const {data} = await axios.get('http://localhost:8000/users/me', { withCredentials: true })
+		  const {data} = await axios.get('http://localhost:8000/users/getUser/me', { withCredentials: true })
 		  return data;
 		}
 	  });

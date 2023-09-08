@@ -25,8 +25,8 @@ const DropDown = ({src, setIsOpen}: Props) => {
 
   return (
     <div ref={divref}>
-      <div className='flex flex-col justify-around absolute top-14 right-0 w-14 md:hidden'>
-        <button className='flex justify-center items-center bg-dark-gray h-[56px] w-[56px] hover:bg-light-gray' onClick={() => setIsSearch(!isShearch)}> 
+      <div className='flex flex-col justify-around absolute top-14 right-0 w-14 md:hidden bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
+        <button className='flex justify-center items-center h-[56px] w-[56px] hover:bg-light-gray' onClick={() => setIsSearch(!isShearch)}> 
           <Search size={28} color="#7ac7c4" strokeWidth={1.5} />
         </button>
         <NavLink route={'/home'} src={'/icons/navBar/home.svg'} alt={'home'} setIsOpen={setIsOpen}/>

@@ -20,7 +20,6 @@ const extractCookie = (req: Request | any ) => {
 
     const token = req.handshake.headers.cookie.match(regex);
 
-
     return token;
     }
 }
@@ -37,7 +36,8 @@ export class Jwt2faStrategy extends PassportStrategy(Strategy, 'jwt-2fa') {
     async validate(payload: any, res: Response) {
 
         const user = await this.usersService.findOne(payload.username);
-
+        if (!user)
+            return null;
         if (!user.fact2Auth)
             return user;
         if (payload.fact2Auth === true) 

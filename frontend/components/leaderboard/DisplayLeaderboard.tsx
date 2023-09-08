@@ -29,7 +29,7 @@ const UserStats = ({user} : {user : userDto}) => {
 
 const Me = ({user, rank} : {user : userDto, rank : number}) => {
     return (
-      <div className="flex flex-wrap sm:items-center gap-4 bg-dark-gray p-4 rounded-3xl sm:p-8 sm:shadow-2xl sm:gap-8">
+      <div className="flex flex-wrap sm:items-center gap-4  p-4 rounded-3xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:p-8 sm:shadow-2xl sm:gap-8">
           <Image className="rounded-full sm:w-[128px] " src={user.image} width={64} height={64} alt={'user image'}  />
           <div className='text-left'>
             <h1 className="text-3xl font-bold ">{user.name}</h1>
@@ -72,7 +72,7 @@ const DisplayLeaderboard = () => {
   const currentUser = useQuery({
     queryKey: ['Me'],
     queryFn: async () => {
-      const {data} = await axios.get('http://localhost:8000/users/me', {withCredentials: true});
+      const {data} = await axios.get('http://localhost:8000/users/getUser/me', {withCredentials: true});
       return data;
     }
   });
@@ -89,7 +89,7 @@ const DisplayLeaderboard = () => {
   return (
     <div className='h-full max-w-[860px] grow flex flex-col gap-2 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 sm:rounded-[2.5rem] sm:shadow-2xl'>
       <Me user={currentUser.data} rank={rank}/>
-      <div className='bg-light-gray grow p-4 rounded-3xl'>
+      <div className='grow p-4 rounded-3xl'>
         {
           data.users?.map((user: userDto, index: number) => {
 

@@ -18,7 +18,7 @@ const SearchBar = ({ setIsOpen, setSearchValue }: Props) => {
   }
 
   const handleChange = (e: any) => {
-    setSearchValue(e.target.value);
+      setSearchValue(e.target.value);
   }
 
   const debouncedResults = useMemo(() => {
