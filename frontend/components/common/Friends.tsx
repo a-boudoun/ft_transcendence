@@ -42,7 +42,7 @@ export default Friends;
 
 export const Friend = ({user, id}: {user: userDto, id: string}) => {
     return (
-        <div className='flex justify-between px-4 py-2 mx-2 rounded-xl bg-dark-gray'>
+        <div className='flex justify-between px-4 py-2 mx-2 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
             <div className="grow flex items-center gap-4">
                 <Image  className="w-[48px] h-[48px] rounded-full self-center"  src={user.image}    width={1000}  height={1000}   alt="user image"
                 />

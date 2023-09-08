@@ -13,7 +13,7 @@ const Match = ({match} : {match : any}) => {
     const border = match.winner.name === visitedUser.name ? 'border-2 border-blue' : 'border-2 border-red';
 
     return (
-        <div className={`flex justify-between items-center p-4 bg-dark-gray rounded-xl ${border}`}>
+        <div className={`flex justify-between items-center p-4 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg ${border} `}>
             <div className="flex flex-col items-center gap-4">
             <Link href={`/profile/${match.winner.name}`} >
                 <Image className="rounded-full"  src={match.winner.image}  width={64}  height={64}   alt="user image"/>
@@ -45,7 +45,7 @@ const DisplayMatchs = ({id} : {id : string | null}) => {
     else
     {
         return (
-            <div className="grow flex flex-col gap-1 bg-light-gray p-4 overflow-y-scroll  xl:rounded-b-3xl">
+            <div className="grow flex flex-col gap-1 p-4 overflow-y-scroll  xl:rounded-b-3xl">
             {
                 Matchs.data.map((match: any) => {
                     return (
@@ -61,8 +61,8 @@ const DisplayMatchs = ({id} : {id : string | null}) => {
 const MatchesHistory = ({id} : {id : string | null}) => {
 
     return (
-            <div className="xl:max-h-[668px] xl:flex xl:flex-col xl:grow xl:rounded-3xl xl:shadow-2xl">
-                <div className="hidden xl:block xl:bg-light-gray xl:rounded-t-3xl xl:p-4 ">
+            <div className="max-h-[668px] flex flex-col grow xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg">
+                <div className="hidden xl:block rounded-t-3xl  p-4 ">
                     <Title isActive={true} str='Matches' src='/icons/profile/Matches.svg'/>
                 </div>
                 <DisplayMatchs id={id} />

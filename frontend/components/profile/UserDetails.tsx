@@ -38,8 +38,8 @@ const UserDetails = (props : UserDetailsProps) => {
       }, []);
     
     return (
-        <div className='grow flex flex-col overflow-hidden xl:w-auto rounded-3xl shadow-2xl'>
-            <div className='flex justify-around bg-dark-gray xl:p-4 sm:rounded-t-3xl xl:bg-light-gray'>
+        <div className='grow flex flex-col overflow-hidden xl:w-auto sm:rounded-3xl sm:shadow-2xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
+            <div className='flex justify-around xl:p-4 sm:rounded-t-3xl'>
                 <button onClick={() => {setStats(true); setAchievements(false); setMatches(false); setFriends(false);}}>
                     <Title isActive={Stats} str='Stats' src='/icons/profile/stats.svg'/>
                 </button>
@@ -53,7 +53,7 @@ const UserDetails = (props : UserDetailsProps) => {
                     <Title isActive={friends} str='' src='/icons/profile/friends.svg'/>
                 </button>
             </div>
-            <div className='grow p-4 bg-light-gray  overflow-auto sm:rounded-b-3xl' >
+            <div className='grow p-4overflow-auto sm:rounded-b-3xl ' >
                 { Stats && props.Stats}
                 { achievements && props.Archievement}
                 { matches && props.Matches}

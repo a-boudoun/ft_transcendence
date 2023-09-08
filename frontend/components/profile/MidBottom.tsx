@@ -4,20 +4,16 @@ import { useSelector } from "react-redux";
 import PercentageCircle from "./PercentageCircle";
 import PercentageLine from "./PercentageLine";
 
-const Stats = ({id} : {id : string | null}) => {
+const Stats = () => {
 
   const user = useSelector((state: any) => state.currentChannel.visitedUser);
 
-  const games  = 100;
-  const wins =  (50 * 100) / 100;
-  const loses =  (50 * 100) / 100;
-  const lvl = 5.5;
-  const xp = 2500;
-  const rank = 1;
-  
+  const games = user.wins + user.loses;
+
+  if (user.level !== undefined) {
     return(
-      <div className='h-full flex flex-col justify-center gap-20 xl:z-40 '>
-        <div className="w-full flex flex-col gap-4">
+      <div className='h-full flex flex-col justify-center gap-20 xl:z-40'>
+        <div className="w-full flex flex-col gap-4 p-4">
           <PercentageLine  value={user.level}/>
           <div className="flex justify-center gap-4">
             <h3 className='text-blue text-lg'>Level</h3>
@@ -28,16 +24,16 @@ const Stats = ({id} : {id : string | null}) => {
         </div>
         <div>
           <div className=''>
-            <span className='font-bold text-3xl'>{user.wins + user.loses}</span>
+            <span className='font-bold text-3xl'>{games}</span>
             <h3 className='text-blue text-lg'>Total games</h3>
           </div>
           <div className="w-full flex justify-around">
             <div className="max-w-[120px] sm:max-w-[200px] flex flex-col gap-2">
-                <PercentageCircle percentage={user.wins} color={'#7AC7C4'} />
+                <PercentageCircle percentage={(user.wins / games) * 100} color={'#7AC7C4'} />
                 <h3 className='text-blue'>Wins</h3>
               </div>
             <div className="flex flex-col gap-2">
-              <PercentageCircle percentage={user.loses} color={'#EA5581'}/>
+              <PercentageCircle percentage={(user.loses / games) * 100} color={'#EA5581'}/>
               <h3 className='text-red'>Loses</h3>
             </div>
           </div>
@@ -49,5 +45,7 @@ const Stats = ({id} : {id : string | null}) => {
       </div>
     )
   }
+
+}
 
 export default Stats;
