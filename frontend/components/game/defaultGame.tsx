@@ -25,8 +25,8 @@ function DefaultGame({roomid, me, RightPlayer} : Prop){
 
 					render.canvas.width = divRef.current.offsetWidth;
 					render.canvas.height = divRef.current.offsetHeight;
-					sx = divRef.current.offsetWidth / 2048;
-					sy = divRef.current.offsetHeight / 890;
+					sx = divRef.current.offsetWidth / 1700;
+					sy = divRef.current.offsetHeight / 900;
 			}
 
 			const handleKeyDown = (e: KeyboardEvent) => {
@@ -79,8 +79,8 @@ function DefaultGame({roomid, me, RightPlayer} : Prop){
 			
 			const H = divRef.current.offsetHeight;
 			const W = divRef.current.offsetWidth;
-			sx = W / 2048;
-			sy = H / 890;
+			sx = W / 1700;
+			sy = H / 900;
 			
 			let engine = Engine.create(),
 			render = Render.create({
@@ -150,7 +150,12 @@ function DefaultGame({roomid, me, RightPlayer} : Prop){
 	}, [roomid]);
 
 	return (
-		<div ref={divRef} className="h-4/6 w-4/5 mt-20 relative">
+		<div ref={divRef} 
+			className="h-[900px] w-[1700px] mt-20 relative"			
+			// style={{
+			// 	transform: `scale(${sx}, ${sy})`,
+			// }}
+			>
 			<div className="h-full w-1 bg-white absolute left-1/2 transform -translate-x-1/2">
 			<div className="bg-white w-full" style={{backgroundImage: 'repeating-linear-gradient(2deg, transparent, transparent 40px, white 40px, white 80px)'}}></div>
 			</div>
