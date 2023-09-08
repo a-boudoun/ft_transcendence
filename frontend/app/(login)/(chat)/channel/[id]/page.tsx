@@ -14,6 +14,7 @@ import { socket } from '@/components/chat/chatSocket';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { Client } from '@/providers/QueryProvider';
+import { channel } from 'diagnostics_channel';
 
 
 
@@ -36,6 +37,8 @@ const Page =  ({ params }: { params: number }) => {
           router.push('/channel');
           return channel.data;
         }
+        if(channel.data.type === 'Direct')
+           router.push(`/chat/${channel.data.id}`);
         dispatch(setcurrentchannel(channel.data));
         dispatch(setuser(user.data));
         socket.emit('join', { channel: channel.data.id })
@@ -49,7 +52,7 @@ const Page =  ({ params }: { params: number }) => {
             Loading...
       </div>
     </div>);
-  else
+  else if(data.type !== 'Direct')
   return (
     <>
       <Mid />

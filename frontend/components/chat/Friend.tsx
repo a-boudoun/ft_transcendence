@@ -9,15 +9,12 @@ import { useSelector } from "react-redux";
 
 
 const Friends = ({user}:{user:userDto}) => {
- 
-    // const user = useSelector((state: any) => state.globalState.user);
-    // const channels = useSelector((state: any) => state.globalState.channels);
+
     const [friends, setFriends] = useState<[]>([]);
     const {data, isLoading} = useQuery({
         queryKey: ['friends'],
         queryFn: async ()=> {
             const { data } = await axios.get(`http://localhost:8000/channels/direct/${user.username}`, { withCredentials: true });
-            console.log("datatt",data);
             setFriends(data);
             return data;
         }
@@ -48,13 +45,13 @@ export const Friend = ({friend}:{friend:any}) => {
         <div className={`bg-dark-gray h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white flex justify-between`}>
             <div className="flex items-center space-x-5">
             <div className="flex items-center space-x-5">
-                <Image
+                {friend?.member?.image && <Image
                     className="w-10 h-10 rounded-full self-center"
                     src={friend?.member?.image}
                     alt="user"
                     width={100}
                     height={100}
-                />
+                />}
                 <h1>{friend?.member?.username}</h1>
             </div>
             </div>

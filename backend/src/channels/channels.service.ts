@@ -72,13 +72,16 @@ export class ChannelsService {
   
   
     let channels = await this.channelRepo.find({
-      where: {
-        type: Not(ChannelType.DIRECT),
+      where: [
+        { type: ChannelType.PUBLIC },
+        { type: ChannelType.PROTECTED },
+        { type: ChannelType.PRIVATE, memberships: { member: { username: username } } },
       
-      },
+      ],
       relations: ['messages', 'memberships.member', 'bannations.member'],
     });
     channels = channels.filter((channel) => !banedid.includes(channel.id));
+
     return channels;
   }
   
@@ -101,7 +104,6 @@ export class ChannelsService {
     const messages = channel.messages.sort((a, b) => (a.date).getTime() - b.date.getTime());
     channel.messages = messages;
     return channel;
-
   }
   async findOne(id: number) {
     return this.channelRepo.findOne({
@@ -113,12 +115,13 @@ export class ChannelsService {
   }
 
   async update(id: number, updateChannelDto: any) {
+    console.log(updateChannelDto);
     let channel = await this.findOne(id);
    if(updateChannelDto.name != channel.name)
      channel.name = updateChannelDto.name;
     if(updateChannelDto.image != channel.image)
       channel.image = updateChannelDto.image;
-    if(!(await bcrypt.compare(updateChannelDto.password, channel.password)))
+    if(updateChannelDto.password && !(await bcrypt.compare(updateChannelDto.password, channel.password)))
     {
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(updateChannelDto.password, salt);
