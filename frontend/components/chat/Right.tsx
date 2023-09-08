@@ -121,7 +121,7 @@ const Right = () => {
         <div className='w-full '>
         {
         
-        bannations?.lenght === 0 ? <div className='flex px-3 text-white'>No blocked users</div> : 
+        bannations?.length === 0 ? <div className='flex px-3 text-red text-sm'>No blocked users</div> : 
         bannations?.map((member: any) => (
        
             <BlockedItems key={member.id} member={member} user={me} id={data.id}/>
