@@ -2,16 +2,21 @@
 
 import Title from "@/components/profile/Title";
 import { useQuery } from "@tanstack/react-query";
-import axios from 'axios';
+import axios from '@/apis/axios';
 import Image from 'next/image';
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { userDto } from "@/dto/userDto";
+interface MatchProps {
+    winner: userDto,
+    loser: userDto,
+    loserScore: number,
+}
 
-const Match = ({match} : {match : any}) => {
-    const visitedUser  = useSelector((state: any) => state.globalState.visitedUser);
- 
-    const border = match.winner.name === visitedUser.name ? 'border-2 border-blue' : 'border-2 border-red';
+const Match = ({match, username} : {match : MatchProps, username: String}) => {
 
+    
+    const border = match.winner.username === username ? 'border-2 border-blue' : 'border-2 border-red';
+    
     return (
         <div className={`flex justify-between items-center p-4 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg ${border} `}>
             <div className="flex flex-col items-center gap-4">
@@ -31,17 +36,17 @@ const Match = ({match} : {match : any}) => {
     )
 }
 
-const DisplayMatchs = ({id} : {id : string | null}) => {
+const DisplayMatchs = ({username} : {username : string}) => {
+    
     const Matchs = useQuery({
         queryKey: ['matches'],
         queryFn: async ()=> {
-                (id ? id = id : id = 'me')
-                const { data } = await axios.get(`http://localhost:8000/gameHistory/getHistory/${id}`, { withCredentials: true });
-                return data;
-            }
+            const { data } = await axios.get(`/gameHistory/getHistory/${username}`);
+            return data;
+        }
     });
     if (Matchs.isLoading) 
-        return (<div className="">loading... </div>)
+    return (<div> loading... </div>)
     else
     {
         return (
@@ -49,23 +54,23 @@ const DisplayMatchs = ({id} : {id : string | null}) => {
             {
                 Matchs.data.map((match: any) => {
                     return (
-                        <Match match={match} />
-                    );
-                })
-            }
+                        <Match match={match} username={username} />
+                        );
+                    })
+                }
             </div>
         )
     }
 }
 
-const MatchesHistory = ({id} : {id : string | null}) => {
-
+const MatchesHistory = ({username} : {username : string}) => {
+    
     return (
-            <div className="max-h-[668px] flex flex-col grow xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg">
+        <div className="max-h-[668px] flex flex-col grow xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg">
                 <div className="hidden xl:block rounded-t-3xl  p-4 ">
                     <Title isActive={true} str='Matches' src='/icons/profile/Matches.svg'/>
                 </div>
-                <DisplayMatchs id={id} />
+                <DisplayMatchs username={username} />
             </div>
     )
 };

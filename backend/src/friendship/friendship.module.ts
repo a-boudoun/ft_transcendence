@@ -4,7 +4,7 @@ import { FriendshipController } from './friendship.controller';
 import { TypeOrmModule} from '@nestjs/typeorm';
 import { Friendship, User } from 'src/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { Channel, Bannation, Membership } from 'src/entities/channel.entity';
+import { Channel, Membership } from 'src/entities/channel.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Friendship, Channel, User, Membership]),

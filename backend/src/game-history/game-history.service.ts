@@ -24,18 +24,10 @@ export class GameHistoryService {
     return this.gameHistoryRepo.find();
   }
 
-  async findOne(name: string) {
-    const user = await this.userService.findOneByname(name);
+  async getHistory(username: string) {
+    const user = await this.userService.findOne(username);
     if (!user)
       return [];
     return this.gameHistoryRepo.find({where: [{winner: user}, {loser: user}], relations: ['winner', 'loser']});
   }
-
-  // update(id: number, updateGameHistoryDTO: UpdateGameHistoryDto) {
-  //   return `This action updates a #${id} gameHistory`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} gameHistory`;
-  // }
 }
