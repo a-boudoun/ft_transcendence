@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req} from '@nestjs/common';
 import { ChannelsService } from './channels.service';
 import { ChannelDTO } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
@@ -9,34 +9,26 @@ import con from 'ormconfig';
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
 
 @Controller('channels')
+@UseGuards(Jwt2faAuthGuard)
 export class ChannelsController {
   constructor(private readonly channelsService: ChannelsService) {}
 
   @Post('/createChannel')
-  @UseGuards(Jwt2faAuthGuard)
   create( @Body() channelDTO: ChannelDTO) {
     return this.channelsService.create(channelDTO);
   }
   
   @Get()
-  findAll() {
-    return this.channelsService.findAll();
+  findAll(@Req() req: any) {
+    return this.channelsService.findAll(req.user.username);
   }
-  
-  @Get('/me')
-  me() {
-    return this.channelsService.findOne(2);
-  }
-  
-  
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.channelsService.findOne(+id);
+  findOne(@Param('id') id: string, @Req() req: any) {
+    return this.channelsService.findOne1(+id, req.user.username);
   }
   
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateChannelDto: UpdateChannelDto) {
-    console.log(id, updateChannelDto);
   
     return this.channelsService.update(+id, updateChannelDto);
   }
@@ -51,15 +43,41 @@ export class ChannelsController {
   }
   
   @Patch(':id/joinChannel') 
-  @UseGuards(Jwt2faAuthGuard)
-  joinChannel(@Param('id') id: string, @Body() user: UserDTO) {
-    return this.channelsService.joinChannel(+id, user);
+  joinChannel(@Param('id') id: string, @Body() dt: any) {
+    return this.channelsService.joinChannel(+id, dt.user, dt.password);
+  }
+
+  @Patch(':id/addFriendtoChannel')
+  async addFriendtoChannel(@Param('id') id: string, @Body() friend: UserDTO) {
+    return this.channelsService.addFriendtoChannel(+id, friend);
   }
 
   @Patch(':channelId/updateMembershipTitle/:memberid')
   async updateMembershipTitle(@Param('channelId') channelId: string,@Param('memberid') memberid: string) {
     return this.channelsService.updateMembershipTitle(+channelId,+memberid);
   }
+
+  @Patch(':channelId/ban/:username')
+  async ban(@Param('channelId') channelId: string,@Param('username') username: string) {
+    return this.channelsService.banner(+channelId,username);
+  }
+  @Get('direct/:username')
+  async getDirectChannel(@Param('username') username: string) {
+    return this.channelsService.getDirectChannel(username);
+  }
+  @Patch('unban/:banId')
+  async unban(@Param('banId') banId: string) {
+    return this.channelsService.unban(+banId);
+  }
+  @Patch('muteUser/:channelId')
+   mute( @Param('channelId') channelId: string, @Body() dt: any) {
+    return this.channelsService.mut(+channelId,+dt.id, 1);
+  }
+  @Get('isMuted/:channelId/:username')
+  isMuted(@Param('channelId') channelId: string, @Param('username') username: string) {
+    return this.channelsService.isMuted(+channelId,username);
+  }
+
 }
 
 

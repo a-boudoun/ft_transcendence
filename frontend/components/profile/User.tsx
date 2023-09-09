@@ -10,7 +10,7 @@ import { Loader2 } from  'lucide-react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
-import { setVisitedUser } from '@/redux/features/currentChannel';
+import { setVisitedUser } from '@/redux/features/globalState';
 import UserParametres from '@/components/profile/UserParametres';
 
 const User = ({id} : {id : string | null}) => {

@@ -17,12 +17,5 @@
   background: none;
 }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-}
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
+

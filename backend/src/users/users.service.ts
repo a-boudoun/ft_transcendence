@@ -58,6 +58,14 @@ export class UsersService {
       }
       return false;
     }
+
+    async findonebyid(id: number) {
+      return this.userRepo.find({
+        where: {
+          id: id,
+        },
+      });
+    }
     
     async isBlocked(username: string, name: string) {
       const blockedUsers = await this.blockRepo.find({where: [{blocker : {username: username}}],  relations: ['blocked']});

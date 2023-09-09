@@ -14,7 +14,6 @@ interface Props {
   setIsOpen: (isOpen: boolean) => void;
 }
 
-
 function DropDown({src, setIsOpen}: Props) {
   const router = useRouter();
   const {divref} = useCloseOutSide({setIsOpen});

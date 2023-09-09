@@ -6,7 +6,7 @@ import PercentageLine from "./PercentageLine";
 
 const Stats = () => {
 
-  const user = useSelector((state: any) => state.currentChannel.visitedUser);
+  const user = useSelector((state: any) => state.globalState.visitedUser);
 
   const games = user.wins + user.loses;
 
