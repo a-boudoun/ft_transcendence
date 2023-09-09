@@ -1,16 +1,13 @@
 "use client";
 
-import { useSelector } from "react-redux";
 import PercentageCircle from "./PercentageCircle";
 import PercentageLine from "./PercentageLine";
+import { userDto } from "@/dto/userDto";
 
-const Stats = () => {
-
-  const user = useSelector((state: any) => state.globalState.visitedUser);
+const Stats = ({user} : {user : any}) => {
 
   const games = user.wins + user.loses;
 
-  if (user.level !== undefined) {
     return(
       <div className='h-full flex flex-col justify-center gap-20 xl:z-40'>
         <div className="w-full flex flex-col gap-4 p-4">
@@ -44,7 +41,6 @@ const Stats = () => {
           </div> */}
       </div>
     )
-  }
 
 }
 

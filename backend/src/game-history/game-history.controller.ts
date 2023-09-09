@@ -25,26 +25,10 @@ export class GameHistoryController {
     return this.gameHistoryService.create(GameHistory);
   }
 
-  @Get('getHistory/me')
+  @Get('getHistory/:username')
   @UseGuards(Jwt2faAuthGuard)
-  getMyHistory(@Req() req) {
-    return this.gameHistoryService.findOne(req.user.username);
-  }
-
-  @Get('getHistory/:name')
-  @UseGuards(Jwt2faAuthGuard)
-  getHistory(@Param('name') name: string) {
-    return this.gameHistoryService.findOne(name);
+  getHistory(@Param(':username') username: string) {
+    return this.gameHistoryService.getHistory(username);
   }
   
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateGameHistoryDto: UpdateGameHistoryDto) {
-  //   return this.gameHistoryService.update(+id, updateGameHistoryDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.gameHistoryService.remove(+id);
-  // }
 }

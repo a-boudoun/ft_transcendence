@@ -2,14 +2,18 @@
 
 import Link from 'next/link'
 import AddFriend  from '@/components/profile/AddFriend'
-import { use, useState } from 'react';
+import {useState } from 'react';
 import { MoreVertical } from 'lucide-react';
-import { useSelector } from 'react-redux';
 import socket from '../socketG';
 import useCloseOutSide from '@/hookes/useCloseOutSide';
 import axios from '@/apis/axios';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+
+interface dropProps {
+  username: string,
+  setIsOpen: (isOpen: boolean) => void
+}
 
   const Challnege = ({username} : {username: string}) => {
       return(
@@ -39,14 +43,13 @@ import { useRouter } from 'next/navigation';
     )
   }
 
-  const Drop = ({setIsOpen} : {setIsOpen : (isOpen: boolean) => void}) => {
-    const user  = useSelector((state: any) => state.globalState.visitedUser);
+  const Drop = ({username , setIsOpen} : dropProps) => {
     const {divref} = useCloseOutSide({setIsOpen});
 
     const Status = useQuery({
         queryKey: ['friendStatus'],
         queryFn: async ()=> {
-          const {data} = await axios.get(`/friendship/status/${user.name}`)
+          const {data} = await axios.get(`/friendship/status/${username}`)
           return data;
         }
     });
@@ -54,27 +57,25 @@ import { useRouter } from 'next/navigation';
     return(
         <div ref={divref}
           className='w-36 absolute bottom-6 right-6 text-sm flex flex-col gap-2 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-2 rounded-2xl'>
-          <AddFriend name={user.name} Status={Status}/>
-          <Link className='bg-blue px-3 py-[5px] text-black rounded-xl' href={`/chat/${user.name}`}>Mesage</Link>
+          <AddFriend username={username} Status={Status}/>
+          <Link className='bg-blue px-3 py-[5px] text-black rounded-xl' href={`/chat/${username}`}>Mesage</Link>
           {
-            Status.data?.status === 'accepted' && <Challnege username={user.username} />
+            Status.data?.status === 'accepted' && <Challnege username={username} />
           }
-          <Block username={user.username} />
+          <Block username={username} />
       </div>  
     )
 } 
   
-const UserParametres = () => {
-   
+const UserParametres = ({username} : {username : string}) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
-   
 
     return(
       <div className='absolute bottom-6 right-6'>
         <button onClick={() => setIsOpen(!isOpen)}>
           <MoreVertical color="white" strokeWidth={4} />
         </button>
-        {isOpen && <Drop setIsOpen={setIsOpen}/> }
+        {isOpen && <Drop username={username} setIsOpen={setIsOpen}/> }
       </div>
     )
 }

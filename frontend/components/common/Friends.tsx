@@ -7,12 +7,11 @@ import axios from '@/apis/axios';
 import { useQuery } from "@tanstack/react-query";
 import socket from '../socketG';
 
-const Friends = ({id} : {id : string | null}) => {
+const Friends = ({username} : {username : string}) => {
     const {data, isLoading} = useQuery({
         queryKey: ['friends'],
         queryFn: async ()=> {
-            (id ? id = id : id = 'me')
-            const { data } = await axios.get(`/friendship/getFriends/${id}`);
+            const { data } = await axios.get(`/friendship/getFriends/${username}`);
             return data;
         }
       });
@@ -27,7 +26,7 @@ const Friends = ({id} : {id : string | null}) => {
                         data.map((friend: userDto) => {
                             return (
                                 <Link href={`/profile/${friend.name}`} >
-                                    <Friend user={friend} id={id} /> 
+                                    <Friend user={friend}/> 
                                 </Link>
                             );
                         })
@@ -39,7 +38,7 @@ const Friends = ({id} : {id : string | null}) => {
 }
 export default Friends;
 
-export const Friend = ({user, id}: {user: userDto, id: string}) => {
+export const Friend = ({user}: {user: userDto}) => {
     return (
         <div className='flex justify-between px-4 py-2 mx-2 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
             <div className="grow flex items-center gap-4">
@@ -47,14 +46,12 @@ export const Friend = ({user, id}: {user: userDto, id: string}) => {
                 />
                 <h3>{user.name}</h3> 
             </div>
-            {
-               !id &&  <div className="flex items-center gap-4">
+                 <div className="flex items-center gap-4">
                     <Image className="" src="/icons/navBar/chat.svg" width={24} height={24} alt="chat"/>
                     <button onClick={() => {socket.emit('invite-freind', user.username)}}>
                         <Image className="" src="/icons/navBar/game.svg" width={24} height={24} alt="challenge"/>
                     </button>
                 </div>
-            }
         </div>
     );
 }
