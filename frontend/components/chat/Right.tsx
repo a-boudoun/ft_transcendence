@@ -16,8 +16,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import useCloseOutSide from '@/hookes/useCloseOutSide';
 import { channel } from 'diagnostics_channel';
 
-
-
 const Right = () => {
 
   const dispatch = useDispatch<AppDispatch>();

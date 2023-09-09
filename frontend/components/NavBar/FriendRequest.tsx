@@ -47,7 +47,7 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
                   <div className="flex items-center gap-4">
                       <Image  className=" sm:w-[48px] sm:h-[48px] rounded-full self-center"  src={user.image} width={36}  height={36} alt="user image"/>
                       <div className="text-left">
-                        <h3 className="text-[12px] sm:text-[24px]" >{user.name}</h3> 
+                        <h3 className="text-[12px] sm:text-[24px]" >{user.username}</h3> 
                         <p className="text-[6px] sm:text-[8px] ">sent you a friend request</p>
                       </div>
                   </div>

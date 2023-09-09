@@ -17,8 +17,7 @@ config();
       ) {}
       
       async signin(user: UserDTO, res: Response, body: any) {
-        
-        user.name = body.name;
+      
         user.image = body.image;
         user.baner = '/img/baner.webp';
         user.level = 0;

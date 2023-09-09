@@ -26,7 +26,7 @@ function LeftPlayer(){
 		return (
 		<div className = 'flex flex-col iterms-center justify-center'>
 			<Image src={data.image} width={150} height={150} alt="avatar" className="rounded-full"/>
-			<h1 className = 'pt-2 text-2xl font-bold'> {data.name} </h1>
+			<h1 className = 'pt-2 text-2xl font-bold'> {data.username} </h1>
 		</div>
 	)
 }

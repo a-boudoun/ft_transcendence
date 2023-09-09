@@ -32,7 +32,7 @@ const Me = ({user, rank} : {user : userDto, rank : number}) => {
       <div className="flex flex-wrap sm:items-center gap-4  p-4 rounded-3xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:p-8 sm:shadow-2xl sm:gap-8">
           <Image className="rounded-full sm:w-[128px] " src={user.image} width={64} height={64} alt={'user image'}  />
           <div className='text-left'>
-            <h1 className="text-3xl font-bold ">{user.name}</h1>
+            <h1 className="text-3xl font-bold ">{user.username}</h1>
             <span className='text-2xl'> {`#${rank}`}</span>
             <span className='text-blue text-xl'> lvl </span>
             <span className='text-xl'>{user.level}</span>
@@ -49,7 +49,7 @@ const User = ({user, rank}: {user : userDto, rank: number}) => {
       <span className='text-xl sm:text-3xl font-bold'> {`${rank}`}</span>
       <Image className="rounded-full sm:w-[64px]" src={user.image} width={54} height={54} alt={'user image'}  />
       <div className='text-left'>
-          <h1 className="text-lg sm:text-2xl font-bold ">{user.name}</h1>
+          <h1 className="text-lg sm:text-2xl font-bold ">{user.username}</h1>
           <span className='text-blue text-lg'> lvl </span>
           <span className='text-lg'>{user.level}</span>
       </div>
@@ -82,7 +82,7 @@ const DisplayLeaderboard = () => {
   }
 
   data.users?.map((user: userDto, index: number) =>{
-      if (currentUser.data.name === user.name)
+      if (currentUser.data.username === user.username)
         rank = index + 1;
   })
 

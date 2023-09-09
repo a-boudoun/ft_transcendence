@@ -105,7 +105,7 @@ async accept(username: string, sender: string) {
     else if(friendship[0].status == Fstatus.ACCEPTED)
       return {status: Fstatus.ACCEPTED};
     else if(friendship[0].status == Fstatus.PENDING)
-      return {status: Fstatus.PENDING, sender: friendship[0].initiater.name};
+      return {status: Fstatus.PENDING, sender: friendship[0].initiater.username};
 
   }
 

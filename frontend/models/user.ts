@@ -7,9 +7,6 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/web
 export const signInSchema = z.object({
     username: z
     .string()
-    .optional(),
-    name: z
-    .string()
     .trim()
     .min(3, { message: "Username must be at least 3 characters long." })
     .max(10, { message: "Username must be at most 10 characters long." })

@@ -27,10 +27,6 @@ export class User {
     @Index({unique: true})
     username: string;
 
-    @Column({unique: true})
-    name: string;
-
-    
     @Column({nullable: true,})
     image: string;
 
