@@ -25,7 +25,7 @@ const Friends = ({username} : {username : string}) => {
                     {
                         data.map((friend: userDto) => {
                             return (
-                                <Link href={`/profile/${friend.name}`} >
+                                <Link href={`/profile/${friend.username}`} >
                                     <Friend user={friend}/> 
                                 </Link>
                             );
@@ -44,7 +44,7 @@ export const Friend = ({user}: {user: userDto}) => {
             <div className="grow flex items-center gap-4">
                 <Image  className="w-[48px] h-[48px] rounded-full self-center"  src={user.image}    width={1000}  height={1000}   alt="user image"
                 />
-                <h3>{user.name}</h3> 
+                <h3>{user.username}</h3> 
             </div>
                  <div className="flex items-center gap-4">
                     <Image className="" src="/icons/navBar/chat.svg" width={24} height={24} alt="chat"/>

@@ -20,17 +20,17 @@ const Match = ({match, username} : {match : MatchProps, username: String}) => {
     return (
         <div className={`flex justify-between items-center p-4 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg ${border} `}>
             <div className="flex flex-col items-center gap-4">
-            <Link href={`/profile/${match.winner.name}`} >
+            <Link href={`/profile/${match.winner.username}`} >
                 <Image className="rounded-full"  src={match.winner.image}  width={64}  height={64}   alt="user image"/>
             </Link>
-                <h3>{match.winner.name}</h3>
+                <h3>{match.winner.username}</h3>
             </div>
             <span className="grow text-3xl mb-8">{`5 - ${match.loserScore}`} </span>
             <div className="flex flex-col items-center gap-4">
-            <Link href={`/profile/${match.loser.name}`} >
+            <Link href={`/profile/${match.loser.username}`} >
                 <Image className="rounded-full"  src={match.loser.image}  width={64}  height={64}   alt="user image"/>
             </Link>
-                <h3>{match.loser.name}</h3>
+                <h3>{match.loser.username}</h3>
             </div>
         </div>
     )

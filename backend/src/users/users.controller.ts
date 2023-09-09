@@ -1,11 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseGuards} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Jwt2faAuthGuard } from '../auth/guards/jwt-2fa-auth.guard';
 import { JwtSigninGuard } from '../auth/guards/jwt-signin.guard';
-import { get } from 'http';
-
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -42,9 +39,9 @@ export class UsersController {
     return this.usersService.findOne(req.user.username);
   }
   
-  @Get('getUser/:name')
-  findOneByname(@Param('name') name: string) {
-    return this.usersService.findOneByname(name);
+  @Get('getUser/:username')
+  findOne(@Param('username') username: string) {
+    return this.usersService.findOne(username);
   }
 
   @Get('signin')
@@ -61,9 +58,9 @@ export class UsersController {
   }
   
 
-  @Get('isNameExist/:name')
-  async isNameExist(@Param('name') name: string) {
-    return this.usersService.isNameExist(name);
+  @Get('isUserNameExist/:name')
+  async isUserNameExist(@Param('name') name: string) {
+    return this.usersService.isUserNameExist(name);
   }
   
   @Post('block')
@@ -79,16 +76,15 @@ export class UsersController {
     await this.usersService.unblock(req.user.username, username);
   }
 
-  @Get('isBlocked/:name')
-  @UseGuards(Jwt2faAuthGuard)
-  async isBlocked(@Req() req, @Param('name') name: string) {
-    return this.usersService.isBlocked(req.user.username, name);
-  }
-  
   @Get('blockedUsers')
   @UseGuards(Jwt2faAuthGuard)
   async blockedUsers(@Req() req) {
     return this.usersService.blockedUsers(req.user.username);
   }
 
+  // @Get('isBlocked/:username')
+  // @UseGuards(Jwt2faAuthGuard)
+  // async isBlocked(@Req() req, @Param('username') username: string) {
+  //   return this.usersService.isBlocked(req.user.username, username);
+  // }
 }

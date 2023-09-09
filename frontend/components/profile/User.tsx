@@ -49,7 +49,7 @@ const User = ({user, isMe} : {user : userDto, isMe: boolean}) => {
     <div className='absolute flex gap-4 items-center bottom-0 w-full bg-black/50 p-3 sm:p-6'> 
         <Image className='rounded-full w-[86px] h-[86px]'  src={user.image} alt='img' width={1000} height={1000} />
         <div className='flex flex-col items-start gap-1'>
-              <h2 className='text-white text-xl sm:text-3xl'>{user.name}</h2>
+              <h2 className='text-white text-xl sm:text-3xl'>{user.username}</h2>
             { !isMe &&   <div className='flex gap-2 text-sm'>
                            <span className='text-green-500 sm:text-xl'>{status}</span> 
                       </div>

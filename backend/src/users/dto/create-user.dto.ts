@@ -6,7 +6,6 @@ import { FriendshipDTO } from "src/friendship/dto/create-friendship.dto";
 export class UserDTO {
     id: number;
     username: string;
-    name: string;
     image: string;
     baner: string;
     status: Status;

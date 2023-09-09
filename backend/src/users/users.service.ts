@@ -33,7 +33,7 @@ export class UsersService {
     
     async search(username:string,  key: string) {
       const blockedAndBlocker = await this.blockedAndBlocker(username);
-      const allUsers = await this.userRepo.findBy({name: Like(`%${key}%`)});
+      const allUsers = await this.userRepo.findBy({username: Like(`%${key}%`)});
       return  allUsers.filter(user => !blockedAndBlocker.some(b => b.username === user.username));
     }
     
@@ -43,17 +43,17 @@ export class UsersService {
       return user;
     }
     
-    findOneByname(name: string) {
-      const user = this.userRepo.findOneBy({name});
+    // findOneByname(name: string) {
+    //   const user = this.userRepo.findOneBy({name});
       
-      return user;
-    }
+    //   return user;
+    // }
     
-    async isNameExist(name: string) {
-      const user = await this.userRepo.findOneBy({name});
+    async isUserNameExist(username: string) {
+      const user = await this.userRepo.findOneBy({username});
       
       if (user) {
-        if (user.name === name)
+        if (user.username === username)
           return true;
       }
       return false;
@@ -65,18 +65,6 @@ export class UsersService {
           id: id,
         },
       });
-    }
-    
-    async isBlocked(username: string, name: string) {
-      const blockedUsers = await this.blockRepo.find({where: [{blocker : {username: username}}],  relations: ['blocked']});
-      const blockedByUsers = await this.blockRepo.find({where: [{blocked : {username: username}}],  relations: ['blocker']});
-      const blocked = blockedUsers.map(b => b.blocked);``
-      const blockedBy = blockedByUsers.map(b => b.blocker);
-      const blockedAndBlocker = [...blocked, ...blockedBy];
-      
-      const cnt = blockedAndBlocker.some(b => b.name === name);
-      
-      return cnt ? true : false;
     }
     
     async getDM(username: string) {
@@ -146,4 +134,9 @@ export class UsersService {
         const blockedBy = await this.blockedByUsers(username);
         return [...blocked, ...blockedBy];
       }
+
+      // async isBlocked(blocker: string, blocked: string) {
+      //     const blockedAndBlocker = await this.blockedAndBlocker(blocker);
+      //     return blockedAndBlocker.some(b => b.username === blocked);
+      // }
 }

@@ -26,7 +26,7 @@ const BlockedUser = ({user}: {user: userDto}) => {
         <div className={`flex justify-between px-4 py-2 mx-2 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg`}>
             <div className="grow flex items-center gap-4">
                 <Image  className="w-[48px] h-[48px] rounded-full self-center"  src={user.image}    width={1000}  height={1000}   alt="user image"/>
-                <h3>{user.name}</h3> 
+                <h3>{user.username}</h3> 
             </div>
             <button onClick={() => unblock.mutate(user.username)}>
                 <Unlock color="#7ac7c4" size={28} strokeWidth={3}/>

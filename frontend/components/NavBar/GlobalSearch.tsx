@@ -12,7 +12,7 @@ const User = ({ user }: { user: userDto }) => {
   return (
     <div className="flex items-center gap-4 px-4 py-2 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg ">
       <Image className="sm:w-[48px] sm:h-[48px] rounded-full self-center" src={user.image} width={36} height={36} alt="user image" />
-      <h3 className="text-balck text-[12px] sm:text-[24px]">{user.name}</h3>
+      <h3 className="text-balck text-[12px] sm:text-[24px]">{user.username}</h3>
     </div>
   )
 }
@@ -36,7 +36,7 @@ const SearchBarDropDown = ({search} : {search : string}) => {
       {
         users.data?.users?.length === 0 ? <p className="text-center">No user found</p> :
         users.data?.users?.map((user: userDto) => (
-          <Link  href={`/profile/${user.name}`}>
+          <Link  href={`/profile/${user.username}`}>
             <User user={user} />
           </Link>
         ))
