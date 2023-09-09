@@ -5,25 +5,24 @@ import { useState } from 'react';
 import  channelDto  from '@/dto/channelDto'
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
-import { setcurrentChannel, setnewchannel } from '@/redux/features/currentChannel';
+import { setcurrentchannel, setnewchannel } from '@/redux/features/globalState';
 import { useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { Client } from '@/providers/QueryProvider';
 import { useRouter } from 'next/navigation';
 
 const NewChannel = () => {
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
-    const owner = useSelector((state: any) => state.currentChannel.user);
+    const owner = useSelector((state: any) => state.globalState.user);
     const [isclicked, setIsclicked] = useState(false);
     const [name , setName] = useState('')
     const [password , setPassword] = useState('')
     const [type, setType] = useState('Public');
     const [image, setImage] = useState<any>(null);
     const [imagePreview, setImagePreview] = useState<string>('/img/a.jpeg');
-    // const [channel, setChannel] = useState<channelDto>({});
+    
     const handleclick = () => {
         setIsclicked(!isclicked);
     }
@@ -33,23 +32,21 @@ const NewChannel = () => {
         setIsclicked(!isclicked);
     }
 
-    
-
     const handleChange = (e: any) => {
           setImage(e.target.files[0]);
           setImagePreview(URL.createObjectURL(e.target.files[0]));
       };
 
-
       const NewChannel = useMutation(async(channel : channelDto) => {
             const res = await axios.post('http://localhost:8000/channels/createChannel', {name : channel.name, image: channel.image,  type: channel.type, password: channel.password, owner: channel.owner}, { withCredentials: true });
+            
             return res.data;
         },
         {
         onSuccess: (data: any) => {
-            Client.refetchQueries('channels');
+           
             dispatch(setnewchannel(data));
-            dispatch(setcurrentChannel(data));
+            dispatch(setcurrentchannel(data));
             router.push(`/channel/${data.id}`);
 
         },           
@@ -74,7 +71,7 @@ const NewChannel = () => {
               body: formdata,
           });
           const data = await res.json();
-          console.log(data.secure_url);
+        
           channel.image = data.secure_url;
         }
         else

@@ -38,7 +38,6 @@ module.exports = {
       'left-rocekt': 'left 10s linear infinite',
       'ball': 'ball 8s linear infinite',
     },
-     
   },
   plugins: [],
   }

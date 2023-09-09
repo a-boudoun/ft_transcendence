@@ -25,7 +25,6 @@ const Friends = ({id} : {id : string | null}) => {
                 <div className={'h-full flex flex-col gap-1 overflow-y-scroll rounded-2xl'}>
                     {
                         data.map((friend: userDto) => {
-                            console.log(friend);
                             return (
                                 <Link href={`/profile/${friend.name}`} >
                                     <Friend user={friend} id={id} /> 

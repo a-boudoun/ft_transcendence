@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 
 const Match = ({match} : {match : any}) => {
-    const visitedUser  = useSelector((state: any) => state.currentChannel.visitedUser);
+    const visitedUser  = useSelector((state: any) => state.globalState.visitedUser);
  
     const border = match.winner.name === visitedUser.name ? 'border-2 border-blue' : 'border-2 border-red';
 

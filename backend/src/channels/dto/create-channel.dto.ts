@@ -1,4 +1,4 @@
-import { ChannelType, MemberTitle, SanctionType } from "src/entities/channel.entity";
+import { ChannelType, MemberTitle} from "src/entities/channel.entity";
 import { UserDTO } from "src/users/dto/create-user.dto";
 
 export class ChannelDTO {
@@ -7,10 +7,10 @@ export class ChannelDTO {
     type?: ChannelType;
     password?: string;
     owner?: UserDTO;
-    administrators: AdministrationDTO[];
-    memberships: MembershipDTO[];
-    sanctions: SanctionDTO[];
-    messages: MessageDTO[];
+    administrators?: AdministrationDTO[];
+    memberships?: MembershipDTO[];
+    mutations?: MutationDTO[];
+    messages?: MessageDTO[];
 }
 
 export class AdministrationDTO {
@@ -24,11 +24,16 @@ export class MembershipDTO {
     title: MemberTitle;
 }
 
-export class SanctionDTO {
+export class MutationDTO {
     channel: ChannelDTO;
     member: UserDTO;
-    type: SanctionType;
-    duration: Date;
+    mut_date: Date;
+    duration: number;
+}
+
+export class BannationDTO {
+    channel: ChannelDTO;
+    member: UserDTO;
 }
 
 export class MessageDTO {

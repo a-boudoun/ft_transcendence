@@ -13,6 +13,9 @@ type InitialState = {
     isChild: boolean;
     modalTYpe: string;
     visitedUser: userDto;
+    Membership: any[];
+    isNewMember: boolean;
+    id: number;
 };
 
 interface Message {
@@ -28,6 +31,7 @@ type userDto  = {
     fact2Auth: boolean;
     level: number;
     XP: number;
+
 }
 type Channel = {
     id: number;
@@ -37,6 +41,7 @@ type Channel = {
     password: string;
     messages: Message[];
     memberships: any[];
+    bannations: any[];
 };
 const initialState = {
 
@@ -48,14 +53,17 @@ const initialState = {
     isChild: false,
     modalTYpe: '',
     visitedUser: {} as userDto,
+    Membership: [] as any[],
+    isNewMember: false,
+    id: 0,
 
 } as InitialState
 
-export const currentChannelSlice = createSlice({
-    name: 'currentChannel',
+export const globalStateSlice = createSlice({
+    name: 'globalState',
     initialState,
     reducers: {
-        setcurrentChannel: (state , action: PayloadAction<any>) => {
+        setcurrentchannel: (state , action: PayloadAction<any>) => {
             state.channel  = action.payload;
         },
         setMessage: (state: any, action: PayloadAction<any>) => {
@@ -87,9 +95,18 @@ export const currentChannelSlice = createSlice({
         },
         setVisitedUser: (state: any, action: PayloadAction<any>) => {
             state.visitedUser = action.payload;
-        }
+        },
+        setMemberships: (state: any, action: PayloadAction<any>) => {
+            state.Membership = action.payload;
+        },
+        setisNewMember: (state: any, action: PayloadAction<any>) => {
+            state.isNewMember = action.payload;
+        },
+        setid: (state: any, action: PayloadAction<any>) => {
+            state.id = action.payload;
+        },
     }
 })
 
-export const {setcurrentChannel, setMessage, setVisitedUser, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisChild, setmodaltype} = currentChannelSlice.actions;
-export default currentChannelSlice.reducer;
+export const {setcurrentchannel,setid, setisNewMember, setMessage,setMemberships, setVisitedUser, setChannels, setnewchannel, setisopen, setuser, setMembership, setisMid, setisChild, setmodaltype} = globalStateSlice.actions;
+export default globalStateSlice.reducer;

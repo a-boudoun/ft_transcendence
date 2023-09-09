@@ -40,7 +40,7 @@ import { useRouter } from 'next/navigation';
   }
 
   const Drop = ({setIsOpen} : {setIsOpen : (isOpen: boolean) => void}) => {
-    const user  = useSelector((state: any) => state.currentChannel.visitedUser);
+    const user  = useSelector((state: any) => state.globalState.visitedUser);
     const {divref} = useCloseOutSide({setIsOpen});
 
     const Status = useQuery({
