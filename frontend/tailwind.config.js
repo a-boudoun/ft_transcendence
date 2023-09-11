@@ -9,12 +9,12 @@ module.exports = {
     extend: {
       backgroundImage: {
         'ping-pong': "url('/img/ping-pong.gif')",
-        'bg': "url('/img/bg1.png')",
+        'bg': "url('/img/bg.jpg')",
       },
       colors: {
-        'dark-gray': '#222831',
-        'light-gray': '#393E46',
-        'red': '#F96D00',
+        'dark-gray': '#2F3B58',
+        'light-gray': '#384259',
+        'red': '#EA5581',
         'blue': '#7AC7C4',
 
     },

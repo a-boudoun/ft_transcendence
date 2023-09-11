@@ -9,7 +9,6 @@ import { setcurrentchannel, setnewchannel } from '@/redux/features/globalState';
 import { useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { Client } from '@/providers/QueryProvider';
 import { useRouter } from 'next/navigation';
 
 const NewChannel = () => {
@@ -33,13 +32,10 @@ const NewChannel = () => {
         setIsclicked(!isclicked);
     }
 
-    
-
     const handleChange = (e: any) => {
           setImage(e.target.files[0]);
           setImagePreview(URL.createObjectURL(e.target.files[0]));
       };
-
 
       const NewChannel = useMutation(async(channel : channelDto) => {
             const res = await axios.post('http://localhost:8000/channels/createChannel', {name : channel.name, image: channel.image,  type: channel.type, password: channel.password, owner: channel.owner}, { withCredentials: true });

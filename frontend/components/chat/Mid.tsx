@@ -121,10 +121,10 @@ function Mid() {
     return (
         <>
         <ToastContainer />
-        <div className={` text-white  rounded-[2.5rem] sm:mr-6    sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:p-4 ${isMid === true ? 'w-full md:w-1/2 lg:w-7/12 flex flex-col xl:w-5/12' : 'hidden lg:flex lg:flex-col  lg:w-5/12'} `}>
-            <div className='flex flex-col justify-between bg-light-gray h-full rounded-[2rem] overflow-hidden'>
+        <div className={` text-white  rounded-[2.5rem] sm:mr-6 sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:p-4 ${isMid === true ? 'w-full md:w-1/2 lg:w-7/12 flex flex-col xl:w-5/12' : 'hidden lg:flex lg:flex-col  lg:w-5/12'} `}>
+            <div className='flex flex-col justify-between h-full sm:rounded-[2rem] overflow-hidden bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
 
-            <div className="h-fit bg-dark-gray flex items-center py-3    justify-between px-3" >
+            <div className="h-fit  flex items-center py-3   justify-between px-3 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg" >
                 <div className="flex items-center space-x-2 ">
 
                     <Link href={`/channel`}>
@@ -164,9 +164,9 @@ function Mid() {
                     )
                 }
             </div>
-            <div className="h-[56px] flex justify-between bg-dark-gray items-center px-3 py-2  rounded-lg">
-                <form onSubmit={handelSubmit} className={` ${isMember === true ? '' : 'hidden'} flex bg-inherit justify-between items-center w-full`}>
-                    <input type="text" value={input} onChange={(e: any) => setInput(e.target.value)} className="w-full bg-inherit h-10 rounded-md px-2 outline-none" placeholder="Send Message.." />
+            <div className="h-[56px] flex justify-between  items-center px-3 py-2  rounded-lg bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
+                <form onSubmit={handelSubmit} className={` ${isMember === true ? '' : 'hidden'} flex justify-between items-center w-full`}>
+                    <input type="text" value={input} onChange={(e: any) => setInput(e.target.value)} className="bg-transparent w-full h-10 rounded-md px-2 outline-none" placeholder="Send Message.." />
                     <button type="submit" className="  px-3 rounded-md">
                         <Image src="/img/send.svg" width={20} height={20} alt="" />
                     </button>
@@ -199,7 +199,7 @@ export const Message = (msg: any) => {
         <div className={`w-full flex flex-col `}>
         <div className={` w-full flex ${style} text-[10px] px-3  text-blue`}>{date} ago</div>
         <div className={`w-full flex ${style}    `}>
-            <div className={` bg-dark-gray  w-fit  max-w-[250px] ${msg.id?.username === msg.user?.username ? " rounded-tl-xl" : "rounded-tr-xl"}  rounded-b-xl py-2 m-2 min-w-[75px] `}>
+            <div className={`w-fit  max-w-[250px] bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg ${msg.id?.username === msg.user?.username ? " rounded-tl-xl" : "rounded-tr-xl"}  rounded-b-xl py-2 m-2 min-w-[75px] `}>
                 <div key={msg.id} className="px-5 break-words text-left text-sm ">
                     {msg.msg}
                 </div>

@@ -1,15 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from '../entities/user.entity'
+import { Blockage, User } from '../entities/user.entity'
 import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import con from 'ormconfig';
+import { FriendshipService } from '../friendship/friendship.service';
 
 @Injectable()
 export class UsersService {
+  
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Blockage) private blockRepo: Repository<Blockage>,
+    private readonly friendService: FriendshipService,
     ) {}
     
     create(userDTO: UserDTO) {
@@ -18,12 +21,20 @@ export class UsersService {
     }
     
     async findAll() {
-      return await this.userRepo.find();
+      
+      const allUsers =  await this.userRepo.find({
+        order: {
+          level: 'DESC',
+        },
+      });
+      return  allUsers;
+      
     }
     
-    async search(key: string) {
-      const users = await this.userRepo.findBy({name: Like(`%${key}%`)});
-      return users;
+    async search(username:string,  key: string) {
+      const blockedAndBlocker = await this.blockedAndBlocker(username);
+      const allUsers = await this.userRepo.findBy({username: Like(`%${key}%`)});
+      return  allUsers.filter(user => !blockedAndBlocker.some(b => b.username === user.username));
     }
     
     findOne(username: string) {
@@ -32,21 +43,18 @@ export class UsersService {
       return user;
     }
     
-    findOneByname(name: string) {
-      const user = this.userRepo.findOneBy({name});
+    // findOneByname(name: string) {
+    //   const user = this.userRepo.findOneBy({name});
       
-      return user;
-    }
+    //   return user;
+    // }
     
-    async isUserExist(myName: string,  name: string) {
-      const user = await this.userRepo.findOneBy({name});
+    async isUserNameExist(username: string) {
+      const user = await this.userRepo.findOneBy({username});
       
       if (user) {
-        if (user.name === myName)
-        {
-          return false;
-        }
-        return true;
+        if (user.username === username)
+          return true;
       }
       return false;
     }
@@ -91,6 +99,44 @@ export class UsersService {
         const user = await this.findOne(username);
         return await this.userRepo.save({...user, ...{fact2Auth: true}})
       }
+      
+      async block(bloker: any, blocked: any) {
+        const block = await this.blockRepo.create();
+        block.blocker = await this.findOne(bloker);
+        block.blocked = await this.findOne(blocked);
+        await this.friendService.remove(bloker, blocked);
+        return this.blockRepo.save(block);
+      }
+      
+      async unblock(blocker: any, blocked: any) {
+        const block = await this.blockRepo.find({
+          where: [
+            { blocker: { username: blocker } ,  blocked: { username: blocked} },
+          ],
+        });
+        return this.blockRepo.remove(block);
+      }
+  
+      async blockedUsers(username: string) {
+        const blockedUsers = await this.blockRepo.find({where: [{blocker : {username: username }}],  relations: ['blocked']});
+        if (blockedUsers.length === 0)
+          return [];
+        return blockedUsers.map(b => b.blocked);
+      }
+  
+      async blockedByUsers(username: string) {
+        const blockedByUsers = await this.blockRepo.find({where: [{blocked : {username: username }}],  relations: ['blocker']});
+        return blockedByUsers.map(b => b.blocker);
+      }
+  
+      async blockedAndBlocker (username: string) {
+        const blocked = await this.blockedUsers(username);
+        const blockedBy = await this.blockedByUsers(username);
+        return [...blocked, ...blockedBy];
+      }
 
-
-    }
+      // async isBlocked(blocker: string, blocked: string) {
+      //     const blockedAndBlocker = await this.blockedAndBlocker(blocker);
+      //     return blockedAndBlocker.some(b => b.username === blocked);
+      // }
+}

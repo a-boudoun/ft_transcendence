@@ -30,7 +30,8 @@ const Page =  ({ params }: { params: number }) => {
       queryKey: ['channel'],
       queryFn: async () => {
         const channel = await axios.get(`http://localhost:8000/channels/${params.id}`, { withCredentials: true });
-        const user = await axios.get(`http://localhost:8000/users/me`, { withCredentials: true });
+        console.log(channel.data);
+        const user = await axios.get(`http://localhost:8000/users/getUser/me`, { withCredentials: true });
         
         if(!channel.data )
         {

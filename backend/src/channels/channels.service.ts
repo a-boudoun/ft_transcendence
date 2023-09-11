@@ -1,21 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { AdministrationDTO, ChannelDTO } from './dto/create-channel.dto';
-import { UpdateChannelDto } from './dto/update-channel.dto';
 import { Administration, Bannation, Channel, MemberTitle, Membership, Message, Mutation } from '../entities/channel.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
-import con from 'ormconfig';
-import { UsersService } from '../users/users.service';
 import { ChannelType } from '../entities/channel.entity';
 import { MembershipDTO } from './dto/create-channel.dto';
 import { UserDTO } from 'src/users/dto/create-user.dto';
-import { User } from 'src/entities/user.entity';
 
 import * as bcrypt from 'bcrypt';
 import { Not } from 'typeorm';
-import { use } from 'matter-js';
-import { Console } from 'console';
 
 @Injectable()
 export class ChannelsService {

@@ -1,20 +1,17 @@
-import { Controller, Get, Post, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, Delete, UseGuards, Req } from '@nestjs/common';
 import { FriendshipService } from './friendship.service';
-import { FriendshipDTO } from './dto/create-friendship.dto';
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
-import { find } from 'rxjs';
-import { User } from 'src/entities/user.entity';
-import { UserDTO } from 'src/users/dto/create-user.dto';
-import con from 'ormconfig';
 
 @Controller('friendship')
 export class FriendshipController {
   constructor(private readonly friendshipService: FriendshipService) {}
 
-  @Post('sendRequest/:receiver')
+  @Post('sendRequest')
   @UseGuards(Jwt2faAuthGuard)
-  async create(@Param('receiver') receiver: string, @Req() Req) {
-    return await this.friendshipService.create(Req.user.name, receiver);
+  async create(@Body() body: any, @Req() Req) {
+    console.log('me ' + Req.user.username);
+    console.log('receiver ' + body.receiver);
+    return await this.friendshipService.create(Req.user.username, body.receiver);
   }
 
   @Get('friendrequests')
@@ -23,34 +20,35 @@ export class FriendshipController {
     return this.friendshipService.friendReq(req.user.username);
   }
 
-  @Patch('acceptRequest/:sender')
+  @Patch('acceptRequest')
   @UseGuards(Jwt2faAuthGuard)
-  async accept(@Param('sender') sender: string, @Req() req) {
-    return await this.friendshipService.accept(req.user.username, sender);
+  async accept(@Body() body: any, string, @Req() req) {
+    return await this.friendshipService.accept(req.user.username, body.sender);
   }
 
-  @Get('getFriends')
+  @Get('getFriends/:username')
   @UseGuards(Jwt2faAuthGuard)
-  async getMyFriends(@Req() req) {
-      return await this.friendshipService.getFriends(req.user.username);
+  async getFriends(@Req() req, @Param('username') username: string) {
+      return await this.friendshipService.getFriends(username);
   }
 
-  @Get('status/:name')
+  @Get('status/:username')
   @UseGuards(Jwt2faAuthGuard)
-  async status(@Param('name') name: string, @Req() req){
-    return this.friendshipService.status(req.user.username, name);
+  async status(@Param('username') username: string, @Req() req){
+    return this.friendshipService.status(req.user.username, username);
   }
 
-  @Delete(':name')
-  @UseGuards(Jwt2faAuthGuard)
-  remove(@Param('name') name: string, @Req() req) {
-    return this.friendshipService.remove(req.user.username, name);
-  }
   @Get('search/:channelid/:query')
   @UseGuards(Jwt2faAuthGuard)
   async search(@Param('channelid') channelid: string,@Param('query') query: string, @Req() req) {
     console.log(query);
     return await this.friendshipService.search(+channelid,req.user.username, query);
+  }
+
+  @Delete(':username')
+  @UseGuards(Jwt2faAuthGuard)
+  remove(@Param('username') username: string, @Req() req) {
+    return this.friendshipService.remove(req.user.username, username);
   }
 
 }

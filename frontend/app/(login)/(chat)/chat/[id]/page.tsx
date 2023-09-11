@@ -1,14 +1,10 @@
 "use client";
-import getData from "@/apis/getData";
-import Mid from "@/components/chat/Mid";
 import userDto from "@/dto/userDto";
 import Image from "next/image";
 import Link from "next/link";
-import { use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useState , useEffect } from "react";
 import axios from "axios";
-import { set } from "zod";
 import{ useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import MessageDto from "@/dto/Message";

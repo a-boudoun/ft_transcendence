@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { FriendshipDTO } from './dto/create-friendship.dto';
 import { Channel, Friendship, Fstatus, User } from 'src/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserDTO } from 'src/users/dto/create-user.dto';
-import con from 'ormconfig';
-import { ChannelsService } from 'src/channels/channels.service';
 import { Bannation, ChannelType, MemberTitle, Membership } from 'src/entities/channel.entity';
 
 @Injectable()
@@ -14,9 +10,7 @@ export class FriendshipService {
     @InjectRepository(Friendship) private friendshipRepo: Repository<Friendship>,
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Channel) private channelRepo: Repository<Channel>,
-    @InjectRepository(Bannation) private bannationRepo: Repository<Bannation>,
     @InjectRepository(Membership) private memRepo: Repository<Membership>,
-
     ) {}
     
     async friendReq(username : string) {
@@ -34,8 +28,8 @@ export class FriendshipService {
     
     async create(sender: string, receiver: string) {
       const friendship = await this.friendshipRepo.create();
-      friendship.initiater = await this.userRepo.findOneBy({name : sender});
-      friendship.receiver = await this.userRepo.findOneBy({name : receiver});
+      friendship.initiater = await this.userRepo.findOneBy({username : sender});
+      friendship.receiver = await this.userRepo.findOneBy({username : receiver});
       friendship.status = Fstatus.PENDING;
       return await this.friendshipRepo.save(friendship);
     }
@@ -73,31 +67,35 @@ async accept(username: string, sender: string) {
   const friendship = await this.friendshipRepo.findOne({
       where: [ { initiater: { username: sender }, receiver: { username: username } } ],
     });
+
     friendship.status = Fstatus.ACCEPTED;
-    const user1 = await this.userRepo.findOneBy({name: username});
-    const user2 = await this.userRepo.findOneBy({name: sender});
+    const user1 = await this.userRepo.findOneBy({username: username});
+    const user2 = await this.userRepo.findOneBy({username: sender});
+
     const channelName : string =  (user1.id < user2.id) ? user1.username + user2.username : user2.username + user1.username;
-    console.log(channelName);
+
     const ch = await this.channelRepo.findOne({
       where: {name: channelName, type: ChannelType.DIRECT},
     });
+
     if (ch == null) {
-    const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" });
-    const rt = await this.channelRepo.save(channel);
-  const membership1 = await this.memRepo.create({channel: rt, member: user1, title: MemberTitle.MEMBER});
-  const membership2 = await this.memRepo.create({channel: rt, member: user2, title: MemberTitle.MEMBER});
-  await this.memRepo.save(membership1);
-  await this.memRepo.save(membership2);      
-  }
+      const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" });
+      const rt = await this.channelRepo.save(channel);
+      const membership1 = await this.memRepo.create({channel: rt, member: user1, title: MemberTitle.MEMBER});
+      const membership2 = await this.memRepo.create({channel: rt, member: user2, title: MemberTitle.MEMBER});
+      await this.memRepo.save(membership1);
+      await this.memRepo.save(membership2);      
+    }
+
     return await this.friendshipRepo.save(friendship);
   }
 
-  async status(username: string, sender: string) {
-    console.log(username, sender);
+  async status(username: string, receiver: string) {
+    console.log(username, receiver);
     const friendship = await this.friendshipRepo.find({
       where: [
-        { initiater: { username: username } ,  receiver: { username: sender } },
-        { initiater: { username: sender } ,  receiver: { username: username } }
+        { initiater: { username: username } ,  receiver: { username: receiver } },
+        { initiater: { username: receiver } ,  receiver: { username: username } }
       ],
       relations: ['initiater']
     });
@@ -107,7 +105,7 @@ async accept(username: string, sender: string) {
     else if(friendship[0].status == Fstatus.ACCEPTED)
       return {status: Fstatus.ACCEPTED};
     else if(friendship[0].status == Fstatus.PENDING)
-      return {status: Fstatus.PENDING, sender: friendship[0].initiater.name};
+      return {status: Fstatus.PENDING, sender: friendship[0].initiater.username};
 
   }
 
@@ -118,8 +116,6 @@ async accept(username: string, sender: string) {
         { initiater: { username: sender } ,  receiver: { username: username } }
       ],
     });
-
-   
 
     return await this.friendshipRepo.remove(friendship);
   }

@@ -60,7 +60,7 @@ export const ChannelItem = ({channel, user}:{channel:any , user:userDto}) => {
     }, [channels]);
 
     return (
-        <div className={`bg-dark-gray h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white flex justify-between`}>
+        <div className={`bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white flex justify-between`}>
             <div className="flex items-center space-x-5">
                 <Image
                 className="w-10 h-10 rounded-full self-center"
