@@ -21,7 +21,7 @@ const Channel = () => {
     const [newchannel, setNewchannel] = useState(false);
     const [isChannel, setIsChannel] = useState(false);
     const [isFriend, setIsFriend] = useState(false);
-    const activeStyle = " border-blue text-blue ";
+    const activeStyle = "border-b-2  border-blue text-blue ";
     const [user, setUser] = useState<userDto>({} as userDto);
     const path = usePathname();
     const router = useRouter();
@@ -29,8 +29,8 @@ const Channel = () => {
         {
           queryKey: ['channels'],
           queryFn: async () => {
-            const channelsResponse = await axios.get('http://localhost:8000/channels', { withCredentials: true });
-            const userDataResponse = await axios.get('http://localhost:8000/users/me', { withCredentials: true });
+            const channelsResponse = await axios.get('/channels');
+            const userDataResponse = await axios.get('/users/getUser/me');
             dispatch(setChannels(channelsResponse.data));
             dispatch(setuser(userDataResponse.data));
             setUser(userDataResponse.data);
@@ -71,15 +71,15 @@ const Channel = () => {
         }
       }, [path]);
       return (
-        <div className={`h-full  bg-light-gray sm:rounded-[2rem] overflow-hidden`}>
-          <div className={` w-full bg-dark-gray h-fit flex justify-between mb-3   text-white gap-1`} >
-              <button className={`w-1/3  flex items-center justify-center border-b-2  py-3 text-sm font-semibold   ${isFriend === true ? activeStyle: 'border-dark-gray'}`} onClick={()=> handleclick(0)}>
+        <div className={`h-full  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:rounded-[2rem] overflow-hidden`}>
+          <div className={` w-full bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-fit flex justify-between mb-3   text-white gap-1`} >
+              <button className={`w-1/3  flex items-center justify-center  py-3 text-sm font-semibold   ${isFriend === true ? activeStyle: ''}`} onClick={()=> handleclick(0)}>
               <Image className="w-7 h-7" src={'/img/msgb.svg'} width={100} height={100} alt={''} />
               </button>
-              <button className={`w-1/3 flex items-center justify-center  border-b-2 py-3 text-sm  font-semibold  ${isChannel === true ? activeStyle: 'border-dark-gray'}`} onClick={()=> handleclick(1)}>
+              <button className={`w-1/3 flex items-center justify-center  py-3 text-sm  font-semibold  ${isChannel === true ? activeStyle: ''}`} onClick={()=> handleclick(1)}>
                 <Image className="w-8 h-7" src={'/img/channelb.svg'} width={100} height={100} alt={''} />
               </button>
-              <button className={`w-1/3  flex items-center justify-center  border-b-2 py-3 text-sm font-semibold   ${newchannel === true ? activeStyle: 'border-dark-gray'}`} onClick={()=> handleclick(2)}>
+              <button className={`w-1/3  flex items-center justify-center  py-3 text-sm font-semibold   ${newchannel === true ? activeStyle: ''}`} onClick={()=> handleclick(2)}>
                 <Image className="w-7 h-7" src={'/img/newchannel.svg'} width={100} height={100} alt={''} />
               </button>
           </div>

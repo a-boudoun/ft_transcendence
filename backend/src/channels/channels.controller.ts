@@ -8,8 +8,6 @@ import { MemberTitle, Membership } from 'src/entities/channel.entity';
 import con from 'ormconfig';
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
 
-
-
 @Controller('channels')
 @UseGuards(Jwt2faAuthGuard)
 export class ChannelsController {

@@ -49,7 +49,7 @@ const SignInFrom = ({user} : {user: signInDto}) => {
 
     const validationResult = await signInSchema.safeParseAsync({name: name, image: image});
     if (validationResult.success) {
-      user.name = name;
+      user.username = name;
       if (image)
       {
         const uploadimage = await uploadImage(image);

@@ -16,8 +16,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import useCloseOutSide from '@/hookes/useCloseOutSide';
 import { channel } from 'diagnostics_channel';
 
-
-
 const Right = () => {
 
   const dispatch = useDispatch<AppDispatch>();
@@ -55,7 +53,7 @@ const Right = () => {
   
   return (
     <div className={`${isMid === false ? 'w-full md:w-1/2  lg:w-4/12 ' : 'hidden lg:w-5/12 lg:flex lg:flex-col max-w-xs'} h-full sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:rounded-[2.5rem] sm:p-4 `}>
-        <div className='bg-light-gray h-full sm:rounded-[2rem] relative'>
+        <div className='bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-full sm:rounded-[2rem] relative'>
 
       <button className='absolute top-4 left-4 bg-dark-gray hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg w-[36px] h-[36px] rounded-full flex justify-center items-center lg:hidden ' onClick={() => dispatch(setisMid(true))} >
         <Image
@@ -154,7 +152,7 @@ export const BlockedItems = ({ member , user, id}: { member: any, user: any, id:
    
   });
   return (
-    <div className={ `bg-dark-gray rounded-lg my-3 py-2.5 px-2   flex items-center justify-between`}>
+    <div className={ `bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-lg my-3 py-2.5 px-2   flex items-center justify-between`}>
       <div className='flex items-center'>
           <Image
               className="h-[30px] w-[30px]  rounded-full"
@@ -180,7 +178,7 @@ export const Items = ({ member , user, id}: { member: any, user: any, id: number
   
   return (
     <>
-      <div className={ `bg-dark-gray rounded-lg my-3 py-1 px-2   flex items-center relative`}>
+      <div className={ `bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-lg my-3 py-1 px-2   flex items-center relative`}>
         <Image
 
           className="h-[30px] w-[30px]  rounded-full"

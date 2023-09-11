@@ -26,7 +26,7 @@ const Left = () => {
 
 const Mid = () =>{
 
-  const navigationRoutes: string[] = ["home", "leaderboard", "game", "chat"];
+  const navigationRoutes: string[] = ["./home", "./leaderboard", "./game", "./chat"];
 
   return (
     <div className='hidden md:basis-1/3 md:flex md:justify-between'>
@@ -51,7 +51,7 @@ const Right = () =>{
 
 const NavBar = () => {
   return (
-      <nav className="fixed flex justify-between items-center h-[56px] w-screen bg-dark-gray border-b border-blue z-30">
+      <nav className="fixed flex justify-between items-center h-[56px] w-screen border-b border-blue z-30">
         <Left />
         <Mid />
         <Right/>

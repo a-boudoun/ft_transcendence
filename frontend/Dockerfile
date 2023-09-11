@@ -11,7 +11,6 @@ COPY . .
 # Install all dependencies including development dependencies
 RUN npm install
 
-
 # Expose the port that the NextJS application listens on
 EXPOSE 3000
 

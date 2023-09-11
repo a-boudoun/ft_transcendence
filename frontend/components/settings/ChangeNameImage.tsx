@@ -21,7 +21,7 @@ const ChangeNameImage = () => {
     const User = useQuery({
         queryKey: ['user'],
         queryFn: async ()=> {
-            const {data} = await axios.get('http://localhost:8000/users/me', { withCredentials: true })
+            const {data} = await axios.get('http://localhost:8000/users/getUser/me', { withCredentials: true })
             return data;
         }
     });
@@ -54,8 +54,15 @@ const ChangeNameImage = () => {
     };
 
     const handleSubmit = async(e: any) => {
-        e.preventDefault(); 
-        const validationResult = await userSchema.safeParseAsync({name: name, image: image});
+        e.preventDefault();
+        if (name === User.data.name && (image === null)){
+            setIsLoading(false);
+            setMsg('no changes were made');
+            return ;
+        }
+
+        const validationResult = (name === User.data.name) ?  await userSchema.safeParseAsync({image: image}) : await userSchema.safeParseAsync({name: name, image: image});
+
         if (validationResult.success) {
             User.data.name = name;
             if (image){
@@ -91,7 +98,6 @@ const ChangeNameImage = () => {
           </div>
         </form>
     )
-
 }
 
 export default ChangeNameImage;

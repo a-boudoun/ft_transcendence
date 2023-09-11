@@ -8,11 +8,20 @@ import { Response } from 'express';
 
 config();
 
-const extractCookie = (req: Request): string | null => {
+const extractCookie = (req: Request | any ) => {
     if (req.cookies && req.cookies.access_token) {
       return req.cookies.access_token;
     }
-    return null;
+    else {
+     if (!req.handshake?.headers?.cookie) 
+        return null;
+    
+    const regex = /access_token=([^;]*)/;
+
+    const token = req.handshake.headers.cookie.match(regex);
+
+    return token;
+    }
 }
 @Injectable()
 export class Jwt2faStrategy extends PassportStrategy(Strategy, 'jwt-2fa') {
@@ -25,9 +34,10 @@ export class Jwt2faStrategy extends PassportStrategy(Strategy, 'jwt-2fa') {
     }
 
     async validate(payload: any, res: Response) {
-        
-        const user = await this.usersService.findOne(payload.username);
 
+        const user = await this.usersService.findOne(payload.username);
+        if (!user)
+            return null;
         if (!user.fact2Auth)
             return user;
         if (payload.fact2Auth === true) 
