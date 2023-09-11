@@ -129,7 +129,7 @@ function Mid() {
 
                     <Link href={`/channel`}>
                         <Image
-                            className="h-full  md:hidden "
+                            className="h-full  md:hidden d"
                             src={"/img/back.svg"}
                             width={18}
                             height={18}
