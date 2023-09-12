@@ -17,7 +17,7 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
 
   const Accept = useMutation({
     mutationKey: ['acceptFriendRequest'],
-    mutationFn: async(sender: string) => {
+    mutationFn: async(sender: number) => {
       const {data} = await axios.patch(`/friendship/acceptRequest`, {sender: sender});
       return data;
     },
@@ -28,8 +28,8 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
 
   const Decline  = useMutation({
     mutationKey: ['DeclineFriend'],
-    mutationFn: async(name: string) => {
-        const {data} = await axios.delete(`/friendship/${name}`);
+    mutationFn: async(id: number) => {
+        const {data} = await axios.delete(`/friendship/${id}`);
         return data;
     },
     onSuccess: () => {
@@ -52,8 +52,8 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
                       </div>
                   </div>
                   <div className="flex items-center gap-2 text-[12px] sm:gap-4 sm:text[24px]">
-                      <button className="bg-red rounded-xl px-2 py-1 sm:px-4 sm:py-2" onClick={() =>  Decline.mutate(user.username)} >Decline</button>
-                      <button className="bg-blue rounded-xl px-2 py-1 sm:px-4 sm:py-2" onClick={() =>  Accept.mutate(user.username)} >Accept</button>
+                      <button className="bg-red rounded-xl px-2 py-1 sm:px-4 sm:py-2" onClick={() =>  Decline.mutate(user.id)} >Decline</button>
+                      <button className="bg-blue rounded-xl px-2 py-1 sm:px-4 sm:py-2" onClick={() =>  Accept.mutate(user.id)} >Accept</button>
                   </div>
             </div>
             );

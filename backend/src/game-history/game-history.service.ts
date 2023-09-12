@@ -13,9 +13,9 @@ export class GameHistoryService {
 
   async create(ghReq: ghReq) {
     const gameHistory = this.gameHistoryRepo.create();
-    gameHistory.winner = await this.userService.findOne(ghReq.winner);
+    gameHistory.winner = await this.userService.findOneByUserName(ghReq.winner);
     gameHistory.winner.XP += 10;
-    gameHistory.loser = await this.userService.findOne(ghReq.loser);
+    gameHistory.loser = await this.userService.findOneByUserName(ghReq.loser);
     gameHistory.loserScore = ghReq.loserScore;
     return this.gameHistoryRepo.save(gameHistory);
   }
@@ -24,8 +24,8 @@ export class GameHistoryService {
     return this.gameHistoryRepo.find();
   }
 
-  async getHistory(username: string) {
-    const user = await this.userService.findOne(username);
+  async getHistory(id: number) {
+    const user = await this.userService.findOneById(id);
     if (!user)
       return [];
     return this.gameHistoryRepo.find({where: [{winner: user}, {loser: user}], relations: ['winner', 'loser']});

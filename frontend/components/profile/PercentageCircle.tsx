@@ -1,11 +1,13 @@
 import React from 'react';
 
 interface PercentageCircleProps {
+  value: number;
   percentage: number;
   color: string;
 }
 
 const PercentageCircle: React.FC<PercentageCircleProps> = ({
+  value,
   percentage,
   color,
 }: PercentageCircleProps) => {
@@ -47,7 +49,7 @@ const PercentageCircle: React.FC<PercentageCircleProps> = ({
           fontSize="16"
           fill={color}
         >
-          {percentage}%
+          {value}
         </text>
       </svg>
     </div>

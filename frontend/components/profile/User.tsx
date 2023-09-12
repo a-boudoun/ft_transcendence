@@ -56,7 +56,7 @@ const User = ({user, isMe} : {user : userDto, isMe: boolean}) => {
             }
         </div>
     </div>
-    {!isMe && <UserParametres username={user.username} /> }
+    {!isMe && <UserParametres id={user.id} /> }
   </div>
   )
 }

@@ -6,7 +6,6 @@ import { Blockage, Friendship, User } from '../entities/user.entity';
 import { FriendshipService } from '../friendship/friendship.service';
 import { Channel, Membership } from '../entities/channel.entity';
 
-
 @Module({
   imports: [TypeOrmModule.forFeature([Friendship, Channel, Blockage, User, Membership])],
   controllers: [UsersController],
