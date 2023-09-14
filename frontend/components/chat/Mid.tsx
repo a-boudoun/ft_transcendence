@@ -72,7 +72,7 @@ function Mid() {
         }
     });
     useEffect(() => {
-        if(!user || !channel) return;
+        if(!user || !channel || channel?.type ==="Direct") return;
         isMuted1.mutate(user);
     }, [user]);
 
@@ -129,7 +129,7 @@ function Mid() {
 
                     <Link href={`/channel`}>
                         <Image
-                            className="h-full  md:hidden "
+                            className="h-full  md:hidden d"
                             src={"/img/back.svg"}
                             width={18}
                             height={18}
@@ -199,7 +199,7 @@ export const Message = (msg: any) => {
         <div className={`w-full flex flex-col `}>
         <div className={` w-full flex ${style} text-[10px] px-3  text-blue`}>{date} ago</div>
         <div className={`w-full flex ${style}    `}>
-            <div className={`w-fit  max-w-[250px] bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg ${msg.id?.username === msg.user?.username ? " rounded-tl-xl" : "rounded-tr-xl"}  rounded-b-xl py-2 m-2 min-w-[75px] `}>
+            <div className={`w-fit  max-w-[250px] bg-white bg-opacity-20 ackdrop-blur-lg ${msg.id?.username === msg.user?.username ? " rounded-tl-xl" : "rounded-tr-xl"}  rounded-b-xl py-2 m-2 min-w-[75px] `}>
                 <div key={msg.id} className="px-5 break-words text-left text-sm ">
                     {msg.msg}
                 </div>

@@ -7,6 +7,7 @@ import { UserDTO } from 'src/users/dto/create-user.dto';
 import { MemberTitle, Membership } from 'src/entities/channel.entity';
 import con from 'ormconfig';
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
+import { ParseIntPipe } from '@nestjs/common';
 
 @Controller('channels')
 @UseGuards(Jwt2faAuthGuard)
@@ -23,10 +24,13 @@ export class ChannelsController {
     return this.channelsService.findAll(req.user.username);
   }
   @Get(':id')
-  findOne(@Param('id') id: string, @Req() req: any) {
-    return this.channelsService.findOne1(+id, req.user.username);
+  findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+    return this.channelsService.findChannel(id, req.user.username);
   }
-  
+  @Get('directchannel/:id')
+  findOneDirect(@Param('id') id: string) {
+    return this.channelsService.findOne(+id);
+  }
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateChannelDto: UpdateChannelDto) {
   

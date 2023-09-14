@@ -75,7 +75,7 @@ export class Bannation {
     member: User;
 }
 
-@Entity({ name: 'Message' })
+@Entity({ name: 'Message', orderBy: { date: 'ASC' } })
 export class Message {
     @PrimaryGeneratedColumn()
     id: number;

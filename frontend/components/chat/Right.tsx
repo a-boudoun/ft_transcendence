@@ -55,7 +55,7 @@ const Right = () => {
     <div className={`${isMid === false ? 'w-full md:w-1/2  lg:w-4/12 ' : 'hidden lg:w-5/12 lg:flex lg:flex-col max-w-xs'} h-full sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:rounded-[2.5rem] sm:p-4 `}>
         <div className='bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-full sm:rounded-[2rem] relative'>
 
-      <button className='absolute top-4 left-4 bg-dark-gray hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg w-[36px] h-[36px] rounded-full flex justify-center items-center lg:hidden ' onClick={() => dispatch(setisMid(true))} >
+      <button className='absolute top-4 left-4  hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg w-[36px] h-[36px] rounded-full flex justify-center items-center lg:hidden ' onClick={() => dispatch(setisMid(true))} >
         <Image
           className="h-[24px] w-[24px]  rounded-full    "
           src={'/img/cancel.svg'}
@@ -86,9 +86,9 @@ const Right = () => {
           </button>
           {
             me.title === 'owner' || me.title === 'admin' ?
-            <button onClick={()=> handelClick("settings")} className='rounded-full hover:bg-light-gray'>
+            <button onClick={()=> handelClick("settings")} className='rounded-full '>
             <Image
-              className={`h-[29px] w-[56px]  rounded-full my-3 `}
+              className={`h-[29px] w-[56px]  rounded-full my-3 hover:opacity-60`}
               src={'/icons/navBar/settings.svg'}
               width={1000}
               height={1000}
@@ -178,7 +178,7 @@ export const Items = ({ member , user, id}: { member: any, user: any, id: number
   
   return (
     <>
-      <div className={ `bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-lg my-3 py-1 px-2   flex items-center relative`}>
+      <div className={ `bg-white  ackdrop-blur-lg  bg-opacity-20   rounded-lg my-3 py-1 px-2   flex items-center relative`}>
         <Image
 
           className="h-[30px] w-[30px]  rounded-full"
@@ -215,7 +215,7 @@ export const  More = ({ member , user, id, setIsOpen}: { member: any, user: any,
 
   return (
     <div ref={divref}
-    className="absolute w-56  h-fit rounded-md  top-4 right-4 bg-dark-gray z-40">
+    className="absolute w-56  h-fit rounded-md  top-4 right-4 bg-bg bg-cover bg-no-repeat z-40 ">
         <Admin  member={member} user={user} id={id}/>
         <Ban    member={member} user={user} id={id}/>
         <Kick   member={member} user={user} id={id}/>
