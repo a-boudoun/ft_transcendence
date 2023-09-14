@@ -28,6 +28,7 @@ export const UpdateChannel = ({type}:{type:string}) => {
     const [password, setPassword] = useState('');
     const isopen = useSelector((state: any) => state.globalState.isopen);
     const {divref} = useAmiski();
+    const [passwordError, setPasswordError] = useState('');
     
     useEffect(() => {
       uchannel.name = channel.name;
@@ -69,6 +70,14 @@ export const UpdateChannel = ({type}:{type:string}) => {
     const handelsubmit = async(e: any) => {
       e.preventDefault();
      
+      if (typeCh === 'Protected' && password.length < 8)
+      {
+          setPasswordError('Password must be at least 8 characters');
+          return;
+      }
+      setPasswordError('');
+
+
       let img : string = '';
 
       const formdata = new FormData();
@@ -103,7 +112,7 @@ export const UpdateChannel = ({type}:{type:string}) => {
     return(
       <div >
         <form 
-        className={`w-96 h-[470px]  bg-dark-gray rounded-lg ${type !== 'settings' ? 'hidden': ''}`} onSubmit={handelsubmit}>
+        className={`w-96 h-[470px]  bg-bg bg-cover bg-no-repeat rounded-lg ${type !== 'settings' ? 'hidden': ''}`} onSubmit={handelsubmit}>
           <h1 className="absolute left-0 right-0 top-5 text-blue font-semibold">Update Channel</h1>
           <div className="absolute left-0 right-0 top-14  w-32 h-32 mx-auto ">
             <label htmlFor="update" className="">
@@ -117,7 +126,7 @@ export const UpdateChannel = ({type}:{type:string}) => {
             </label>
             <input type="file"  className="hidden" id="update" onChange={handleChange}/>
           </div>
-          <input type="txt" value={name} className={`w-3/4 absolute top-[46%] left-0 right-0 mx-auto rounded-md py-2 px-2 outline-none text-md bg-light-gray text-white`} placeholder="Change Name" onChange={(e: any)=> setName(e.target.value)}/>
+          <input type="txt" value={name} className={`w-3/4 absolute top-[46%] left-0 right-0 mx-auto rounded-md py-2 px-2 outline-none text-md bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg text-white`} placeholder="Change Name" onChange={(e: any)=> setName(e.target.value)}/>
           <button type='button'  className="absolute top-[57%] right-0 left-0 mx-auto w-3/4 py-1.5 rounded-md text-md inline-flex items-center justify-center bg-blue text-white"  onClick={()=> setIsclicked(!isclicked)}>
                   <span>{typeCh}</span>
                   <svg
@@ -143,7 +152,8 @@ export const UpdateChannel = ({type}:{type:string}) => {
                   <button type='button' onClick={handleType}><h1 className='hover:bg-white hover:bg-opacity-10 py-1'>Protected</h1></button>
               </div>
           </div>
-          <input  required={typeCh === 'Protected'} type='password' value={password} className={`${typeCh !== 'Protected' ? 'hidden' : ''} absolute top-[67%] left-0 right-0 mx-auto w-3/4 text-md  rounded-md  py-2 px-2   bg-light-gray text-white outline-none z-10`} placeholder='Password'  onChange={(e:any)=> setPassword(e.target.value)}/>
+          <input  required={typeCh === 'Protected'} type='password' value={password} className={`${typeCh !== 'Protected' ? 'hidden' : ''} absolute top-[67%] left-0 right-0 mx-auto w-3/4 text-md  rounded-md  py-2 px-2   bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg text-white outline-none z-10`} placeholder='Password'  onChange={(e:any)=> setPassword(e.target.value)}/>
+          <div className='absolute right-0 left-0 mx-auto bottom-20 text-rose-700'>{passwordError}</div>
           <div className="absolute bottom-0 left-0 right-0 mx-auto ">
               <button className=" w-[46%] absolute bottom-0 left-1 bg-blue text-white font-semibold text-base my-2 py-1  rounded-lg" onClick={()=> dispatch(setisopen(false))} >Cancel</button>
               <button className=" w-[46%] absolute bottom-0 right-1 bg-red text-white font-semibold text-base my-2 py-1 rounded-lg"  >Update</button>
