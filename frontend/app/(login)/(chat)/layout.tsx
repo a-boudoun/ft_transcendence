@@ -5,7 +5,7 @@ import Chat from "./chat/page";
 import { use } from "react";
 import Messeges from "@/components/chat/ChannelItems";
 import ChNav from "@/components/chat/ChNav";
-import Channel from "@/components/chat/Channel";
+import Channel from "@/components/chat/Chat";
 import Friend from "@/components/chat/Friend";
 import Modal from "@/components/chat/Modal";
 import { useSelector } from 'react-redux';

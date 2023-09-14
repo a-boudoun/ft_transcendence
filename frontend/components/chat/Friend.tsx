@@ -41,8 +41,9 @@ export default Friends;
 
 
 export const Friend = ({friend}:{friend:any}) => {
+    if(!friend) return null;
     return (
-        <div className={`bg-dark-gray h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white flex justify-between`}>
+        <div className={`bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg  h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white flex justify-between`}>
             <div className="flex items-center space-x-5">
             <div className="flex items-center space-x-5">
                 {friend?.member?.image && <Image

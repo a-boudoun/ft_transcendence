@@ -1,16 +1,11 @@
 "use client";
-import Image from 'next/image'
-import Link from 'next/link';
-import { useState } from 'react';
-import Channel from './Channel';
-import Friend from './Friend';
+import Chat from './Chat';
 import { useParams, usePathname } from 'next/navigation'
 const Left = () => {
 
-    const ischild = useParams().id ? true : false;
     return (
-        <div className={`h-full w-full ${ischild === true ? 'hidden': ''} md:block md:w-1/2  lg:w-4/12  sm:mx-6  sm:rounded-[2.5rem] bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:p-4  grow`}>
-            <Channel />
+        <div className={`h-full w-full ${useParams().id ? 'hidden': ''} md:block md:w-1/2  lg:w-4/12  sm:mx-6  sm:rounded-[2.5rem] bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:p-4  grow`}>
+            <Chat />
         </div>
     );
 }

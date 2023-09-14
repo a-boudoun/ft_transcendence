@@ -69,7 +69,6 @@ export class ChannelsService {
         { type: ChannelType.PUBLIC },
         { type: ChannelType.PROTECTED },
         { type: ChannelType.PRIVATE, memberships: { member: { username: username } } },
-      
       ],
       relations: ['messages', 'memberships.member', 'bannations.member'],
     });
@@ -80,24 +79,36 @@ export class ChannelsService {
   
   
 
-  async findOne1(id: number, username: string) {
-
+  async findChannel(id: number, username: string) {
+ 
     let channel= await this.channelRepo.findOne({
-      where: {
-        id: id,
-      },
-      relations: ['messages.sender', 'memberships.member', 'bannations.member', 'mutations.member'],
+      where: [
+        { id: id, type: ChannelType.PUBLIC },
+        { id: id, type: ChannelType.PROTECTED },
+        { id: id, type: ChannelType.PRIVATE}
+      ],
+      relations: ['messages.sender','memberships', 'memberships.member', 'bannations.member', 'mutations.member'],
+      
     });
-    if(!channel)
-      return null;
-    const ban = await this.isBanned(id, username);
-    if (ban) {
+    
+    if (!channel || (await this.isBanned(id, username))) {
       return null;
     }
-    const messages = channel.messages.sort((a, b) => (a.date).getTime() - b.date.getTime());
-    channel.messages = messages;
+
+    if(channel.type === ChannelType.PRIVATE)
+    {
+      const membership = await this.membershipRepo.findOne({
+        where: {
+          channel: { id: id},
+          member: { username: username},
+        },
+      });
+      if(!membership)
+        return null;
+    }
     return channel;
   }
+
   async findOne(id: number) {
     return this.channelRepo.findOne({
       where: {
@@ -108,12 +119,13 @@ export class ChannelsService {
   }
 
   async update(id: number, updateChannelDto: any) {
-    console.log(updateChannelDto);
     let channel = await this.findOne(id);
-   if(updateChannelDto.name != channel.name)
+    if(updateChannelDto.name != channel.name)
      channel.name = updateChannelDto.name;
+
     if(updateChannelDto.image != channel.image)
       channel.image = updateChannelDto.image;
+
     if(updateChannelDto.password && !(await bcrypt.compare(updateChannelDto.password, channel.password)))
     {
       const salt = await bcrypt.genSalt();
@@ -149,6 +161,15 @@ export class ChannelsService {
   }
 
   async addFriendtoChannel(channelId: number, friend: UserDTO) {
+    const member=  await this.membershipRepo.findOne({
+      where: {
+        channel: { id: channelId},
+        member: { id: friend.id},
+      },
+    });
+
+    if(member)
+      return member;
     const channel = await this.findOne(channelId);
     const membership = await this.membershipRepo.create({channel: channel, member: friend, title: MemberTitle.MEMBER});
     return this.membershipRepo.save(membership);
@@ -158,7 +179,6 @@ export class ChannelsService {
   {
    
     const channel = await this.findOne(channelId);
-   
     const membership = channel.memberships.find(
       (membership) => membership.id === membershipId,
     );
@@ -225,6 +245,8 @@ export class ChannelsService {
   }
 
   async isMuted(channelId: number, username: string) {
+    if(!username || !channelId)
+      return false;
     const channel = await this.findOne(channelId);
     if(!channel || !channel.mutations || channel.mutations.length === 0)
       return false; 
