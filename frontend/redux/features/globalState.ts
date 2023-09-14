@@ -1,5 +1,5 @@
 
-import Channel from '@/components/chat/Channel';
+import Channel from '@/components/chat/Chat';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import { type } from 'os';
 import { set } from 'zod';

@@ -15,13 +15,12 @@ import Image from "next/image";
 import Friends from "./Friend";
 import { set } from "zod";
 
-const Channel = () => {
+const Chat = () => {
    
     const dispatch = useDispatch<AppDispatch>();
     const [newchannel, setNewchannel] = useState(false);
     const [isChannel, setIsChannel] = useState(false);
     const [isFriend, setIsFriend] = useState(false);
-    const activeStyle = "border-b-2  border-blue text-blue ";
     const [user, setUser] = useState<userDto>({} as userDto);
     const path = usePathname();
     const router = useRouter();
@@ -73,13 +72,13 @@ const Channel = () => {
       return (
         <div className={`h-full  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:rounded-[2rem] overflow-hidden`}>
           <div className={` w-full bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-fit flex justify-between mb-3   text-white gap-1`} >
-              <button className={`w-1/3  flex items-center justify-center  py-3 text-sm font-semibold   ${isFriend === true ? activeStyle: ''}`} onClick={()=> handleclick(0)}>
+              <button className={`w-1/3  flex items-center justify-center  py-3 text-sm font-semibold border-b-2   ${isFriend === true ? 'border-blue': 'border-transparent'}`} onClick={()=> handleclick(0)}>
               <Image className="w-7 h-7" src={'/img/msgb.svg'} width={100} height={100} alt={''} />
               </button>
-              <button className={`w-1/3 flex items-center justify-center  py-3 text-sm  font-semibold  ${isChannel === true ? activeStyle: ''}`} onClick={()=> handleclick(1)}>
+              <button className={`w-1/3 flex items-center justify-center  py-3 text-sm  font-semibold border-b-2   ${isChannel === true ? 'border-blue': 'border-transparent'}`} onClick={()=> handleclick(1)}>
                 <Image className="w-8 h-7" src={'/img/channelb.svg'} width={100} height={100} alt={''} />
               </button>
-              <button className={`w-1/3  flex items-center justify-center  py-3 text-sm font-semibold   ${newchannel === true ? activeStyle: ''}`} onClick={()=> handleclick(2)}>
+              <button className={`w-1/3  flex items-center justify-center  py-3 text-sm font-semibold border-b-2   ${newchannel === true ? 'border-blue': 'border-transparent'}`} onClick={()=> handleclick(2)}>
                 <Image className="w-7 h-7" src={'/img/newchannel.svg'} width={100} height={100} alt={''} />
               </button>
           </div>
@@ -97,4 +96,4 @@ const Channel = () => {
       );
   }
 
-export default Channel;
+export default Chat;

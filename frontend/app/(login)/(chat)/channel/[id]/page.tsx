@@ -13,7 +13,6 @@ import Modal from '@/components/chat/Modal';
 import { socket } from '@/components/chat/chatSocket';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { Client } from '@/providers/QueryProvider';
 import { channel } from 'diagnostics_channel';
 
 
@@ -48,8 +47,8 @@ const Page =  ({ params }: { params: number }) => {
   });
   if (isLoading)
     return( 
-    <div className='w-full  md:w-1/2 lg:w-8/12 h-full bg-light-gray rounded-[2.5rem] sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:p-4'>
-      <div className='w-full h-full bg-light-gray rounded-[2rem] flex justify-center items-center text-blue'>
+    <div className='w-full  md:w-1/2 lg:w-8/12 h-full rounded-[2.5rem] bg-white bg-opacity-20 ackdrop-blur-lg  drop-shadow-lg p-4'>
+      <div className='w-full h-full bg-white bg-opacity-20 ackdrop-blur-lg  drop-shadow-lg rounded-[2rem] flex justify-center items-center text-blue'>
             Loading...
       </div>
     </div>);
