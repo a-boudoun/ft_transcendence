@@ -34,10 +34,6 @@ const Stats = ({user} : {user : any}) => {
             </div>
           </div>
         </div>
-        {/* <div className=''>
-            <span className='font-bold text-3xl'>#{rank}</span>
-            <h3 className='text-blue text-lg'>rank</h3>
-          </div> */}
       </div>
     )
 
