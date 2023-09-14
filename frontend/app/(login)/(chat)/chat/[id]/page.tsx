@@ -119,7 +119,7 @@ const page = ({ params }: { params: any }) => {
                             height={100}
                             alt=""
                             />}
-                        <span className="text-center h-fit">{otherUser?.name}</span>
+                        <span className="text-center h-fit">{otherUser?.username}</span>
                     </div>
                     <div className="text-3xl mr-5 flex items-center justify-center relative">
                         <button  className="rounded-full hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg  p-1" onClick={()=> setIsOpen(!isOpen)}>

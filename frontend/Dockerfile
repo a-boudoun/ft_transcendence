@@ -2,9 +2,6 @@ FROM node:alpine
 
 WORKDIR /trans
 
-# Copy package.json and package-lock.json
-COPY package.json ./
-
 # Copy the entire project to the container
 COPY . .
 

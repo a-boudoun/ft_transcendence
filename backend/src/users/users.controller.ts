@@ -88,9 +88,10 @@ export class UsersController {
     return this.usersService.blockedUsers(req.user.id);
   }
 
-  // @Get('isBlocked/:id')
-  // @UseGuards(Jwt2faAuthGuard)
-  // async isBlocked(@Req() req, @Param('id') id: number) {
-  //   return this.usersService.isBlocked(req.user.id, id);
-  // }
+  @Get('isBlocked/:id')
+  @UseGuards(Jwt2faAuthGuard)
+  async isBlocked(@Req() req, @Param('id') id: number) {
+    return this.usersService.isBlocked(req.user.id, id);
+  }
+  
 }
