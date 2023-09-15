@@ -14,7 +14,6 @@ interface NavLinkProps {
 
 const NavLink = ({route, src, alt, setIsOpen = () => {}}: NavLinkProps) => {
 
-    const router = useRouter();
     const currentRoute = usePathname();
     let color: string;
 
@@ -24,7 +23,7 @@ const NavLink = ({route, src, alt, setIsOpen = () => {}}: NavLinkProps) => {
         color = currentRoute === '/' + route ? 'bg-light-gray' : 'bg-dark-gray hover:bg-light-gray';
     
     return (
-      <div className={`grid place-content-center h-[55px] w-[56px] ${color}`}>
+      <div className={`grid place-content-center h-[55px] w-[56px]`}>
         <Link href={route}>
           <Image src={src} alt={alt} width={28} height={28}  onClick={() => setIsOpen(false)} />
         </Link>

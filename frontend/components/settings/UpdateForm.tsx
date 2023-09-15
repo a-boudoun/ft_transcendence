@@ -4,8 +4,8 @@ import axios from 'axios';
 import { useQuery , useMutation } from "@tanstack/react-query";
 import { userDto } from '@/dto/userDto';
 import { useRouter } from 'next/navigation'
-import Frineds from "@/components/common/Friends";
 import ChangeNameImage from './ChangeNameImage';
+import BlockList from './BlockList';
 
 const UpdateForm = () => {
 
@@ -14,7 +14,7 @@ const UpdateForm = () => {
   const User = useQuery({
     queryKey: ['user'],
     queryFn: async ()=> {
-      const {data} = await axios.get('http://localhost:8000/users/me', { withCredentials: true })
+      const {data} = await axios.get('http://localhost:8000/users/getUser/me', { withCredentials: true })
       return data;
     }
   });
@@ -40,8 +40,6 @@ const UpdateForm = () => {
   if (User.isLoading)
   return <div>loading...</div>
   else {
-      console.log(User.data);
-
       return (
           <div className='my-8  flex flex-col items-center gap-8 overf'>
             <ChangeNameImage />
@@ -56,8 +54,8 @@ const UpdateForm = () => {
             </div>
             <div className='grow flex flex-col'>
               <h3 className='mb-6 text-xl font-bold text-blue' >blocked users</h3> 
-              <div className='h-[400px] w-[280px] sm:w-[400px] bg-light-gray grow rounded-3xl shadow-2xl overflow-hidden p-8'> 
-                <Frineds /> 
+              <div className='h-[400px] w-[280px] sm:w-[400px] grow rounded-3xl shadow-2xl overflow-hidden p-8 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'> 
+                <BlockList />
               </div>
             </div>
         </div>

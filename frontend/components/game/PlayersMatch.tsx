@@ -7,8 +7,6 @@ import socket from '@/components/socketG';
 import axios from 'axios';
 
 interface prop {
-	clicked?: number;
-	setClicked: (val: number) => void;
 	setGame: (val: boolean) => void;
 }
 
@@ -17,7 +15,7 @@ function LeftPlayer(){
 	const {data, isLoading} = useQuery({
 		queryKey: ['user'],
 		queryFn: async ()=> {
-		  const {data} = await axios.get('http://localhost:8000/users/me', { withCredentials: true })
+		  const {data} = await axios.get('http://localhost:8000/users/getUser/me', { withCredentials: true })
 		  return data;
 		}
 	  });
@@ -26,13 +24,13 @@ function LeftPlayer(){
 		return (
 		<div className = 'flex flex-col iterms-center justify-center'>
 			<Image src={data.image} width={150} height={150} alt="avatar" className="rounded-full"/>
-			<h1 className = 'pt-2 text-2xl font-bold'> {data.name} </h1>
+			<h1 className = 'pt-2 text-2xl font-bold'> {data.username} </h1>
 		</div>
 	)
 }
 }
 
-function LoadingPlayer({setClicked, setGame}: prop){
+function LoadingPlayer({setGame}: prop){
 	// setClicked false 
 		const [image, setImage] = useState<string>('/game/unknown.svg');
 		const [name, setName] = useState<string>('searching...');
@@ -66,8 +64,8 @@ function LoadingPlayer({setClicked, setGame}: prop){
 	
 			socket.on('match-found', async (player: string) => {
 				try {
-					const { data } = await axios.get(`http://localhost:8000/users/byUsername/${player}`, { withCredentials: true });
-					setName(data.name);
+					const { data } = await axios.get(`http://localhost:8000/users/getId/${player}`, { withCredentials: true });
+					setName(data.username);
 					setImage(data.image);
 					clearInterval(interval);
 					setTimeout(() => {
@@ -84,20 +82,11 @@ function LoadingPlayer({setClicked, setGame}: prop){
 			}, []);
 			
 			return (
-				<>
+				<div className="flex flex-col iterms-center justify-center">
 				  <Image src={image} width={150} height={150} alt="avatar" className="rounded-full"/>
 				  <h1 className = 'pt-2 text-2xl font-bold '> {name} </h1>
-				</>
-		)
-	}
-	
-	function RightPlayer({ clicked, setClicked, setGame } : prop){
-		
-		return (
-			<div className = 'flex flex-col iterms-center justify-center'>
-				{clicked === 1 ? <LoadingPlayer setClicked={setClicked} setGame={setGame}/>  :   <Image src="/game/unknown.svg" width={200} height={200} alt="unkown" className="w-full h-full rounded-full"/>}
-			</div>
+				</div>
 		)
 	}
 
-	export {LeftPlayer, RightPlayer}
+	export {LeftPlayer, LoadingPlayer}
