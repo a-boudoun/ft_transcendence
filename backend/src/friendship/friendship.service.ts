@@ -69,6 +69,7 @@ async accept(id: number, sender: number) {
     });
 
     friendship.status = Fstatus.ACCEPTED;
+    
     const user1 = await this.userRepo.findOneBy({id: id});
     const user2 = await this.userRepo.findOneBy({id: sender});
 
