@@ -80,14 +80,14 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 					height: H,
 					pixelRatio: 1,
 					wireframes: false,
-					background: "#E55710",
+					background: "/game/milkiway.jpg",
 				}
 			});
 
-			const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#4C3D3D');
-			const leftBoard = drawRect(35, H / 2, 20, 120, '#4C3D3D');
+			const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#FFFFFF');
+			const leftBoard = drawRect(35, H / 2, 20, 120, '#FFFFFF');
 
-			const ball = drawCircle(W / 2, H / 2, 15, '#FFE6C7');
+			const ball = drawCircle(W / 2, H / 2, 15, '#FFFFFF');
 			Composite.add(engine.world, [ball, rightBoard, leftBoard]);
 			document.addEventListener('keyup', handlekeyUp);
 			document.addEventListener('keydown', handleKeyDown);
