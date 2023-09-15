@@ -91,8 +91,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('full-Game')
-  handleFullGame(client: Socket, data: any) {
-
+  handleFullGame(client: Socket, data: string) {
     const room: Room = this.gameService.findRoomByPlayer(data);
     if (room !== undefined) {
       const data: any = {
