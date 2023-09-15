@@ -12,9 +12,10 @@ import DisapGame from "./disapearGame";
 
 interface Prop{
 	me: string;
+	meId: string;
 }
 
-export default function Game({me} : Prop){
+export default function Game({me, meId} : Prop){
 	const [PVisible, setPVisible] = useState<boolean>(true);
 	const router = useRouter();
 	const [countDownValue, setCountDownValue] = useState<number>(3);
@@ -31,7 +32,7 @@ export default function Game({me} : Prop){
 		let seleted: string | null = localStorage.getItem('map');
 		if (seleted !== null) setMap(seleted);
 
-		socket.emit('full-Game', me);
+		socket.emit('full-Game', meId);
 		socket.on('game-info', (data) => {
 			setLeftPlayer(data.leftPlayer);
 			setRightPlayer(data.rightPlayer);
@@ -48,7 +49,7 @@ export default function Game({me} : Prop){
 			setRightScore(data.rightScore);
 		});
 		socket.on('winner', (data) => {
-			if(me === RightPlayer){
+			if(meId === RightPlayer){
 				if (data === 'right') setWinner(RightPlayer);
 				else setLoser(RightPlayer);
 			}
@@ -84,19 +85,19 @@ export default function Game({me} : Prop){
 
 			{map === "default" && <DefaultGame
 			roomid={roomid}
-			me={me}
+			me={meId}
 			RightPlayer={RightPlayer}
 			/>}
 
 			{map === "football-mode" && <FootGame
 			roomid={roomid}
-			me={me}
+			me={meId}
 			RightPlayer={RightPlayer}
 			/>}
 
-			{map === "after-mode" && <DisapGame
+			{map === "space-mode" && <DisapGame
 			roomid={roomid}
-			me={me}
+			me={meId}
 			RightPlayer={RightPlayer}
 			/>}
 
@@ -105,7 +106,7 @@ export default function Game({me} : Prop){
 				onClick={() => {
 					socket.emit('leave-game', {
 						room: roomid,
-						player: me,
+						player: meId,
 					});
 					router.push("/home");
 				}}>

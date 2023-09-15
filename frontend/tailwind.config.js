@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         'ping-pong': "url('/img/ping-pong.gif')",
-        'bg': "url('/img/bg1.png')",
+        'bg': "url('/img/bg.jpg')",
       },
       colors: {
         'dark-gray': '#2F3B58',
@@ -38,7 +38,6 @@ module.exports = {
       'left-rocekt': 'left 10s linear infinite',
       'ball': 'ball 8s linear infinite',
     },
-     
   },
   plugins: [],
   }

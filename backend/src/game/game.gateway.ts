@@ -27,7 +27,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const cookie: string = client.handshake.headers.cookie;
     if (!cookie || cookie === undefined)
       return;
-    const username: string = this.auth.getUsername(cookie);
+    const username: string = this.auth.getUsername(cookie).toString();
     client.data.username = username;
     client.join(username);
   }
@@ -44,7 +44,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleInviteFreind(client: Socket, reciever: string) {
     if (client.data.username === reciever || this.gameService.isInGame(reciever) !== null)
       return;
-    this.server.to(reciever).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id});
+    this.server.to(reciever.toString()).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id});
   }
 
   @SubscribeMessage('accept-invitation')
@@ -140,10 +140,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleAlreadyLooking(client: Socket, data: any) {
     let roomId: string | null;
 
-    if (this.gameService.isInQueue(client)){
-      client.emit(data, 'player-status', 'already-looking');
-    }
-    else if (roomId = this.gameService.isInGame(data)){
+    if (roomId = this.gameService.isInGame(data)){
       client.join(roomId);
       client.emit('player-status', 'already-playing');
     }

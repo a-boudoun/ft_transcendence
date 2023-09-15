@@ -39,11 +39,11 @@ export default function Maps(){
 							<p className="text-white text-center mt-[10px] font-bold">football-mode</p>
 						</div>
 						<div 
-							className={selectedMap === "after-mode" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
+							className={selectedMap === "space-mode" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
 							:"w-full max-w-[320px] hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px]"}
-							onClick={() => setmapToLocalStorage("after-mode")}>
+							onClick={() => setmapToLocalStorage("space-mode")}>
 							<Image width={100} height={100} alt="#" src="/game/football_map_picture2.png" className="h-full w-full"/>
-							<p className="text-white text-center mt-[10px] font-bold">after-mode</p>
+							<p className="text-white text-center mt-[10px] font-bold">space-mode</p>
 						</div>
 						<div 
 							className={selectedMap === "default" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"

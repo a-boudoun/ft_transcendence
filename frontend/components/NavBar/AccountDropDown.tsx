@@ -14,7 +14,6 @@ interface Props {
   setIsOpen: (isOpen: boolean) => void;
 }
 
-
 function DropDown({src, setIsOpen}: Props) {
   const router = useRouter();
   const {divref} = useCloseOutSide({setIsOpen});
@@ -33,7 +32,7 @@ function DropDown({src, setIsOpen}: Props) {
   return (
     <div
       ref={divref}
-      className='hidden md:flex flex-col justify-around  absolute top-[56px] right-0 w-[56px] h-[160px]'
+      className='hidden md:flex flex-col justify-around  absolute top-[56px] right-0 w-[56px] h-[160px] bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'
     >
                           <NavLink route={'/profile'} src={src} alt={'profile'} setIsOpen={setIsOpen}/>
                           {/* <button className='grid place-content-center h-[55px] w-[56px] hover:bg-light-gray' onClick={ () => setIsSettingsOpen(!isSettingsOpen)}>
@@ -41,7 +40,7 @@ function DropDown({src, setIsOpen}: Props) {
                           </button> */}
                           <NavLink route={'/settings'} src={'/icons/navBar/settings.svg'} alt={'settings'} setIsOpen={setIsOpen}/>
                           {/* <NavLink route={'/'} src={'/icons/navBar/logout.svg'} alt={'logout'} setIsOpen={setIsOpen}/> */}
-                          <button className='flex justify-center items-center bg-dark-gray h-[56px] w-[56px] hover:bg-light-gray' onClick={() => logout.mutate()}> 
+                          <button className='flex justify-center items-center h-[56px] w-[56px] hover:bg-light-gray' onClick={() => logout.mutate()}> 
                               <LogOut size={28} color="#EA5581" strokeWidth={1.5} />
                           </button>
                       </div>

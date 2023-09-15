@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "component", "app/(login)/(chat)/channel"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "component", "app/(login)/(chat)/channel", "models/user.ts"],
   "exclude": ["node_modules"]
 }

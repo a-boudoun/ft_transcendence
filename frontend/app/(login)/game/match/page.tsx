@@ -1,24 +1,25 @@
 'use client';
 
-import { RightPlayer, LeftPlayer } from '@/components/game/PlayersMatch';
+import { LoadingPlayer, LeftPlayer } from '@/components/game/PlayersMatch';
 import { useEffect, useState } from 'react';
 import socket from '@/components/socketG';
-import axios from 'axios';
+import axios from '@/apis/axios';
 
 import  Game  from '@/components/game/fullGame';
 
 export default function MatchPlayers() {
-	const [look, setLook] = useState<number>(1);
-	const [player, setPlayer] = useState<string>('');
+	const [playerUsername, setPlayerUsername] = useState<string>('');
+	const [playerId, setPlayerId] = useState<string>('');
 	const [isPlayerFetched, setIsPlayerFetched] = useState<boolean>(false);
 	const [gameStart, setGameStart] = useState<boolean>(false);
   
 	useEffect(() => {
 	  const fetchData = async () => {
 		try {
-		  const { data } = await axios.get(`http://localhost:8000/users/me`, { withCredentials: true });
+		  const { data } = await axios.get(`http://localhost:8000/users/getUser/me`);
 		  if (data) {
-			setPlayer(data.username);
+			setPlayerUsername(data.username);
+			setPlayerId(data.id);
 			setIsPlayerFetched(true);
 		  }
 		} catch (error) {
@@ -30,14 +31,11 @@ export default function MatchPlayers() {
 	
 	useEffect(() => {
 		if (isPlayerFetched) {
-			socket.emit('player-status', player);
+			socket.emit('player-status', playerId);
 		}
-		socket.on('player-status', (status) => {
-			if (status === 'already-looking')
-		  		setLook(1);
-			else if (status === 'not-looking'){
-				socket.emit('looking-for-match', player)
-				setLook(1);
+		socket.on('player-status', (status : string)=> {
+			if (status === 'not-looking'){
+				socket.emit('looking-for-match', playerId)
 			}
 			else
 				setGameStart(true);
@@ -45,7 +43,7 @@ export default function MatchPlayers() {
 		return () => {
 		  socket.off('player-status');
 		};
-	}, [isPlayerFetched, player]);
+	}, [isPlayerFetched, playerId]);
 
 	return (
 
@@ -55,12 +53,13 @@ export default function MatchPlayers() {
 			<div className = 'flex flex-col gap-8 sm:flex-row bg-[#384259] items-center justify-between p-8 rounded-2xl'>
 				<LeftPlayer/>
 				<h1 className ='text-5xl font-serif'>VS</h1>
-				<RightPlayer clicked={look} setClicked={setLook} setGame={setGameStart}/>
+				<LoadingPlayer setGame={setGameStart}/>
 			</div>
 		</main>
 		</div>}
 		{gameStart && <Game 
-			me = {player} 
+			me = {playerUsername}
+			meId = {playerId}
 		/>}
 		</>
 		)

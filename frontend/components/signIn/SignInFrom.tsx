@@ -20,13 +20,14 @@ const SignInFrom = ({user} : {user: signInDto}) => {
   const Router = useRouter();
 
   const [image, setImage] = useState<any>(null);
-  const [name, setName] = useState<string>(user.username);
+  const [username, setUserName] = useState<string>(user.username);
   const [imagePreview, setImagePreview] = useState<string>(user.image);
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const updateUser = useMutation({
     mutationFn: async(user : signInDto) => {
+  
       await axios.patch('http://localhost:8000/auth/singin', user, { withCredentials: true });
     },
     onSuccess: () => {
@@ -40,15 +41,15 @@ const SignInFrom = ({user} : {user: signInDto}) => {
       setImagePreview(URL.createObjectURL(e.target.files[0]));
     }
     else if (e.target.value.length > 0)
-      setName(e.target.value);
+      setUserName(e.target.value);
   };
 
   const handleSubmit = async(e: any) => {
     e.preventDefault();
 
-    const validationResult = await signInSchema.safeParseAsync({name: name, image: image});
+    const validationResult = await signInSchema.safeParseAsync({username: username, image: image});
     if (validationResult.success) {
-      user.name = name;
+      user.username = username;
       if (image)
       {
         const uploadimage = await uploadImage(image);

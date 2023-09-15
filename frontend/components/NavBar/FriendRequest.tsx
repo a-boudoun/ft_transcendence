@@ -17,7 +17,7 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
 
   const Accept = useMutation({
     mutationKey: ['acceptFriendRequest'],
-    mutationFn: async(sender: string) => {
+    mutationFn: async(sender: number) => {
       const {data} = await axios.patch(`/friendship/acceptRequest`, {sender: sender});
       return data;
     },
@@ -28,8 +28,8 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
 
   const Decline  = useMutation({
     mutationKey: ['DeclineFriend'],
-    mutationFn: async(name: string) => {
-        const {data} = await axios.delete(`/friendship/${name}`);
+    mutationFn: async(id: number) => {
+        const {data} = await axios.delete(`/friendship/${id}`);
         return data;
     },
     onSuccess: () => {
@@ -39,7 +39,7 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
 
   return (
   <div ref={divref}
-  className='absolute right-0 top-[56px] max-h-[200px] bg-light-gray p-4 flex flex-col gap-1 overflow-y-scroll rounded-b-2xl'>
+  className='absolute right-0 top-[56px] max-h-[200px] p-4 flex flex-col gap-1 overflow-y-scroll rounded-b-2xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
     {users.length === 0 ? <p className="text-center">No friend requests</p> :
         users.map((user: userDto) => {
             return (
@@ -47,13 +47,13 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
                   <div className="flex items-center gap-4">
                       <Image  className=" sm:w-[48px] sm:h-[48px] rounded-full self-center"  src={user.image} width={36}  height={36} alt="user image"/>
                       <div className="text-left">
-                        <h3 className="text-[12px] sm:text-[24px]" >{user.name}</h3> 
+                        <h3 className="text-[12px] sm:text-[24px]" >{user.username}</h3> 
                         <p className="text-[6px] sm:text-[8px] ">sent you a friend request</p>
                       </div>
                   </div>
                   <div className="flex items-center gap-2 text-[12px] sm:gap-4 sm:text[24px]">
-                      <button className="bg-red rounded-xl px-2 py-1 sm:px-4 sm:py-2" onClick={() =>  Decline.mutate(user.username)} >Decline</button>
-                      <button className="bg-blue rounded-xl px-2 py-1 sm:px-4 sm:py-2" onClick={() =>  Accept.mutate(user.username)} >Accept</button>
+                      <button className="bg-red rounded-xl px-2 py-1 sm:px-4 sm:py-2" onClick={() =>  Decline.mutate(user.id)} >Decline</button>
+                      <button className="bg-blue rounded-xl px-2 py-1 sm:px-4 sm:py-2" onClick={() =>  Accept.mutate(user.id)} >Accept</button>
                   </div>
             </div>
             );
