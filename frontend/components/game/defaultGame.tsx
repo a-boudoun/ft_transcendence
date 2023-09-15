@@ -80,7 +80,7 @@ function DefaultGame({roomid, me, RightPlayer} : Prop){
 					height: H,
 					pixelRatio: 1,
 					wireframes: false,
-					background: "#000000",
+					background: "/game/default.png",
 				}
 			});
 
@@ -173,9 +173,6 @@ function DefaultGame({roomid, me, RightPlayer} : Prop){
 				transform: `scale(${sx}, ${sy})`,
 			}}
 			>
-			<div className="h-full w-1 bg-white absolute left-1/2 transform -translate-x-1/2">
-			<div className="bg-white w-full" style={{backgroundImage: 'repeating-linear-gradient(2deg, transparent, transparent 40px, white 40px, white 80px)'}}></div>
-			</div>
 		</div>
 	);
 }

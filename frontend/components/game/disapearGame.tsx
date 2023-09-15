@@ -80,7 +80,7 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 					height: H,
 					pixelRatio: 1,
 					wireframes: false,
-					background: "#FF6000",
+					background: "#E55710",
 				}
 			});
 
@@ -170,13 +170,10 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 					<div ref={divRef} 
 					className="h-[900px] w-[1700px] mt-20 relative"
 					style={{
-				transform: `scale(${sx}, ${sy})`,
-			}}
-			>
-			<div className="h-full w-1 bg-white absolute left-1/2 transform -translate-x-1/2">
-			<div className="bg-white w-full" style={{backgroundImage: 'repeating-linear-gradient(2deg, transparent, transparent 40px, white 40px, white 80px)'}}></div>
-			</div>
-		</div>
+						transform: `scale(${sx}, ${sy})`,
+					}}
+					>
+					</div>
 	);
 }
 export default DisapGame;
