@@ -285,8 +285,7 @@ async banner(channelId: number, username: string) {
       };
     }));
     
-    
-    
+  
   }
   
   async unban(banId: number) {
