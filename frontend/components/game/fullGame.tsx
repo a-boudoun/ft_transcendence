@@ -88,13 +88,13 @@ export default function Game({me} : Prop){
 			RightPlayer={RightPlayer}
 			/>}
 
-			{map === "m3a-m3a" && <FootGame
+			{map === "football-mode" && <FootGame
 			roomid={roomid}
 			me={me}
 			RightPlayer={RightPlayer}
 			/>}
 
-			{map === "ched-ched" && <DisapGame
+			{map === "after-mode" && <DisapGame
 			roomid={roomid}
 			me={me}
 			RightPlayer={RightPlayer}
