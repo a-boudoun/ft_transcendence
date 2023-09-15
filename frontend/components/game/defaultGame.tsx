@@ -37,7 +37,7 @@ function DefaultGame({roomid, me, RightPlayer} : Prop){
 							});
 						}
 						else {
-							socket.emit('leftPaddle', 
+							socket.emit('leftPaddle',
 							{
 								direction: e.key,
 								room: roomid,
