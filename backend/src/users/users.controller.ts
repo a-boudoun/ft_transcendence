@@ -46,7 +46,7 @@ export class UsersController {
     const user =  await this.usersService.findOneByUserName(username);
     if (!user)
       return null;
-    if (await this.usersService.isBlocked(req.user.id, user.id) === true)
+    if ((await this.usersService.isBlocked(req.user.id, user.id)).isBlock === true)
       return null;
     return user;
   }
