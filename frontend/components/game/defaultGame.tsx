@@ -149,7 +149,7 @@ function DefaultGame({roomid, me, RightPlayer} : Prop){
 					let scaleFactor: number = Math.min(windowWidth / canvasWidth, windowHeight / canvasHeight);
 				  
 					let scalex: number = scaleFactor > 1 ? 1 : scaleFactor * 0.95;
-					let scaley: number = scaleFactor > 1 ? 1 : scaleFactor * 0.85; // adding the navbar height
+					let scaley: number = scaleFactor > 0.95 ? 1 : scaleFactor * 0.85; // adding the navbar height
 					setSx(scalex);
 					setSy(scaley);
 					window.addEventListener("resize", handleResize);
