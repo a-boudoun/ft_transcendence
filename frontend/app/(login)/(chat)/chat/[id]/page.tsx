@@ -196,8 +196,6 @@ export const  More = ({user}:{user: userDto}) => {
                     <span className="px-6 text-base font-semibold text-blue" >Play</span>
             </button>
         </div>
-
-
       </div>
     )
   }
