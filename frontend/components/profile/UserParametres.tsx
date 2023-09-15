@@ -9,24 +9,25 @@ import useCloseOutSide from '@/hookes/useCloseOutSide';
 import axios from '@/apis/axios';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import User from './User';
 
 interface dropProps {
-  username: string,
+  id: number,
   setIsOpen: (isOpen: boolean) => void
 }
 
-  const Challnege = ({username} : {username: string}) => {
+  const Challnege = ({id} : {id: number}) => {
       return(
-        <button className='bg-blue px-3 py-1 text-black rounded-xl' onClick={() => {socket.emit('invite-freind', username)}}>Challnege</button>
+        <button className='bg-blue px-3 py-1 text-black rounded-xl' onClick={() => {socket.emit('invite-freind', id)}}>Challnege</button>
       )
   }
   
-  const Block = ({username} : {username: string}) => {
+  const Block = ({id} : {id: number}) => {
     const router = useRouter();
 
     const block = useMutation({
-      mutationFn: async(name: string) => {
-        const {data} = await axios.post(`/users/block`, {username: username});
+      mutationFn: async(id: number) => {
+        const {data} = await axios.post(`/users/block`, {id: id});
         return data;
       },
       onSuccess: () => {
@@ -35,7 +36,7 @@ interface dropProps {
     });
 
     const handleClick = async () => { 
-      await block.mutate(username);
+      await block.mutate(id);
     }
 
     return(
@@ -43,13 +44,32 @@ interface dropProps {
     )
   }
 
-  const Drop = ({username , setIsOpen} : dropProps) => {
+  const Mesage = ({id} : {id: number}) => {
+
+    console.log("--------------", id);
+
+    const {data, isLoading} = useQuery({
+      queryKey: ['direct', id],
+      queryFn: async ()=> {
+        const {data} = await axios.get(`/channels/getChannelId/${id}`)
+        // console.log("---------", data);
+        return data;
+      }
+    });
+
+    return(
+        (isLoading ? <div></div> :
+          <Link className='bg-blue px-3 py-1 text-black rounded-xl' href={`/chat/${data}`}>Mesage</Link>)
+    )
+  }
+
+  const Drop = ({id , setIsOpen} : dropProps) => {
     const {divref} = useCloseOutSide({setIsOpen});
 
     const Status = useQuery({
         queryKey: ['friendStatus'],
         queryFn: async ()=> {
-          const {data} = await axios.get(`/friendship/status/${username}`)
+          const {data} = await axios.get(`/friendship/status/${id}`)
           return data;
         }
     });
@@ -57,17 +77,17 @@ interface dropProps {
     return(
         <div ref={divref}
           className='w-36 absolute bottom-6 right-6 text-sm flex flex-col gap-2 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-2 rounded-2xl'>
-          <AddFriend username={username} Status={Status}/>
-          <Link className='bg-blue px-3 py-[5px] text-black rounded-xl' href={`/chat/${username}`}>Mesage</Link>
+          <AddFriend id={id} Status={Status}/>
+          <Mesage id={id} />
           {
-            Status.data?.status === 'accepted' && <Challnege username={username} />
+            Status.data?.status === 'accepted' && <Challnege id={id} />
           }
-          <Block username={username} />
+          <Block id={id} />
       </div>  
     )
 } 
   
-const UserParametres = ({username} : {username : string}) => {
+const UserParametres = ({id} : {id : number}) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     return(
@@ -75,7 +95,7 @@ const UserParametres = ({username} : {username : string}) => {
         <button onClick={() => setIsOpen(!isOpen)}>
           <MoreVertical color="white" strokeWidth={4} />
         </button>
-        {isOpen && <Drop username={username} setIsOpen={setIsOpen}/> }
+        {isOpen && <Drop id={id} setIsOpen={setIsOpen}/> }
       </div>
     )
 }

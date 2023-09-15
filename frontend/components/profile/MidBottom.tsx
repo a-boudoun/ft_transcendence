@@ -2,7 +2,6 @@
 
 import PercentageCircle from "./PercentageCircle";
 import PercentageLine from "./PercentageLine";
-import { userDto } from "@/dto/userDto";
 
 const Stats = ({user} : {user : any}) => {
 
@@ -26,19 +25,15 @@ const Stats = ({user} : {user : any}) => {
           </div>
           <div className="w-full flex justify-around">
             <div className="max-w-[120px] sm:max-w-[200px] flex flex-col gap-2">
-                <PercentageCircle percentage={(user.wins / games) * 100} color={'#7AC7C4'} />
+                <PercentageCircle value={user.wins} percentage={games ? (user.wins / games) * 100 : 0} color={'#7AC7C4'} />
                 <h3 className='text-blue'>Wins</h3>
               </div>
             <div className="flex flex-col gap-2">
-              <PercentageCircle percentage={(user.loses / games) * 100} color={'#EA5581'}/>
+              <PercentageCircle value={user.loses} percentage={games ? (user.loses / games) * 100 : 0} color={'#EA5581'}/>
               <h3 className='text-red'>Loses</h3>
             </div>
           </div>
         </div>
-        {/* <div className=''>
-            <span className='font-bold text-3xl'>#{rank}</span>
-            <h3 className='text-blue text-lg'>rank</h3>
-          </div> */}
       </div>
     )
 

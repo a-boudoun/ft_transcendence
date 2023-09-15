@@ -26,18 +26,18 @@ export class FriendshipService {
       return (senders.length == 0 ? [] : senders);
     }
     
-    async create(sender: string, receiver: string) {
+    async create(sender: number, receiver: number) {
       const friendship = await this.friendshipRepo.create();
-      friendship.initiater = await this.userRepo.findOneBy({username : sender});
-      friendship.receiver = await this.userRepo.findOneBy({username : receiver});
+      friendship.initiater = await this.userRepo.findOneBy({id: sender});
+      friendship.receiver = await this.userRepo.findOneBy({id: receiver});
       friendship.status = Fstatus.PENDING;
       return await this.friendshipRepo.save(friendship);
     }
     
-    async getFriends(username: string) {
+    async getFriends(id: number) {
       const friendship = await this.friendshipRepo.find({
         where: [
-          { initiater: { username: username } , status: Fstatus.ACCEPTED },
+          { initiater: { id: id } , status: Fstatus.ACCEPTED },
         ],
         relations: ['receiver']
       });
@@ -45,7 +45,7 @@ export class FriendshipService {
       
       const friendship1 = await this.friendshipRepo.find({
         where: [
-          { receiver: { username: username } , status: Fstatus.ACCEPTED },
+          { receiver: { id: id } , status: Fstatus.ACCEPTED },
         ],
         relations: ['initiater']
       });
@@ -62,15 +62,16 @@ export class FriendshipService {
       return receivers.concat(senders);
 }
 
-async accept(username: string, sender: string) {
+async accept(id: number, sender: number) {
   
   const friendship = await this.friendshipRepo.findOne({
-      where: [ { initiater: { username: sender }, receiver: { username: username } } ],
+      where: [ { initiater: { id: sender }, receiver: { id: id } } ],
     });
 
     friendship.status = Fstatus.ACCEPTED;
-    const user1 = await this.userRepo.findOneBy({username: username});
-    const user2 = await this.userRepo.findOneBy({username: sender});
+    
+    const user1 = await this.userRepo.findOneBy({id: id});
+    const user2 = await this.userRepo.findOneBy({id: sender});
 
     const channelName : string =  (user1.id < user2.id) ? user1.username + user2.username : user2.username + user1.username;
 
@@ -90,12 +91,11 @@ async accept(username: string, sender: string) {
     return await this.friendshipRepo.save(friendship);
   }
 
-  async status(username: string, receiver: string) {
-    console.log(username, receiver);
+  async status(id: number, receiver: number) {
     const friendship = await this.friendshipRepo.find({
       where: [
-        { initiater: { username: username } ,  receiver: { username: receiver } },
-        { initiater: { username: receiver } ,  receiver: { username: username } }
+        { initiater: { id: id } ,  receiver: { id: receiver } },
+        { initiater: { id: receiver } ,  receiver: { id: id } }
       ],
       relations: ['initiater']
     });
@@ -109,21 +109,21 @@ async accept(username: string, sender: string) {
 
   }
 
-  async remove(username: string, sender: string) {
+  async remove(id: number, sender: number) {
     const friendship = await this.friendshipRepo.find({
       where: [
-        { initiater: { username: username } ,  receiver: { username: sender } },
-        { initiater: { username: sender } ,  receiver: { username: username } }
+        { initiater: { id: id } ,  receiver: { id: sender } },
+        { initiater: { id: sender } ,  receiver: { id: id } }
       ],
     });
 
     return await this.friendshipRepo.remove(friendship);
   }
 
-  async search(channelid: number,username: string, query: string) {
+  async search(channelid: number, id: number, query: string) {
 
-    const friends = await this.getFriends(username);
-    const findInFriends = friends.filter(f => f.username.toLowerCase().includes(query.toLowerCase()) && f.username != username);
+    const friends = await this.getFriends(id);
+    const findInFriends = friends.filter(f => f.username.toLowerCase().includes(query.toLowerCase()) && f.id != id);
     console.log(findInFriends);
     const channel = await this.channelRepo.findOne({
       where: {id: channelid},

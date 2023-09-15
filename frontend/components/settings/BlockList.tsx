@@ -13,9 +13,8 @@ const BlockedUser = ({user}: {user: userDto}) => {
    
     const unblock = useMutation({
         mutationKey: ['unblock'],
-        mutationFn: async (username: string) => {
-            await axios.delete(`/users/unblock/${username}`);
-            console.log('-----------------------------');
+        mutationFn: async (id: number) => {
+            await axios.delete(`/users/unblock/${id}`);
         },
         onSuccess: () => {
             Client.refetchQueries('blockList');
@@ -25,10 +24,10 @@ const BlockedUser = ({user}: {user: userDto}) => {
     return (
         <div className={`flex justify-between px-4 py-2 mx-2 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg`}>
             <div className="grow flex items-center gap-4">
-                <Image  className="w-[48px] h-[48px] rounded-full self-center"  src={user.image}    width={1000}  height={1000}   alt="user image"/>
+                <Image  className="w-[48px] h-[48px] rounded-full self-center"  src={user.image}  width={1000}  height={1000}   alt="user image"/>
                 <h3>{user.username}</h3> 
             </div>
-            <button onClick={() => unblock.mutate(user.username)}>
+            <button onClick={() => unblock.mutate(user.id)}>
                 <Unlock color="#7ac7c4" size={28} strokeWidth={3}/>
             </button>
         </div>
