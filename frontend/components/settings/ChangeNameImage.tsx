@@ -14,7 +14,7 @@ const ChangeNameImage = () => {
 
     const [image, setImage] = useState<any>(null);
     const [imagePreview, setImagePreview] = useState<string>('');
-    const [name, setName] = useState<string>('');
+    const [username, setUserName] = useState<string>('');
     const [msg, setMsg] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -39,7 +39,7 @@ const ChangeNameImage = () => {
 
     useEffect(() => {
     if (!User.isLoading) {
-        setName(User.data.name);
+       setUserName(User.data.username);
         setImagePreview(User.data.image);
     }
     }, [User.isLoading, User.data]);
@@ -50,21 +50,21 @@ const ChangeNameImage = () => {
             setImagePreview(URL.createObjectURL(e.target.files[0]));
         }
         else if (e.target.value.length > 0)
-            setName(e.target.value);
+           setUserName(e.target.value);
     };
 
     const handleSubmit = async(e: any) => {
         e.preventDefault();
-        if (name === User.data.name && (image === null)){
+        if (username === User.data.username && (image === null)){
             setIsLoading(false);
             setMsg('no changes were made');
             return ;
         }
 
-        const validationResult = (name === User.data.name) ?  await userSchema.safeParseAsync({image: image}) : await userSchema.safeParseAsync({name: name, image: image});
+        const validationResult = (username === User.data.username) ?  await userSchema.safeParseAsync({image: image}) : await userSchema.safeParseAsync({username: username, image: image});
 
         if (validationResult.success) {
-            User.data.name = name;
+            User.data.username = username;
             if (image){
                     const uploadimage = await uploadImage(image);
                     User.data.image = uploadimage;
@@ -89,7 +89,7 @@ const ChangeNameImage = () => {
                     <input type="file" className="hidden" accept="image/jpeg, image/jpg, image/png, image/webp" />
                 </div>
               </label>
-              <input id={'name'} className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-[2px] hover:opacity-60" type="text" placeholder={name}/>
+              <input id={'name'} className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-[2px] hover:opacity-60" type="text" placeholder={username}/>
             </div>
           <button className="relative mt-6 h-16 rounded-2xl text-black text-center bg-blue px-14 hover:opacity-60" type='submit' onClick={ () => {setIsLoading(true)}  } >save
             {isLoading && <Loader2 className="absolute top-6 right-6 animate-spin" size={20} strokeWidth={1.2} />}

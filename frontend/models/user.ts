@@ -1,20 +1,23 @@
-import { z } from 'zod';
+import { number, z } from 'zod';
 import axios from '@/apis/axios';
 
 const MAX_FILE_SIZE = 2500000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 export const signInSchema = z.object({
+    id: z
+    .number()
+    .optional(),
     username: z
     .string()
     .trim()
     .min(3, { message: "Username must be at least 3 characters long." })
     .max(10, { message: "Username must be at most 10 characters long." })
-    .refine(async (name) =>  {
-        const {data} = await  axios.get(`/users/isNameExist/${name}`);
+    .refine(async (username) =>  {
+        const {data} = await  axios.get(`/users/isUserNameExist/${username}`);
         return !data;
     }
-    , "Name already exists.")
+    , "Username already exists.")
     .optional(),
     image: z
     .any()

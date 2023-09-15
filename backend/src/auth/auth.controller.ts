@@ -41,7 +41,7 @@ export class AuthController {
   @Get('2fa/generate')
   @UseGuards(Jwt2faAuthGuard)
   async generate2FAsecret(@Req() req) {
-    const { otpauthUrl } = await this.authService.generate2FAsecret(req.user.username);
+    const { otpauthUrl } = await this.authService.generate2FAsecret(req.user.id);
 
     return this.authService.generateQR(otpauthUrl);
   }
@@ -50,7 +50,7 @@ export class AuthController {
   @UseGuards(Jwt2faAuthGuard)
   async turnOn(@Req() req, @Body() {code} : {code: string}) {
     try {
-      await this.authService.validate2FA(code, req.user.username);
+      await this.authService.validate2FA(code, req.user.id);
     }
     catch (e) {
       if (e instanceof Error)
@@ -64,13 +64,13 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async login2FA(@Req() req, @Body() {code} : {code: string}, @Res({ passthrough: true }) res) {
     try {
-      await this.authService.validate2FA(code, req.user.username);
+      await this.authService.validate2FA(code, req.user.id);
     }
     catch (e) {
       if (e instanceof Error)
       return {valid: false, message: e.message};
     }
-      await this.authService.confirm2FA(req.user.username, res);
+      await this.authService.confirm2FA(req.user.id, res);
       return {valid: true, message: 'Valid 2FA code'};
   }
 

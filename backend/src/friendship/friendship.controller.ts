@@ -9,9 +9,7 @@ export class FriendshipController {
   @Post('sendRequest')
   @UseGuards(Jwt2faAuthGuard)
   async create(@Body() body: any, @Req() Req) {
-    console.log('me ' + Req.user.username);
-    console.log('receiver ' + body.receiver);
-    return await this.friendshipService.create(Req.user.username, body.receiver);
+    return await this.friendshipService.create(Req.user.id, body.receiver);
   }
 
   @Get('friendrequests')
@@ -22,33 +20,33 @@ export class FriendshipController {
 
   @Patch('acceptRequest')
   @UseGuards(Jwt2faAuthGuard)
-  async accept(@Body() body: any, string, @Req() req) {
-    return await this.friendshipService.accept(req.user.username, body.sender);
+  async accept(@Body() body: any, @Req() req) {
+    return await this.friendshipService.accept(req.user.id, body.sender);
   }
 
-  @Get('getFriends/:username')
+  @Get('getFriends/:id')
   @UseGuards(Jwt2faAuthGuard)
-  async getFriends(@Req() req, @Param('username') username: string) {
-      return await this.friendshipService.getFriends(username);
+  async getFriends(@Req() req, @Param('id') id: number) {
+      return await this.friendshipService.getFriends(id);
   }
 
-  @Get('status/:username')
+  @Get('status/:id')
   @UseGuards(Jwt2faAuthGuard)
-  async status(@Param('username') username: string, @Req() req){
-    return this.friendshipService.status(req.user.username, username);
+  async status(@Param('id') id: number, @Req() req){
+    return this.friendshipService.status(req.user.id, id);
   }
 
   @Get('search/:channelid/:query')
   @UseGuards(Jwt2faAuthGuard)
   async search(@Param('channelid') channelid: string,@Param('query') query: string, @Req() req) {
     console.log(query);
-    return await this.friendshipService.search(+channelid,req.user.username, query);
+    return await this.friendshipService.search(+channelid, req.user.id, query);
   }
 
-  @Delete(':username')
+  @Delete(':id')
   @UseGuards(Jwt2faAuthGuard)
-  remove(@Param('username') username: string, @Req() req) {
-    return this.friendshipService.remove(req.user.username, username);
+  remove(@Param('id') id: number, @Req() req) {
+    return this.friendshipService.remove(req.user.id, id);
   }
 
 }

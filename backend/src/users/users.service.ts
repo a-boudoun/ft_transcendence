@@ -31,15 +31,21 @@ export class UsersService {
       
     }
     
-    async search(username:string,  key: string) {
-      const blockedAndBlocker = await this.blockedAndBlocker(username);
+    async search(id : number,  key: string) {
+      const blockedAndBlocker = await this.blockedAndBlocker(id);
       const allUsers = await this.userRepo.findBy({username: Like(`%${key}%`)});
-      return  allUsers.filter(user => !blockedAndBlocker.some(b => b.username === user.username));
+      return  allUsers.filter(user => !blockedAndBlocker.some(b => b.id === user.id));
     }
     
-    findOne(username: string) {
-      const user = this.userRepo.findOneBy({username});
-      
+    async findOneByUserName(username: string) {
+      const user = await this.userRepo.findOneBy({username});
+  
+      return user;
+    }
+
+    async findOneById(id: number) {
+      const user = await this.userRepo.findOneBy({id});
+  
       return user;
     }
     
@@ -53,7 +59,6 @@ export class UsersService {
       const user = await this.userRepo.findOneBy({username});
       
       if (user) {
-        if (user.username === username)
           return true;
       }
       return false;
@@ -80,63 +85,72 @@ export class UsersService {
         return channels;
       }
       
-      async update(login: string, updateUser: UpdateUserDto) {
-        const user = await this.findOne(login);
+      async update(id: number, updateUser: UpdateUserDto) {
+        const user = await this.findOneById(id);
         return await this.userRepo.save({...user, ...updateUser})
       }
       
-      async remove(login: string) {
-        const user = await this.findOne(login);
-        return this.userRepo.remove(user);
-      }
+      // async remove(id: number) {
+      //   const user = await this.findOneById(id);
+      //   return this.userRepo.remove(user);
+      // }
       
-      async set2FAsecret(secret: string, login: string) {
-        const user = await this.findOne(login);
+      async set2FAsecret(secret: string, id: number) {
+        const user = await this.findOneById(id);
         return await this.userRepo.save({...user, ...{fact2Secret: secret}})
       }
       
-      async turnON2FA(username: string) {
-        const user = await this.findOne(username);
+      async turnON2FA(id: number) {
+        const user = await this.findOneById(id);
         return await this.userRepo.save({...user, ...{fact2Auth: true}})
       }
       
-      async block(bloker: any, blocked: any) {
+      async block(bloker: number, blocked: number) {
         const block = await this.blockRepo.create();
-        block.blocker = await this.findOne(bloker);
-        block.blocked = await this.findOne(blocked);
+        block.blocker = await this.findOneById(bloker);
+        block.blocked = await this.findOneById(blocked);
         await this.friendService.remove(bloker, blocked);
         return this.blockRepo.save(block);
       }
       
-      async unblock(blocker: any, blocked: any) {
+      async unblock(blocker: number, blocked: number) {
         const block = await this.blockRepo.find({
           where: [
-            { blocker: { username: blocker } ,  blocked: { username: blocked} },
+            { blocker: { id: blocker } ,  blocked: { id: blocked} },
           ],
         });
         return this.blockRepo.remove(block);
       }
   
-      async blockedUsers(username: string) {
-        const blockedUsers = await this.blockRepo.find({where: [{blocker : {username: username }}],  relations: ['blocked']});
+      async blockedUsers(id: number) {
+        const blockedUsers = await this.blockRepo.find({where: [{blocker : {id: id }}],  relations: ['blocked']});
         if (blockedUsers.length === 0)
           return [];
         return blockedUsers.map(b => b.blocked);
       }
   
-      async blockedByUsers(username: string) {
-        const blockedByUsers = await this.blockRepo.find({where: [{blocked : {username: username }}],  relations: ['blocker']});
+      async blockedByUsers(id: number) {
+        const blockedByUsers = await this.blockRepo.find({where: [{blocked : {id: id }}],  relations: ['blocker']});
         return blockedByUsers.map(b => b.blocker);
       }
   
-      async blockedAndBlocker (username: string) {
-        const blocked = await this.blockedUsers(username);
-        const blockedBy = await this.blockedByUsers(username);
+      async blockedAndBlocker (id: number) {
+        const blocked = await this.blockedUsers(id);
+        const blockedBy = await this.blockedByUsers(id);
         return [...blocked, ...blockedBy];
       }
 
-      // async isBlocked(blocker: string, blocked: string) {
-      //     const blockedAndBlocker = await this.blockedAndBlocker(blocker);
-      //     return blockedAndBlocker.some(b => b.username === blocked);
-      // }
+      async isBlocked(me: number, id: number) {
+          const blocked = await this.blockedUsers(me);
+          let some = blocked.some(b => b.id === id);
+          if (some)
+            return {isBlock: true, blocker: me};
+
+          const blockedBy = await this.blockedByUsers(me);
+          some = blockedBy.some(b => b.id === id);
+          if (some)
+            return {isBlock: true, blocker: id};
+
+          return {isBlock: false, blocker: null};
+      }
 }

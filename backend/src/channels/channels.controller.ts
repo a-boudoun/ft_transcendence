@@ -8,6 +8,7 @@ import { MemberTitle, Membership } from 'src/entities/channel.entity';
 import con from 'ormconfig';
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
 import { ParseIntPipe } from '@nestjs/common';
+import { get } from 'http';
 
 @Controller('channels')
 @UseGuards(Jwt2faAuthGuard)
@@ -81,7 +82,10 @@ export class ChannelsController {
   isMuted(@Param('channelId') channelId: string, @Param('username') username: string) {
     return this.channelsService.isMuted(+channelId,username);
   }
+  @Get('getChannelId/:id')
+  getChannelId(@Param('id') id: number, @Req() req) {
+    return this.channelsService.getChannelId(req.user.id, id);
+  }
+
 
 }
-
-

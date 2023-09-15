@@ -25,10 +25,10 @@ export class GameHistoryController {
     return this.gameHistoryService.create(GameHistory);
   }
 
-  @Get('getHistory/:username')
+  @Get('getHistory/:id')
   @UseGuards(Jwt2faAuthGuard)
-  getHistory(@Param(':username') username: string) {
-    return this.gameHistoryService.getHistory(username);
+  getHistory(@Param(':id') id: number) {
+    return this.gameHistoryService.getHistory(id);
   }
   
 }

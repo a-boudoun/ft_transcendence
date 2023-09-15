@@ -17,7 +17,7 @@ export class UsersController {
   @Get('search/:key')
   @UseGuards(Jwt2faAuthGuard)
   async search(@Param('key') key: string, @Req() req) {
-    const users =  await this.usersService.search(req.user.username, key);
+    const users =  await this.usersService.search(req.user.id, key);
     return {users: users};
   }
   
@@ -36,12 +36,19 @@ export class UsersController {
   @Get('getUser/me')
   @UseGuards(Jwt2faAuthGuard)
   me(@Req() req) {
-    return this.usersService.findOne(req.user.username);
+    return this.usersService.findOneById(req.user.id);
   }
   
   @Get('getUser/:username')
-  findOne(@Param('username') username: string) {
-    return this.usersService.findOne(username);
+  @UseGuards(Jwt2faAuthGuard)
+  async findOne(@Req() req, @Param('username') username: string) {
+    console.log(username);
+    const user =  await this.usersService.findOneByUserName(username);
+    if (!user)
+      return null;
+    if ((await this.usersService.isBlocked(req.user.id, user.id)).isBlock === true)
+      return null;
+    return user;
   }
 
   @Get('signin')
@@ -52,39 +59,39 @@ export class UsersController {
   
   @Patch('updateMe')
   @UseGuards(Jwt2faAuthGuard)
-  updateMe(@Req() req, @Res() res, @Body() updateUserDto: UpdateUserDto) {
-    this.usersService.update(req.user.username, updateUserDto);
-    res.status(200).send({message: 'User updated'});
+  updateMe(@Req() req, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(req.user.id, updateUserDto);
   }
   
 
-  @Get('isUserNameExist/:name')
-  async isUserNameExist(@Param('name') name: string) {
-    return this.usersService.isUserNameExist(name);
+  @Get('isUserNameExist/:username')
+  async isUserNameExist(@Param('username') username: string) {
+    return this.usersService.isUserNameExist(username);
   }
   
   @Post('block')
   @UseGuards(Jwt2faAuthGuard)
-  async block(@Req() req, @Body() body: any) {
+  async block(@Req() req, @Body() body: {id: number}) {
     console.log(body);
-    await this.usersService.block(req.user.username, body.username);
+    await this.usersService.block(req.user.id, body.id);
   }
 
-  @Delete('unblock/:username')
+  @Delete('unblock/:id')
   @UseGuards(Jwt2faAuthGuard)
-  async unblock(@Req() req, @Param('username') username: string) {
-    await this.usersService.unblock(req.user.username, username);
+  async unblock(@Req() req, @Param('id') id: number) {
+    await this.usersService.unblock(req.user.id, id);
   }
 
   @Get('blockedUsers')
   @UseGuards(Jwt2faAuthGuard)
   async blockedUsers(@Req() req) {
-    return this.usersService.blockedUsers(req.user.username);
+    return this.usersService.blockedUsers(req.user.id);
   }
 
-  // @Get('isBlocked/:username')
-  // @UseGuards(Jwt2faAuthGuard)
-  // async isBlocked(@Req() req, @Param('username') username: string) {
-  //   return this.usersService.isBlocked(req.user.username, username);
-  // }
+  @Get('isBlocked/:id')
+  @UseGuards(Jwt2faAuthGuard)
+  async isBlocked(@Req() req, @Param('id') id: number) {
+    return this.usersService.isBlocked(req.user.id, id);
+  }
+  
 }

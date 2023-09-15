@@ -187,7 +187,7 @@ export const Items = ({ member , user, id}: { member: any, user: any, id: number
           height={1000}
           alt="" />
         <div className="pl-3">
-          <div className="  " >{member.member?.name}</div>
+          <div className="  " >{member.member?.username}</div>
           <div className=" text-xs text-red" >{member.title}</div>
         </div>
         {member.title === 'owner' || user.title === 'member' || user.member === undefined || member.member.username === user.member?.username ?
