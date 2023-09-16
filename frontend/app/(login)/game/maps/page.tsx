@@ -32,18 +32,18 @@ export default function Maps(){
 				<div className="flex justify-center gap-8 items-center flex-col sm:flex-row w-full">
 
 						<div
-							className={selectedMap === "m3a-m3a" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
+							className={selectedMap === "football-mode" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
 							:"w-full max-w-[320px] hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px]"}
-							onClick={() => setmapToLocalStorage("m3a-m3a")}>
-							<Image width={100} height={100} alt="#" src="/game/m3a-m3a.svg" className="h-full w-full"/>
-							<p className="text-white text-center mt-[10px] font-bold">m3a-m3a</p>
+							onClick={() => setmapToLocalStorage("football-mode")}>
+							<Image width={100} height={100} alt="#" src="/game/football_map_picture1.png" className="h-full w-full"/>
+							<p className="text-white text-center mt-[10px] font-bold">football-mode</p>
 						</div>
 						<div 
-							className={selectedMap === "ched-ched" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
+							className={selectedMap === "space-mode" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
 							:"w-full max-w-[320px] hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px]"}
-							onClick={() => setmapToLocalStorage("ched-ched")}>
-							<Image width={100} height={100} alt="#" src="/game/ched-ched.svg" className="h-full w-full"/>
-							<p className="text-white text-center mt-[10px] font-bold">ched-ched</p>
+							onClick={() => setmapToLocalStorage("space-mode")}>
+							<Image width={100} height={100} alt="#" src="/game/football_map_picture2.png" className="h-full w-full"/>
+							<p className="text-white text-center mt-[10px] font-bold">space-mode</p>
 						</div>
 						<div 
 							className={selectedMap === "default" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"

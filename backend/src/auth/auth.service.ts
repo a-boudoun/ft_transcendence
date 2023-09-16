@@ -122,6 +122,6 @@ config();
       
       const decodedJwt = this.jwtService.decode(token) as UserDTO;
 
-      return decodedJwt?.username;
+      return decodedJwt?.id;
     }
 }

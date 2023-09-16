@@ -27,7 +27,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const cookie: string = client.handshake.headers.cookie;
     if (!cookie || cookie === undefined)
       return;
-    const username: string = this.auth.getUsername(cookie);
+    const username: string = this.auth.getUsername(cookie).toString();
     client.data.username = username;
     client.join(username);
   }
@@ -44,7 +44,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleInviteFreind(client: Socket, reciever: string) {
     if (client.data.username === reciever || this.gameService.isInGame(reciever) !== null)
       return;
-    this.server.to(reciever).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id});
+    this.server.to(reciever.toString()).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id});
   }
 
   @SubscribeMessage('accept-invitation')
@@ -68,8 +68,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       await this.engineService.createGameSimulation(room);
       this.engineService.sendPosition(room, this.endGameSimulation.bind(this));
       this.engineService.addServerToGame(room.id, this.server);
-      client.emit('play-a-friend');
-      freindSocket.emit('play-a-friend');
+      client.emit('play-a-friend'); // to avoid sending all the sockets to game
+      freindSocket.emit('play-a-friend'); // to avoid sending all the sockets to game
+      const data: any = {
+        room: room.id,
+        leftPlayer: room.players[0].position === 'left' ? room.players[0].username : room.players[1].username,
+        rightPlayer: room.players[0].position === 'right' ? room.players[0].username : room.players[1].username,
+      }
+      client.emit('game-info', data);
+      client.emit('refresh-page');
     }
   }
   
@@ -84,7 +91,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('full-Game')
-  handleFullGame(client: Socket, data: any) {
+  handleFullGame(client: Socket, data: string) {
     const room: Room = this.gameService.findRoomByPlayer(data);
     if (room !== undefined) {
       const data: any = {
@@ -132,10 +139,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleAlreadyLooking(client: Socket, data: any) {
     let roomId: string | null;
 
-    if (this.gameService.isInQueue(client)){
-      client.emit(data, 'player-status', 'already-looking');
-    }
-    else if (roomId = this.gameService.isInGame(data)){
+    if (roomId = this.gameService.isInGame(data)){
       client.join(roomId);
       client.emit('player-status', 'already-playing');
     }

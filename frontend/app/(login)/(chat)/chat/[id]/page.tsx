@@ -185,7 +185,7 @@ export const  More = ({user}:{user: userDto}) => {
                     />
                 <span className="pl-6 text-base font-semibold text-blue" >view Profile</span>
             </button>
-            <button className="flex items-center justify-start px-4 py-2 w-full hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg rounded-b-lg" onClick={()=> socket.emit('invite-freind', user.username)}>
+            <button className="flex items-center justify-start px-4 py-2 w-full hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg rounded-b-lg" onClick={()=> socket.emit('invite-freind', user.id)}>
                 <Image
                     className="h-6 w-6   "
                     src={"/icons/profile/matches.svg"}
