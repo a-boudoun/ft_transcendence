@@ -23,7 +23,6 @@ const SearchBarDropDown = ({search} : {search : string}) => {
     queryKey: ['search', search],
     queryFn: async () => {
       const { data } = await axios.get(`/users/search/${search}`);
-      console.log(data);
       return data;
     }
   });
@@ -32,7 +31,7 @@ const SearchBarDropDown = ({search} : {search : string}) => {
     return (<p>loading...</p>)
   return (
       <div 
-      className='absolute top-11 w-52 sm:w-72 max-h-56  p-4 flex flex-col gap-1 overflow-y-scroll rounded-2xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
+      className='absolute top-11 w-52 sm:w-72 max-h-56  p-4 flex flex-col gap-1 overflow-y-scroll rounded-2xl bg-black bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
       {
         users.data?.users?.length === 0 ? <p className="text-center">No user found</p> :
         users.data?.users?.map((user: userDto) => (

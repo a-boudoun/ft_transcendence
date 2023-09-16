@@ -124,7 +124,6 @@ async accept(id: number, sender: number) {
 
     const friends = await this.getFriends(id);
     const findInFriends = friends.filter(f => f.username.toLowerCase().includes(query.toLowerCase()) && f.id != id);
-    console.log(findInFriends);
     const channel = await this.channelRepo.findOne({
       where: {id: channelid},
       relations: ['memberships.member', "bannations.member"]

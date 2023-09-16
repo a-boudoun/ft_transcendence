@@ -5,7 +5,7 @@ const Title = () => {
 }
 
 const Card = () => {
-    return <div className='h-[50%] shadow-2xl p-4 bg-gray-400 animate-pulse'>
+    return <div className='h-[50%] shadow-2xl p-4 rounded-[2.5rem] bg-gray-400 animate-pulse'>
         <Title />
     </div>;
 }
@@ -14,7 +14,7 @@ const User = () => {
     return ( <div className='relative h-[50%] rounded-[2.5rem] shadow-2xl bg-gray-400 overflow-hidden animate-pulse '>
         <div className='absolute w-full flex gap-4 items-center p-8 bottom-0 bg-black/50'>
             <div className='rounded-full w-[86px] h-[86px] bg-gray-300 '></div>
-            <Title />
+            <div className='h-[60px] w-[260px] shadow-2xl bg-gray-300 animate-pulse'></div>
         </div>
     </div>);
 }

@@ -32,7 +32,7 @@ function DropDown({src, setIsOpen}: Props) {
   return (
     <div
       ref={divref}
-      className='hidden md:flex flex-col justify-around  absolute top-[56px] right-0 w-[56px] h-[160px] bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'
+      className='hidden md:flex flex-col justify-around  absolute top-[56px] right-0 w-[56px] h-[160px] bg-black  bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'
     >
                           <NavLink route={'/profile'} src={src} alt={'profile'} setIsOpen={setIsOpen}/>
                           {/* <button className='grid place-content-center h-[55px] w-[56px] hover:bg-light-gray' onClick={ () => setIsSettingsOpen(!isSettingsOpen)}>
