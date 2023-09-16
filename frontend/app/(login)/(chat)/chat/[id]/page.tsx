@@ -2,8 +2,8 @@
 import userDto from "@/dto/userDto";
 import Image from "next/image";
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import { useState , useEffect } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useState , useEffect, use } from "react";
 import axios from "axios";
 import{ useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -25,12 +25,13 @@ const page = ({ params }: { params: any }) => {
     const [messages, setMessages] = useState<MessageDto[]>([]);
     const [input, setInput] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [isblocked, setIsblocked] = useState(false);
     
     const {data, isLoading} = useQuery({
         queryKey: ['direct', params.id],
         queryFn: async () => {
             const {data} = await axios.get(`http://localhost:8000/channels/directchannel/${params.id}`, { withCredentials: true });
-   
+            
             setMessages(data.messages);
             socket.emit('join', { channel: data.id})
             if(!data || data.type !== 'Direct')
@@ -41,51 +42,71 @@ const page = ({ params }: { params: any }) => {
             return data;
         }
     });
-
-
-   
+    const Blocked = useMutation({
+        mutationKey: ['block', otherUser?.id],
+        mutationFn: async () => {
+            if(!otherUser ) return;
+            const {data} = await axios.get(`http://localhost:8000/users/isBlocked/${otherUser.id}`, { withCredentials: true });
+            return data;
+        }
+    });
     useEffect(() => {
         if(!data || !user || isLoading) return; 
         const otherUser = data.memberships.find((member: any) => member.member.username !== user.username);
         if(!otherUser) return;
         setOtherUser(otherUser.member);
+        Blocked.mutate();
+        setIsblocked(Blocked.data?.isBlock);
     }, [data, user]);
+    
 
+    // const blocked = useQuery({
+    //     queryKey: ['blocked', otherUser?.id],
+    //     queryFn: async () => {
+    //         if(!otherUser ) return;
+    //         const {data} = await axios.get(`http://localhost:8000/users/isBlocked/${otherUser.id}`, { withCredentials: true });
+    //         console.log("data", user.id, data);
+    //         return data;
+    //     }
+    // });
+    
     useEffect(() => {
         if (!socket.connected) 
-            socket.connect();
-    }, []);
+        socket.connect();
+}, []);
 
 
-    useEffect(() => {
-        if (!data || !user || !socket|| !otherUser) return;
-        const onMsg = (msg: any) => {
+useEffect(() => {
+    if (!data || !user || !socket|| !otherUser) return;
+    const onMsg = (msg: any) => {
         
-            const member = msg.from === user.username ? user : otherUser;
-            const createdAt = moment().format('yyyy-MM-DDTHH:mm:ssZ');
-            const newMessage = {content: msg.content, sender: member,  date: createdAt};
-            setMessages((prev) => [...prev, {content: msg.content, sender: member,  date: createdAt}]);
-    
-        }
-        socket.on('message', onMsg);
-        return () => {
-            socket.off('message', onMsg);
-        }
-    }, [data, socket, user, otherUser]);
-
-    const handelSubmit = (event: any) => {
-        event.preventDefault();
-        if (!input.trim()) return;
-        socket.emit('prevmessage', { channel: data.id, message: input, from: user.username });
-        setInput('');
+        const member = msg.from === user.username ? user : otherUser;
+        const createdAt = moment().format('yyyy-MM-DDTHH:mm:ssZ');
+        const newMessage = {content: msg.content, sender: member,  date: createdAt};
+        setMessages((prev) => [...prev, {content: msg.content, sender: member,  date: createdAt}]);
+        
     }
+    socket.on('message', onMsg);
+    return () => {
+        socket.off('message', onMsg);
+    }
+}, [data, socket, user, otherUser]);
+
+const handelSubmit = (event: any) => {
+    event.preventDefault();
+    if (!input.trim()) return;
+    socket.emit('prevmessage', { channel: data.id, message: input, from: user.username });
+    setInput('');
+}
 
     const handechange = (event: any) => {
         setInput(event.target.value);
         
     }
 
-    if (isLoading || !data || !user.id || !otherUser)
+   
+
+    if (isLoading || !data || !user.id || !otherUser )
         return (
             <div className='w-full  md:w-1/2 lg:w-8/12 h-full bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:rounded-[2.5rem] sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:p-4'>
                 <div className='w-full h-full bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:rounded-[2rem] flex justify-center items-center text-blue'>
@@ -145,7 +166,7 @@ const page = ({ params }: { params: any }) => {
                     ))}
                 </div>
                 <div className="h-[56px] flex justify-between bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg items-center px-3 py-2  rounded-lg">
-                    <form className="flex  justify-between items-center w-full" onSubmit={handelSubmit}>
+               { !( isblocked) &&   <form className="flex  justify-between items-center w-full" onSubmit={handelSubmit}>
                         <input value={input} className="bg-transparent w-full  h-10 rounded-md px-2 outline-none" type="text" placeholder="Type a message" onChange={(e:any)=> setInput(e.target.value)}/>
                         <button className="p-2 rounded-full hover:bg-light-gray">
                             <Image
@@ -155,7 +176,7 @@ const page = ({ params }: { params: any }) => {
                                 alt=""
                                 />
                         </button>
-                    </form>
+                    </form>}
                         
                     
                 </div>    
