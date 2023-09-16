@@ -19,8 +19,8 @@ export class gameSimulation{
 	//Engine
 	private engine: Matter.Engine;
 	private runner: Matter.Runner;
-	private Cheight: number = 890;
-	private Cwidth: number = 2048;
+	private Cheight: number = 900;
+	private Cwidth: number = 1700;
 	//Bodies
 	private floor: Matter.Body;
 	private ceiling: Matter.Body;
@@ -39,7 +39,7 @@ export class gameSimulation{
 	private lost: string;
 	private lostscore: number;
 	//limits
-	private readonly MAX = 3;
+	private readonly MAX = 30;
 	private readonly Bspeed = 10;
 	// intervals
 	private id: any;

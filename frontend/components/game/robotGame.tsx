@@ -20,6 +20,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 	let keyClicked : boolean = false;
 	let leftInterval : number;
 	let keyInterval : number;
+	let maxScore = 500;
 
 	useEffect(() => {
 		if (!divRef.current) return;
@@ -168,7 +169,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 		}
 
 		function resetPosition(): void {
-			if (lScore === 5 || rScore === 5)
+			if (lScore === maxScore || rScore === maxScore)
 				return;
 			let vx: number;
 			let vy: number;
@@ -189,7 +190,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 					vx = 8;
 					vy = 4;
 				}
-				if (lScore === 5 || rScore === 5)
+				if (lScore === maxScore || rScore === maxScore)
 				{
 					Events.off(engine, 'beforeUpdate', resetPosition);
 					Events.off(engine, 'collisionStart', handleCollision);
@@ -252,7 +253,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 
 	return (
 	<>
-		{ leftScore < 5 && rightScore < 5 && <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
+		{ leftScore < maxScore && rightScore < maxScore && <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
 			{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] ">{countDownValue}</p>}
 			<PlayersScore 
 			left={leftScore} 
@@ -262,7 +263,8 @@ function RobotGame({difficulty} : {difficulty: number}){
 			/>
 			<div
 			ref={divRef}
-			className="h-4/6 w-4/5 mt-20">
+			className="h-4/6 w-4/5 mt-20"
+			>
 			</div>
 			<button 
 				className="absolute bottom-[50px] right-[50px]  m-4  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]" 
@@ -272,8 +274,8 @@ function RobotGame({difficulty} : {difficulty: number}){
 				leave
 			</button>
 		</div>}
-		{rightScore >= 5 && <Won/>}
-		{leftScore >=  5 && <Lost/>}
+		{rightScore >= maxScore && <Won/>}
+		{leftScore >=  maxScore && <Lost/>}
 	</>
 	);
 }

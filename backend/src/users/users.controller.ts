@@ -55,6 +55,18 @@ export class UsersController {
     return user;
   }
 
+
+  @Get('getId/:id')
+  @UseGuards(Jwt2faAuthGuard)
+  async findOneById(@Req() req, @Param('id') id: number) {
+    const user =  await this.usersService.findOneById(id);
+    if (!user)
+      return null;
+    if (await this.usersService.isBlocked(req.user.id, user.id) === true)
+      return null;
+    return user;
+  }
+  
   @Get('signin')
   @UseGuards(JwtSigninGuard)
   async signin(@Req() req) {

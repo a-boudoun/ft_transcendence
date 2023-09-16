@@ -22,15 +22,19 @@ export class gameService{
       this.matchMakingQue.get(username).push(playerSocket);
     }
     else {
-      this.matchMakingQue.set(username, [playerSocket]);
+      this.matchMakingQue.set(username, [
+        playerSocket]);
     }
   }
   
   findRoomByPlayer(user: string): Room | undefined {
-    const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {
-      return room.players.find((player: Player) => player.username === user);
-    });
-    return room;
+    for (const room of this.rooms.values()) {
+     for (const player of room.players) {
+        if (player.username.toString() === user.toString()) {
+          return room;
+        }
+     }
+    }
   }
   
   removePlayerFromQueue(client: Socket): void {
@@ -62,8 +66,8 @@ emitToplayer(username: string, event: string, data?: any): void
 
 creatRoom(socket1: Array<Socket>, socket2: Array<Socket>, user1:string, user2:string): Room
 {
-  const player1: Player = {sockets: socket1, username: user1, position: 'left'};
-  const player2: Player = {sockets: socket2, username: user2, position: 'right'};
+  const player1: Player = {sockets: socket1, username: user1.toString(), position: 'left'};
+  const player2: Player = {sockets: socket2, username: user2.toString(), position: 'right'};
   
   const room : Room = {id: `${user1}+${user2}`, players: [player1, player2]};
   if (player1 && player2) {
@@ -95,14 +99,15 @@ findMatch() : Room | null{
     sockets2.forEach((socket: Socket) => {
       socket.emit('match-found', username1);
     });
-    return this.creatRoom(sockets1, sockets2, username1, username2);
+    const room: Room = this.creatRoom(sockets1, sockets2, username1, username2);
+    return room;
   }
   return null;
 }
 
 isInGame(username: string): string | null { 
   const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {
-    return room.players.find((player: Player) => player.username === username);
+    return room.players.find((player: Player) => player.username.toString() === username.toString());
   });
   if (room) {
     return room.id;
