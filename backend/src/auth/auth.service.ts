@@ -32,7 +32,7 @@ config();
         const token = await this.jwtService.signAsync(payload, {secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: process.env.ACCESS_TOKEN_EXP_D});
         res.cookie('access_token', token, {
           httpOnly: true,
-          maxAge: 604800,
+          maxAge: 604800000,
         });
         res.clearCookie('signin_token');
       }
@@ -46,7 +46,7 @@ config();
           
           await res.cookie('signin_token', token, {
             httpOnly: true,
-            maxAge: 604800,
+            maxAge: 604800000,
           });
           
         }
@@ -56,7 +56,7 @@ config();
 
           await res.cookie('access_token', token, {
             httpOnly: true,
-            maxAge: 604800,
+            maxAge: 604800000,
           });
 
         }
@@ -66,7 +66,7 @@ config();
           const token = await this.jwtService.signAsync(payload, {secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: process.env.ACCESS_TOKEN_EXP_D});
           await res.cookie('tow_fact_token', token, {
             httpOnly: true,
-            maxAge: 604800,
+            maxAge: 604800000,
           });
         }
 
@@ -111,7 +111,7 @@ config();
       
       res.cookie('access_token', token, {
         httpOnly: true,
-        maxAge: 604800,
+        maxAge: 604800000,
       });
       
       res.clearCookie('tow_fact_token');

@@ -49,7 +49,9 @@ export class UsersController {
     if (user.id === req.user.id)
       return null;
     if ((await this.usersService.isBlocked(req.user.id, user.id)).isBlock === true)
+    {
       return null;
+    }
     return user;
   }
 

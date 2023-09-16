@@ -36,7 +36,7 @@ function Modal() {
               </div>
               <ToastContainer />
               <div ref={divref} 
-              className={`relative rounded-lg  text-black  z-10  bg-bg bg-cover bg-no-repeat`}>
+              className={`relative rounded-lg  text-black  z-10 `}>
                 <button className=" absolute left-0  p-2  cursor-pointer z-50" onClick={() => dispatch(setisopen(false))}>
                   <Image
                     className="h-full rounded-full  "
