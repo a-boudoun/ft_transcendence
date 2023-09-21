@@ -150,7 +150,6 @@ export class UsersService {
           some = blockedBy.some(b => b.id === id);
           if (some)
             return {isBlock: true, blocker: id};
-
           return {isBlock: false, blocker: null};
       }
 }
