@@ -31,7 +31,7 @@ import { userDto } from '@/dto/userDto';
           dispatch(setisopen(false));
 
           router.push('/channel');
-          Client.refetchQueries('channels');
+          Client.refetchQueries(['channels']);
           // Client.refetchQueries('channel');
         }
        

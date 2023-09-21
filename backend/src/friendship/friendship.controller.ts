@@ -39,7 +39,6 @@ export class FriendshipController {
   @Get('search/:channelid/:query')
   @UseGuards(Jwt2faAuthGuard)
   async search(@Param('channelid') channelid: string,@Param('query') query: string, @Req() req) {
-    console.log(query);
     return await this.friendshipService.search(+channelid, req.user.id, query);
   }
 

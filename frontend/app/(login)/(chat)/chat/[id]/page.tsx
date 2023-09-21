@@ -1,5 +1,5 @@
 "use client";
-import userDto from "@/dto/userDto";
+import {userDto} from "@/dto/userDto";
 import Image from "next/image";
 import Link from "next/link";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -16,7 +16,43 @@ import { setuser } from "@/redux/features/globalState";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from '@/redux/store';
 
-const page = ({ params }: { params: any }) => {
+
+
+const  More = ({user}:{user: userDto}) => {
+  
+    const router = useRouter();
+      return (
+        <div className="absolute w-56  h-fit rounded-[1.4rem]   top-4 right-3  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg p-3 ">
+              <div className="bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-[1.2rem] overflow-hidden">
+  
+              <button className="flex items-center justify-start px-4 py-2 w-full hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg rounded-t-lg" onClick={()=> router.push(`/profile/${user.username}`)}>
+                  <Image
+                      className="h-8 w-8 rounded-full  "
+                      src={user.image}
+                      width={100}
+                      height={100}
+                      alt=""
+                      />
+                  <span className="pl-6 text-base font-semibold text-blue" >view Profile</span>
+              </button>
+              <button className="flex items-center justify-start px-4 py-2 w-full hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg rounded-b-lg" onClick={()=> socket.emit('invite-freind', user.username)}>
+                  <Image
+                      className="h-6 w-6   "
+                      src={"/icons/profile/matches.svg"}
+                      width={100}
+                      height={100}
+                      alt=""
+                      />
+                      <span className="px-6 text-base font-semibold text-blue" >Play</span>
+              </button>
+          </div>
+        </div>
+      )
+    }
+
+const page = ({ params }: { params: {id: number} }) => {
+
+
     const dispatsh = useDispatch<AppDispatch>();
 
     const router = useRouter();
@@ -188,35 +224,3 @@ const handelSubmit = (event: any) => {
  
 export default page;
 
-
-export const  More = ({user}:{user: userDto}) => {
-  
-  const router = useRouter();
-    return (
-      <div className="absolute w-56  h-fit rounded-[1.4rem]   top-4 right-3 bg-bg bg-cover p-3 ">
-            <div className="bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-[1.2rem] overflow-hidden">
-
-            <button className="flex items-center justify-start px-4 py-2 w-full hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg rounded-t-lg" onClick={()=> router.push(`/profile/${user.username}`)}>
-                <Image
-                    className="h-8 w-8 rounded-full  "
-                    src={user.image}
-                    width={100}
-                    height={100}
-                    alt=""
-                    />
-                <span className="pl-6 text-base font-semibold text-blue" >view Profile</span>
-            </button>
-            <button className="flex items-center justify-start px-4 py-2 w-full hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg rounded-b-lg" onClick={()=> socket.emit('invite-freind', user.username)}>
-                <Image
-                    className="h-6 w-6   "
-                    src={"/icons/profile/matches.svg"}
-                    width={100}
-                    height={100}
-                    alt=""
-                    />
-                    <span className="px-6 text-base font-semibold text-blue" >Play</span>
-            </button>
-        </div>
-      </div>
-    )
-  }
