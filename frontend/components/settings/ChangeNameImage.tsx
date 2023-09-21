@@ -31,7 +31,7 @@ const ChangeNameImage = () => {
             await axios.patch('http://localhost:8000/users/updateMe', user, { withCredentials: true });
         },
         onSuccess: () => {
-            Client.refetchQueries('user');
+            Client.refetchQueries(['user']);
             setIsLoading(false);
             setMsg('your account has been updated successfully');
         },

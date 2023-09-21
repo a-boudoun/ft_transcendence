@@ -4,9 +4,9 @@ import React from 'react'
 import Image from 'next/image'
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import userDto from '@/dto/userDto';
+import { userDto } from '@/dto/userDto';
 
-const UserStats = ({user} : {user : userDto}) => {
+const UserStats = ({user} : {user : any}) => {
     const totalGames = user.wins + user.loses;
 
     return (

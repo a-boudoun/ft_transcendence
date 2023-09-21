@@ -49,11 +49,11 @@ export class UsersService {
       return user;
     }
     
-    // findOneByname(name: string) {
-    //   const user = this.userRepo.findOneBy({name});
-      
-    //   return user;
-    // }
+    async findOneByIntraId(intraID: number) {
+      const user = await this.userRepo.findOneBy({intraID: intraID});
+  
+      return user;
+    }
     
     async isUserNameExist(username: string) {
       const user = await this.userRepo.findOneBy({username});
@@ -89,11 +89,6 @@ export class UsersService {
         const user = await this.findOneById(id);
         return await this.userRepo.save({...user, ...updateUser})
       }
-      
-      // async remove(id: number) {
-      //   const user = await this.findOneById(id);
-      //   return this.userRepo.remove(user);
-      // }
       
       async set2FAsecret(secret: string, id: number) {
         const user = await this.findOneById(id);
@@ -150,7 +145,6 @@ export class UsersService {
           some = blockedBy.some(b => b.id === id);
           if (some)
             return {isBlock: true, blocker: id};
-
           return {isBlock: false, blocker: null};
       }
 }

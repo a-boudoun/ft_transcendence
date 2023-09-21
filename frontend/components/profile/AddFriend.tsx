@@ -23,7 +23,7 @@ const AddFriend = ({ id, Status }: { id: number; Status: any }) => {
       return data;
     },
     onSuccess: () => {
-      Client.refetchQueries("friendStatus");
+      Client.refetchQueries(["friendStatus"]);
     },
   });
 
@@ -36,13 +36,9 @@ const AddFriend = ({ id, Status }: { id: number; Status: any }) => {
       return data;
     },
     onSuccess: () => {
-      Client.refetchQueries("friendrequests");
+      Client.refetchQueries(["friendrequests"]);
     },
   });
-
-  const handleAddFriend = async () => {
-    await sendRequest.mutate(id);
-  };
 
   const handleRemoveOrCancelFriend = async () => {
     await removeOrCancelFriend.mutate(id);

@@ -3,17 +3,13 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import userDto from "@/dto/userDto";
+import {userDto} from "@/dto/userDto";
 import channelDto from "@/dto/channelDto";
-import axios from "axios";
+
 import { useSelector } from "react-redux";
-import Channel from "@/dto/Channel";
+
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { setisMember } from "@/redux/features/globalState";
-import { usePathname, useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { setChannels, setuser } from "@/redux/features/globalState";
 
 
 interface Data{

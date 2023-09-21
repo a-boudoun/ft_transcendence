@@ -31,14 +31,14 @@ import { userDto } from '@/dto/userDto';
           dispatch(setisopen(false));
 
           router.push('/channel');
-          Client.refetchQueries('channels');
+          Client.refetchQueries(['channels']);
           // Client.refetchQueries('channel');
         }
        
     });
     
     return(
-      <div className={`w-96 h-44  bg-bg bg-cover bg-no-repeat rounded-lg ${type !== 'leaveChannel' ? 'hidden': ''}`}>
+      <div className={`w-96 h-44   bg-black bg-opacity-40 ackdrop-blur-lg drop-shadow-lg rounded-lg ${type !== 'leaveChannel' ? 'hidden': ''}`}>
          <h1 className="absolute left-0 right-0 top-5 text-blue font-semibold mx-auto">Leave Channel ?</h1>
          <h5 className="absolute top-16 text-white text-base px-4">Leaving means you can't send or receive messages in this chat. You can rejoin at any time.</h5>
          <div className="absolute bottom-0 left-0 right-0 mx-auto ">

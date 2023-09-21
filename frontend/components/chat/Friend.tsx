@@ -1,11 +1,10 @@
 "use client";
-import userDto from "@/dto/userDto";
-import { useState, useEffect } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {userDto} from "@/dto/userDto";
+import { useState} from "react";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useSelector } from "react-redux";
 
 
 const Friends = ({user}:{user:userDto}) => {

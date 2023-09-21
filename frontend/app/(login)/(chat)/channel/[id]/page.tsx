@@ -17,7 +17,7 @@ import { channel } from 'diagnostics_channel';
 
 
 
-const Page =  ({ params }: { params: number }) => {
+const Page =  ({ params }: { params: {id:number} }) => {
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();

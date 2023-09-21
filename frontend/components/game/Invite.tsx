@@ -93,7 +93,8 @@ const Invite = () => {
 		};
 	}, []);
 
-	useEffect(() => {		let timer: number;
+	useEffect(() => {
+		let timer: NodeJS.Timeout;
 		if (display !== null) {
 			timer = setTimeout(() => {
 				setDisplay(null);

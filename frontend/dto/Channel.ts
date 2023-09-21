@@ -1,5 +1,5 @@
 import Message from "./Message";
-import userDto from "./userDto";
+import {userDto} from "./userDto";
 export default interface Channel {
     id: number;
     name: string;
