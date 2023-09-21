@@ -17,23 +17,23 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
 
   const Accept = useMutation({
     mutationKey: ['acceptFriendRequest'],
-    mutationFn: async(sender: number) => {
+    mutationFn: async(sender: number | undefined) => {
       const {data} = await axios.patch(`/friendship/acceptRequest`, {sender: sender});
       return data;
     },
     onSuccess: () => {
-      Client.refetchQueries('friendrequests');
+      Client.refetchQueries(['friendrequests']);
     }
   })
 
   const Decline  = useMutation({
     mutationKey: ['DeclineFriend'],
-    mutationFn: async(id: number) => {
+    mutationFn: async(id: number | undefined) => {
         const {data} = await axios.delete(`/friendship/${id}`);
         return data;
     },
     onSuccess: () => {
-        Client.refetchQueries('friendrequests');
+        Client.refetchQueries(['friendrequests']);
     }
   });
 

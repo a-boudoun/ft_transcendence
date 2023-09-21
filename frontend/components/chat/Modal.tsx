@@ -29,7 +29,6 @@ function Modal() {
     const isopen:boolean = useSelector((state: any) => state.globalState.isopen);
     const {divref} = useAmiski();
     return (
-     
           <div className={`${isopen === true ? '' : 'hidden'} fixed z-40 inset-0 overflow-y-auto`}>
             <div className="flex items-center justify-center min-h-screen  ">
               <div className="fixed inset-0 bg-white opacity-[4%] ">

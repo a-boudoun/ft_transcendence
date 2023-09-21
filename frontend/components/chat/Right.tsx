@@ -52,8 +52,8 @@ const Right = () => {
 
   
   return (
-    <div className={`${isMid === false ? 'w-full md:w-1/2  lg:w-4/12 ' : 'hidden lg:w-5/12 lg:flex lg:flex-col max-w-xs'} h-full sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:rounded-[2.5rem] sm:p-4 `}>
-        <div className='bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-full sm:rounded-[2rem] relative'>
+    <div className={` ${isMid === false ? 'w-full md:w-1/2  lg:w-4/12 ' : 'hidden lg:w-5/12 lg:flex lg:flex-col max-w-xs'} h-full sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:rounded-[2.5rem] sm:p-4 `}>
+        <div className='overflow-y-scroll bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-full sm:rounded-[2rem] relative'>
 
       <button className='absolute top-4 left-4  hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg w-[36px] h-[36px] rounded-full flex justify-center items-center lg:hidden ' onClick={() => dispatch(setisMid(true))} >
         <Image
@@ -146,8 +146,8 @@ export const BlockedItems = ({ member , user, id}: { member: any, user: any, id:
       return data;
     },
     onSuccess: () => {
-     Client.refetchQueries('channels');
-     Client.refetchQueries('channel');
+     Client.refetchQueries(['channels']);
+     Client.refetchQueries(['channel']);
     }
    
   });
@@ -160,7 +160,7 @@ export const BlockedItems = ({ member , user, id}: { member: any, user: any, id:
               width={1000}
               height={1000}
               alt="" />
-            <div className='mx-4'>{member.member?.name}</div>
+            <div className='mx-4'>{member.member?.username}</div>
         </div>
         {user.title === "owner" || user.title === "admin"? <button className='bg-red px-1.5 rounded-md' onClick={()=> unblock.mutate()}>
           unblock
@@ -228,7 +228,7 @@ export const  More = ({ member , user, id, setIsOpen}: { member: any, user: any,
 
 export const Mute = ({ member , user, id}: { member: any, user: any, id: number}) => {
   const dispatch = useDispatch<AppDispatch>();
-  const handelClick = (type: string) => {
+  const handelClick = () => {
     dispatch(setmodaltype("mute"));
     dispatch(setid(member.member?.id));
     dispatch(setisopen(true));
@@ -269,8 +269,8 @@ export const Admin = ({ member , user, id}: { member: any, user: any, id: number
         return data;
       },
       onSuccess: () => {
-       Client.refetchQueries('channels');
-       Client.refetchQueries('channel');
+       Client.refetchQueries(['channels']);
+       Client.refetchQueries(['channel']);
       }
      
     });
@@ -297,8 +297,8 @@ export const Kick = ({ member , user, id}: { member: any, user: any, id: number}
         return data;
       },
       onSuccess: () => {
-       Client.refetchQueries('channels');
-       Client.refetchQueries('channel');
+       Client.refetchQueries(['channels']);
+       Client.refetchQueries(['channel']);
       }
      
     });
@@ -322,8 +322,8 @@ export const Ban = ({ member , user, id}: { member: any, user: any, id: number})
         return data;
       },
       onSuccess: () => {
-       Client.refetchQueries('channels');
-       Client.refetchQueries('channel');
+       Client.refetchQueries(['channels']);
+       Client.refetchQueries(['channel']);
       }
      
     });

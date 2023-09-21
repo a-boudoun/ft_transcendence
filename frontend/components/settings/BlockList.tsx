@@ -1,7 +1,7 @@
 "use Client"
 
 import React from 'react'
-import userDto from "@/dto/userDto";
+import { userDto } from "@/dto/userDto";
 import axios from '@/apis/axios';
 import { useQuery } from "@tanstack/react-query";
 import Image from 'next/image';
@@ -9,7 +9,7 @@ import { Unlock } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { Client } from "@/providers/QueryProvider";
 
-const BlockedUser = ({user}: {user: userDto}) => {
+const BlockedUser = ({user}: {user: any}) => {
    
     const unblock = useMutation({
         mutationKey: ['unblock'],
@@ -17,7 +17,7 @@ const BlockedUser = ({user}: {user: userDto}) => {
             await axios.delete(`/users/unblock/${id}`);
         },
         onSuccess: () => {
-            Client.refetchQueries('blockList');
+            Client.refetchQueries(['blockList']);
         }
     });
 

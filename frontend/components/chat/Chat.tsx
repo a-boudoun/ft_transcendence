@@ -1,8 +1,7 @@
 "use client";
 
-import Messeges from "./ChannelItems";
-import userDto from "@/dto/userDto";
-import { hashQueryKey, useMutation, useQuery } from '@tanstack/react-query';
+import {userDto} from "@/dto/userDto";
+import {  useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -13,7 +12,6 @@ import NewChannel from "./NewChannel";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import Friends from "./Friend";
-import { set } from "zod";
 
 const Chat = () => {
    
