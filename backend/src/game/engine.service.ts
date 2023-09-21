@@ -5,10 +5,6 @@ import { Server } from "socket.io";
 import { InjectRepository } from "@nestjs/typeorm";
 import { GameHistory, Status, User } from "src/entities/user.entity";
 import { Repository } from "typeorm";
-import { getRepository } from "typeorm";
-import con from "ormconfig";
-
-
 
 @Injectable()
 export class engineService {
