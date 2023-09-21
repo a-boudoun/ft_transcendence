@@ -91,7 +91,7 @@ const UserDetails = (props: UserDetailsProps) => {
           <Title isActive={friends} str="" src="/icons/profile/friends.svg" />
         </button>
       </div>
-      <div className="grow p-4overflow-auto sm:rounded-b-3xl ">
+      <div className="grow p-4 overflow-auto sm:rounded-b-3xl ">
         {Stats && props.Stats}
         {achievements && props.Archievement}
         {matches && props.Matches}

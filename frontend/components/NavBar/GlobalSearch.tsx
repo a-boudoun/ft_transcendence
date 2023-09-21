@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import axios from '@/apis/axios';
 import { userDto } from '@/dto/userDto';
