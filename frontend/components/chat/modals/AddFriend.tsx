@@ -44,7 +44,7 @@ import { useDebounce } from "@uidotdev/usehooks"
       }, [debouncedSearchQuery]);
 
     return(
-      <div className={`w-96 h-96  bg-bg bg-cover bg-no-repeat rounded-lg ${type !== 'addFriend' ? 'hidden': ''}`}>
+      <div className={`w-96 h-96  bg-black bg-opacity-40 ackdrop-blur-lg drop-shadow-lg rounded-lg ${type !== 'addFriend' ? 'hidden': ''}`}>
          <h1 className="absolute left-0 right-0 top-5 text-blue font-semibold mx-auto">Invite to chat</h1>
          <input type="txt" className="bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg w-11/12 absolute top-14 left-0 right-0 mx-auto rounded-md py-1.5 px-2 outline-none text-md text-white" placeholder="Enter Username" value={searchQuery}  onChange={handleInputChange}/>
           <div className="w-11/12 h-[72%] absolute top-[26%] left-0 right-0 mx-auto rounded-md bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg  overflow-y-scroll">
