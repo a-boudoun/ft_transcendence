@@ -97,8 +97,7 @@ config();
       async validate2FA(code: string, id: number) {
         const user = await this.userService.findOneById(id);
         
-        // if (user.fact2auth === true)
-        //   throw new Error('2FA is already enabled');
+
         const valid = await authenticator.verify({token: code, secret: user.fact2Secret});
         if (valid === false)
           throw new Error('Invalid 2FA code');
