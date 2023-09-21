@@ -17,29 +17,29 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
 
   const Accept = useMutation({
     mutationKey: ['acceptFriendRequest'],
-    mutationFn: async(sender: number) => {
+    mutationFn: async(sender: number | undefined) => {
       const {data} = await axios.patch(`/friendship/acceptRequest`, {sender: sender});
       return data;
     },
     onSuccess: () => {
-      Client.refetchQueries('friendrequests');
+      Client.refetchQueries(['friendrequests']);
     }
   })
 
   const Decline  = useMutation({
     mutationKey: ['DeclineFriend'],
-    mutationFn: async(id: number) => {
+    mutationFn: async(id: number | undefined) => {
         const {data} = await axios.delete(`/friendship/${id}`);
         return data;
     },
     onSuccess: () => {
-        Client.refetchQueries('friendrequests');
+        Client.refetchQueries(['friendrequests']);
     }
   });
 
   return (
   <div ref={divref}
-  className='absolute right-0 top-[56px] max-h-[200px] p-4 flex flex-col gap-1 overflow-y-scroll rounded-b-2xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
+  className='absolute right-0 top-[56px] max-h-[200px] p-4 flex flex-col gap-1 overflow-y-scroll rounded-b-2xl bg-black  bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
     {users.length === 0 ? <p className="text-center">No friend requests</p> :
         users.map((user: userDto) => {
             return (

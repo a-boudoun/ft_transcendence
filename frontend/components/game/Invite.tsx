@@ -101,7 +101,7 @@ const Invite = () => {
 	}, []);
 
 	useEffect(() => {
-		let timer: number;
+		let timer: NodeJS.Timeout;
 		if (display !== null) {
 			timer = setTimeout(() => {
 				setDisplay(null);

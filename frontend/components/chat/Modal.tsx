@@ -29,14 +29,13 @@ function Modal() {
     const isopen:boolean = useSelector((state: any) => state.globalState.isopen);
     const {divref} = useAmiski();
     return (
-     
           <div className={`${isopen === true ? '' : 'hidden'} fixed z-40 inset-0 overflow-y-auto`}>
             <div className="flex items-center justify-center min-h-screen  ">
               <div className="fixed inset-0 bg-white opacity-[4%] ">
               </div>
               <ToastContainer />
               <div ref={divref} 
-              className={`relative rounded-lg  text-black  z-10  `}>
+              className={`relative rounded-lg  text-black  z-10 `}>
                 <button className=" absolute left-0  p-2  cursor-pointer z-50" onClick={() => dispatch(setisopen(false))}>
                   <Image
                     className="h-full rounded-full  "

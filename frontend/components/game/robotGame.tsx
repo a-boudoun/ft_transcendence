@@ -18,8 +18,8 @@ function RobotGame({difficulty} : {difficulty: number}){
 	var lScore = 0;
 	var rScore = 0;
 	let keyClicked : boolean = false;
-	let leftInterval : number;
-	let keyInterval : number;
+	let leftInterval : NodeJS.Timeout;
+	let keyInterval : NodeJS.Timeout;
 
 	useEffect(() => {
 		if (!divRef.current) return;
@@ -146,7 +146,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 			let ballVelocity = ball.velocity;
 			let audio = new Audio('/game/bounce.mp3');
 
-			pairs.forEach((pair) => {
+			pairs.forEach((pair: any) => {
 				if (pair.bodyA === leftBoard || pair.bodyB === leftBoard) {
 					clearInterval(leftInterval);
 					Body.setVelocity(ball, { 

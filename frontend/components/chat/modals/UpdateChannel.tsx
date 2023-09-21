@@ -10,10 +10,10 @@ import Image from 'next/image';
 
 
 interface updateChannel{
-    name:string;
-    image:string;
-    type:string;
-    password:string;
+    name?:string;
+    image?:string;
+    type?:string;
+    password?:string;
   }
 
 export const UpdateChannel = ({type}:{type:string}) => {
@@ -59,11 +59,11 @@ export const UpdateChannel = ({type}:{type:string}) => {
     const updatchanel = useMutation({
       mutationFn: async (uchannel: updateChannel) => {
           const { data } = await axios.patch(`http://localhost:8000/channels/${channel.id}`, uchannel, { withCredentials: true });
-          Client.refetchQueries('channel');
+          Client.refetchQueries(['channel']);
           return data;
       },
       onSuccess: (data: any) => {
-          Client.refetchQueries('channels');
+          Client.refetchQueries(['channels']);
           console.log("joined")
       }
   }); 

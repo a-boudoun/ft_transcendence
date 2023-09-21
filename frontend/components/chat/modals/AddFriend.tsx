@@ -1,64 +1,51 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { AppDispatch } from '@/redux/store';
 import { setisopen } from '@/redux/features/globalState';
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { Client } from '@/providers/QueryProvider';
-import { userDto } from '@/dto/userDto';
 import Image from 'next/image';
-import { useDebounce } from "@uidotdev/usehooks"
+import { useDebounce } from "@uidotdev/usehooks";
 
  const AddFriend = ({type}:{type:string}) => {
-    const dispatch = useDispatch<AppDispatch>();
-    const [friends, setFriends] = useState<any>([]);
-    const user = useSelector((state: any) => state.globalState.user);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const channel = useSelector((state: any) => state.globalState.channel);
     
 
     const debouncedSearchQuery = useDebounce(searchQuery, 200);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(e.target.value);
     };
 
-    const getFriends = useMutation({
-          mutationFn: async (channelid: number) => {
-            if(!debouncedSearchQuery)
-            {
-              setFriends([]);
-              return;
-            }
-            const { data } = await axios.get(`http://localhost:8000/friendship/search/${channelid}/${debouncedSearchQuery}`, { withCredentials: true });
-            if(data)
-              setFriends(data);
-            return data;
-          }
-      });
-
-
-      useEffect(() => {
-        if(!channel?.id )
+    const getFriends = useQuery({
+      queryKey: ['searchFriend', debouncedSearchQuery],
+      queryFn: async ()=> {
+        if(!channel.id || !debouncedSearchQuery)
           return;
-          getFriends.mutate(channel.id);
-      }, [debouncedSearchQuery]);
+        const { data } = await axios.get(`/friendship/search/${channel.id}/${debouncedSearchQuery}`);
+      
+        return data;
+      }
+     }
+    )
 
     return(
-      <div className={`w-96 h-96  bg-black bg-opacity-40 ackdrop-blur-lg drop-shadow-lg rounded-lg ${type !== 'addFriend' ? 'hidden': ''}`}>
+      <div className={`w-96 h-96  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg rounded-lg ${type !== 'addFriend' ? 'hidden': ''}`}>
          <h1 className="absolute left-0 right-0 top-5 text-blue font-semibold mx-auto">Invite to chat</h1>
          <input type="txt" className="bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg w-11/12 absolute top-14 left-0 right-0 mx-auto rounded-md py-1.5 px-2 outline-none text-md text-white" placeholder="Enter Username" value={searchQuery}  onChange={handleInputChange}/>
           <div className="w-11/12 h-[72%] absolute top-[26%] left-0 right-0 mx-auto rounded-md bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg  overflow-y-scroll">
-            { friends.length === 0 ? <h1 className="text-white text-center mt-5">No Friends</h1> : 
-              friends?.map((friend: any) => (
+            { getFriends.data?.length === 0 ? <h1 className="text-white text-center mt-5">No Friends</h1> : 
+              getFriends.data?.map((friend: any) => (
                 <Friend key={friend.id} friend={friend} setinput={setSearchQuery}/>
               ))
             }
           </div>
       </div>
     );
-
-
   }
+
   export const Friend = ({friend, setinput}:{friend: any, setinput:any}) => {
     const dispatch = useDispatch<AppDispatch>();
     const channel = useSelector((state: any) => state.globalState.channel);
@@ -69,8 +56,8 @@ import { useDebounce } from "@uidotdev/usehooks"
       },
       onSuccess: () => {
           dispatch(setisopen(false));
-          Client.refetchQueries('channels');
-          Client.refetchQueries('channel');
+          Client.refetchQueries(['channels']);
+          Client.refetchQueries(['channel']);
       }
   });
 

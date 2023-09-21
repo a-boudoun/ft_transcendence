@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from "next/link";
-import userDto from "@/dto/userDto";
+import {userDto} from "@/dto/userDto";
 import axios from '@/apis/axios';
 import { useQuery } from "@tanstack/react-query";
 import socket from '../socketG';
