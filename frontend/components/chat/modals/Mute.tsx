@@ -39,7 +39,7 @@ const Mute = ({type}:{type:string}) => {
     }
 
     return(
-      <div className={`w-80 h-80 z-50  bg-bg bg-cover bg-no-repeat  rounded-lg ${type !== 'mute' ? 'hidden': ''}`}>
+      <div className={`w-80 h-80 z-50   bg-black bg-opacity-40 ackdrop-blur-lg drop-shadow-lg  rounded-lg ${type !== 'mute' ? 'hidden': ''}`}>
          <h1 className="absolute left-0 right-0 top-5 text-blue font-semibold mx-auto">Mute User</h1>
      
         <div className="absolute top-14 left-0 right-0 mx-auto w-[90%] h-52 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-xl">

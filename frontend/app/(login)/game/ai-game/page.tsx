@@ -9,7 +9,7 @@ const Difficulty = () => {
 	const [difficulty, setDifficulty] = useState<number>(12);
 	const [gameStarted, setGameStarted] = useState<boolean>(false);
 	
-	const handleSliderChange = (event) => {
+	const handleSliderChange = (event : any) => {
 	  const value = event.target.value;
 	
 	  switch (parseInt(value)) {

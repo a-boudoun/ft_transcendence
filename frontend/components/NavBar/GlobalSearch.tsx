@@ -5,8 +5,9 @@ import axios from '@/apis/axios';
 import { userDto } from '@/dto/userDto';
 import Link from 'next/link';
 import Image from 'next/image';
-import Bar from '@/components/common/SearchBar';
+import { Search } from 'lucide-react';
 import useCloseOutSide from '@/hookes/useCloseOutSide';
+import { useDebounce } from "@uidotdev/usehooks";
 
 const User = ({ user }: { user: userDto }) => {
   return (
@@ -23,16 +24,15 @@ const SearchBarDropDown = ({search} : {search : string}) => {
     queryKey: ['search', search],
     queryFn: async () => {
       const { data } = await axios.get(`/users/search/${search}`);
-      console.log(data);
       return data;
     }
   });
 
-  if (users.isloading) 
+  if (users.isLoading) 
     return (<p>loading...</p>)
   return (
       <div 
-      className='absolute top-11 w-52 sm:w-72 max-h-56  p-4 flex flex-col gap-1 overflow-y-scroll rounded-2xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
+      className='absolute top-11 w-52 sm:w-72 max-h-56  p-4 flex flex-col gap-1 overflow-y-scroll rounded-2xl bg-black bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
       {
         users.data?.users?.length === 0 ? <p className="text-center">No user found</p> :
         users.data?.users?.map((user: userDto) => (
@@ -50,14 +50,30 @@ const GlobalSearch = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const {divref} = useCloseOutSide({setIsOpen});
 
+  const handelFocus = () => {
+    if (setIsOpen != undefined) {
+      setIsOpen(true);
+    }
+  }
+
+  const handleChange = (e: any) => {
+      setSearch(e.target.value);
+  }
+
+  const debouncedResults = useDebounce(search, 500);
+
   return (
     <div 
       ref={divref}
       className='md:block relative'>
-        <Bar setIsOpen={setIsOpen} setSearchValue={setSearch} />
+          <div className="flex justify-end items-center relative">
+          <input className="h-8 w-full text-sm rounded-xl text-black focus:outline-0 focus:border-[2px] hover:opacity-60" type="text" placeholder="Search" name="search"
+          onFocus={handelFocus} onChange={handleChange} />
+          <Search className="absolute right-2" size={24} strokeWidth={3} color="#7ac7c4"  />
+      </div>
         {
           isOpen && (search.length != 0) &&  
-                                          <SearchBarDropDown search={search}/>
+                                          <SearchBarDropDown search={debouncedResults}/>
         }
     </div>
   )

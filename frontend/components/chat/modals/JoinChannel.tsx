@@ -72,7 +72,7 @@ const JoinChannel = ({type}:{type:string}) => {
     }
 
     return(
-      <div className={`shadow-2xl w-96 h-96 bg-bg bg-cover bg-no-repeat rounded-lg ${type !== 'joinchannel' ? 'hidden': ''}`}>
+      <div className={`shadow-2xl w-96 h-96 bg-black bg-opacity-40 ackdrop-blur-lg drop-shadow-lg rounded-lg ${type !== 'joinchannel' ? 'hidden': ''}`}>
         <Image
           className="absolute left-0 right-0 top-10 h-32 w-32  rounded-full mx-auto my-3"
           src={channel.image}

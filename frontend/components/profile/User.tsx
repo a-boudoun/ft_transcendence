@@ -10,7 +10,7 @@ import { Loader2 } from  'lucide-react';
 import { useState } from 'react';
 import UserParametres from '@/components/profile/UserParametres';
 
-const User = ({user, isMe} : {user : userDto, isMe: boolean}) => {
+const User = ({user, isMe} : {user : any, isMe: boolean}) => {
   
   const [isLoading, setIsLoading] = useState<boolean>(false);
   
@@ -21,7 +21,7 @@ const User = ({user, isMe} : {user : userDto, isMe: boolean}) => {
     },
     
     onSuccess: () => {
-      Client.refetchQueries('User');
+      Client.refetchQueries(['User']);
     },
     
   });
@@ -34,7 +34,7 @@ const User = ({user, isMe} : {user : userDto, isMe: boolean}) => {
     const uploadimage = await uploadImage(e.target.files[0]);
     user.baner = uploadimage;
     await updateBaner.mutate(user);
-    await Client.refetchQueries('User');
+    await Client.refetchQueries(['User']);
     setIsLoading(false);
   }
 

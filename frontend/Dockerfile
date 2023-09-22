@@ -13,3 +13,7 @@ EXPOSE 3000
 
 # Start the NextJS application in watch mode for live reloading
 CMD ["npm", "run", "dev"]
+
+# RUN npm run build
+
+# CMD["npm", "run", "start"]

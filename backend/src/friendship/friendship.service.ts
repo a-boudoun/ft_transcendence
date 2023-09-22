@@ -69,6 +69,7 @@ async accept(id: number, sender: number) {
     });
 
     friendship.status = Fstatus.ACCEPTED;
+    
     const user1 = await this.userRepo.findOneBy({id: id});
     const user2 = await this.userRepo.findOneBy({id: sender});
 
@@ -123,7 +124,6 @@ async accept(id: number, sender: number) {
 
     const friends = await this.getFriends(id);
     const findInFriends = friends.filter(f => f.username.toLowerCase().includes(query.toLowerCase()) && f.id != id);
-    console.log(findInFriends);
     const channel = await this.channelRepo.findOne({
       where: {id: channelid},
       relations: ['memberships.member', "bannations.member"]

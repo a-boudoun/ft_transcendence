@@ -1,6 +1,6 @@
 "use client";
 import Chat from './Chat';
-import { useParams, usePathname } from 'next/navigation'
+import { useParams } from 'next/navigation'
 const Left = () => {
 
     return (
