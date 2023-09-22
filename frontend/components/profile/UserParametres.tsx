@@ -44,6 +44,25 @@ interface dropProps {
     )
   }
 
+  const Mesage = ({id} : {id: number}) => {
+
+    console.log("--------------", id);
+
+    const {data, isLoading} = useQuery({
+      queryKey: ['direct', id],
+      queryFn: async ()=> {
+        const {data} = await axios.get(`/channels/getChannelId/${id}`)
+        // console.log("---------", data);
+        return data;
+      }
+    });
+
+    return(
+        (isLoading ? <div></div> :
+          <Link className='bg-blue px-3 py-1 text-black rounded-xl' href={`/chat/${data}`}>Mesage</Link>)
+    )
+  }
+
   const Drop = ({id , setIsOpen} : dropProps) => {
     const {divref} = useCloseOutSide({setIsOpen});
 
@@ -59,7 +78,7 @@ interface dropProps {
         <div ref={divref}
           className='w-36 absolute bottom-6 right-6 text-sm flex flex-col gap-2 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-2 rounded-2xl'>
           <AddFriend id={id} Status={Status}/>
-          <Link className='bg-blue px-3 py-[5px] text-black rounded-xl' href={`/chat/${id}`}>Mesage</Link>
+          <Mesage id={id} />
           {
             Status.data?.status === 'accepted' && <Challnege id={id} />
           }

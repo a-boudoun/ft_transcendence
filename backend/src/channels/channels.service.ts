@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { ChannelType } from '../entities/channel.entity';
 import { MembershipDTO } from './dto/create-channel.dto';
 import { UserDTO } from 'src/users/dto/create-user.dto';
+import { User } from 'src/entities/user.entity';
 
 import * as bcrypt from 'bcrypt';
 import { Not } from 'typeorm';
@@ -19,6 +20,7 @@ export class ChannelsService {
     @InjectRepository(Message) private messageRepo: Repository<Message>,
     @InjectRepository(Bannation) private bannationRepo: Repository<Bannation>,
     @InjectRepository(Mutation) private mutationRepo: Repository<Mutation>,
+    @InjectRepository(User) private userRepo: Repository<User>,
     ) { }
     async create(channel: ChannelDTO) {
       
@@ -283,8 +285,7 @@ async banner(channelId: number, username: string) {
       };
     }));
     
-    
-    
+  
   }
   
   async unban(banId: number) {
@@ -310,14 +311,31 @@ async banner(channelId: number, username: string) {
     }
     
    async getChannelId(me: number, id: number) {
-    const channel = await this.membershipRepo.createQueryBuilder('membership')
+      const channel = await this.membershipRepo.createQueryBuilder('membership')
       .innerJoin('membership.channel', 'channel')
-      .where('membership.member = :me OR membership.member = :id', { me, id })
+      .where('membership.member = :me', { me })
       .groupBy('membership.channel')
       .where('channel.type = :type', { type: ChannelType.DIRECT })
+      .andWhere('membership.member = :id', { id })
       .select('membership.channel')
       .getRawOne();
 
+      if(!channel){
+        const user1 = await this.userRepo.findOneBy({id: me});
+        const user2 = await this.userRepo.findOneBy({id: id});
+
+        const channelName : string =  (user1.id < user2.id) ? user1.username + user2.username : user2.username + user1.username;
+
+        const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" });
+        const rt = await this.channelRepo.save(channel);
+        const membership1 = await this.membershipRepo.create({channel: rt, member: user1, title: MemberTitle.MEMBER});
+        const membership2 = await this.membershipRepo.create({channel: rt, member: user2, title: MemberTitle.MEMBER});
+        await this.membershipRepo.save(membership1);
+        await this.membershipRepo.save(membership2);
+
+        return rt.id;
+      }
+        
       return channel.channelId;
     }
   }

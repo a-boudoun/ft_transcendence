@@ -15,7 +15,7 @@ import { Loader2 } from  'lucide-react';
 
 config();
 
-const SignInFrom = ({user} : {user: signInDto}) => {
+const SignInFrom = ({user} : {user: any}) => {
 
   const Router = useRouter();
 

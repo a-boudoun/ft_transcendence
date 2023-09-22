@@ -140,10 +140,16 @@ export class UsersService {
         return [...blocked, ...blockedBy];
       }
 
-      async isBlocked(blocker: number, blocked: number) {
-          const blockedAndBlocker = await this.blockedAndBlocker(blocker);
-          if (blockedAndBlocker.length === 0)
-            return false;
-          return blockedAndBlocker.some(b => b.id === blocked);
+      async isBlocked(me: number, id: number) {
+          const blocked = await this.blockedUsers(me);
+          let some = blocked.some(b => b.id === id);
+          if (some)
+            return {isBlock: true, blocker: me};
+
+          const blockedBy = await this.blockedByUsers(me);
+          some = blockedBy.some(b => b.id === id);
+          if (some)
+            return {isBlock: true, blocker: id};
+          return {isBlock: false, blocker: null};
       }
 }

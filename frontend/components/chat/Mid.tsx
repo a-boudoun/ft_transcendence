@@ -5,22 +5,20 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import io from 'socket.io-client';
-import userDto from "@/dto/userDto";
-import channelDto from '@/dto/channelDto';
+import {userDto} from "@/dto/userDto";
 import { useSelector } from 'react-redux';
-import { set } from 'zod';
-import { setMembership, setlastDate, setMessage, setisMid, setisChild, setisopen, setmodaltype } from '@/redux/features/globalState';
+import { setMembership, setMessage, setisMid, setisChild, setisopen, setmodaltype } from '@/redux/features/globalState';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
-import Channel from '@/dto/Channel';
+
 import Message from '@/dto/Message';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { socket } from './chatSocket';
 import moment from 'moment';
-import Modal from './Modal';
+
 import { ToastContainer, toast } from 'react-toastify';
-import { Client } from '@/providers/QueryProvider';
+
 
 
 function Mid() {
@@ -51,7 +49,7 @@ function Mid() {
         dispatch(setisChild(true));
     }, []);
     
-    const messageContainerRef = useRef(null);
+    // const messageContainerRef = useRef(null);
 
 
     const joinChannel = useMutation({
@@ -105,11 +103,11 @@ function Mid() {
     }, [channel]);
 
 
-    useEffect(() => {
-        if (messageContainerRef.current) {
-            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-        }
-    }, [messages]);
+    // useEffect(() => {
+    //     if (messageContainerRef.current) {
+    //         messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+    //     }
+    // }, [messages]);
 
     const handleJoinChannel = () => {
         dispatch(setisopen(true));
@@ -157,7 +155,7 @@ function Mid() {
                     </button>
                 </div>
             </div>
-            <div className="overflow-y-auto flex-grow py-3 px-2" ref={messageContainerRef}>
+            <div className="overflow-y-auto flex-grow py-3 px-2" > {/* ref={messageContainerRef} */}
                 {
                     messages?.map((msg: Message, id: number) =>
                     <Message key={id} msg={msg.content} id={msg.sender} user={user} date={msg.date} />
