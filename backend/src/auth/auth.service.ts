@@ -16,7 +16,9 @@ config();
       ) {}
       
       async signin(user: UserDTO, res: Response, body: any) {
-      
+        
+        console.log(user);
+
         user.image = body.image;
         user.username = body.username;
         user.baner = '/img/baner.webp';
@@ -38,10 +40,10 @@ config();
       }
       
       async login(user : UserDTO, res: Response, fact2Auth: boolean) {
-        const userExists : UserDTO =  await this.userService.findOneByUserName(user.username);
+        const userExists : UserDTO =  await this.userService.findOneByIntraId(user.intraID);
         
         if (!userExists){
-          const payload = {username: user.username, image: user.image}
+          const payload = {intraID: user.intraID, username: user.username, image: user.image}
           const token = await this.jwtService.signAsync(payload, {secret: process.env.SIGNIN_TOKEN_SECRET, expiresIn: process.env.SIGNIN_TOKEN_EXP_D});
           
           await res.cookie('signin_token', token, {
@@ -95,8 +97,7 @@ config();
       async validate2FA(code: string, id: number) {
         const user = await this.userService.findOneById(id);
         
-        // if (user.fact2auth === true)
-        //   throw new Error('2FA is already enabled');
+
         const valid = await authenticator.verify({token: code, secret: user.fact2Secret});
         if (valid === false)
           throw new Error('Invalid 2FA code');
