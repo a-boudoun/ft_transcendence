@@ -115,12 +115,10 @@ const page = ({ params }: { params: {id: number} }) => {
 useEffect(() => {
     if (!data || !user || !socket|| !otherUser) return;
     const onMsg = (msg: any) => {
-        
         const member = msg.from === user.username ? user : otherUser;
         const createdAt = moment().format('yyyy-MM-DDTHH:mm:ssZ');
         const newMessage = {content: msg.content, sender: member,  date: createdAt};
         setMessages((prev) => [...prev, {content: msg.content, sender: member,  date: createdAt}]);
-        
     }
     socket.on('message', onMsg);
     return () => {
