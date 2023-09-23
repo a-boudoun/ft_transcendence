@@ -23,6 +23,10 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column({nullable: true})
+    @Index({unique: true})
+    intraID: number;
+
     @Column({ length: 25 })
     @Index({unique: true})
     username: string;

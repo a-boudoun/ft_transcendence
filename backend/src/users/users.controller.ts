@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseGuards} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseGuards, ParseIntPipe} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Jwt2faAuthGuard } from '../auth/guards/jwt-2fa-auth.guard';
@@ -55,6 +55,17 @@ export class UsersController {
     return user;
   }
 
+  @Get('getId/:id')
+  @UseGuards(Jwt2faAuthGuard)
+  async findOneById(@Req() req, @Param('id') id: number) {
+    const user =  await this.usersService.findOneById(id);
+    if (!user)
+      return null;
+    if ((await this.usersService.isBlocked(req.user.id, user.id)).isBlock === true)
+      return null;
+    return user;
+  }
+  
   @Get('signin')
   @UseGuards(JwtSigninGuard)
   async signin(@Req() req) {
@@ -94,7 +105,7 @@ export class UsersController {
 
   @Get('isBlocked/:id')
   @UseGuards(Jwt2faAuthGuard)
-  async isBlocked(@Req() req, @Param('id') id: number) {
+  async isBlocked(@Req() req, @Param('id', ParseIntPipe) id: number) {
     return this.usersService.isBlocked(req.user.id, id);
   }
   

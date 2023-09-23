@@ -5,10 +5,6 @@ import { Server } from "socket.io";
 import { InjectRepository } from "@nestjs/typeorm";
 import { GameHistory, Status, User } from "src/entities/user.entity";
 import { Repository } from "typeorm";
-import { getRepository } from "typeorm";
-import con from "ormconfig";
-
-
 
 @Injectable()
 export class engineService {
@@ -20,13 +16,13 @@ export class engineService {
 	private gameSimulations: Map<string, gameSimulation> = new Map<string, gameSimulation>();
 
 	async createGameSimulation(room: Room) {
-		const userA = await this.userRepo.findOneBy({username: room.players[0].username});
-		const userB = await this.userRepo.findOneBy({username: room.players[1].username});
+		// const userA = await this.userRepo.findOneBy({username: room.players[0].username});
+		// const userB = await this.userRepo.findOneBy({username: room.players[1].username});
 
-		userA.status = Status.INGAME;
-		userB.status = Status.INGAME;
-		await this.userRepo.save(userA);
-		await this.userRepo.save(userB);
+		// userA.status = Status.INGAME;
+		// userB.status = Status.INGAME;
+		// await this.userRepo.save(userA);
+		// await this.userRepo.save(userB);
 		const game: gameSimulation = new gameSimulation();
 		this.gameSimulations.set(room.id, game);
 		game.runEngine();
@@ -71,20 +67,20 @@ export class engineService {
 		const game: gameSimulation | undefined = this.gameSimulations.get(roomId);
 		if (game) {
 			game.stopEngine();
-			const gameHistory = await this.gameHistoryRepo.create();
-			const winner = await this.userRepo.findOneBy({username: game.getWinner()});
-			winner.wins += 1;
-			winner.XP += 10;
-			winner.status = Status.ONLINE;
-			const loser = await this.userRepo.findOneBy({username: game.getLoser()});
-			loser.loses += 1;
-			loser.status = Status.ONLINE;
-			gameHistory.winner = winner;
-			gameHistory.loser = loser;
-			gameHistory.loserScore = game.getLoserScore();
-			await this.gameHistoryRepo.save(gameHistory);
-			await this.userRepo.save(winner);
-			await this.userRepo.save(loser);
+			// const gameHistory = await this.gameHistoryRepo.create();
+			// const winner = await this.userRepo.findOneBy({username: game.getWinner()});
+			// winner.wins += 1;
+			// winner.XP += 10;
+			// winner.status = Status.ONLINE;
+			// const loser = await this.userRepo.findOneBy({username: game.getLoser()});
+			// loser.loses += 1;
+			// loser.status = Status.ONLINE;
+			// gameHistory.winner = winner;
+			// gameHistory.loser = loser;
+			// gameHistory.loserScore = game.getLoserScore();
+			// await this.gameHistoryRepo.save(gameHistory);
+			// await this.userRepo.save(winner);
+			// await this.userRepo.save(loser);
 			this.gameSimulations.delete(roomId);
 			}
 

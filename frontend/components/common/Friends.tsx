@@ -64,7 +64,7 @@ export const Friend = ({user, isMe}: {user: userDto, isMe: boolean}) => {
                             <Image className="" src="/icons/navBar/chat.svg" width={24} height={24} alt="chat"/>
                         </Link>
                     }
-                    <button onClick={() => {socket.emit('invite-freind', user.username)}}>
+                    <button onClick={() => {socket.emit('invite-freind', user.id)}}>
                         <Image className="" src="/icons/navBar/game.svg" width={24} height={24} alt="challenge"/>
                     </button>
                 </div>

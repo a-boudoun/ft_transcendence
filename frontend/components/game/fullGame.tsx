@@ -11,10 +11,10 @@ import FootGame from "./footGame";
 import DisapGame from "./disapearGame";
 
 interface Prop{
-	me: string;
+	meId: string;
 }
 
-export default function Game({me} : Prop){
+export default function Game({meId} : Prop){
 	const [PVisible, setPVisible] = useState<boolean>(true);
 	const router = useRouter();
 	const [countDownValue, setCountDownValue] = useState<number>(3);
@@ -30,7 +30,8 @@ export default function Game({me} : Prop){
 	useEffect(() => {
 		let seleted: string | null = localStorage.getItem('map');
 		if (seleted !== null) setMap(seleted);
-		socket.emit('full-Game', me);
+
+		socket.emit('full-Game', meId);
 		socket.on('game-info', (data) => {
 			setLeftPlayer(data.leftPlayer);
 			setRightPlayer(data.rightPlayer);
@@ -47,7 +48,7 @@ export default function Game({me} : Prop){
 			setRightScore(data.rightScore);
 		});
 		socket.on('winner', (data) => {
-			if(me === RightPlayer){
+			if(meId.toString() === RightPlayer){
 				if (data === 'right') setWinner(RightPlayer);
 				else setLoser(RightPlayer);
 			}
@@ -72,30 +73,30 @@ export default function Game({me} : Prop){
 
 	return (
 	<>
-		{Winner === '' && Loser === '' && <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
-			{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] ">{countDownValue}</p>}
-			<PlayersScore 
+		{(Winner === '' && Loser === '') && <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
+			{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#f6f6f6] z-10 text-[90px] mb-[150px] ">{countDownValue}</p>}
+			{LeftPlayer !== '' && RightPlayer !== '' && <PlayersScore 
 			left={leftScore} 
 			right={rightScore} 
 			leftPlayer={LeftPlayer}
 			rightPlayer={RightPlayer}
-			/>
+			/>}
 
 			{map === "default" && <DefaultGame
 			roomid={roomid}
-			me={me}
+			me={meId.toString()}
 			RightPlayer={RightPlayer}
 			/>}
 
-			{map === "m3a-m3a" && <FootGame
+			{map === "football-mode" && <FootGame
 			roomid={roomid}
-			me={me}
+			me={meId.toString()}
 			RightPlayer={RightPlayer}
 			/>}
 
-			{map === "ched-ched" && <DisapGame
+			{map === "space-mode" && <DisapGame
 			roomid={roomid}
-			me={me}
+			me={meId.toString()}
 			RightPlayer={RightPlayer}
 			/>}
 
@@ -104,15 +105,15 @@ export default function Game({me} : Prop){
 				onClick={() => {
 					socket.emit('leave-game', {
 						room: roomid,
-						player: me,
+						player: meId.toString(),
 					});
 					router.push("/home");
 				}}>
 				leave
 			</button>
 		</div>}
-		{Winner !== '' && <Won/>}
-		{Loser !== '' && <Lost/>}
+		{Winner !== '' && <Won setLost={setLoser} setWon={setWinner} />}
+		{Loser !== '' && <Lost setLost={setLoser} setWon={setWinner} />}
 	</>
 	);
 }
