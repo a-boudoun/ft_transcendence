@@ -7,7 +7,7 @@ export function drawRect(x : number, y : number, w : number, h : number, color :
 			chamfer: { radius: 10 },
 			render: {
 				fillStyle: color,
-			},
+		},
 		})
 		)
 	}
@@ -21,11 +21,6 @@ export function drawRect(x : number, y : number, w : number, h : number, color :
 				inertia: Infinity, // prevent ball from slowing down
 				render: {
 					fillStyle: color,
-					// sprite: {
-					// 	texture: 'https://cdn.shopify.com/s/files/1/0009/2733/4466/products/755957ca0e8d95bb1d4e9ac2c8083de9.png?v=1539975508',
-					// 	xScale: 0.03,
-					// 	yScale: 0.03,
-					// }
 			},
 		})
 	)

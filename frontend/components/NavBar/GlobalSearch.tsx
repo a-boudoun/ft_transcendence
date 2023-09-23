@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import axios from '@/apis/axios';
 import { userDto } from '@/dto/userDto';
@@ -28,8 +28,6 @@ const SearchBarDropDown = ({search} : {search : string}) => {
     }
   });
 
-  if (users.isLoading) 
-    return (<p>loading...</p>)
   return (
       <div 
       className='absolute top-11 w-52 sm:w-72 max-h-56  p-4 flex flex-col gap-1 overflow-y-scroll rounded-2xl bg-black bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
