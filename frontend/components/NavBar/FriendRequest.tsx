@@ -7,6 +7,7 @@ import axios from "@/apis/axios";
 import { userDto } from "@/dto/userDto";
 import { Client } from "@/providers/QueryProvider";
 import useCloseOutSide from "@/hookes/useCloseOutSide";
+import { UserPlus2 } from "lucide-react";
 interface Props {
   users : userDto[];
   setIsOpen : (isOpen: boolean) => void;
@@ -83,8 +84,8 @@ const FriendRequest = () => {
 
   return (
     <>
-        <button className='relative grid place-content-center mr-[14px] p-1' onClick={handelClick}>
-            <Image src={'/icons/navBar/notification.svg'} alt={"notification"} width={28} height={28} />
+        <button className='relative grid place-content-center mr-[14px] p-1 hover:opacity-50' onClick={handelClick}>
+            <UserPlus2 size={32} color="#7ac7c4" strokeWidth={1.5}/>
             {notif && <div className="absolute h-3 w-3 top-0 right-0 bg-red rounded-full"> </div> }
         </button>
         {

@@ -134,7 +134,7 @@ export enum Fstatus {
     ACCEPTED = 'accepted',
     NONE = 'none'
 }
-  
+
 @Entity({ name: 'Friendship' })
 export class Friendship {
     @PrimaryGeneratedColumn()

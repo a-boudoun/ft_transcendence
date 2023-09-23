@@ -23,7 +23,7 @@ const NavLink = ({route, src, alt, setIsOpen = () => {}}: NavLinkProps) => {
         color = currentRoute === '/' + route ? 'bg-light-gray' : 'bg-dark-gray hover:bg-light-gray';
     
     return (
-      <div className={`grid place-content-center h-[55px] w-[56px]`}>
+      <div className={`grid place-content-center h-[55px] w-[56px] hover:opacity-50`}>
         <Link href={route}>
           <Image src={src} alt={alt} width={28} height={28}  onClick={() => setIsOpen(false)} />
         </Link>
