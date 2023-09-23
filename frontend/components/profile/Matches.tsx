@@ -1,11 +1,11 @@
 "use client";
 
-import Title from "@/components/profile/Title";
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/apis/axios";
 import Image from "next/image";
 import Link from "next/link";
 import { userDto } from "@/dto/userDto";
+import { History } from "lucide-react";
 interface MatchProps {
   winner: userDto;
   loser: userDto;
@@ -73,7 +73,10 @@ const MatchesHistory = ({ id }: { id: number }) => {
   return (
     <div className="max-h-[668px] flex flex-col grow xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg">
       <div className="hidden xl:block rounded-t-3xl  p-4 ">
-        <Title isActive={true} str="Matches" src="/icons/profile/Matches.svg" />
+      <div className={`h-[56px] w-fit flex justify-center items-center m-auto p-2 border-b border-blue`}>
+          <History size={28} color="#7ac7c4" strokeWidth={2}/>
+          <h2 className="hidden lg:inline text-[28px] text-red ml-4">Matches</h2>
+        </div>
       </div>
       <DisplayMatchs id={id} />
     </div>

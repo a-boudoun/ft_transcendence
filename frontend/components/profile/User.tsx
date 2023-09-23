@@ -9,6 +9,7 @@ import { Client } from "@/providers/QueryProvider";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import UserParametres from "@/components/profile/UserParametres";
+import { ImagePlus } from "lucide-react";
 
 const User = ({user, isMe} : {user : any, isMe: boolean}) => {
   
@@ -47,8 +48,8 @@ const User = ({user, isMe} : {user : any, isMe: boolean}) => {
         height={1000}
       />
       {isMe && (
-        <label className="absolute right-0 bottom-[110px] sm:bottom-[134px] bg-blue text-sm text-black rounded-2xl px-8 py-2 cursor-pointer ">
-          change baner image
+        <label className="absolute right-0 bottom-[110px] sm:bottom-[134px] cursor-pointer bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg ">
+           <ImagePlus className="z-40" size={26} strokeWidth={2}  />
           {isLoading && (
             <Loader2
               className="absolute top-3 right-2 animate-spin"

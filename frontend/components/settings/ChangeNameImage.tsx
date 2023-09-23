@@ -7,7 +7,7 @@ import { userSchema } from '@/models/user';
 import { userDto } from '@/dto/userDto';
 import uploadImage from '@/apis/uploadImage';
 import { Client } from '@/providers/QueryProvider';
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { useEffect, useState } from 'react';
 
 const ChangeNameImage = () => {
@@ -21,14 +21,14 @@ const ChangeNameImage = () => {
     const User = useQuery({
         queryKey: ['user'],
         queryFn: async ()=> {
-            const {data} = await axios.get('http://localhost:8000/users/getUser/me', { withCredentials: true })
+            const {data} = await axios.get('/users/getUser/me')
             return data;
         }
     });
 
     const updateUser = useMutation({
         mutationFn: async(user : userDto) => {
-            await axios.patch('http://localhost:8000/users/updateMe', user, { withCredentials: true });
+            await axios.patch('/users/updateMe', user);
         },
         onSuccess: () => {
             Client.refetchQueries(['user']);
