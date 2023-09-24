@@ -46,12 +46,12 @@ const UserDetails = (props: UserDetailsProps) => {
             setFriends(false);
           }}
         >
-           <div
+          <div
             className={`h-[56px] w-fit flex justify-center items-center m-auto p-2 hover:opacity-70  hover:border-b border-blue  ${
               stats ? "border-b" : ""
             }`}
           >
-            <BarChart3  size={28} color="#7ac7c4" strokeWidth={2} />
+            <BarChart3 size={28} color="#7ac7c4" strokeWidth={2} />
             <h2 className="hidden lg:inline text-[28px] text-red ml-4">
               Stats
             </h2>
@@ -118,7 +118,7 @@ const UserDetails = (props: UserDetailsProps) => {
           </div>
         </button>
       </div>
-      <div className="grow p-4 overflow-auto   sm:rounded-b-3xl">
+      <div className="grow  p-4 overflow-scroll   sm:rounded-b-3xl">
         {stats && props.Stats}
         {achievements && props.Archievement}
         {matches && props.Matches}
@@ -129,4 +129,3 @@ const UserDetails = (props: UserDetailsProps) => {
 };
 
 export default UserDetails;
-{/* <BarChart3 /> */}
