@@ -58,7 +58,6 @@ export default function MatchPlayers() {
 		</main>
 		</div>}
 		{gameStart && <Game 
-			me = {playerUsername}
 			meId = {playerId}
 		/>}
 		</>

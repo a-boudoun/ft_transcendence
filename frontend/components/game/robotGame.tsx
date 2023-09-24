@@ -17,7 +17,8 @@ function RobotGame({difficulty} : {difficulty: number}){
 	const [rightScore, setRightScore] = useState<number>(0);
 	var lScore = 0;
 	var rScore = 0;
-	let keyClicked : boolean = false;
+	let keyClicked : boolean = false;;
+	let maxScore = 5;
 	let leftInterval : NodeJS.Timeout;
 	let keyInterval : NodeJS.Timeout;
 	const maxScore = 5;
