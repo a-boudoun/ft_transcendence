@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Req, Param, UseGuards} from '@nestjs/common';
 import { GameHistoryService } from './game-history.service';
 import { Jwt2faAuthGuard } from '../auth/guards/jwt-2fa-auth.guard';
+import con from 'ormconfig';
 
 export class ghReq {
   winner: string;
@@ -27,7 +28,7 @@ export class GameHistoryController {
 
   @Get('getHistory/:id')
   @UseGuards(Jwt2faAuthGuard)
-  getHistory(@Param(':id') id: number) {
+  getHistory(@Param('id') id: number) {
     return this.gameHistoryService.getHistory(id);
   }
   

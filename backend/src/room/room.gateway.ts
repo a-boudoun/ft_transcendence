@@ -1,14 +1,11 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChannelsService } from 'src/channels/channels.service';
-import { UseGuards } from '@nestjs/common';
-import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Status, User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 
 @WebSocketGateway()
-@UseGuards(Jwt2faAuthGuard)
 export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(
         private channelsService: ChannelsService,
