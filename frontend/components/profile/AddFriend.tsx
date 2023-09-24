@@ -12,7 +12,7 @@ const AddFriend = ({ id, Status }: { id: number; Status: any }) => {
       return data;
     },
     onSuccess: () => {
-      Client.refetchQueries("friendStatus");
+      Client.refetchQueries(["friendStatus"]);
     },
   });
 
