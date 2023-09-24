@@ -10,7 +10,7 @@ import MidButtom from "@/components/profile/MidBottom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/apis/axios";
 import { useRouter } from "next/navigation";
-import ProfileSkeleton from "@/components/profile/ProfileSkeleton";
+import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 
 export const ProfileComponent = ({ username }: { username: string }) => {
   const router = useRouter();

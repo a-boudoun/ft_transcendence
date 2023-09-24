@@ -25,9 +25,7 @@ const Friends = ({id, isMe} : {id : number, isMe: boolean}) => {
                     {
                         data.map((friend: userDto) => {
                             return (
-                                <Link href={`/profile/${friend.username}`} >
-                                    <Friend user={friend} isMe={isMe}/> 
-                                </Link>
+                                    <Friend key={friend.id} user={friend} isMe={isMe}/> 
                             );
                         })
                     }   
@@ -49,26 +47,28 @@ export const Friend = ({user, isMe}: {user: userDto, isMe: boolean}) => {
     })
 
     return (
-        <div className='flex justify-between px-4 py-2 mx-2 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
-            <div className="grow flex items-center gap-4">
-                <Image  className="w-[48px] h-[48px] rounded-full self-center"  src={user.image}    width={1000}  height={1000}   alt="user image"
-                />
-                <h3>{user.username}</h3> 
-            </div>
-            {
-                isMe &&
-                 <div className="flex items-center gap-4">
-                    {
-                        isLoading ? <div></div> :
-                        <Link href={`/chat/${data}`}>
-                            <Image className="" src="/icons/navBar/chat.svg" width={24} height={24} alt="chat"/>
-                        </Link>
-                    }
-                    <button onClick={() => {socket.emit('invite-freind', user.id)}}>
-                        <Image className="" src="/icons/navBar/game.svg" width={24} height={24} alt="challenge"/>
-                    </button>
+        <Link  href={`/profile/${user.username}`} >
+            <div className='flex justify-between px-4 py-2 mx-2 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'>
+                <div className="grow flex items-center gap-4">
+                    <Image  className="w-[48px] h-[48px] rounded-full self-center"  src={user.image}    width={1000}  height={1000}   alt="user image"
+                    />
+                    <h3>{user.username}</h3> 
                 </div>
-            }
-        </div>
+                {
+                    isMe &&
+                    <div className="flex items-center gap-4">
+                        {
+                            isLoading ? <div></div> :
+                            <Link href={`/chat/${data}`}>
+                                <Image className="" src="/icons/navBar/chat.svg" width={24} height={24} alt="chat"/>
+                            </Link>
+                        }
+                        <button onClick={() => {socket.emit('invite-freind', user.id)}}>
+                            <Image className="" src="/icons/navBar/game.svg" width={24} height={24} alt="challenge"/>
+                        </button>
+                    </div>
+                }
+            </div>
+        </Link>
     );
 }

@@ -10,7 +10,9 @@ import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
 //Cross-Origin-Resource-Sharing (CORS) is a mechanism that uses additional HTTP headers to tell browsers 
 //to give a web application running at one origin,
 //access to selected resources from a different origin
+
 @WebSocketGateway()
+@UseGuards(Jwt2faAuthGuard)
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private gameService: gameService,
@@ -23,11 +25,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   recentRomm: string | null;
 
   @UseGuards(Jwt2faAuthGuard)
-  handleConnection(client: Socket, data: any) {
+  handleConnection(client: Socket) {
     const cookie: string = client.handshake.headers.cookie;
     if (!cookie || cookie === undefined)
       return;
-    const username: string = this.auth.getUsername(cookie).toString();
+    const username: string = this.auth.getId(cookie).toString();
     client.data.username = username;
     client.join(username);
   }

@@ -51,9 +51,8 @@ const BlockList = () => {
                 <div className={'h-full flex flex-col gap-1 overflow-y-scroll rounded-2xl'}>
                     {
                         data.map((user: userDto) => {
-                            console.log(user);
                             return (
-                                    <BlockedUser user={user}/> 
+                                    <BlockedUser key={user.id} user={user}/> 
                             );
                         })
                     }   

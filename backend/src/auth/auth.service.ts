@@ -118,7 +118,7 @@ config();
       res.clearCookie('tow_fact_token');
     }
 
-    getUsername(cookie: string) {
+    getId(cookie: string) {
       const token = cookie.split('=')[1];
       
       const decodedJwt = this.jwtService.decode(token) as UserDTO;
