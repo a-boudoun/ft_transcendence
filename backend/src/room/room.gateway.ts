@@ -1,20 +1,33 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
-import con from 'ormconfig';
 import { Server, Socket } from 'socket.io';
 import { ChannelsService } from 'src/channels/channels.service';
-
+import { UseGuards } from '@nestjs/common';
+import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Status, User } from 'src/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @WebSocketGateway()
+@UseGuards(Jwt2faAuthGuard)
 export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
-    constructor(private channelsService: ChannelsService) { }
+    constructor(
+        private channelsService: ChannelsService,
+        @InjectRepository(User) private userRepo: Repository<User>) 
+        { }
     @WebSocketServer() server: Server;
 
-    
-
-    handleConnection(socket: Socket) {
+    async handleConnection(socket: Socket) {
+        console.log("connected");
+        const id =  socket.data.username;
+        const user = await this.userRepo.findOneBy({id});
+        await this.userRepo.save({...user, ...{status: Status.ONLINE}})
     }
 
-    handleDisconnect(socket: Socket) {
+    async handleDisconnect(socket: Socket) {
+        console.log("disconnected");
+        const id =  socket.data.username;
+        const user = await await this.userRepo.findOneBy({id});
+        await this.userRepo.save({...user, ...{status: Status.OFFLINE}})
     }
 
     @SubscribeMessage('join')
@@ -30,29 +43,10 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
        console.log(data.from + " " + data.message);
        
     }
-   
-
 
     @SubscribeMessage('leave')
     handleLeaveChannel(@MessageBody() channel: string, @MessageBody() username: string, client: Socket) {
         client.leave(channel);
         this.server.to(channel).emit('message', `${username} left the channel`);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -9,7 +9,6 @@ import useCloseOutSide from "@/hookes/useCloseOutSide";
 import axios from "@/apis/axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import User from "./User";
 
 interface dropProps {
   id: number;
@@ -57,13 +56,11 @@ const Block = ({ id }: { id: number }) => {
 };
 
 const Mesage = ({ id }: { id: number }) => {
-  console.log("--------------", id);
 
   const { data, isLoading } = useQuery({
     queryKey: ["direct", id],
     queryFn: async () => {
       const { data } = await axios.get(`/channels/getChannelId/${id}`);
-      // console.log("---------", data);
       return data;
     },
   });
