@@ -30,7 +30,7 @@ const Match = ({ match, id }: { match: MatchProps; id: number }) => {
             alt="user image"
           />
         </Link>
-        <h3>{match.winner.id}</h3>
+        <h3>{match.winner.username}</h3>
       </div>
       <span className="grow text-3xl mb-8">{`5 - ${match.loserScore}`} </span>
       <div className="flex flex-col items-center gap-4">
@@ -43,7 +43,7 @@ const Match = ({ match, id }: { match: MatchProps; id: number }) => {
             alt="user image"
           />
         </Link>
-        <h3>{match.loser.id}</h3>
+        <h3>{match.loser.username}</h3>
       </div>
     </div>
   );
@@ -51,7 +51,7 @@ const Match = ({ match, id }: { match: MatchProps; id: number }) => {
 
 const DisplayMatchs = ({ id }: { id: number }) => {
   const Matchs = useQuery({
-    queryKey: ["matches"],
+    queryKey: ["matches", id],
     queryFn: async () => {
       const { data } = await axios.get(`/gameHistory/getHistory/${id}`);
       return data;
@@ -60,7 +60,7 @@ const DisplayMatchs = ({ id }: { id: number }) => {
   if (Matchs.isLoading) return <div> loading... </div>;
   else {
     return (
-      <div className="grow flex flex-col gap-1 p-4 overflow-y-scroll  xl:rounded-b-3xl">
+      <div className="grow flex flex-col gap-4 p-4 overflow-y-scroll  xl:rounded-b-3xl">
         {Matchs.data.map((match: any) => {
           return <Match key={match.winner.id} match={match} id={id} />;
         })}
@@ -71,11 +71,11 @@ const DisplayMatchs = ({ id }: { id: number }) => {
 
 const MatchesHistory = ({ id }: { id: number }) => {
   return (
-    <div className="max-h-[668px] flex flex-col grow xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg">
+    <div className="h-[548px] flex flex-col grow xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg overflow-scroll">
       <div className="hidden xl:block rounded-t-3xl  p-4 ">
       <div className={`h-[56px] w-fit flex justify-center items-center m-auto p-2 border-b border-blue`}>
           <History size={28} color="#7ac7c4" strokeWidth={2}/>
-          <h2 className="hidden lg:inline text-[28px] text-red ml-4">Matches</h2>
+          <h2 className="hidden lg:inline text-[28px] ml-4">Matches</h2>
         </div>
       </div>
       <DisplayMatchs id={id} />

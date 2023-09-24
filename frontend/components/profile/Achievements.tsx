@@ -2,13 +2,13 @@ import { Award } from "lucide-react";
 
 const Achievements = ({ wins }: { wins: number }) => {
   return (
-    <div className="flex flex-col grow  rounded-3xl  xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg">
+    <div className="flex flex-col grow  rounded-3xl  xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg overflow-scroll">
       <div className="hidden xl:block rounded-t-3xl p-4 ">
         <div
           className={`h-[56px] w-fit flex justify-center items-center m-auto p-2 border-b border-blue`}
         >
           <Award size={28} color="#7ac7c4" strokeWidth={2} />
-          <h2 className="hidden lg:inline text-[28px] text-red ml-4">
+          <h2 className="hidden lg:inline text-[28px] ml-4">
             Achievements
           </h2>
         </div>

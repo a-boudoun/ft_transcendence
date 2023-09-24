@@ -11,8 +11,7 @@ import { useState } from "react";
 import UserParametres from "@/components/profile/UserParametres";
 import { ImagePlus } from "lucide-react";
 
-const User = ({user, isMe} : {user : any, isMe: boolean}) => {
-  
+const User = ({ user, isMe }: { user: any; isMe: boolean }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const updateBaner = useMutation({
@@ -22,7 +21,7 @@ const User = ({user, isMe} : {user : any, isMe: boolean}) => {
     },
 
     onSuccess: () => {
-      Client.refetchQueries(['User']);
+      Client.refetchQueries(["User"]);
     },
   });
 
@@ -34,7 +33,7 @@ const User = ({user, isMe} : {user : any, isMe: boolean}) => {
     const uploadimage = await uploadImage(e.target.files[0]);
     user.baner = uploadimage;
     await updateBaner.mutate(user);
-    await Client.refetchQueries(['User']);
+    await Client.refetchQueries(["User"]);
     setIsLoading(false);
   };
 
@@ -50,7 +49,7 @@ const User = ({user, isMe} : {user : any, isMe: boolean}) => {
       />
       {isMe && (
         <label className="absolute right-0 bottom-[110px] sm:bottom-[134px] cursor-pointer bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg ">
-           <ImagePlus className="z-40" size={26} strokeWidth={2}  />
+          <ImagePlus className="z-40" size={26} strokeWidth={2} />
           {isLoading && (
             <Loader2
               className="absolute top-3 right-2 animate-spin"
@@ -79,7 +78,17 @@ const User = ({user, isMe} : {user : any, isMe: boolean}) => {
           <h2 className="text-white text-xl sm:text-3xl">{user.username}</h2>
           {!isMe && (
             <div className="flex gap-2 text-sm">
-              <span className={ `sm:text-xl ${user.status === "online" ? 'text-green-500' : 'text-red'}`}>{user.status}</span>
+              {user.status === "in game" ? (
+                <span className="text-blue sm:text-xl">{user.status}</span>
+              ) : (
+                <span
+                  className={`sm:text-xl ${
+                    user.status === "online" ? "text-green-500" : "text-red"
+                  }`}
+                >
+                  {user.status}
+                </span>
+              )}
             </div>
           )}
         </div>

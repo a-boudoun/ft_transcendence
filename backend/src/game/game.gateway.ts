@@ -12,7 +12,6 @@ import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
 //access to selected resources from a different origin
 
 @WebSocketGateway()
-@UseGuards(Jwt2faAuthGuard)
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private gameService: gameService,

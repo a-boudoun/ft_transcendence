@@ -52,7 +52,7 @@ const UserDetails = (props: UserDetailsProps) => {
             }`}
           >
             <BarChart3 size={28} color="#7ac7c4" strokeWidth={2} />
-            <h2 className="hidden lg:inline text-[28px] text-red ml-4">
+            <h2 className="hidden lg:inline text-[28px] ml-4">
               Stats
             </h2>
           </div>
@@ -72,7 +72,7 @@ const UserDetails = (props: UserDetailsProps) => {
             }`}
           >
             <Award size={28} color="#7ac7c4" strokeWidth={2} />
-            <h2 className="hidden lg:inline text-[28px] text-red ml-4">
+            <h2 className="hidden lg:inline text-[28px] ml-4">
               Achievements
             </h2>
           </div>
@@ -92,7 +92,7 @@ const UserDetails = (props: UserDetailsProps) => {
             }`}
           >
             <History size={28} color="#7ac7c4" strokeWidth={2} />
-            <h2 className="hidden lg:inline text-[28px] text-red ml-4">
+            <h2 className="hidden lg:inline text-[28px] ml-4">
               Matches
             </h2>
           </div>
@@ -112,7 +112,7 @@ const UserDetails = (props: UserDetailsProps) => {
             }`}
           >
             <User2 size={28} color="#7ac7c4" strokeWidth={2} />
-            <h2 className="hidden lg:inline text-[28px] text-red ml-4">
+            <h2 className="hidden lg:inline text-[28px] ml-4">
               Friends
             </h2>
           </div>
