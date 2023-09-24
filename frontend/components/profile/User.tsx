@@ -41,6 +41,7 @@ const User = ({user, isMe} : {user : any, isMe: boolean}) => {
   return (
     <div className="relative overflow-hidden sm:rounded-3xl sm:shadow-2xl">
       <Image
+        priority
         className="w-full h-full"
         src={user.baner}
         alt="baner"
