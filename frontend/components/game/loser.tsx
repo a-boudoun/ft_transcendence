@@ -24,7 +24,7 @@ export default function Lost({setWon, setLost} : prop){
 	if (isLoading) return <div>Loading...</div>;
 	else{
     return (
-      <div className='bg-dark-gray flex flex-col gap-8 w-full h-full items-center justify-center '>
+      <div className='flex flex-col gap-8 w-full h-full items-center justify-center '>
         <div className='flex flex-col gap-8 W-[600px] h-[600px] '>
           <h1 className='text-6xl font-bold text-[#fc4f4f]'>You Lost</h1>
           <h1 className='text-2xl font-bold font-serif text-red'>-10xp</h1>

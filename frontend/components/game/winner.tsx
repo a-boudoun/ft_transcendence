@@ -24,7 +24,7 @@ export default function Won({setWon, setLost} : prop){
 	if (isLoading) return <div>Loading...</div>;
 	else{
     return (
-      <div className='bg-dark-gray flex w-full h-full items-center justify-center '>
+      <div className='flex w-full h-full items-center justify-center '>
         <div className='flex flex-col gap-8 W-[600px] h-[600px] '>
           <h1 className='text-6xl font-bold text-[#4bff60f5] '>You Won</h1>
           <h1 className='text-2xl font-bold font-serif text-teal-600'>+10xp</h1>

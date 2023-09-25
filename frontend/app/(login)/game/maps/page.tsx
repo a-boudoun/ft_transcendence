@@ -24,9 +24,9 @@ export default function Maps(){
 	}, [selectedMap]);
 
 	return (
-		<main className="h-full w-full bg-dark-gray  pt-[56px] sm:p-10 sm:pt-[96px] sm:flex sm:justify-center gap-8">
+		<main className="h-full w-full pt-[56px] sm:p-10 sm:pt-[96px] sm:flex sm:justify-center gap-8">
 			<div className="flex flex-col items-center gap-8 pt-8 sm:gap-16 sm:pt-32">
-				<div className="bg-[#4B5468]  rounded-[10px] w-[300px] py-4">
+				<div className="bg-[#4b5468a0]  rounded-[10px] w-[300px] py-4">
 					<h3 className="text-[#B5B3BD] tracking-wide [word-spacing:3px] font-medium text-3xl"> selet the map </h3>
 				</div>
 				<div className="flex justify-center gap-8 items-center flex-col sm:flex-row w-full">
@@ -35,7 +35,7 @@ export default function Maps(){
 							className={selectedMap === "football-mode" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
 							:"w-full max-w-[320px] hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px]"}
 							onClick={() => setmapToLocalStorage("football-mode")}>
-							<Image width={100} height={100} alt="#" src="/game/football_map_picture1.png" className="h-full w-full"/>
+							<Image width={400} height={400} alt="#" src="/game/football-map-select.svg" className="h-full w-full"/>
 							<p className="text-white text-center mt-[10px] font-bold">football-mode</p>
 						</div>
 						<div 

@@ -48,9 +48,9 @@ export default function MatchPlayers() {
 	return (
 
 		<>
-		{ !gameStart && <div className = 'flex flex-col items-center justify-center w-screen h-screen bg-dark-gray gap-2'>
-		<main className="bg-dark-gray  pt-[56px] sm:p-10 sm:pt-[96px] sm:flex sm:justify-center">
-			<div className = 'flex flex-col gap-8 sm:flex-row bg-[#384259] items-center justify-between p-8 rounded-2xl'>
+		{ !gameStart && <div className = 'flex flex-col items-center justify-center w-screen h-screen gap-2'>
+		<main className=" pt-[56px] sm:p-10 sm:pt-[96px] sm:flex sm:justify-center">
+			<div className = 'flex flex-col gap-8 sm:flex-row bg-[#4f5a748a] items-center justify-between p-8 rounded-2xl'>
 				<LeftPlayer/>
 				<h1 className ='text-5xl font-serif'>VS</h1>
 				<LoadingPlayer setGame={setGameStart}/>

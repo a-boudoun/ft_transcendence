@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from "react";
-import {Engine, Render, Body, Composite} from "matter-js";
+import {Engine, Render, Bodies, Body, Composite} from "matter-js";
 import socket from "../socketG";
-import { drawRect, drawCircle } from "./draw";
 
 
 interface Prop{
@@ -80,14 +79,45 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 					height: H,
 					pixelRatio: 1,
 					wireframes: false,
-					background: "/game/milkiway.jpg",
+					background: "/game/space-map-select.jpg",
 				}
 			});
 
-			const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#FFFFFF');
-			const leftBoard = drawRect(35, H / 2, 20, 120, '#FFFFFF');
+			const rightBoard = Bodies.rectangle(W - 35, H / 2, 20, 120,{
+				isStatic: true,
+				render: {
+					sprite: {
+						texture: '/game/space-paddle.png',
+						xScale: 0.07,
+						yScale: 0.19,
+					}
+			},
+			});
+			const leftBoard = Bodies.rectangle(35, H / 2, 20, 120,{
+				isStatic: true,
+				render: {
+					sprite: {
+						texture: '/game/space-paddle.png',
+						xScale: 0.07,
+						yScale: 0.19,
+					}
+			},
+			});
 
-			const ball = drawCircle(W / 2, H / 2, 15, '#FFFFFF');
+			const ball = 	Bodies.circle(W / 2, H / 2, 15,{
+				restitution: 1, // Make the ball fully elastic
+				friction: 0, // Remove friction
+				frictionAir: 0, // Remove air friction
+				inertia: Infinity, // prevent ball from slowing down
+				render: {
+					// fillStyle: color,
+					sprite: {
+						texture: '/game/space-rock.png',
+						xScale: 0.08,
+						yScale: 0.08,
+					}
+			},
+			});
 			Composite.add(engine.world, [ball, rightBoard, leftBoard]);
 			document.addEventListener('keyup', handlekeyUp);
 			document.addEventListener('keydown', handleKeyDown);
@@ -113,28 +143,28 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 							y: data.leftBoardY,
 						}
 						);
-					});
-					socket.on('ball', ({x, y}) => {
-						Body.setPosition(
-							ball,
-							{
-								x: x,
-								y: y,
-							}
-							);
-						});
-						
-						return () => {
-							document.removeEventListener('keyup', handlekeyUp);
-							document.removeEventListener('keydown', handleKeyDown);
-							socket.off('positions');
-							socket.off('ball');
-							socket.off('sound');
-							Engine.clear(engine);
-							Render.stop(render);
-						};
+			});
+			socket.on('ball', ({x, y}) => {
+				Body.setPosition(
+					ball,
+					{
+						x: x,
+						y: y,
 					}
-				}, [roomid]);
+					);
+			});
+				
+			return () => {
+				document.removeEventListener('keyup', handlekeyUp);
+				document.removeEventListener('keydown', handleKeyDown);
+				socket.off('positions');
+				socket.off('ball');
+				socket.off('sound');
+				Engine.clear(engine);
+				Render.stop(render);
+			};
+		}
+	}, [roomid]);
 				
 				useEffect(() => {
 					let canvasWidth: number = 1700;
