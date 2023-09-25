@@ -17,7 +17,6 @@ config();
       
       async signin(user: UserDTO, res: Response, body: any) {
         
-        console.log(user);
 
         user.image = body.image;
         user.username = body.username;
