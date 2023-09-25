@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Req, Param, UseGuards} from '@nestjs/common';
 import { GameHistoryService } from './game-history.service';
 import { Jwt2faAuthGuard } from '../auth/guards/jwt-2fa-auth.guard';
-import con from 'ormconfig';
+import { ParseIntPipe } from '@nestjs/common';
 
 export class ghReq {
   winner: string;

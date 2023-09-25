@@ -62,7 +62,7 @@ const DisplayMatchs = ({ id }: { id: number }) => {
     return (
       <div className="grow flex flex-col gap-4 p-4 overflow-y-scroll  xl:rounded-b-3xl">
         {Matchs.data.map((match: any) => {
-          return <Match key={match.winner.id} match={match} id={id} />;
+          return <Match key={match.id} match={match} id={id} />;
         })}
       </div>
     );

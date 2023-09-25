@@ -7,7 +7,6 @@ import {
     ManyToMany,
     JoinTable,
     Index,
-    DataSource,
     CreateDateColumn
   } from 'typeorm';
 import { Administration, Channel, Message, Mutation, Bannation } from './channel.entity';
