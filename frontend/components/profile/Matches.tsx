@@ -71,7 +71,7 @@ const DisplayMatchs = ({ id }: { id: number }) => {
 
 const MatchesHistory = ({ id }: { id: number }) => {
   return (
-    <div className="h-[548px] flex flex-col grow xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg overflow-scroll">
+    <div className="flex-[0.5]  flex flex-col xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg overflow-scroll">
       <div className="hidden xl:block rounded-t-3xl  p-4 ">
       <div className={`h-[56px] w-fit flex justify-center items-center m-auto p-2 border-b border-blue`}>
           <History size={28} color="#7ac7c4" strokeWidth={2}/>

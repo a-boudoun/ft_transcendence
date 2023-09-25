@@ -2,7 +2,6 @@ import "./globals.css";
 import { Inter } from 'next/font/google'
 import QueryProvider from "@/providers/QueryProvider";
 import ReduxProvider from "@/redux/provider";
-import Modal from "@/components/chat/Modal";
 
 const inter = Inter({ 
   subsets: ['latin'] ,

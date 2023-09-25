@@ -14,22 +14,25 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer() server: Server;
 
     async handleConnection(socket: Socket) {
-        console.log("connected");
         const id =  socket.data.username;
         const user = await this.userRepo.findOneBy({id});
-        await this.userRepo.save({...user, ...{status: Status.ONLINE}})
+        if (user){
+            user.status = Status.ONLINE;
+            await this.userRepo.save(user);
+        }
     }
 
     async handleDisconnect(socket: Socket) {
-        console.log("disconnected");
-        const id =  socket.data.username;
+        const id =  socket.data.username
         const user = await await this.userRepo.findOneBy({id});
-        await this.userRepo.save({...user, ...{status: Status.OFFLINE}})
+        if (user){
+            user.status = Status.OFFLINE;
+            await this.userRepo.save(user);
+        }
     }
 
     @SubscribeMessage('join')
     handleJoinChannel(client: Socket,  data: any) {
-        client.join(data.channel);
         console.log("joined channel " + data.channel);
     }
 
