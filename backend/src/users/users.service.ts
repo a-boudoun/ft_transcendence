@@ -1,6 +1,6 @@
 import { Injectable} from '@nestjs/common';
 import { UserDTO } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
 import { Blockage, User } from '../entities/user.entity'
 import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -85,7 +85,7 @@ export class UsersService {
         return channels;
       }
       
-      async update(id: number, updateUser: UpdateUserDto) {
+      async update(id: number, updateUser: UpdateUserDTO) {
         const user = await this.findOneById(id);
         return await this.userRepo.save({...user, ...updateUser})
       }

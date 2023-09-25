@@ -4,11 +4,7 @@ import { ChannelDTO } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { UseGuards } from '@nestjs/common';
 import { UserDTO } from 'src/users/dto/create-user.dto';
-import { MemberTitle, Membership } from 'src/entities/channel.entity';
-import con from 'ormconfig';
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
-import { ParseIntPipe } from '@nestjs/common';
-import { get } from 'http';
 
 @Controller('channels')
 @UseGuards(Jwt2faAuthGuard)
@@ -25,22 +21,22 @@ export class ChannelsController {
     return this.channelsService.findAll(req.user.username);
   }
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+  findOne(@Param('id') id: number, @Req() req: any) {
     return this.channelsService.findChannel(id, req.user.username);
   }
   @Get('directchannel/:id')
-  findOneDirect(@Param('id') id: string) {
-    return this.channelsService.findOne(+id);
+  findOneDirect(@Param('id') id: number) {
+    return this.channelsService.findOne(id);
   }
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChannelDto: UpdateChannelDto) {
+  update(@Param('id') id: number, @Body() updateChannelDto: UpdateChannelDto) {
   
-    return this.channelsService.update(+id, updateChannelDto);
+    return this.channelsService.update(id, updateChannelDto);
   }
   
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.channelsService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.channelsService.remove(id);
   }
   @Delete(':id/:membershipId/')
   removeMembership(@Param('id') id: number, @Param('membershipId') membershipId: number) {
@@ -48,23 +44,23 @@ export class ChannelsController {
   }
   
   @Patch(':id/joinChannel') 
-  joinChannel(@Param('id') id: string, @Body() dt: any) {
-    return this.channelsService.joinChannel(+id, dt.user, dt.password);
+  joinChannel(@Param('id') id: number, @Body() dt: any) {
+    return this.channelsService.joinChannel(id, dt.user, dt.password);
   }
 
   @Patch(':id/addFriendtoChannel')
-  async addFriendtoChannel(@Param('id') id: string, @Body() friend: UserDTO) {
-    return this.channelsService.addFriendtoChannel(+id, friend);
+  async addFriendtoChannel(@Param('id') id: number, @Body() friend: UserDTO) {
+    return this.channelsService.addFriendtoChannel(id, friend);
   }
 
   @Patch(':channelId/updateMembershipTitle/:memberid')
-  async updateMembershipTitle(@Param('channelId') channelId: string,@Param('memberid') memberid: string) {
-    return this.channelsService.updateMembershipTitle(+channelId,+memberid);
+  async updateMembershipTitle(@Param('channelId') channelId: number, @Param('memberid') memberid: number) {
+    return this.channelsService.updateMembershipTitle(channelId, memberid);
   }
 
   @Patch(':channelId/ban/:username')
-  async ban(@Param('channelId') channelId: string,@Param('username') username: string) {
-    return this.channelsService.banner(+channelId,username);
+  async ban(@Param('channelId') channelId: number, @Param('username') username: string) {
+    return this.channelsService.banner(channelId, username);
   }
   @Get('direct/:username')
   async getDirectChannel(@Param('username') username: string) {
@@ -75,12 +71,12 @@ export class ChannelsController {
     return this.channelsService.unban(+banId);
   }
   @Patch('muteUser/:channelId')
-   mute( @Param('channelId') channelId: string, @Body() dt: any) {
-    return this.channelsService.mut(+channelId,+dt.id, 1);
+   mute( @Param('channelId') channelId: number, @Body() dt: any) {
+    return this.channelsService.mut(channelId,+dt.id, 1);
   }
   @Get('isMuted/:channelId/:username')
-  isMuted(@Param('channelId') channelId: string, @Param('username') username: string) {
-    return this.channelsService.isMuted(+channelId,username);
+  isMuted(@Param('channelId') channelId: number, @Param('username') username: string) {
+    return this.channelsService.isMuted(channelId,username);
   }
   @Get('getChannelId/:id')
   getChannelId(@Param('id') id: number, @Req() req) {
