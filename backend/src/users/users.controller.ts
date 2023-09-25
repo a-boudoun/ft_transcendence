@@ -43,10 +43,7 @@ export class UsersController {
   @UseGuards(Jwt2faAuthGuard)
   async findOne(@Req() req, @Param('username') username: string) {
 
-    console.log(username);
-    
     const user =  await this.usersService.findOneByUserName(username);
-    console.log(user);
     if (!user)
       return null;
     if (user.id === req.user.id)
