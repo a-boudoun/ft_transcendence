@@ -28,7 +28,7 @@
     "lucide-react": "^0.263.0",
     "matter-js": "^0.19.0",
     "moment": "^2.29.4",
-    "next": "^13.4.10",
+    "next": "^13.5.3-canary.4",
     "npm-check-updates": "^16.10.15",
     "postcss": "8.4.23",
     "react": "^18.2.0",

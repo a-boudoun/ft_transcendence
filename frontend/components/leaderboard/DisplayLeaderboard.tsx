@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios from "@/apis/axios";
 import { userDto } from "@/dto/userDto";
 
 const UserStats = ({ user }: { user: any }) => {
@@ -75,22 +75,17 @@ const DisplayLeaderboard = () => {
   let rank = 1;
 
   const { data, isLoading } = useQuery({
-    queryKey: ["Users"],
+    queryKey: ["users"],
     queryFn: async () => {
-      const { data } = await axios.get("http://localhost:8000/users", {
-        withCredentials: true,
-      });
+      const { data } = await axios.get("/users");
       return data;
     },
   });
 
   const currentUser = useQuery({
-    queryKey: ["Me"],
+    queryKey: ["user", "me"],
     queryFn: async () => {
-      const { data } = await axios.get(
-        "http://localhost:8000/users/getUser/me",
-        { withCredentials: true }
-      );
+      const { data } = await axios.get("/users/getUser/me");
       return data;
     },
   });
@@ -106,7 +101,7 @@ const DisplayLeaderboard = () => {
   return (
     <div className="h-full max-w-[860px] grow flex flex-col gap-2 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 sm:rounded-[2.5rem] sm:shadow-2xl">
       <Me user={currentUser.data} rank={rank} />
-      <div className="grow p-4 rounded-3xl">
+      <div className="grow p-4 rounded-3xl overflow-scroll">
         {data.users?.map((user: userDto, index: number) => {
           return <User key={user.id} user={user} rank={index + 1} />;
         })}
