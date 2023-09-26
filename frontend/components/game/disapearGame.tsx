@@ -151,7 +151,6 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 			}, 15000);
 			
 			setInterval(() => {
-				// console.log('ball position', blackHole.getWidth(), blackHole.height);
 				if (ball.position.x < 30 || ball.position.x > 1670 || (ball.position.x === H / 2 && ball.position.y === W / 2)) {
 					ball.render.opacity = 1;
 				}
