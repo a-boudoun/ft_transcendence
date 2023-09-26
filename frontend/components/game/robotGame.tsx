@@ -138,7 +138,6 @@ function RobotGame({difficulty} : {difficulty: number}){
 							y: leftBoard.position.y + 5,
 						});
 				}
-
 			}, difficulty);
 		}
 
