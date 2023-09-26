@@ -65,11 +65,8 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 			}
 			
 			const balckHoleCollision = (ball : any, blackhole : any) : boolean => {
-
-
-
-				return ( (blackHole.position.x - 40 <= ball.position.x && ball.position.x <= blackHole.position.x + 40)
-					&& (blackHole.position.y - 40 <= ball.position.y && ball.position.y <= blackHole.position.y + 40))
+				return ( (blackHole.position.x - 100 <= ball.position.x && ball.position.x <= blackHole.position.x + 100)
+					&& (blackHole.position.y - 100 <= ball.position.y && ball.position.y <= blackHole.position.y + 100))
 
 			}
 
@@ -127,18 +124,18 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 				},
 			});
 			
-			const blackHole = Bodies.circle( 2000, 2000, 40, {
+			const blackHole = Bodies.circle( 2000, 2000, 100, {
 				isStatic: true, // Make it immovable
 				render: {
 					sprite: {
 						texture: '/game/blackhole.png',
-						xScale: 0.06,
-						yScale: 0.06,
+						xScale: 0.08,
+						yScale: 0.08,
 					},
 				},
 			  });
 			
-			Composite.add(engine.world, [ball, rightBoard, leftBoard, blackHole]);
+			Composite.add(engine.world, [blackHole, ball, rightBoard, leftBoard]);
 			document.addEventListener('keyup', handlekeyUp);
 			document.addEventListener('keydown', handleKeyDown);
 			
@@ -155,11 +152,11 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 			
 			setInterval(() => {
 				// console.log('ball position', blackHole.getWidth(), blackHole.height);
-				if (ball.position.x < 0 || ball.position.x > W) {
+				if (ball.position.x < 30 || ball.position.x > 1670 || (ball.position.x === H / 2 && ball.position.y === W / 2)) {
 					ball.render.opacity = 1;
 				}
 				else if (balckHoleCollision(ball, blackHole)) {
-					ball.render.opacity = 0;
+					ball.render.opacity = 0.15;
 					setTimeout(() => {
 						Body.setPosition(blackHole, { x: 2000, y: 2000 });
 					}, 400);
