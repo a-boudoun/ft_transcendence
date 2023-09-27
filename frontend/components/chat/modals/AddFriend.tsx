@@ -7,6 +7,7 @@ import axios from '@/apis/axios';
 import { Client } from '@/providers/QueryProvider';
 import Image from 'next/image';
 import { useDebounce } from "@uidotdev/usehooks";
+import { userDto } from '@/dto/userDto';
 
  const AddFriend = ({type}:{type:string}) => {
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -37,7 +38,7 @@ import { useDebounce } from "@uidotdev/usehooks";
          <input type="txt" className="bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg w-11/12 absolute top-14 left-0 right-0 mx-auto rounded-md py-1.5 px-2 outline-none text-md text-white" placeholder="Enter Username" value={searchQuery}  onChange={handleInputChange}/>
           <div className="w-11/12 h-[72%] absolute top-[26%] left-0 right-0 mx-auto rounded-md bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg  overflow-y-scroll">
             { getFriends.data?.length === 0 ? <h1 className="text-white text-center mt-5">No Friends</h1> : 
-              getFriends.data?.map((friend: any) => (
+              getFriends.data?.map((friend: userDto) => (
                 <Friend key={friend.id} friend={friend} setinput={setSearchQuery}/>
               ))
             }
@@ -46,12 +47,12 @@ import { useDebounce } from "@uidotdev/usehooks";
     );
   }
 
-  export const Friend = ({friend, setinput}:{friend: any, setinput:any}) => {
+  export const Friend = ({friend, setinput}:{friend: userDto, setinput:any}) => {
     const dispatch = useDispatch<AppDispatch>();
     const channel = useSelector((state: any) => state.globalState.channel);
     const addFriend = useMutation({
       mutationFn: async (channelid: number) => {
-          const { data } = await axios.patch(`http://localhost:8000/channels/${channelid}/addFriendtoChannel`, friend, { withCredentials: true });
+          const { data } = await axios.patch(`/channels/${channelid}/addFriendtoChannel`, friend);
           return data;
       },
       onSuccess: () => {

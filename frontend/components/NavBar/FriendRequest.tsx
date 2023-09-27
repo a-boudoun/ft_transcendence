@@ -86,7 +86,7 @@ const FriendRequest = () => {
 
   return (
     <>
-        <button className='relative grid place-content-center mr-[14px] p-1 hover:opacity-50' onClick={handelClick}>
+        <button aria-label="friend request" className='relative grid place-content-center mr-[14px] p-1 hover:opacity-50' onClick={handelClick}>
             <UserPlus2 size={32} color="#7ac7c4" strokeWidth={1.5}/>
             {notif && <div className="absolute h-3 w-3 top-0 right-0 bg-red rounded-full"> </div> }
         </button>

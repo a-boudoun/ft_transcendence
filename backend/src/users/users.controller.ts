@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { Jwt2faAuthGuard } from '../auth/guards/jwt-2fa-auth.guard';
 import { JwtSigninGuard } from '../auth/guards/jwt-signin.guard';
+import con from 'ormconfig';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -35,8 +36,8 @@ export class UsersController {
   
   @Get('getUser/me')
   @UseGuards(Jwt2faAuthGuard)
-  me(@Req() req) {
-    return this.usersService.findOneById(req.user.id);
+  async me(@Req() req) {
+    return await this.usersService.findOneById(req.user.id);
   }
   
   @Get('getUser/:username')

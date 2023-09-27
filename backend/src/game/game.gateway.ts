@@ -28,9 +28,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const cookie: string = client.handshake.headers.cookie;
     if (!cookie || cookie === undefined)
       return;
-    const username: string = this.auth.getId(cookie).toString();
-    client.data.username = username;
-    client.join(username);
+    const id: string = this.auth.getId(cookie).toString();
+    client.data.id = id;
+    client.join(id);
   }
   
   handleDisconnect(client: Socket) {

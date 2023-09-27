@@ -33,7 +33,7 @@ export class AuthStratedy extends PassportStrategy(Strategy, '42') {
       wins: 0,
       loses: 0,
       fact2Auth: false,
-      fact2Secret: null,
+      fact2Secret: '',
       accessToken ,
     }
   
