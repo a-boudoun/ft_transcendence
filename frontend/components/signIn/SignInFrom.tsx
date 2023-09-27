@@ -10,7 +10,7 @@ import { signInDto } from "@/dto/userDto";
 import { signInSchema } from "@/models/user";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axios from "@/apis/axios";
 import { Loader2, ImagePlus } from "lucide-react";
 
 config();
@@ -26,7 +26,7 @@ const SignInFrom = ({ user }: { user: any }) => {
 
   const updateUser = useMutation({
     mutationFn: async (user: signInDto) => {
-      await axios.patch("http://localhost:8000/auth/singin", user, {
+      await axios.patch("/auth/singin", user, {
         withCredentials: true,
       });
     },

@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { config } from 'dotenv';
 
-const baseURL = process.env.BACKEND || "http://localhost:8000/";
+config();
 
+const baseURL = process.env.NEXT_PUBLIC_BACKEND_HOST;
 axios.defaults.baseURL = baseURL;
-
 
 axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 axios.defaults.headers.common["Content-Type"] =  'application/json';

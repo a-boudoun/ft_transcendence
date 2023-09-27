@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import Mid from '@/components/chat/Mid';
 import Right from '@/components/chat/Right';
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { setcurrentchannel, setMemberships, setuser } from "@/redux/features/globalState";
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
@@ -21,15 +21,13 @@ const Page =  ({ params }: { params: {id:number} }) => {
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-
-  // const user = useSelector((state: any) => state.globalState.user);
  
   const {data, isLoading} = useQuery(
   {
       queryKey: ['channel'],
       queryFn: async () => {
-        const channel = await axios.get(`http://localhost:8000/channels/${params.id}`, { withCredentials: true });
-        const user = await axios.get(`http://localhost:8000/users/getUser/me`, { withCredentials: true });
+        const channel = await axios.get(`/channels/${params.id}`);
+        const user = await axios.get(`/users/getUser/me`);
         
         if(!channel.data )
         {

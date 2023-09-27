@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import { AppDispatch } from "@/redux/store";
 import { setisopen, setMembership, setcurrentchannel } from "@/redux/features/globalState";
-import axios from "axios";
+import axios from "@/apis/axios";
 import { userDto } from "@/dto/userDto";
 import Image from "next/image";
 import { toast } from "react-toastify";
@@ -39,7 +39,7 @@ const JoinChannel = ({type}:{type:string}) => {
           user: user,
           password: input,
         }
-          const { data } = await axios.patch(`http://localhost:8000/channels/${channel.id}/joinChannel`, dt, { withCredentials: true });
+          const { data } = await axios.patch(`/channels/${channel.id}/joinChannel`, dt);
           if(data === "Wrong password")
           {
             
