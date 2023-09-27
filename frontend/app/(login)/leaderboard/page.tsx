@@ -1,5 +1,4 @@
 import React from 'react'
-import Image from 'next/image'
 import DisplayLeaderboard from '@/components/leaderboard/DisplayLeaderboard'
 
 const Leaderboar = () => {

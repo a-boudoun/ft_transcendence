@@ -6,6 +6,7 @@ import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
 import { JwtService } from '@nestjs/jwt';
 import { config } from 'dotenv';
+import { Status } from 'src/entities/user.entity';
 
 config();
   @Injectable()
@@ -17,17 +18,17 @@ config();
       
       async signin(user: UserDTO, res: Response, body: any) {
         
-        console.log(user);
 
         user.image = body.image;
         user.username = body.username;
         user.baner = '/img/baner.webp';
+        user.status = Status.ONLINE;
         user.level = 0;
         user.XP = 0;
         user.wins = 0;
         user.loses = 0;
         user.fact2Auth = false;
-        user.fact2Secret = null;
+        user.fact2Secret = '';
         
         user = await this.userService.create(user);
         const payload = {id: user.id, image: user.image, fact2Auth: false}
@@ -118,7 +119,7 @@ config();
       res.clearCookie('tow_fact_token');
     }
 
-    getUsername(cookie: string) {
+    getId(cookie: string) {
       const token = cookie.split('=')[1];
       
       const decodedJwt = this.jwtService.decode(token) as UserDTO;

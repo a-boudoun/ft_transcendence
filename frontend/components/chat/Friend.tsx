@@ -8,17 +8,14 @@ import Link from "next/link";
 
 
 const Friends = ({user}:{user:userDto}) => {
-
-    const [friends, setFriends] = useState<[]>([]);
     const {data, isLoading} = useQuery({
-        queryKey: ['friends'],
+        queryKey: ['friends', user.id],
         queryFn: async ()=> {
             const { data } = await axios.get(`http://localhost:8000/channels/direct/${user.username}`, { withCredentials: true });
-            setFriends(data);
             return data;
         }
       });
-
+     
       if(isLoading) return <div >loading...</div>
       else if(!data || data.length === 0) return <div className="text-blue pt-10">No friends</div>
       else
