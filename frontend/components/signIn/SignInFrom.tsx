@@ -11,7 +11,7 @@ import { signInSchema } from "@/models/user";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { Loader2 } from "lucide-react";
+import { Loader2, ImagePlus } from "lucide-react";
 
 config();
 
@@ -79,12 +79,11 @@ const SignInFrom = ({ user }: { user: any }) => {
               height={1000}
               alt="avatar"
             />
-            <Image
-              className="absolute bottom-5 right-0"
-              src={"/icons/changeImage.svg"}
-              width={32}
-              height={32}
-              alt=""
+            <ImagePlus
+              className="absolute bottom-5 right-0 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg"
+              color="black"
+              size={26}
+              strokeWidth={2}
             />
             <input
               type="file"

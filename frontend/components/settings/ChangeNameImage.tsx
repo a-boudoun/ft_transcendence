@@ -9,6 +9,7 @@ import uploadImage from "@/apis/uploadImage";
 import { Client } from "@/providers/QueryProvider";
 import axios from "@/apis/axios";
 import { useState } from "react";
+import { ImagePlus } from "lucide-react";
 
 const ChangeNameImage = ({ src, name }: { src: string; name: string }) => {
   const [image, setImage] = useState<any>(null);
@@ -81,12 +82,11 @@ const ChangeNameImage = ({ src, name }: { src: string; name: string }) => {
                   alt="avatar"
                 />
               )}
-              <Image
-                className="absolute bottom-5 right-0 sm:w-8 sm:h-8"
-                src={"/icons/changeImage.svg"}
-                width={24}
-                height={24}
-                alt=""
+              <ImagePlus
+                className="absolute bottom-5 right-0 sm:w-8 sm:h-8 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg"
+                color="black"
+                size={26}
+                strokeWidth={2}
               />
               <input
                 type="file"
@@ -100,7 +100,7 @@ const ChangeNameImage = ({ src, name }: { src: string; name: string }) => {
             id={"name"}
             className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-[2px] hover:opacity-60"
             type="text"
-            placeholder={username}
+            placeholder={name}
           />
         </div>
         <button
