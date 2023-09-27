@@ -42,14 +42,14 @@ export default function Maps(){
 							className={selectedMap === "space-mode" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
 							:"w-full max-w-[320px] hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px]"}
 							onClick={() => setmapToLocalStorage("space-mode")}>
-							<Image width={100} height={100} alt="#" src="/game/space-map-select.svg" className="h-full w-full"/>
+							<Image width={400} height={400} alt="#" src="/game/space-map-select.svg" className="h-full w-full"/>
 							<p className="text-white text-center mt-[10px] font-bold">space-mode</p>
 						</div>
 						<div 
 							className={selectedMap === "default" ? "w-full max-w-[320px] border-b-[5px] border-b-[#2DFCEE] rounded-b-[8px]"
 							:"w-full max-w-[320px] hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px]"}
 							onClick={() => setmapToLocalStorage("default")}>
-							<Image width={100} height={100} alt="#" src="/game/default-map-select.svg" className="h-full w-full"/>
+							<Image width={400} height={400} alt="#" src="/game/default-map-select.svg" className="h-full w-full"/>
 							<p className="text-white text-center mt-[10px] font-bold">default</p>
 						</div>
 				</div>

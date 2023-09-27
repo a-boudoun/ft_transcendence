@@ -10,7 +10,7 @@ export default function Gamehome(){
    				 online game
   				</button>
   				<button className="text-white font-bold text-[35px] bg-red w-1/2 h-[90px] rounded-[20px] hover:bg-[#FBACB3]" onClick={() => {router.push('http://localhost:3000/game/ai-game')}}>
-   				 play with AI
+   				 offline game
   				</button>
 			</div>
 		</main>
