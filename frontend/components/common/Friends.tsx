@@ -6,6 +6,7 @@ import {userDto} from "@/dto/userDto";
 import axios from '@/apis/axios';
 import { useQuery } from "@tanstack/react-query";
 import socket from '../socketG';
+import { MessagesSquare, Gamepad2 } from 'lucide-react';
 
 const Friends = ({id, isMe} : {id : number, isMe: boolean}) => {
     const {data, isLoading} = useQuery({
@@ -54,8 +55,7 @@ export const Friend = ({user, isMe}: {user: userDto, isMe: boolean}) => {
                 <div className="grow flex items-center gap-4">
                     <Image  className="w-[48px] h-[48px] rounded-full self-center"  src={user.image}    width={1000}  height={1000}   alt="user image"
                     />
-                    <h3>{user.username}</h3> 
-                
+                    <h3 className='truncate ...' >{user.username}</h3> 
                 </div>
             </Link>
                 {
@@ -64,11 +64,11 @@ export const Friend = ({user, isMe}: {user: userDto, isMe: boolean}) => {
                         {
                             isLoading ? <div></div> :
                             <Link href={`/chat/${data}`}>
-                                <Image className="" src="/icons/navBar/chat.svg" width={24} height={24} alt="chat"/>
+                                <MessagesSquare size={28} color="#7ac7c4" strokeWidth={1.5} />
                             </Link>
                         }
                         <button onClick={() => {socket.emit('invite-freind', user.id)}}>
-                            <Image className="" src="/icons/navBar/game.svg" width={24} height={24} alt="challenge"/>
+                            <Gamepad2 size={32} color="#7ac7c4" strokeWidth={1.5} />
                         </button>
                     </div>
                 }

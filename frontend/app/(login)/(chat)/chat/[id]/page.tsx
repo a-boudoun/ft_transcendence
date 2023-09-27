@@ -14,7 +14,7 @@ import { Message } from "@/components/chat/Mid";
 import { Client } from "@/providers/QueryProvider";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { MoreHorizontal, SendHorizontal } from "lucide-react";
+import { MoreHorizontal} from "lucide-react";
 
 const More = ({ user }: { user: userDto }) => {
   const router = useRouter();
@@ -95,7 +95,7 @@ const page = ({ params }: { params: { id: number } }) => {
     queryFn: async () => {
       if (!otherUser) return;
       const { data } = await axios.get(
-        `localhost:8000/users/isBlocked/${otherUser.id}`,
+        `/users/isBlocked/${otherUser.id}`,
       );
       console.log("data", user.id, data);
       return data;
@@ -147,7 +147,7 @@ const page = ({ params }: { params: { id: number } }) => {
     mutationFn: async () => {
       if (!otherUser) return;
       const { data } = await axios.delete(
-        `localhost:8000/users/unblock/${otherUser?.id}`,
+        `/users/unblock/${otherUser?.id}`,
       );
       return data;
     },
@@ -232,7 +232,7 @@ const page = ({ params }: { params: { id: number } }) => {
                   onChange={(e: any) => setInput(e.target.value)}
                 />
                 <button className="p-2 rounded-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send-horizontal"><path d="m3 3 3 9-3 9 19-9Z"/><path d="M6 12h16"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-send-horizontal"><path d="m3 3 3 9-3 9 19-9Z"/><path d="M6 12h16"/></svg>
                 </button>
               </form>
             ) : blocked.data.blocker === otherUser.id ? (
