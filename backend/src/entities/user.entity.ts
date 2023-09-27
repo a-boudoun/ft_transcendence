@@ -41,7 +41,7 @@ export class User {
     @Column('text' , { nullable: true })
     status: Status;
     
-    @Column('decimal', { precision: 6, scale: 2 ,nullable: true})
+    @Column('decimal', { precision: 6, scale: 2, nullable: true})
     level: number;
     
     @Column({nullable: true})

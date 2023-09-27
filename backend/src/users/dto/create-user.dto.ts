@@ -6,10 +6,11 @@ import {
     IsString,
     MinLength,
     IsInt,
-    IsBooleanString,
+    IsBoolean,
     IsNumber,
     IsEnum,
-    MaxLength
+    MaxLength,
+    IsNumberString
   } from 'class-validator';
 
 export class UserDTO {
@@ -34,7 +35,7 @@ export class UserDTO {
     @IsEnum(Status)
     status: Status;
 
-    @IsInt()
+    @IsNumberString()
     level: number;
 
     @IsInt()
@@ -46,10 +47,9 @@ export class UserDTO {
     @IsInt()
     loses: number;
 
-    @IsBooleanString()
+    @IsBoolean()
     fact2Auth: boolean;
 
-    @IsNotEmpty()
     @IsString()
     fact2Secret: string;
 

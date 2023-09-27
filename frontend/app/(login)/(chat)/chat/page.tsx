@@ -1,10 +1,5 @@
 "use client";
 import React from 'react'
-import Image from 'next/image'
-import Messeges from '@/components/chat/ChannelItems';
-import Link from 'next/link';
-import Mid from '@/components/chat/Mid';
-import { usePathname } from 'next/navigation';
 
 const Page = () => {
   return (
