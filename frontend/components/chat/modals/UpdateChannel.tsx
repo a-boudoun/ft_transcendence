@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { setisopen } from '@/redux/features/globalState';
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { Client } from '@/providers/QueryProvider';
 import { useEffect, useState } from 'react';
 import useAmiski from "@/hookes/useAmsiki";
@@ -58,7 +58,7 @@ export const UpdateChannel = ({type}:{type:string}) => {
     }
     const updatchanel = useMutation({
       mutationFn: async (uchannel: updateChannel) => {
-          const { data } = await axios.patch(`http://localhost:8000/channels/${channel.id}`, uchannel, { withCredentials: true });
+          const { data } = await axios.patch(`/channels/${channel.id}`, uchannel, { withCredentials: true });
           Client.refetchQueries(['channel']);
           return data;
       },

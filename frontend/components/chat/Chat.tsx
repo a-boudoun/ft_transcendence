@@ -2,7 +2,7 @@
 
 import {userDto} from "@/dto/userDto";
 import {  useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";

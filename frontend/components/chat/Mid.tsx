@@ -1,10 +1,9 @@
 "use client";
 import { useParams } from 'next/navigation'
 import { use, useState } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect} from "react";
 import Image from "next/image";
 import Link from "next/link";
-import io from 'socket.io-client';
 import {userDto} from "@/dto/userDto";
 import { useSelector } from 'react-redux';
 import { setMembership, setMessage, setisMid, setisChild, setisopen, setmodaltype } from '@/redux/features/globalState';
@@ -13,7 +12,7 @@ import { useDispatch } from 'react-redux';
 
 import Message from '@/dto/Message';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { socket } from './chatSocket';
 import moment from 'moment';
 
@@ -51,10 +50,9 @@ function Mid() {
     
     // const messageContainerRef = useRef(null);
 
-
     const joinChannel = useMutation({
         mutationFn: async (user: userDto) => {
-            const { data } = await axios.patch(`http://localhost:8000/channels/${channel.id}/joinChannel`, user, { withCredentials: true });
+            const { data } = await axios.patch(`/channels/${channel.id}/joinChannel`, user);
             dispatch(setMembership(data));
         }
     });
@@ -62,13 +60,14 @@ function Mid() {
 
     const isMuted1 = useMutation({
         mutationFn: async (user: userDto) => {
-            const { data } = await axios.get(`http://localhost:8000/channels/isMuted/${channel.id}/${user.username}`, { withCredentials: true });
+            const { data } = await axios.get(`/channels/isMuted/${channel.id}/${user.username}`);
             return data;
         },
-        onSuccess: (data) => {
+        onSuccess: (data: any) => {
             setIsMuted(data);
         }
     });
+
     useEffect(() => {
         if(!user || !channel || channel?.type ==="Direct") return;
         isMuted1.mutate(user);

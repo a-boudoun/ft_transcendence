@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { setcurrentchannel, setnewchannel } from '@/redux/features/globalState';
 import { useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { useRouter } from 'next/navigation';
 
 const NewChannel = () => {
@@ -39,7 +39,7 @@ const NewChannel = () => {
       };
 
       const NewChannel = useMutation(async(channel : any) => {
-            const res = await axios.post('http://localhost:8000/channels/createChannel', {name : channel.name, image: channel.image,  type: channel.type, password: channel.password, owner: channel.owner}, { withCredentials: true });
+            const res = await axios.post('/channels/createChannel', {name : channel.name, image: channel.image,  type: channel.type, password: channel.password, owner: channel.owner});
             
             return res.data;
         },

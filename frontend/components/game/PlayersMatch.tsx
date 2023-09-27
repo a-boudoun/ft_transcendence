@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import socket from '@/components/socketG';
-import axios from 'axios';
+import axios from '@/apis/axios';
 
 interface prop {
 	setGame: (val: boolean) => void;
@@ -15,7 +15,7 @@ function LeftPlayer(){
 	const {data, isLoading} = useQuery({
 		queryKey: ['user'],
 		queryFn: async ()=> {
-		  const {data} = await axios.get('http://localhost:8000/users/getUser/me', { withCredentials: true })
+		  const {data} = await axios.get('/users/getUser/me')
 		  return data;
 		}
 	  });
