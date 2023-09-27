@@ -8,7 +8,7 @@ import { userDto } from "@/dto/userDto";
 import uploadImage from "@/apis/uploadImage";
 import { Client } from "@/providers/QueryProvider";
 import axios from "@/apis/axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const ChangeNameImage = ({ src, name }: { src: string; name: string }) => {
   const [image, setImage] = useState<any>(null);
@@ -96,6 +96,7 @@ const ChangeNameImage = ({ src, name }: { src: string; name: string }) => {
             </div>
           </label>
           <input
+            autoComplete={"off"}
             id={"name"}
             className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-[2px] hover:opacity-60"
             type="text"

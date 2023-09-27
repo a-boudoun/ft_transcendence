@@ -38,6 +38,7 @@ const DropDown = ({ src, setIsOpen }: Props) => {
     <div ref={divref}>
       <div className="flex flex-col justify-around absolute top-14 right-0 w-14 md:hidden bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg">
         <button
+          aria-label="search"
           className="flex justify-center items-center h-[56px] w-[56px] hover:opacity-50"
           onClick={() => setIsSearch(!isShearch)}
         >
@@ -98,7 +99,9 @@ const MenuDropDown = ({ src }: { src: string }) => {
   return (
     <>
       <div className="relative grid md:hidden place-content-center h-[55px] w-[56px] hover:opacity-50">
-        <button className="" onClick={() => setIsOpen(!isOpen)}>
+        <button 
+          aria-label="menu"
+          onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? (
             <XCircle size={28} color="#EA5581" strokeWidth={1.5} />
           ) : (

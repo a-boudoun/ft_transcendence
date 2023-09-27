@@ -39,6 +39,7 @@ const UserDetails = (props: UserDetailsProps) => {
     <div className="grow flex flex-col overflow-hidden xl:w-auto sm:rounded-3xl sm:shadow-2xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
       <div className="flex justify-around xl:p-4 sm:rounded-t-3xl">
         <button
+          aria-label="stats"
           onClick={() => {
             setStats(true);
             setAchievements(false);
@@ -58,6 +59,7 @@ const UserDetails = (props: UserDetailsProps) => {
           </div>
         </button>
         <button
+          aria-label="achievements"
           className="xl:hidden"
           onClick={() => {
             setStats(false);
@@ -78,6 +80,7 @@ const UserDetails = (props: UserDetailsProps) => {
           </div>
         </button>
         <button
+          aria-label="matches"
           className="xl:hidden"
           onClick={() => {
             setStats(false);
@@ -98,6 +101,7 @@ const UserDetails = (props: UserDetailsProps) => {
           </div>
         </button>
         <button
+          aria-label="friends"
           className="lg:hidden"
           onClick={() => {
             setStats(false);

@@ -88,7 +88,6 @@ export class UsersController {
   @Post('block')
   @UseGuards(Jwt2faAuthGuard)
   async block(@Req() req, @Body() body: {id: number}) {
-    console.log(body);
     await this.usersService.block(req.user.id, body.id);
   }
 
@@ -107,7 +106,6 @@ export class UsersController {
   @Get('isBlocked/:id')
   @UseGuards(Jwt2faAuthGuard)
   async isBlocked(@Req() req, @Param('id') id: number) {
-    console.log(id);
     return this.usersService.isBlocked(req.user.id, id);
   }
 }

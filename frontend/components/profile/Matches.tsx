@@ -20,22 +20,26 @@ const Match = ({ match, id }: { match: MatchProps; id: number }) => {
     <div
       className={`flex justify-between items-center p-4 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg ${border} `}
     >
-      <div className="flex flex-col items-center gap-4">
-        <Link href={`/profile/${match.winner.id}`}>
-          <div className="h-[64px] w-[64px] rounded-full overflow-auto">
-            <Image
-              className="h-full w-full"
-              src={match.winner.image}
-              width={64}
-              height={64}
-              alt="user image"
-            />
-          </div>
-        </Link>
+      <Link
+        className="flex flex-col items-center gap-2"
+        href={`/profile/${match.winner.username}`}
+      >
+        <div className="h-[64px] w-[64px] rounded-full overflow-auto">
+          <Image
+            className="h-full w-full"
+            src={match.winner.image}
+            width={64}
+            height={64}
+            alt="user image"
+          />
+        </div>
         <h3>{match.winner.username}</h3>
-      </div>
+      </Link>
       <span className="grow text-3xl mb-8">{`5 - ${match.loserScore}`} </span>
-      <div className="flex flex-col items-center gap-4">
+      <Link
+        className="flex flex-col items-center gap-2"
+        href={`/profile/${match.loser.username}`}
+      >
         <div className="h-[64px] w-[64px] rounded-full overflow-auto">
           <Image
             className="h-full w-full"
@@ -46,7 +50,7 @@ const Match = ({ match, id }: { match: MatchProps; id: number }) => {
           />
         </div>
         <h3>{match.loser.username}</h3>
-      </div>
+      </Link>
     </div>
   );
 };

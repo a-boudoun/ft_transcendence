@@ -85,7 +85,7 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 					pixelRatio: 1,
 					wireframes: false,
 					background: 'url("https://i.pinimg.com/originals/3a/0b/40/3a0b40d96c53860572a1c29970ce14a8.gif")',
-					backgroundSize: 'cover', // Adjust as needed
+					// backgroundSize: 'cover', // Adjust as needed
 				}
 			});
 

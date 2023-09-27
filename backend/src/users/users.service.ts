@@ -114,18 +114,25 @@ export class UsersService {
             { blocker: { id: blocker } ,  blocked: { id: blocked} },
           ],
         });
-        return this.blockRepo.remove(block);
+        if (block.length === 0)
+          return ;
+        return this.blockRepo.remove(block[0]);
       }
   
       async blockedUsers(id: number) {
-        const blockedUsers = await this.blockRepo.find({where: [{blocker : {id: id }}],  relations: ['blocked']});
+        const blockedUsers = await this.blockRepo.find({where: {blocker : {id: id }},  relations: ['blocked']});
         if (blockedUsers.length === 0)
           return [];
         return blockedUsers.map(b => b.blocked);
       }
   
       async blockedByUsers(id: number) {
-        const blockedByUsers = await this.blockRepo.find({where: [{blocked : {id: id }}],  relations: ['blocker']});
+        const blockedByUsers = await this.blockRepo.find({
+          where: {blocked : {id: id }},  
+          relations: ['blocker']
+        });
+        if (blockedByUsers.length === 0)
+          return [];
         return blockedByUsers.map(b => b.blocker);
       }
   

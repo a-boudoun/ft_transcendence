@@ -18,7 +18,7 @@ config();
       
       async signin(user: UserDTO, res: Response, body: any) {
         
-
+        
         user.image = body.image;
         user.username = body.username;
         user.baner = '/img/baner.webp';
@@ -56,30 +56,37 @@ config();
         else if (userExists.fact2Auth === false){ 
           const payload = {id: userExists.id, image: userExists.image, fact2Auth: fact2Auth}
           const token = await this.jwtService.signAsync(payload, {secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: process.env.ACCESS_TOKEN_EXP_D});
-
+          
           await res.cookie('access_token', token, {
             httpOnly: true,
             maxAge: 604800000,
           });
-
+          
         }
-
+        
         else if (userExists.fact2Auth === true && fact2Auth === false){
-           const payload = {id: userExists.id, image: userExists.image, fact2Auth: fact2Auth}
+          const payload = {id: userExists.id, image: userExists.image, fact2Auth: fact2Auth}
           const token = await this.jwtService.signAsync(payload, {secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: process.env.ACCESS_TOKEN_EXP_D});
           await res.cookie('tow_fact_token', token, {
             httpOnly: true,
             maxAge: 604800000,
           });
         }
-
+        
         res.redirect('http://localhost:3000');
       }
       
+      async logout(id: number, res: Response) {
+        res.clearCookie('access_token');
+        const user = await this.userService.findOneById(id);
+        user.status = Status.OFFLINE;
+        await this.userService.update(id, user);
+      }
+
       async generate2FAsecret(id: number) {
         const user = await this.userService.findOneById(id);
-
-
+        
+        
         const secret = authenticator.generateSecret();
         const otpauthUrl = authenticator.keyuri(user.username, 'Trans', secret);
         
