@@ -7,6 +7,7 @@ import axios from "@/apis/axios";
 import { userDto } from "@/dto/userDto";
 import { Client } from "@/providers/QueryProvider";
 import useCloseOutSide from "@/hookes/useCloseOutSide";
+import { UserPlus2 } from "lucide-react";
 interface Props {
   users : userDto[];
   setIsOpen : (isOpen: boolean) => void;
@@ -23,6 +24,7 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
     },
     onSuccess: () => {
       Client.refetchQueries(['friendrequests']);
+      Client.refetchQueries(['friends']);
     }
   })
 
@@ -34,6 +36,7 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
     },
     onSuccess: () => {
         Client.refetchQueries(['friendrequests']);
+        Client.refetchQueries(['friends']);
     }
   });
 
@@ -43,7 +46,7 @@ const FriendRequestDropdown = ({users, setIsOpen} : Props) => {
     {users.length === 0 ? <p className="text-center">No friend requests</p> :
         users.map((user: userDto) => {
             return (
-              <div className={`flex justify-between bg-dark-gray px-4 py-2 rounded-xl gap-2 sm:gap-8`}>
+              <div key={user.id} className={`flex justify-between bg-dark-gray px-4 py-2 rounded-xl gap-2 sm:gap-8`}>
                   <div className="flex items-center gap-4">
                       <Image  className=" sm:w-[48px] sm:h-[48px] rounded-full self-center"  src={user.image} width={36}  height={36} alt="user image"/>
                       <div className="text-left">
@@ -83,8 +86,8 @@ const FriendRequest = () => {
 
   return (
     <>
-        <button className='relative grid place-content-center mr-[14px] p-1' onClick={handelClick}>
-            <Image src={'/icons/navBar/notification.svg'} alt={"notification"} width={28} height={28} />
+        <button aria-label="friend request" className='relative grid place-content-center mr-[14px] p-1 hover:opacity-50' onClick={handelClick}>
+            <UserPlus2 size={32} color="#7ac7c4" strokeWidth={1.5}/>
             {notif && <div className="absolute h-3 w-3 top-0 right-0 bg-red rounded-full"> </div> }
         </button>
         {

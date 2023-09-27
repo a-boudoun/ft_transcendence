@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         'ping-pong': "url('/img/ping-pong.gif')",
-        'bg': "url('/img/bg.jpg')",
+        'bg': "url('/img/bg.webp')",
       },
       colors: {
         'dark-gray': '#2F3B58',

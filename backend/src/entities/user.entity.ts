@@ -7,7 +7,6 @@ import {
     ManyToMany,
     JoinTable,
     Index,
-    DataSource,
     CreateDateColumn
   } from 'typeorm';
 import { Administration, Channel, Message, Mutation, Bannation } from './channel.entity';
@@ -15,7 +14,7 @@ import { Administration, Channel, Message, Mutation, Bannation } from './channel
 export enum Status {
     ONLINE = 'online',
     OFFLINE = 'offline',
-    INGAME = 'ingame'
+    INGAME = 'in game'
 }
   
 @Entity({ name: 'User' })
@@ -27,11 +26,11 @@ export class User {
     @Index({unique: true})
     intraID: number;
 
-    @Column({ length: 25 })
+    @Column({ length: 10, nullable: true})
     @Index({unique: true})
     username: string;
 
-    @Column({nullable: true,})
+    @Column({nullable: true})
     image: string;
 
     @Column({
@@ -42,10 +41,10 @@ export class User {
     @Column('text' , { nullable: true })
     status: Status;
     
-    @Column()
+    @Column('decimal', { precision: 6, scale: 2, nullable: true})
     level: number;
     
-    @Column()
+    @Column({nullable: true})
     XP: number;
 
     @Column({ nullable: true })
@@ -134,7 +133,7 @@ export enum Fstatus {
     ACCEPTED = 'accepted',
     NONE = 'none'
 }
-  
+
 @Entity({ name: 'Friendship' })
 export class Friendship {
     @PrimaryGeneratedColumn()

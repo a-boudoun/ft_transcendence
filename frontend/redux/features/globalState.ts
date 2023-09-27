@@ -67,6 +67,7 @@ export const globalStateSlice = createSlice({
             state.channel  = action.payload;
         },
         setMessage: (state: any, action: PayloadAction<any>) => {
+            console.log("action.payload", action.payload);
             state.channel.messages.push(action.payload );
         },
         setChannels: (state: any, action: PayloadAction<any>) => {

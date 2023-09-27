@@ -214,8 +214,3 @@ export const Message = (msg: any) => {
         </div>
     );
 }
-
-
-
-
-

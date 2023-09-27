@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { setisopen } from "@/redux/features/globalState";
-import Image from "next/image";
 import { ToastContainer, toast } from 'react-toastify';
 import useAmiski from "@/hookes/useAmsiki";
 import React from "react";
@@ -12,6 +11,8 @@ import LeaveChannel from "@/components/chat/modals/LeaveChannel";
 import AddFriend from "@/components/chat/modals/AddFriend";
 import UpdateChannel from "@/components/chat/modals/UpdateChannel";
 import JoinChannel from "@/components/chat/modals/JoinChannel";
+import { XCircle } from "lucide-react";
+
 function Modal() {
   const dispatch = useDispatch<AppDispatch>();
   const showToast = () => {
@@ -37,13 +38,7 @@ function Modal() {
               <div ref={divref} 
               className={`relative rounded-lg  text-black  z-10 `}>
                 <button className=" absolute left-0  p-2  cursor-pointer z-50" onClick={() => dispatch(setisopen(false))}>
-                  <Image
-                    className="h-full rounded-full  "
-                    src={'/img/cancel.svg'}
-                    width={24}
-                    height={24}
-                    alt=""
-                  />
+                  <XCircle size={28} color="#EA5581" strokeWidth={1.5} />
                 </button>
                    <>
                       { modalType === 'joinchannel' ? <JoinChannel type={modalType}/> : null}
