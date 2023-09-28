@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Channel, Friendship, Fstatus, User } from 'src/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Bannation, ChannelType, MemberTitle, Membership } from 'src/entities/channel.entity';
+import {ChannelType, MemberTitle, Membership } from 'src/entities/channel.entity';
+import { UsersGateway } from 'src/usersGateway/user.gateway';
 
 @Injectable()
 export class FriendshipService {
@@ -11,6 +12,7 @@ export class FriendshipService {
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Channel) private channelRepo: Repository<Channel>,
     @InjectRepository(Membership) private memRepo: Repository<Membership>,
+    private usersGateway: UsersGateway,
     ) {}
     
     async friendReq(username : string) {
@@ -30,8 +32,10 @@ export class FriendshipService {
       const friendship = await this.friendshipRepo.create();
       friendship.initiater = await this.userRepo.findOneBy({id: sender});
       friendship.receiver = await this.userRepo.findOneBy({id: receiver});
-      friendship.status = Fstatus.PENDING;
-      return await this.friendshipRepo.save(friendship);
+      friendship.status = Fstatus.PENDING
+      await this.friendshipRepo.save(friendship);
+      this.usersGateway.sendFriedRequest(receiver);
+      return ;
     }
     
     async getFriends(id: number) {
@@ -79,7 +83,7 @@ async accept(id: number, sender: number) {
       where: {name: channelName, type: ChannelType.DIRECT},
     });
 
-    if (ch == null) {
+    if (!ch) {
       const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" });
       const rt = await this.channelRepo.save(channel);
       const membership1 = await this.memRepo.create({channel: rt, member: user1, title: MemberTitle.MEMBER});
@@ -105,7 +109,7 @@ async accept(id: number, sender: number) {
     else if(friendship[0].status == Fstatus.ACCEPTED)
       return {status: Fstatus.ACCEPTED};
     else if(friendship[0].status == Fstatus.PENDING)
-      return {status: Fstatus.PENDING, sender: friendship[0].initiater.username};
+      return {status: Fstatus.PENDING, sender: friendship[0].initiater.id};
 
   }
 
