@@ -79,7 +79,7 @@ const Invite = () => {
 	
 	useEffect(() => {
 		socket.on('play-a-friend', () =>{
-			router.push('http://localhost:3000/game/match');
+			router.push('/game/match');
 		});
 		socket.on('game-invitation', (data: any) => {
 			setDisplay(data.sender);

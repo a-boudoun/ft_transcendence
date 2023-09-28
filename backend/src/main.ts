@@ -2,6 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
+import { config } from 'dotenv';
+
+config();
 
 async function bootstrap() {
   
@@ -9,11 +12,10 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.enableCors({
-    origin: 'http://localhost:3000',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    origin:  process.env.NEXT_PUBLIC_FRONTEND_HOST,
+    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
     credentials: true,
-  }
-  );
+  });
 
   app.useGlobalPipes(new ValidationPipe({
       transform: true,

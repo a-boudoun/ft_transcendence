@@ -64,7 +64,7 @@ function LoadingPlayer({setGame}: prop){
 	
 			socket.on('match-found', async (player: string) => {
 				try {
-					const { data } = await axios.get(`http://localhost:8000/users/getId/${player}`, { withCredentials: true });
+					const { data } = await axios.get(`/users/getId/${player}`);
 					setName(data.username);
 					setImage(data.image);
 					clearInterval(interval);

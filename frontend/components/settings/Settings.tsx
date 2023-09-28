@@ -22,7 +22,7 @@ const Settings = () => {
   
   const updateUser = useMutation({
     mutationFn: async(user : userDto) => {
-      await axios.patch('http://localhost:8000/users/updateMe', user);
+      await axios.patch('/users/updateMe', user);
     },
   });
 

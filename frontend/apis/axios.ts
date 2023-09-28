@@ -11,9 +11,8 @@ axios.defaults.headers.common["Content-Type"] =  'application/json';
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use(
-	async function (config) {
-		
-			return config
+	async function (conf) {
+			return conf
 	},
 
 	function (error) {
