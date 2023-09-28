@@ -314,9 +314,7 @@ export const Admin = ({
   }, [member]);
   const addAdmin = useMutation({
     mutationFn: async (memberid: number) => {
-      const { data } = await axios.patch(
-        `/channels/${id}/updateMembershipTitle/${memberid}`
-      );
+      const { data } = await axios.patch(`/channels/${id}/updateMembershipTitle/${memberid}`);
       return data;
     },
     onSuccess: () => {
@@ -381,8 +379,7 @@ const BanUser = ({
   const ban = useMutation({
     mutationFn: async (username: string) => {
       const { data } = await axios.patch(
-        `http://localhost:8000/channels/${id}/ban/${username}`,
-        { withCredentials: true }
+        `/channels/${id}/ban/${username}`,
       );
       return data;
     },

@@ -41,8 +41,9 @@ config();
       }
       
       async login(user : UserDTO, res: Response, fact2Auth: boolean) {
+
         const userExists : UserDTO =  await this.userService.findOneByIntraId(user.intraID);
-        
+   
         if (!userExists){
           const payload = {intraID: user.intraID, username: user.username, image: user.image}
           const token = await this.jwtService.signAsync(payload, {secret: process.env.SIGNIN_TOKEN_SECRET, expiresIn: process.env.SIGNIN_TOKEN_EXP_D});
@@ -72,8 +73,7 @@ config();
             maxAge: 604800000,
           });
         }
-        
-        res.redirect('http://localhost:3000');
+        res.redirect(process.env.NEXT_PUBLIC_FRONTEND_HOST);
       }
       
       async logout(id: number, res: Response) {
