@@ -64,6 +64,7 @@ const AddFriend = ({ id, Status }: { id: number; Status: any }) => {
       </button>
     );
   else if (Status.data?.status === "pending" && Status.data?.sender != id)
+  {
     return (
       <button
         className="bg-blue px-3 py-1 text-black rounded-xl"
@@ -72,7 +73,9 @@ const AddFriend = ({ id, Status }: { id: number; Status: any }) => {
         Cancel Request
       </button>
     );
+  }
   else if (Status.data?.status === "pending" && Status.data?.sender === id)
+  {
     return (
       <div className="flex flex-col gap-2">
         <button
@@ -89,6 +92,8 @@ const AddFriend = ({ id, Status }: { id: number; Status: any }) => {
         </button>
       </div>
     );
+  }
+
   else if (Status.data?.status === "accepted")
     return (
       <button
