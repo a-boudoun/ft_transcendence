@@ -1,24 +1,20 @@
 "use client";
 import {userDto} from "@/dto/userDto";
-import { useState} from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios from "@/apis/axios";
 import Image from "next/image";
 import Link from "next/link";
 
 
 const Friends = ({user}:{user:userDto}) => {
-
-    const [friends, setFriends] = useState<[]>([]);
     const {data, isLoading} = useQuery({
-        queryKey: ['friends'],
+        queryKey: ['friends', user.id],
         queryFn: async ()=> {
-            const { data } = await axios.get(`http://localhost:8000/channels/direct/${user.username}`, { withCredentials: true });
-            setFriends(data);
+            const { data } = await axios.get(`/channels/direct/${user.username}`);
             return data;
         }
       });
-
+     
       if(isLoading) return <div >loading...</div>
       else if(!data || data.length === 0) return <div className="text-blue pt-10">No friends</div>
       else

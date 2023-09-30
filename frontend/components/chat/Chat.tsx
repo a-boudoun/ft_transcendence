@@ -2,16 +2,16 @@
 
 import {userDto} from "@/dto/userDto";
 import {  useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { setChannels, setuser } from "@/redux/features/globalState";
 import ChannelItems from "./ChannelItems";
 import NewChannel from "./NewChannel";
-import { usePathname, useRouter } from "next/navigation";
-import Image from "next/image";
+import { usePathname} from "next/navigation";
 import Friends from "./Friend";
+import { User2 , Users2, UserPlus2 } from "lucide-react";
 
 const Chat = () => {
    
@@ -21,8 +21,8 @@ const Chat = () => {
     const [isFriend, setIsFriend] = useState(false);
     const [user, setUser] = useState<userDto>({} as userDto);
     const path = usePathname();
-    const router = useRouter();
-    const {data, isLoading} = useQuery(
+
+    const {isLoading} = useQuery(
         {
           queryKey: ['channels'],
           queryFn: async () => {
@@ -71,13 +71,13 @@ const Chat = () => {
         <div className={`h-full  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:rounded-[2rem] overflow-hidden`}>
           <div className={` w-full bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-fit flex justify-between mb-3   text-white gap-1`} >
               <button className={`w-1/3  flex items-center justify-center  py-3 text-sm font-semibold border-b-2   ${isFriend === true ? 'border-blue': 'border-transparent'}`} onClick={()=> handleclick(0)}>
-              <Image className="w-7 h-7" src={'/img/msgb.svg'} width={100} height={100} alt={''} />
+                <User2 size={28} color="#7ac7c4" strokeWidth={2}  />
               </button>
               <button className={`w-1/3 flex items-center justify-center  py-3 text-sm  font-semibold border-b-2   ${isChannel === true ? 'border-blue': 'border-transparent'}`} onClick={()=> handleclick(1)}>
-                <Image className="w-8 h-7" src={'/img/channelb.svg'} width={100} height={100} alt={''} />
+                <Users2 size={34} color="#7ac7c4" strokeWidth={1.5}  />
               </button>
               <button className={`w-1/3  flex items-center justify-center  py-3 text-sm font-semibold border-b-2   ${newchannel === true ? 'border-blue': 'border-transparent'}`} onClick={()=> handleclick(2)}>
-                <Image className="w-7 h-7" src={'/img/newchannel.svg'} width={100} height={100} alt={''} />
+                <UserPlus2 size={32} color="#7ac7c4" strokeWidth={1.5} />
               </button>
           </div>
           <>

@@ -54,7 +54,7 @@ export default function Maps(){
 						</div>
 				</div>
 					<button
-						className=" w-full max-w-[320px] sm:max-w-auto  bottom-[40px] right-[40px] text-white text-[30px] bg-red w-[150px] py-2 rounded-[10px] hover:bg-[#FBACB3] font-bold" onClick={() => {router.push('http://localhost:3000/game/match')}}
+						className=" w-full max-w-[320px] sm:max-w-auto  bottom-[40px] right-[40px] text-white text-[30px] bg-red  py-2 rounded-[10px] hover:bg-[#FBACB3] font-bold" onClick={() => {router.push('/game/match')}}
 						>
 						Next
 					</button>

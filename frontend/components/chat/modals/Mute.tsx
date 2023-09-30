@@ -4,8 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import { AppDispatch } from "@/redux/store";
 import { setisopen } from "@/redux/features/globalState";
-import axios from "axios";
-
+import axios from "@/apis/axios";
 
 const Mute = ({type}:{type:string}) => {
   
@@ -20,8 +19,8 @@ const Mute = ({type}:{type:string}) => {
           id: muted,
           duration: duration,
         }  
-        const { data } = await axios.patch(`http://localhost:8000/channels/muteUser/${channelid}`,dt, { withCredentials: true });
-          return data;
+        const { data } = await axios.patch(`/channels/muteUser/${channelid}`, dt);
+        return data;
       },
       onSuccess: () => {
           console.log("joined")

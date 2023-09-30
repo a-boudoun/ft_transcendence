@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import socket from '@/components/socketG';
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
@@ -22,7 +22,7 @@ const InviteDisplay = ({socketId, setdisplay, userid}: prop) => {
 	useQuery({
 		queryKey: ['left'],
 		queryFn: async ()=> {
-		  const {data} = await axios.get(`http://localhost:8000/users/getId/${userid}`, { withCredentials: true })
+		  const {data} = await axios.get(`/users/getId/${userid}`)
 		  setName(data.username);
 		  setImage(data.image);
 		}
@@ -79,7 +79,7 @@ const Invite = () => {
 	
 	useEffect(() => {
 		socket.on('play-a-friend', () =>{
-			router.push('http://localhost:3000/game/match');
+			router.push('/game/match');
 		});
 		socket.on('game-invitation', (data: any) => {
 			setDisplay(data.sender);

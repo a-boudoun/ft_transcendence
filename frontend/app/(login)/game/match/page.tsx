@@ -16,7 +16,7 @@ export default function MatchPlayers() {
 	useEffect(() => {
 	  const fetchData = async () => {
 		try {
-		  const { data } = await axios.get(`http://localhost:8000/users/getUser/me`);
+		  const { data } = await axios.get(`/users/getUser/me`);
 		  if (data) {
 			setPlayerUsername(data.username);
 			setPlayerId(data.id);

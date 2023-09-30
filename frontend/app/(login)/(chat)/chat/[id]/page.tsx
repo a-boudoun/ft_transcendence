@@ -3,8 +3,8 @@ import { userDto } from "@/dto/userDto";
 import Image from "next/image";
 import Link from "next/link";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState, useEffect, use } from "react";
-import axios from "axios";
+import { useState, useEffect} from "react";
+import axios from "@/apis/axios";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import MessageDto from "@/dto/Message";
@@ -12,9 +12,9 @@ import { socket } from "@/components/chat/chatSocket";
 import moment from "moment";
 import { Message } from "@/components/chat/Mid";
 import { Client } from "@/providers/QueryProvider";
-import { setuser } from "@/redux/features/globalState";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
+import { MoreHorizontal} from "lucide-react";
 
 const More = ({ user }: { user: userDto }) => {
   const router = useRouter();
@@ -63,14 +63,12 @@ const page = ({ params }: { params: { id: number } }) => {
   const [messages, setMessages] = useState<MessageDto[]>([]);
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [isblocked, setIsblocked] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["direct", params.id],
     queryFn: async () => {
       const { data } = await axios.get(
-        `http://localhost:8000/channels/directchannel/${params.id}`,
-        { withCredentials: true }
+        `/channels/directchannel/${params.id}`,
       );
 
       setMessages(data.messages);
@@ -82,17 +80,7 @@ const page = ({ params }: { params: { id: number } }) => {
       return data;
     },
   });
-  const Blocked = useMutation({
-    mutationKey: ["block", otherUser?.id],
-    mutationFn: async () => {
-      if (!otherUser) return;
-      const { data } = await axios.get(
-        `http://localhost:8000/users/isBlocked/${otherUser.id}`,
-        { withCredentials: true }
-      );
-      return data;
-    },
-  });
+
   useEffect(() => {
     if (!data || !user || isLoading) return;
     const otherUser = data.memberships.find(
@@ -100,19 +88,19 @@ const page = ({ params }: { params: { id: number } }) => {
     );
     if (!otherUser) return;
     setOtherUser(otherUser.member);
-    Blocked.mutate();
-    setIsblocked(Blocked.data?.isBlock);
   }, [data, user]);
 
-  // const blocked = useQuery({
-  //     queryKey: ['blocked', otherUser?.id],
-  //     queryFn: async () => {
-  //         if(!otherUser ) return;
-  //         const {data} = await axios.get(`http://localhost:8000/users/isBlocked/${otherUser.id}`, { withCredentials: true });
-  //         console.log("data", user.id, data);
-  //         return data;
-  //     }
-  // });
+  const blocked = useQuery({
+    queryKey: ["blocked", otherUser?.id],
+    queryFn: async () => {
+      if (!otherUser) return;
+      const { data } = await axios.get(
+        `/users/isBlocked/${otherUser.id}`,
+      );
+      console.log("data", user.id, data);
+      return data;
+    },
+  });
 
   useEffect(() => {
     if (!socket.connected) socket.connect();
@@ -153,6 +141,20 @@ const page = ({ params }: { params: { id: number } }) => {
   const handechange = (event: any) => {
     setInput(event.target.value);
   };
+
+  const unblock = useMutation({
+    mutationKey: ["unblock", otherUser?.id],
+    mutationFn: async () => {
+      if (!otherUser) return;
+      const { data } = await axios.delete(
+        `/users/unblock/${otherUser?.id}`,
+      );
+      return data;
+    },
+    onSuccess: () => {
+      Client.refetchQueries(["blocked", otherUser?.id]);
+    },
+  });
 
   if (isLoading || !data || !user.id || !otherUser)
     return (
@@ -198,13 +200,7 @@ const page = ({ params }: { params: { id: number } }) => {
                 className="rounded-full hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg  p-1"
                 onClick={() => setIsOpen(!isOpen)}
               >
-                <Image
-                  className="h-full rounded-full  "
-                  src={"/img/more.svg"}
-                  width={30}
-                  height={30}
-                  alt=""
-                />
+                <MoreHorizontal color="#7AC7C4" strokeWidth={4} />
               </button>
               <div className="relative">
                 {isOpen && <More user={otherUser} />}
@@ -222,8 +218,8 @@ const page = ({ params }: { params: { id: number } }) => {
               />
             ))}
           </div>
-          <div className="h-[56px] flex justify-between bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg items-center px-3 py-2  rounded-lg">
-            {!isblocked && (
+          <div className="h-[56px] bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg items-center px-3 py-2  rounded-lg">
+            {!blocked.data?.isBlock ? (
               <form
                 className="flex  justify-between items-center w-full"
                 onSubmit={handelSubmit}
@@ -235,10 +231,22 @@ const page = ({ params }: { params: { id: number } }) => {
                   placeholder="Type a message"
                   onChange={(e: any) => setInput(e.target.value)}
                 />
-                <button className="p-2 rounded-full hover:bg-light-gray">
-                  <Image src={"/img/send.svg"} width={22} height={22} alt="" />
+                <button className="p-2 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-send-horizontal"><path d="m3 3 3 9-3 9 19-9Z"/><path d="M6 12h16"/></svg>
                 </button>
               </form>
+            ) : blocked.data.blocker === otherUser.id ? (
+              <div className="flex flex-col justify-center items-center w-full h-full ">
+                {" "}
+                you can't send messages right now
+              </div>
+            ) : (
+              <button
+                className="w-full h-full text-blue"
+                onClick={() => unblock.mutate()}
+              >
+                unblock
+              </button>
             )}
           </div>
         </div>

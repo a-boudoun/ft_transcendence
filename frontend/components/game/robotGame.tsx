@@ -20,9 +20,9 @@ function RobotGame({difficulty} : {difficulty: number}){
 	var lScore = 0;
 	var rScore = 0;
 	let keyClicked : boolean = false;;
-	let maxScore = 5;
 	let leftInterval : NodeJS.Timeout;
 	let keyInterval : NodeJS.Timeout;
+	const maxScore = 5;
 
 	useEffect(() => {
 		if (!divRef.current) return;
@@ -269,8 +269,8 @@ function RobotGame({difficulty} : {difficulty: number}){
 				leave
 			</button>
 		</div>}
-		{rightScore >= maxScore && <Won/>}
-		{leftScore >=  maxScore && <Lost/>}
+		{/* {rightScore >= maxScore && <Won setWon={setPVisible} setLost={setPVisible}/>} 
+		{leftScore >=  maxScore && <Lost/>} */}
 	</>
 	);
 }

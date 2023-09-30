@@ -2,7 +2,7 @@
 
 import React from 'react'
 import SignInFrom from '@/components/signIn/SignInFrom';
-import axios from "axios";
+import axios from "@/apis/axios";
 import { useQuery } from "@tanstack/react-query";
 
 const singIn = () => {
@@ -10,8 +10,8 @@ const singIn = () => {
   const User = useQuery({
     queryKey: ['signin'],
     queryFn: async ()=> {
-      const {data} = await axios.get(`http://localhost:8000/users/signin`, { withCredentials: true })
-      
+      const {data} = await axios.get(`/users/signin`,)
+      console.log(data);
       return data;
     },
   });
