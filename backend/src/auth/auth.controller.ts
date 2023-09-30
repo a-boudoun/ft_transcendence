@@ -30,7 +30,7 @@ export class AuthController {
   @Delete('logout')
   @UseGuards(Jwt2faAuthGuard)
   logout(@Req() req, @Res({ passthrough: true }) res) {
-    res.clearCookie('access_token');
+    this.authService.logout(req.user.id, res);
   }
 
   @Get('2fa/generate')

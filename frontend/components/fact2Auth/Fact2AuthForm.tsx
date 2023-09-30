@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Loader2 } from  'lucide-react'
 import { useMutation} from "@tanstack/react-query"
-import axios from 'axios'
+import axios from '@/apis/axios';
 import { useRouter } from 'next/navigation'
 
 interface body {
@@ -19,7 +19,7 @@ const Fact2AuthForm = () => {
 
     const validCode = useMutation({
         mutationFn: async(body : body) => {
-        const {data} = await axios.patch('http://localhost:8000/auth/2fa/login', body, { withCredentials: true });
+        const {data} = await axios.patch('/auth/2fa/login', body);
         if (data.valid === true){
           router.push('/profile');
         }

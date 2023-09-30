@@ -1,5 +1,5 @@
 import React from 'react'
-import UpdateForm from '@/components/settings/UpdateForm'
+import UpdateForm from '@/components/settings/Settings'
 
 const Settings = () => {
   return (

@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Patch, Param, Body, Delete, UseGuards, Req } from '@nestjs/common';
 import { FriendshipService } from './friendship.service';
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
+import { ParseIntPipe } from '@nestjs/common';
 
 @Controller('friendship')
 export class FriendshipController {
@@ -38,8 +39,8 @@ export class FriendshipController {
 
   @Get('search/:channelid/:query')
   @UseGuards(Jwt2faAuthGuard)
-  async search(@Param('channelid') channelid: string,@Param('query') query: string, @Req() req) {
-    return await this.friendshipService.search(+channelid, req.user.id, query);
+  async search(@Param('channelid') channelId: number,@Param('query') query: string, @Req() req) {
+    return await this.friendshipService.search(channelId, req.user.id, query);
   }
 
   @Delete(':id')

@@ -62,7 +62,7 @@ export class engineService {
 			game.setLoser(loser);
 		}
 	}
-	
+
 	async removeGameSimulation(roomId: string) {
 		const game: gameSimulation | undefined = this.gameSimulations.get(roomId);
 		if (game) {

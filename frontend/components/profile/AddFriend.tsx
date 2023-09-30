@@ -12,7 +12,7 @@ const AddFriend = ({ id, Status }: { id: number; Status: any }) => {
       return data;
     },
     onSuccess: () => {
-      Client.refetchQueries("friendStatus");
+      Client.refetchQueries(["friendStatus"]);
     },
   });
 
@@ -24,6 +24,7 @@ const AddFriend = ({ id, Status }: { id: number; Status: any }) => {
     },
     onSuccess: () => {
       Client.refetchQueries(["friendStatus"]);
+      Client.refetchQueries(["friends"]);
     },
   });
 
@@ -37,8 +38,13 @@ const AddFriend = ({ id, Status }: { id: number; Status: any }) => {
     },
     onSuccess: () => {
       Client.refetchQueries(["friendrequests"]);
+      Client.refetchQueries(["friends"]);
     },
   });
+
+  const handleAddFriend = async () => {
+    await sendRequest.mutate(id);
+  };
 
   const handleRemoveOrCancelFriend = async () => {
     await removeOrCancelFriend.mutate(id);
@@ -58,6 +64,7 @@ const AddFriend = ({ id, Status }: { id: number; Status: any }) => {
       </button>
     );
   else if (Status.data?.status === "pending" && Status.data?.sender != id)
+  {
     return (
       <button
         className="bg-blue px-3 py-1 text-black rounded-xl"
@@ -66,7 +73,9 @@ const AddFriend = ({ id, Status }: { id: number; Status: any }) => {
         Cancel Request
       </button>
     );
+  }
   else if (Status.data?.status === "pending" && Status.data?.sender === id)
+  {
     return (
       <div className="flex flex-col gap-2">
         <button
@@ -83,6 +92,8 @@ const AddFriend = ({ id, Status }: { id: number; Status: any }) => {
         </button>
       </div>
     );
+  }
+
   else if (Status.data?.status === "accepted")
     return (
       <button

@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios from "@/apis/axios";
 
 
 interface score{
@@ -22,7 +22,7 @@ function MePlayer({ score, name} : pScore) {
 		const {data, isLoading} = useQuery({
 			queryKey: ['scoreleft'],
 			queryFn: async ()=> {
-			  const {data} = await axios.get(`http://localhost:8000/users/getUser/me`, { withCredentials: true })
+			  const {data} = await axios.get(`/users/getUser/me`)
 			  return data;
 			}
 		  });
@@ -45,7 +45,7 @@ function MePlayer({ score, name} : pScore) {
 		const {data, isLoading} = useQuery({
 			queryKey: ['scoreleft'],
 			queryFn: async ()=> {
-				const {data} = await axios.get(`http://localhost:8000/users/getId/${name}`, { withCredentials: true })
+				const {data} = await axios.get(`/users/getId/${name}`)
 				return data;
 			}
 		});
@@ -84,7 +84,7 @@ function OtherPlayer({ score, name } : pScore) {
 		const {data, isLoading} = useQuery({
 			queryKey: ['scoreright'],
 			queryFn: async ()=> {
-			const {data} = await axios.get(`http://localhost:8000/users/getId/${name}`, { withCredentials: true })
+			const {data} = await axios.get(`/users/getId/${name}`)
 			return data;
 			}
 		});

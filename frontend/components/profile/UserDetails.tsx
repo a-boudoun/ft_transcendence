@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState, ReactNode } from "react";
-
-import Title from "./Title";
+import { BarChart3, Award, History, User2 } from "lucide-react";
 
 interface UserDetailsProps {
   Stats: ReactNode;
@@ -11,7 +10,7 @@ interface UserDetailsProps {
 }
 
 const UserDetails = (props: UserDetailsProps) => {
-  const [Stats, setStats] = useState<boolean>(true);
+  const [stats, setStats] = useState<boolean>(true);
   const [achievements, setAchievements] = useState<boolean>(false);
   const [matches, setMatches] = useState<boolean>(false);
   const [friends, setFriends] = useState<boolean>(false);
@@ -40,6 +39,7 @@ const UserDetails = (props: UserDetailsProps) => {
     <div className="grow flex flex-col overflow-hidden xl:w-auto sm:rounded-3xl sm:shadow-2xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
       <div className="flex justify-around xl:p-4 sm:rounded-t-3xl">
         <button
+          aria-label="stats"
           onClick={() => {
             setStats(true);
             setAchievements(false);
@@ -47,9 +47,19 @@ const UserDetails = (props: UserDetailsProps) => {
             setFriends(false);
           }}
         >
-          <Title isActive={Stats} str="Stats" src="/icons/profile/stats.svg" />
+          <div
+            className={`h-[56px] w-fit flex justify-center items-center m-auto p-2 hover:opacity-70  hover:border-b border-blue  ${
+              stats ? "border-b" : ""
+            }`}
+          >
+            <BarChart3 size={28} color="#7ac7c4" strokeWidth={2} />
+            <h2 className="hidden lg:inline text-[28px] ml-4">
+              Stats
+            </h2>
+          </div>
         </button>
         <button
+          aria-label="achievements"
           className="xl:hidden"
           onClick={() => {
             setStats(false);
@@ -58,13 +68,19 @@ const UserDetails = (props: UserDetailsProps) => {
             setFriends(false);
           }}
         >
-          <Title
-            isActive={achievements}
-            str="Achievements"
-            src="/icons/profile/achievements.svg"
-          />
+          <div
+            className={`h-[56px] w-fit flex justify-center items-center m-auto p-2 hover:opacity-70  hover:border-b border-blue  ${
+              achievements ? "border-b" : ""
+            }`}
+          >
+            <Award size={28} color="#7ac7c4" strokeWidth={2} />
+            <h2 className="hidden lg:inline text-[28px] ml-4">
+              Achievements
+            </h2>
+          </div>
         </button>
         <button
+          aria-label="matches"
           className="xl:hidden"
           onClick={() => {
             setStats(false);
@@ -73,13 +89,19 @@ const UserDetails = (props: UserDetailsProps) => {
             setFriends(false);
           }}
         >
-          <Title
-            isActive={matches}
-            str="Matches"
-            src="/icons/profile/matches.svg"
-          />
+          <div
+            className={`h-[56px] w-fit flex justify-center items-center m-auto p-2 hover:opacity-70  hover:border-b border-blue  ${
+              matches ? "border-b" : ""
+            }`}
+          >
+            <History size={28} color="#7ac7c4" strokeWidth={2} />
+            <h2 className="hidden lg:inline text-[28px] ml-4">
+              Matches
+            </h2>
+          </div>
         </button>
         <button
+          aria-label="friends"
           className="lg:hidden"
           onClick={() => {
             setStats(false);
@@ -88,11 +110,20 @@ const UserDetails = (props: UserDetailsProps) => {
             setFriends(true);
           }}
         >
-          <Title isActive={friends} str="" src="/icons/profile/friends.svg" />
+          <div
+            className={`h-[56px] w-fit flex justify-center items-center m-auto p-2 hover:opacity-70  hover:border-b border-blue  ${
+              friends ? "border-b" : ""
+            }`}
+          >
+            <User2 size={28} color="#7ac7c4" strokeWidth={2} />
+            <h2 className="hidden lg:inline text-[28px] ml-4">
+              Friends
+            </h2>
+          </div>
         </button>
       </div>
-      <div className="grow p-4 overflow-auto sm:rounded-b-3xl ">
-        {Stats && props.Stats}
+      <div className="grow  p-4 overflow-scroll   sm:rounded-b-3xl">
+        {stats && props.Stats}
         {achievements && props.Archievement}
         {matches && props.Matches}
         {friends && props.Friends}

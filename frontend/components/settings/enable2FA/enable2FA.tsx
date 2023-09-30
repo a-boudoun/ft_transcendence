@@ -1,12 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState } from 'react';
 import { useQuery, useMutation} from "@tanstack/react-query";
-import axios from 'axios'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import axios from '@/apis/axios';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Loader2 } from  'lucide-react';
-import { userSchema } from '@/models/user';
 
 interface body {
   code : string
@@ -23,14 +22,14 @@ export const Enable2FA = () => {
   const qrCode = useQuery({
     queryKey: ['qrCode'],
     queryFn: async () => {
-      const {data} = await axios.get('http://localhost:8000/auth/2fa/generate', {withCredentials: true});
+      const {data} = await axios.get('/auth/2fa/generate');
       return data;
     }
   });
 
   const turnON = useMutation({
     mutationFn: async(body : body) => {
-    const {data} = await axios.patch('http://localhost:8000/auth/2fa/turnOn', body, { withCredentials: true });
+    const {data} = await axios.patch('auth/2fa/turnOn', body);
     if (data.valid === true)
       router.push('/settings');
     else {
