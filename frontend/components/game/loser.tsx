@@ -6,7 +6,7 @@ import axios from "@/apis/axios";
 import { useQuery } from "@tanstack/react-query";
 import socket from '@/components/socketG';
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface prop {
   setWon ?: (val: string) => void;
@@ -20,7 +20,24 @@ export default function Lost({ setWon, setLost, me, other } : prop) {
   const [event, setEvent] = useState<string>("retry-game");
   const [senderName, setSenderName] = useState<string>(me);
   const [senderSocketId, setSenderSocketId] = useState<string>("");
-  const [count, setCount] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(5);
+  const [notif, setNotif] = useState<number>(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prevTime => prevTime - 1);
+    }, 1000);
+    
+    if (timeLeft === 0) {
+      router.push("/game");
+    }
+
+    return () => {
+      clearInterval(timer);
+    };
+
+  }, [timeLeft]);
+
 
   socket.on("refresh-page", () => {
     setWon("");
@@ -31,7 +48,7 @@ export default function Lost({ setWon, setLost, me, other } : prop) {
     setSenderName(data.sender);
     setSenderSocketId(data.senderSocketId);
     setEvent("accept-retry");
-    setCount(69);
+    setNotif(69);
   });
 
   const { data, isLoading } = useQuery({
@@ -61,13 +78,13 @@ export default function Lost({ setWon, setLost, me, other } : prop) {
           onClick={() => {socket.emit(event, {senderUsername: senderName, reciever: other, senderSocketId: senderSocketId})}}
           >
    				    Retry 
-              <p>{count}</p>
+              <p>{notif}</p>
   				</button>
           <button className="text-white font-bold text-2xl bg-red rounded-[10px] hover:bg-[#FBACB3]"
             onClick={() => {router.push("/game")}}
           >
    				    Leave
-              <p>countdown</p>
+              <p>{timeLeft}</p>
   				</button>
         </div>
       </div>
