@@ -50,7 +50,7 @@ export default function Maps(){
 							:"w-full max-w-[320px] hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px]"}
 							onClick={() => setmapToLocalStorage("default")}>
 							<Image width={400} height={400} alt="#" src="/game/default-map-select.webp" className="h-full w-full"/>
-							<p className="text-white text-center mt-[10px] font-bold">default</p>
+							<p className="text-white text-center mt-[10px] font-bold">default-mode</p>
 						</div>
 				</div>
 					<button
