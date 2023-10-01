@@ -100,13 +100,13 @@ const ChallengeDropDown = ({ id, setIsOpen }: ChallengeDropDownProps) => {
         <button
           className="w-[200px] flex gap-4 items-center bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-2xl p-2 hover:opacity-50"
           onClick={() => {
-            socket.emit("invite-freind", { id: id, game: "football" });
+            socket.emit("invite-freind", { reciever: id, map: "football-mode" });
           }}
         >
           <div className="rounded-full h-[38px] w-[38px] overflow-hidden">
             <Image
               className="h-full w-full object-cover object-center"
-              src="/game/football-map-select.svg"
+              src="/game/football-map-select.webp"
               width={1000}
               height={1000}
               alt="football"
@@ -117,13 +117,13 @@ const ChallengeDropDown = ({ id, setIsOpen }: ChallengeDropDownProps) => {
         <button
           className="w-[200px] flex gap-4 items-center bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-2xl p-2 hover:opacity-50"
           onClick={() => {
-            socket.emit("invite-freind", { id: id, game: "space"});
+            socket.emit("invite-freind", { reciever: id, map: "space-mode"});
           }}
         >
           <div className="rounded-full h-[38px] w-[38px] overflow-hidden">
             <Image
               className="h-full w-full object-cover object-center"
-              src="/game/space-map-select.svg"
+              src="/game/space-map-select.webp"
               width={1000}
               height={1000}
               alt="space"
@@ -134,16 +134,16 @@ const ChallengeDropDown = ({ id, setIsOpen }: ChallengeDropDownProps) => {
         <button
           className="w-[200px] flex gap-4 items-center bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-2xl p-2 hover:opacity-50"
           onClick={() => {
-            socket.emit("invite-freind", { id: id, game: "ping pong" });
+            socket.emit("invite-freind", { reciever: id, map: "default" });
           }}
         >
           <div className="rounded-full h-[38px] w-[38px] overflow-hidden">
             <Image
               className="h-full w-full object-cover object-center"
-              src="/game/default-map-select.svg"
+              src="/game/default-map-select.webp"
               width={1000}
               height={1000}
-              alt="ping pong"
+              alt="default"
             />
           </div>
           <span>ping pong</span>
