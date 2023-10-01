@@ -11,9 +11,10 @@ interface prop {
 	socketId: string;
 	userid: number;
 	setdisplay: (val: string | null) => void;
+	map: string;
 }
 
-const InviteDisplay = ({socketId, setdisplay, userid}: prop) => {
+const InviteDisplay = ({socketId, setdisplay, userid, map}: prop) => {
 
 	const [timeLeft, setTimeLeft] = useState(4);
 	const [image, setImage] = useState<string>('/game/unknown.svg');
@@ -59,6 +60,7 @@ const InviteDisplay = ({socketId, setdisplay, userid}: prop) => {
 					onClick={() => {
 						socket.emit('accept-invitation', {senderUsername: userid, senderSocketId: socketId});
 						setdisplay(null);
+						localStorage.setItem("map", map);
 					}}
 					>Accept</button>
 				</div>
@@ -75,6 +77,7 @@ const Invite = () => {
 	const[display, setDisplay] = useState<string | null>(null);
 	const [socketId, setSocketId] = useState<string>('');
 	const [userId, setUserId] = useState<number>(0);
+	const [map, setMap] = useState<string>('default');
 	const router = useRouter();
 	
 	useEffect(() => {
@@ -83,6 +86,7 @@ const Invite = () => {
 		});
 		socket.on('game-invitation', (data: any) => {
 			setDisplay(data.sender);
+			setMap(data.map);
 			setSocketId(data.senderSocketId);
 			setUserId(data.sender);
 		});
@@ -111,6 +115,7 @@ const Invite = () => {
 		userid={userId} 
 		socketId={socketId}
 		setdisplay={setDisplay}
+		map={map}
 		/>}
 	</div>
   );

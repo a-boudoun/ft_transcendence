@@ -38,10 +38,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('invite-freind')
-  handleInviteFreind(client: Socket, reciever: string) {
-    if (client.data.username === reciever || this.gameService.isInGame(reciever) !== null)
+  handleInviteFreind(client: Socket, data: any) {
+    if (client.data.username === data.reciever || this.gameService.isInGame(data.reciever) !== null)
       return;
-    this.server.to(reciever.toString()).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id});
+    this.server.to(data.reciever.toString()).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id, map: data.map});
   }
 
   @SubscribeMessage('accept-invitation')
