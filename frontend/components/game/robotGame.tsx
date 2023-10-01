@@ -264,13 +264,13 @@ function RobotGame({difficulty} : {difficulty: number}){
 			<button 
 				className="absolute bottom-[50px] right-[50px]  m-4  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]" 
 				onClick={() => {
-					router.push("/home");
+					router.push("/game");
 				}}>
 				leave
 			</button>
 		</div>}
-		{/* {rightScore >= maxScore && <Won setWon={setPVisible} setLost={setPVisible}/>} 
-		{leftScore >=  maxScore && <Lost/>} */}
+		{rightScore >= maxScore && <Won/>}
+		{leftScore >=  maxScore && <Lost/>}
 	</>
 	);
 }
