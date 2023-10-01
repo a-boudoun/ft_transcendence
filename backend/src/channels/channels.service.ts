@@ -90,6 +90,11 @@ export class ChannelsService {
         { id: id, type: ChannelType.PROTECTED },
         { id: id, type: ChannelType.PRIVATE}
       ],
+      order: {
+        messages: {
+          date: 'ASC',
+        }
+      },
       relations: ['messages.sender','memberships', 'memberships.member', 'bannations.member', 'mutations.member'],
       
     });
@@ -113,12 +118,19 @@ export class ChannelsService {
 }
 
 async findOne(id: number) {
-  return this.channelRepo.findOne({
+  const channel =  await this.channelRepo.findOne({
     where: {
       id: id,
     },
+    order: {
+      messages: {
+        date: 'ASC',
+      }
+    },
     relations: ['messages.sender', 'memberships.member', 'bannations.member', 'mutations.member'],
   });
+  // channel.messages = await channel.messages.sort((a, b) => a.id - b.id);
+  return channel;
 }
 
 async update(id: number, updateChannelDto: any) {
