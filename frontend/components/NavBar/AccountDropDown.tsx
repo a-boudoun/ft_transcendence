@@ -21,7 +21,7 @@ const DropDown = ({ src, setIsOpen }: Props) => {
   return (
     <div
       ref={divref}
-      className="hidden md:flex flex-col justify-around  absolute top-[56px] right-0 w-[56px] h-[160px] bg-black  bg-opacity-20 ackdrop-blur-lg drop-shadow-lg"
+      className="hidden md:flex flex-col justify-around  absolute top-[56px] right-0 w-[56px] h-[160px] bg-black  bg-opacity-50 ackdrop-blur-lg drop-shadow-lg"
     >
       <Link href={"/profile"}>
         <div
