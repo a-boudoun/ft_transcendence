@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import {Engine, Render, Body, Events, Composite} from "matter-js";
+import {Engine, Render, Body, Events, Composite, Runner} from "matter-js";
 import PlayersScore from "@/components/game/score";
 import Won from "@/components/game/winner";
 import Lost from "@/components/game/loser";
@@ -25,6 +25,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 	const maxScore = 5;
 
 	useEffect(() => {
+		console.log("--------------------");
 		if (!divRef.current) return;
 			
 		let H = 900;
@@ -81,7 +82,9 @@ function RobotGame({difficulty} : {difficulty: number}){
 				wireframes: false,
 				background: "/game/default.png",
 			}
-		});
+		}),
+		runner = Runner.create();
+
 		
 		const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#FFFFFF');
 		const leftBoard = drawRect(35, H / 2, 20, 120, '#FFFFFF');
@@ -192,7 +195,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 			resetPosition();
 		});
 
-		Engine.run(engine);
+		Runner.run(runner, engine);
 		Render.run(render);
 
 		return () => {
