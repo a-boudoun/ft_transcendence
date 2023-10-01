@@ -1,19 +1,39 @@
+'use client';
+
 import React from "react";
 import Image from "next/image";
 import axios from "@/apis/axios";
 import { useQuery } from "@tanstack/react-query";
-import socket from "../socketG";
+import socket from '@/components/socketG';
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface prop {
-  setWon: (val: string) => void;
-  setLost: (val: string) => void;
+  setWon ?: (val: string) => void;
+  setLost ?: (val: string) => void;
+  me ?: string;
+  other ?: string;
 }
 
-export default function Lost({ setWon, setLost }: prop) {
+export default function Lost({ setWon, setLost, me, other } : prop) {
+  const router = useRouter();
+  const [event, setEvent] = useState<string>("retry-game");
+  const [senderName, setSenderName] = useState<string>(me);
+  const [senderSocketId, setSenderSocketId] = useState<string>("");
+  const [count, setCount] = useState<number>(0);
+
   socket.on("refresh-page", () => {
     setWon("");
     setLost("");
   });
+
+  socket.on("retry-game", (data: any) => {
+    setSenderName(data.sender);
+    setSenderSocketId(data.senderSocketId);
+    setEvent("accept-retry");
+    setCount(69);
+  });
+
   const { data, isLoading } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
@@ -37,8 +57,21 @@ export default function Lost({ setWon, setLost }: prop) {
               className="h-full w-full rounded-full"
             />
           </div>
+          <button className="text-white font-bold text-2xl h-[100px] bg-red rounded-[10px] hover:bg-[#FBACB3]"
+          onClick={() => {socket.emit(event, {senderUsername: senderName, reciever: other, senderSocketId: senderSocketId})}}
+          >
+   				    Retry 
+              <p>{count}</p>
+  				</button>
+          <button className="text-white font-bold text-2xl bg-red rounded-[10px] hover:bg-[#FBACB3]"
+            onClick={() => {router.push("/game")}}
+          >
+   				    Leave
+              <p>countdown</p>
+  				</button>
         </div>
       </div>
+            
     );
   }
 }
