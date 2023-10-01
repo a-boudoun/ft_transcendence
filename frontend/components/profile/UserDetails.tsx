@@ -122,7 +122,7 @@ const UserDetails = (props: UserDetailsProps) => {
           </div>
         </button>
       </div>
-      <div className="grow  p-4 overflow-scroll   sm:rounded-b-3xl">
+      <div className="h-full grow p-4 overflow-scroll sm:rounded-b-3xl">
         {stats && props.Stats}
         {achievements && props.Archievement}
         {matches && props.Matches}
