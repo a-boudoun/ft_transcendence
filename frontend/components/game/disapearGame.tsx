@@ -93,7 +93,7 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 				isStatic: true,
 				render: {
 					sprite: {
-						texture: '/game/space-paddle.png',
+						texture: '/game/space-paddle.webp',
 						xScale: 0.07,
 						yScale: 0.19,
 					}
@@ -103,7 +103,7 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 				isStatic: true,
 				render: {
 					sprite: {
-						texture: '/game/space-paddle.png',
+						texture: '/game/space-paddle.webp',
 						xScale: 0.07,
 						yScale: 0.19,
 					}
@@ -117,7 +117,7 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 				inertia: Infinity, // prevent ball from slowing down
 				render: {
 					sprite: {
-						texture: '/game/space-rock.png',
+						texture: '/game/space-rock.webp',
 						xScale: 0.08,
 						yScale: 0.08,
 					}
@@ -128,7 +128,7 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 				isStatic: true, // Make it immovable
 				render: {
 					sprite: {
-						texture: '/game/blackhole.png',
+						texture: '/game/blackhole.webp',
 						xScale: 0.08,
 						yScale: 0.08,
 					},
@@ -148,7 +148,7 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 				} else {
 				  Body.setPosition(blackHole, { x: 2000, y: 2000 });
 				}
-			}, 15000);
+			}, 8000);
 			
 			setInterval(() => {
 				if (ball.position.x < 30 || ball.position.x > 1670 || (ball.position.x === H / 2 && ball.position.y === W / 2)) {

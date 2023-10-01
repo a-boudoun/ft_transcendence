@@ -30,7 +30,7 @@ const Difficulty = () => {
 		<div className="flex items-center justify-center flex-col gap-8">
 			<Image
 			className="w-[400px] h-[400px]" 
-			src={difficulty === 14 ? "/game/calculator.svg" : difficulty === 12 ? "/game/computer.svg" : "/game/robot.svg"} 
+			src={difficulty === 14 ? "/game/calculator.webp" : difficulty === 12 ? "/game/computer.webp" : "/game/robot.webp"} 
 			width={400} 
 			height={400} 
 			alt="robot" />
