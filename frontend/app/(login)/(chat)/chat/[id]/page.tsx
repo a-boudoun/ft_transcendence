@@ -74,6 +74,7 @@ const page = ({ params }: { params: { id: number } }) => {
       );
 
       setMessages(data.messages);
+      console.log("data", data.messages);
       socket.emit("join", { channel: data.id });
       if (!data || data.type !== "Direct") {
         router.push("/chat");
