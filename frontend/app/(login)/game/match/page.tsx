@@ -8,7 +8,6 @@ import axios from '@/apis/axios';
 import  Game  from '@/components/game/fullGame';
 
 export default function MatchPlayers() {
-	const [playerUsername, setPlayerUsername] = useState<string>('');
 	const [playerId, setPlayerId] = useState<string>('');
 	const [isPlayerFetched, setIsPlayerFetched] = useState<boolean>(false);
 	const [gameStart, setGameStart] = useState<boolean>(false);
@@ -18,7 +17,6 @@ export default function MatchPlayers() {
 		try {
 		  const { data } = await axios.get(`/users/getUser/me`);
 		  if (data) {
-			setPlayerUsername(data.username);
 			setPlayerId(data.id);
 			setIsPlayerFetched(true);
 		  }

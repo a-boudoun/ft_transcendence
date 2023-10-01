@@ -37,20 +37,21 @@ function LoadingPlayer({setGame}: prop){
 	
 	
 		const iamges = [
-			"/game/man.png",
-			"/game/man0.png",
-			"/game/man1.png",
-			"/game/man2.png",
-			"/game/man3.png",
-			"/game/man4.png",
-			"/game/man5.png",
-			"/game/man6.png",
-			"/game/man7.png",
-			"/game/man8.png",
-			"/game/woman.png",
-			"/game/woman1.png",
-			"/game/woman2.png",
-			"/game/woman3.png",
+			"/game/man.webp",
+			"/game/man0.webp",
+			"/game/man1.webp",
+			"/game/man2.webp",
+			"/game/man3.webp",
+			"/game/man4.webp",
+			"/game/man5.webp",
+			"/game/man6.webp",
+			"/game/man8.webp",
+			"/game/woman.webp",
+			"/game/woman1.webp",
+			"/game/woman2.webp",
+			"/game/woman3.webp",
+			"/game/woman4.webp",
+			"/game/woman5.webp",
 		];
 	
 		useEffect(() => {
