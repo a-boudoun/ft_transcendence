@@ -101,6 +101,7 @@ const ChallengeDropDown = ({ id, setIsOpen }: ChallengeDropDownProps) => {
           className="w-[200px] flex gap-4 items-center bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-2xl p-2 hover:opacity-50"
           onClick={() => {
             socket.emit("invite-freind", { reciever: id, map: "football-mode" });
+            localStorage.setItem("map", "football-mode");
           }}
         >
           <div className="rounded-full h-[38px] w-[38px] overflow-hidden">
@@ -118,6 +119,7 @@ const ChallengeDropDown = ({ id, setIsOpen }: ChallengeDropDownProps) => {
           className="w-[200px] flex gap-4 items-center bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-2xl p-2 hover:opacity-50"
           onClick={() => {
             socket.emit("invite-freind", { reciever: id, map: "space-mode"});
+            localStorage.setItem("map", "space-mode");
           }}
         >
           <div className="rounded-full h-[38px] w-[38px] overflow-hidden">
@@ -135,6 +137,7 @@ const ChallengeDropDown = ({ id, setIsOpen }: ChallengeDropDownProps) => {
           className="w-[200px] flex gap-4 items-center bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-2xl p-2 hover:opacity-50"
           onClick={() => {
             socket.emit("invite-freind", { reciever: id, map: "default" });
+            localStorage.setItem("map", "default");
           }}
         >
           <div className="rounded-full h-[38px] w-[38px] overflow-hidden">
