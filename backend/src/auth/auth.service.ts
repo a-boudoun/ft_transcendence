@@ -104,7 +104,6 @@ config();
       
       async validate2FA(code: string, id: number) {
         const user = await this.userService.findOneById(id);
-        
 
         const valid = await authenticator.verify({token: code, secret: user.fact2Secret});
         if (valid === false)

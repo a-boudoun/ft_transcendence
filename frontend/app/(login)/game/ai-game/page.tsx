@@ -6,6 +6,7 @@ import  RobotGame  from "@/components/game/robotGame";
 
 
 const Difficulty = () => {
+	console.log("difficulty");
 	const [difficulty, setDifficulty] = useState<number>(12);
 	const [gameStarted, setGameStarted] = useState<boolean>(false);
 	
