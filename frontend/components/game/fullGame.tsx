@@ -107,13 +107,15 @@ export default function Game({meId} : Prop){
 						room: roomid,
 						player: meId.toString(),
 					});
-					router.push("/home");
+					router.push("/game");
 				}}>
 				leave
 			</button>
 		</div>}
-		{Winner !== '' && <Won setLost={setLoser} setWon={setWinner} />}
-		{Loser !== '' && <Lost setLost={setLoser} setWon={setWinner} />}
+		{Winner !== '' && <Won setLost={setLoser} setWon={setWinner} me={meId.toString()}
+			other={meId.toString() == RightPlayer ? LeftPlayer : RightPlayer}/>}
+		{Loser !== '' && <Lost setLost={setLoser} setWon={setWinner} me={meId.toString()} 
+			other={meId.toString() == RightPlayer ? LeftPlayer : RightPlayer}/>}
 	</>
 	);
 }
