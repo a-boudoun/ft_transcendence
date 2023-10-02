@@ -7,7 +7,7 @@ const Stats = ({ user }: { user: any }) => {
   const games = user.wins + user.loses;
 
   return (
-    <div className="h-full flex flex-col justify-center gap-12  sm:justify-around  xl:z-40">
+    <div className="flex flex-col justify-center gap-12 mt-32 sm:mt-20  sm:justify-around  xl:z-40">
       <div className="w-full flex flex-col gap-4 p-4">
         <PercentageLine value={user.level} />
         <div className="flex justify-center gap-4">

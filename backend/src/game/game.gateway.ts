@@ -7,9 +7,6 @@ import { AuthService } from 'src/auth/auth.service';
 import {UseGuards} from '@nestjs/common'
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
 
-//Cross-Origin-Resource-Sharing (CORS) is a mechanism that uses additional HTTP headers to tell browsers 
-//to give a web application running at one origin,
-//access to selected resources from a different origin
 @WebSocketGateway()
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
@@ -23,13 +20,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   recentRomm: string | null;
 
   @UseGuards(Jwt2faAuthGuard)
-  handleConnection(client: Socket, data: any) {
+  handleConnection(client: Socket) {
     const cookie: string = client.handshake.headers.cookie;
     if (!cookie || cookie === undefined)
       return;
-    const username: string = this.auth.getUsername(cookie).toString();
-    client.data.username = username;
-    client.join(username);
+    const id: string = this.auth.getId(cookie).toString();
+    client.data.username = id;
+    client.join(id);
   }
   
   handleDisconnect(client: Socket) {

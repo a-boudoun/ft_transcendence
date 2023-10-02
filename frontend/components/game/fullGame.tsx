@@ -73,7 +73,7 @@ export default function Game({meId} : Prop){
 
 	return (
 	<>
-		{(Winner === '' && Loser === '') && <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
+		{(Winner === '' && Loser === '') && <div className="flex justify-center  items-center h-full w-full">
 			{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#f6f6f6] z-10 text-[90px] mb-[150px] ">{countDownValue}</p>}
 			{LeftPlayer !== '' && RightPlayer !== '' && <PlayersScore 
 			left={leftScore} 

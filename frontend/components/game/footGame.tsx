@@ -104,7 +104,7 @@ function FootGame({roomid, me, RightPlayer} : Prop){
 			},
 			});
 
-			const ball = 	Bodies.circle(W / 2, H / 2, 15,{
+			const ball = Bodies.circle(W / 2, H / 2, 15,{
 				restitution: 1, // Make the ball fully elastic
 				friction: 0, // Remove friction
 				frictionAir: 0, // Remove air friction

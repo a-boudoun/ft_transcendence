@@ -6,6 +6,7 @@ import  RobotGame  from "@/components/game/robotGame";
 
 
 const Difficulty = () => {
+	console.log("difficulty");
 	const [difficulty, setDifficulty] = useState<number>(12);
 	const [gameStarted, setGameStarted] = useState<boolean>(false);
 	
@@ -26,7 +27,7 @@ const Difficulty = () => {
 	};
   return (
 	<>
-    {!gameStarted && <div className="flex bg-dark-gray w-full h-full  justify-center">
+    {!gameStarted && <div className="flex w-full h-full  justify-center">
 		<div className="flex items-center justify-center flex-col gap-8">
 			<Image
 			className="w-[400px] h-[400px]" 
