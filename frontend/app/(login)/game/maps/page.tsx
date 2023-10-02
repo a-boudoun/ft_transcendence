@@ -46,14 +46,14 @@ export default function Maps() {
               <Image
                 width={260}
                 height={0}
-                alt="#"
-                src="/game/football-map-select.svg"
+                alt="football-mode"
+                src="/game/football-map-select.webp"
                 className={`h-full w-full transition-transform ${
                   selectedMap === "football-mode" ? "scale-110" : ""
                 } hover:scale-110`}
               />
             </div>
-            <span className="font-bold">football-mode</span>
+            <span className="font-bold">Football</span>
           </button>
           <button
             onClick={() => {
@@ -71,14 +71,14 @@ export default function Maps() {
               <Image
                 width={260}
                 height={0}
-                alt="#"
-                src="/game/space-map-select.svg"
+                alt="Space-mode"
+                src="/game/space-map-select.webp"
                 className={`h-full w-full transition-transform ${
                   selectedMap === "space-mode" ? "scale-110" : ""
                 } hover:scale-110`}
               />
             </div>
-            <span className="font-bold">football-mode</span>
+            <span className="font-bold">Space</span>
           </button>
           <button
             onClick={() => {
@@ -96,14 +96,14 @@ export default function Maps() {
               <Image
                 width={260}
                 height={0}
-                alt="#"
-                src="/game/default-map-select.svg"
+                alt="Ping pong"
+                src="/game/default-map-select.webp"
                 className={`h-full w-full transition-transform ${
                   selectedMap === "default" ? "scale-110" : ""
                 } hover:scale-110`}
               />
             </div>
-            <span className="font-bold">football-mode</span>
+            <span className="font-bold">Ping pong</span>
           </button>
         </div>
         <button
