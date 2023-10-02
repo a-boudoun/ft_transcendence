@@ -28,19 +28,26 @@ export default function Game({meId} : Prop){
 	const [map, setMap] = useState<string>('default');
 
 	useEffect(() => {
-		let seleted: string | null = localStorage.getItem('map');
-		if (seleted !== null) setMap(seleted);
-
+		let selected: string | null = localStorage.getItem('map');
+		if (selected !== null) {
+		  setMap(selected);
+		}
+		
 		socket.emit('full-Game', meId);
-		socket.on('game-info', (data) => {
+		socket.on('game-info', (data: any) => {
 			setLeftPlayer(data.leftPlayer);
 			setRightPlayer(data.rightPlayer);
 			setRoomid(data.room);
+			selected = localStorage.getItem('map');
+			if (selected !== null) {
+			  setMap(selected);
+			}
 		});
 		return () => {
-			socket.off('game-info');
+		  socket.off('game-info');
 		}
 	  }, []);
+	  
 	
 	useEffect(() => {
 		socket.on('score', (data) => {
@@ -114,7 +121,7 @@ export default function Game({meId} : Prop){
 		</div>}
 		{Winner !== '' && <Won setLost={setLoser} setWon={setWinner} me={meId.toString()}
 			other={meId.toString() == RightPlayer ? LeftPlayer : RightPlayer}/>}
-		{Loser !== '' && <Lost setLost={setLoser} setWon={setWinner} me={meId.toString()} 
+		{Loser !== '' && <Lost setLost={setLoser} setWon={setWinner} me={meId.toString()}
 			other={meId.toString() == RightPlayer ? LeftPlayer : RightPlayer}/>}
 	</>
 	);
