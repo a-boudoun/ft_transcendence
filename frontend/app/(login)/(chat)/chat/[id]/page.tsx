@@ -20,7 +20,7 @@ import useCloseOutSide from "@/hookes/useCloseOutSide";
 
 
 interface MoreProps {
-  user: userDto;
+  user: any;
   setIsOpen: (isOpen: boolean) => void;
 }
 
