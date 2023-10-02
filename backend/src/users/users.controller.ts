@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseGuards, ParseIntPipe} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
 import { Jwt2faAuthGuard } from '../auth/guards/jwt-2fa-auth.guard';
 import { JwtSigninGuard } from '../auth/guards/jwt-signin.guard';
+import con from 'ormconfig';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -35,14 +36,14 @@ export class UsersController {
   
   @Get('getUser/me')
   @UseGuards(Jwt2faAuthGuard)
-  me(@Req() req) {
-    return this.usersService.findOneById(req.user.id);
+  async me(@Req() req) {
+    return await this.usersService.findOneById(req.user.id);
   }
   
   @Get('getUser/:username')
   @UseGuards(Jwt2faAuthGuard)
   async findOne(@Req() req, @Param('username') username: string) {
-    console.log(username);
+
     const user =  await this.usersService.findOneByUserName(username);
     if (!user)
       return null;
@@ -52,6 +53,7 @@ export class UsersController {
     {
       return null;
     }
+
     return user;
   }
 
@@ -74,11 +76,10 @@ export class UsersController {
   
   @Patch('updateMe')
   @UseGuards(Jwt2faAuthGuard)
-  updateMe(@Req() req, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(req.user.id, updateUserDto);
+  updateMe(@Req() req, @Body() Body: UpdateUserDTO) {
+    return this.usersService.update(req.user.id, Body);
   }
   
-
   @Get('isUserNameExist/:username')
   async isUserNameExist(@Param('username') username: string) {
     return this.usersService.isUserNameExist(username);
@@ -87,7 +88,6 @@ export class UsersController {
   @Post('block')
   @UseGuards(Jwt2faAuthGuard)
   async block(@Req() req, @Body() body: {id: number}) {
-    console.log(body);
     await this.usersService.block(req.user.id, body.id);
   }
 
@@ -105,8 +105,7 @@ export class UsersController {
 
   @Get('isBlocked/:id')
   @UseGuards(Jwt2faAuthGuard)
-  async isBlocked(@Req() req, @Param('id', ParseIntPipe) id: number) {
+  async isBlocked(@Req() req, @Param('id') id: number) {
     return this.usersService.isBlocked(req.user.id, id);
   }
-  
 }

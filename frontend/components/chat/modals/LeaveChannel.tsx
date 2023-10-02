@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import { AppDispatch } from '@/redux/store';
 import { setisopen } from '@/redux/features/globalState';
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { Client } from '@/providers/QueryProvider';
 import { userDto } from '@/dto/userDto';
 
@@ -24,7 +24,7 @@ import { userDto } from '@/dto/userDto';
       mutationFn: async (user: userDto) => {
           const member = channel.memberships?.find((item: any) => item.member?.id === user.id);
           const dd = isowner ? channel.id : `${channel.id}/${member.id}`;
-          const { data } = await axios.delete(`http://localhost:8000/channels/${dd}`, { withCredentials: true });
+          const { data } = await axios.delete(`/channels/${dd}`);
           return data;
       },
       onSuccess: () => {

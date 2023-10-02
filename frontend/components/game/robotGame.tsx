@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import {Engine, Render, Body, Events, Composite} from "matter-js";
+import {Engine, Render, Body, Events, Composite, Runner} from "matter-js";
 import PlayersScore from "@/components/game/score";
 import Won from "@/components/game/winner";
 import Lost from "@/components/game/loser";
@@ -15,54 +15,23 @@ function RobotGame({difficulty} : {difficulty: number}){
 	const [countDownValue, setCountDownValue] = useState<number>(3);
 	const [leftScore, setLeftScore] = useState<number>(0);
 	const [rightScore, setRightScore] = useState<number>(0);
+	const [sx, setSx] = useState<number>(1);
+	const [sy, setSy] = useState<number>(1);
 	var lScore = 0;
 	var rScore = 0;
-	let keyClicked : boolean = false;
+	let keyClicked : boolean = false;;
 	let leftInterval : NodeJS.Timeout;
 	let keyInterval : NodeJS.Timeout;
+	const maxScore = 5;
 
 	useEffect(() => {
+		console.log("--------------------");
 		if (!divRef.current) return;
 			
-		let H = divRef.current.offsetHeight;
-		let W = divRef.current.offsetWidth;
+		let H = 900;
+		let W = 1700;
 
-		const handleResize = () => {
-			if (!divRef.current) return;
-				render.canvas.width = divRef.current.offsetWidth;
-				render.canvas.height = divRef.current.offsetHeight;
-				H = divRef.current.offsetHeight;
-				W = divRef.current.offsetWidth;
-				Body.setPosition(
-					rightBoard,
-					{
-						x: W - 35,
-						y: H / 2,
-					}
-				);
-				Body.setPosition(
-					leftBoard,
-					{
-						x: 35,
-						y: H / 2,
-					}
-				);
-				Body.setPosition(
-					floor,
-					{
-						x: W / 2,
-						y: H,
-					}
-				);
-				Body.setPosition(
-					ceiling,
-					{
-						x: W / 2,
-						y: 0,
-					}
-				);
-		}
-
+	
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (!keyClicked)
 			{
@@ -111,9 +80,11 @@ function RobotGame({difficulty} : {difficulty: number}){
 				height: H,
 				pixelRatio: 1,
 				wireframes: false,
-				background: "#000000",
+				background: "/game/default.png",
 			}
-		});
+		}),
+		runner = Runner.create();
+
 		
 		const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#FFFFFF');
 		const leftBoard = drawRect(35, H / 2, 20, 120, '#FFFFFF');
@@ -137,7 +108,6 @@ function RobotGame({difficulty} : {difficulty: number}){
 							y: leftBoard.position.y + 5,
 						});
 				}
-
 			}, difficulty);
 		}
 
@@ -193,7 +163,6 @@ function RobotGame({difficulty} : {difficulty: number}){
 				{
 					Events.off(engine, 'beforeUpdate', resetPosition);
 					Events.off(engine, 'collisionStart', handleCollision);
-					window.removeEventListener("resize", handleResize);
 					document.removeEventListener('keyup', handlekeyUp);
 					document.removeEventListener('keydown', handleKeyDown);
 					Engine.clear(engine);
@@ -211,7 +180,6 @@ function RobotGame({difficulty} : {difficulty: number}){
 
 		Composite.add(engine.world, [ball, rightBoard, leftBoard, floor, ceiling]);
 		Body.setVelocity(ball, {x: 0, y: 0});
-		window.addEventListener("resize", handleResize);
 		document.addEventListener('keyup', handlekeyUp);
 		document.addEventListener('keydown', handleKeyDown);
 		
@@ -227,11 +195,10 @@ function RobotGame({difficulty} : {difficulty: number}){
 			resetPosition();
 		});
 
-		Engine.run(engine);
+		Runner.run(runner, engine);
 		Render.run(render);
 
 		return () => {
-			window.removeEventListener("resize", handleResize);
 			document.removeEventListener('keyup', handlekeyUp);
 			document.removeEventListener('keydown', handleKeyDown);
 			Events.off(engine, 'collisionStart', handleCollision);
@@ -250,19 +217,51 @@ function RobotGame({difficulty} : {difficulty: number}){
 		}
 	  }, [countDownValue]);
 
+	  useEffect(() => {
+		let canvasWidth: number = 1700;
+		let canvasHeight: number = 900;
+	  
+		let windowWidth: number = window.innerWidth;
+		let windowHeight: number = window.innerHeight;
+	  
+		let scaleFactor: number = Math.min(windowWidth / canvasWidth, windowHeight / canvasHeight);
+	  
+		let scalex: number = scaleFactor > 1 ? 1 : scaleFactor * 0.95;
+		let scaley: number = scaleFactor > 0.95 ? 1 : scaleFactor * 0.85; // adding the navbar height
+		setSx(scalex);
+		setSy(scaley);
+		window.addEventListener("resize", handleResize);
+		
+		function handleResize(){
+		  windowWidth = window.innerWidth;
+		  windowHeight = window.innerHeight;
+		  scaleFactor = Math.min(windowWidth / canvasWidth, windowHeight / canvasHeight);
+		  scalex = scaleFactor > 1 ? 1 : scaleFactor * 0.95;
+		  scaley = scaleFactor > 1 ? 1 : scaleFactor * 0.85; // adding the navbar height
+		  setSx(scalex);
+		  setSy(scaley);
+		}
+		
+		return () => {
+		  window.removeEventListener("resize", handleResize);
+		}
+	  }, []);
+
 	return (
 	<>
-		{ leftScore < maxScore && rightScore < maxScore && <div className="flex justify-center  items-center h-full w-full bg-[#384259]">
-			{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] ">{countDownValue}</p>}
+		{ leftScore < maxScore && rightScore < maxScore && <div className="flex justify-center  items-center h-full w-full">
+			{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] z-10 ">{countDownValue}</p>}
 			<PlayersScore 
 			left={leftScore} 
 			right={rightScore}
 			leftPlayer={"robot"}
 			rightPlayer={"me"}
 			/>
-			<div
-			ref={divRef}
-			className="h-4/6 w-4/5 mt-20"
+			<div ref={divRef} 
+					className="h-[900px] w-[1700px] mt-20 relative"
+					style={{
+				transform: `scale(${sx}, ${sy})`,
+			}}
 			>
 			</div>
 			<button 
@@ -273,8 +272,8 @@ function RobotGame({difficulty} : {difficulty: number}){
 				leave
 			</button>
 		</div>}
-		{rightScore >= maxScore && <Won/>}
-		{leftScore >=  maxScore && <Lost/>}
+		{/* {rightScore >= maxScore && <Won setWon={setPVisible} setLost={setPVisible}/>} 
+		{leftScore >=  maxScore && <Lost/>} */}
 	</>
 	);
 }

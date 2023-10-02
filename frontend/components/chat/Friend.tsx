@@ -1,8 +1,7 @@
 "use client";
 import {userDto} from "@/dto/userDto";
-import { useState} from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios from "@/apis/axios";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,7 +10,7 @@ const Friends = ({user}:{user:userDto}) => {
     const {data, isLoading} = useQuery({
         queryKey: ['friends', user.id],
         queryFn: async ()=> {
-            const { data } = await axios.get(`http://localhost:8000/channels/direct/${user.username}`, { withCredentials: true });
+            const { data } = await axios.get(`/channels/direct/${user.username}`);
             return data;
         }
       });

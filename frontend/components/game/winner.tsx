@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from "next/image";
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { useQuery } from "@tanstack/react-query";
 import socket from '../socketG';
 
@@ -17,14 +17,14 @@ export default function Won({setWon, setLost} : prop){
   const {data, isLoading} = useQuery({
 		queryKey: ['user'],
 		queryFn: async ()=> {
-		  const {data} = await axios.get('http://localhost:8000/users/getUser/me', { withCredentials: true })
+		  const {data} = await axios.get('/users/getUser/me')
 		  return data;
 		}
 	  });
 	if (isLoading) return <div>Loading...</div>;
 	else{
     return (
-      <div className='bg-dark-gray flex w-full h-full items-center justify-center '>
+      <div className='flex w-full h-full items-center justify-center '>
         <div className='flex flex-col gap-8 W-[600px] h-[600px] '>
           <h1 className='text-6xl font-bold text-[#4bff60f5] '>You Won</h1>
           <h1 className='text-2xl font-bold font-serif text-teal-600'>+10xp</h1>
