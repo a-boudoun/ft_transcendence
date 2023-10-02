@@ -5,10 +5,9 @@ import Link from "next/link";
 import { userDto } from "@/dto/userDto";
 import axios from "@/apis/axios";
 import { useQuery } from "@tanstack/react-query";
-import socket from "../socketG";
 import { MessagesSquare, Gamepad2 } from "lucide-react";
 import { useState } from "react";
-import useCloseOutSide from "@/hookes/useCloseOutSide";
+import ChallengeDropDown  from "@/components/common/ChallengeDropDown";
 
 const Friends = ({ id, isMe }: { id: number; isMe: boolean }) => {
   const { data, isLoading } = useQuery({

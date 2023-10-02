@@ -24,7 +24,8 @@ import {
   ShieldCheck,
   UserX2,
   Ban,
-  VolumeX
+  VolumeX,
+  XCircle,
 } from "lucide-react";
 
 const Right = () => {
@@ -73,13 +74,7 @@ const Right = () => {
           className="absolute top-4 left-4  hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg w-[36px] h-[36px] rounded-full flex justify-center items-center lg:hidden "
           onClick={() => dispatch(setisMid(true))}
         >
-          <Image
-            className="h-[24px] w-[24px]  rounded-full"
-            src={"/img/cancel.svg"}
-            width={1000}
-            height={1000}
-            alt=""
-          />
+          <XCircle size={28} color="#EA5581" strokeWidth={1.5} />
         </button>
         <div className="h-fit w-full rounded-xl  py-3 ">
           <Image

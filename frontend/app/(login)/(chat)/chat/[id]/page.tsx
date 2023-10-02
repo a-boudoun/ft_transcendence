@@ -3,7 +3,7 @@ import { userDto } from "@/dto/userDto";
 import Image from "next/image";
 import Link from "next/link";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import axios from "@/apis/axios";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -14,12 +14,24 @@ import { Message } from "@/components/chat/Mid";
 import { Client } from "@/providers/QueryProvider";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { MoreHorizontal} from "lucide-react";
+import { MoreHorizontal, Gamepad2, ArrowLeftCircle } from "lucide-react";
+import ChallengeDropDown from "@/components/common/ChallengeDropDown";
+import useCloseOutSide from "@/hookes/useCloseOutSide";
 
-const More = ({ user }: { user: userDto }) => {
+
+interface MoreProps {
+  user: userDto;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+const More = ({ user, setIsOpen }: MoreProps) => {
+  const { divref } = useCloseOutSide({ setIsOpen });
+  const [isChallenge, setIsChallenge] = useState<boolean>(false);
+
   const router = useRouter();
   return (
-    <div className="absolute w-56  h-fit rounded-[1.4rem]   top-4 right-3  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg p-3 ">
+    <div ref= {divref}
+    className="absolute w-60  rounded-[1.4rem]   top-4 right-3  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg p-3 ">
       <div className="bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-[1.2rem] overflow-hidden">
         <button
           className="flex items-center justify-start px-4 py-2 w-full hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg rounded-t-lg"
@@ -30,7 +42,7 @@ const More = ({ user }: { user: userDto }) => {
             src={user.image}
             width={100}
             height={100}
-            alt=""
+            alt="user image"
           />
           <span className="pl-6 text-base font-semibold text-blue">
             view Profile
@@ -38,17 +50,14 @@ const More = ({ user }: { user: userDto }) => {
         </button>
         <button
           className="flex items-center justify-start px-4 py-2 w-full hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg rounded-b-lg"
-          onClick={() => socket.emit("invite-freind", user.username)}
+          onClick={() => setIsChallenge(!isChallenge)}
         >
-          <Image
-            className="h-6 w-6   "
-            src={"/icons/profile/matches.svg"}
-            width={100}
-            height={100}
-            alt=""
-          />
-          <span className="px-6 text-base font-semibold text-blue">Play</span>
+          <Gamepad2 size={32} color="#7ac7c4" strokeWidth={1.5} />
+          <span className="px-6 text-base font-semibold text-blue">Challenge</span>
         </button>
+      </div>
+      <div className="relative text-sm top-[-46px] right-[-24px]">
+        {isChallenge && <ChallengeDropDown id={user.id} setIsOpen={setIsChallenge} />}
       </div>
     </div>
   );
@@ -67,9 +76,7 @@ const page = ({ params }: { params: { id: number } }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["direct", params.id],
     queryFn: async () => {
-      const { data } = await axios.get(
-        `/channels/directchannel/${params.id}`,
-      );
+      const { data } = await axios.get(`/channels/directchannel/${params.id}`);
 
       setMessages(data.messages);
       socket.emit("join", { channel: data.id });
@@ -94,9 +101,7 @@ const page = ({ params }: { params: { id: number } }) => {
     queryKey: ["blocked", otherUser?.id],
     queryFn: async () => {
       if (!otherUser) return;
-      const { data } = await axios.get(
-        `/users/isBlocked/${otherUser.id}`,
-      );
+      const { data } = await axios.get(`/users/isBlocked/${otherUser.id}`);
       console.log("data", user.id, data);
       return data;
     },
@@ -146,9 +151,7 @@ const page = ({ params }: { params: { id: number } }) => {
     mutationKey: ["unblock", otherUser?.id],
     mutationFn: async () => {
       if (!otherUser) return;
-      const { data } = await axios.delete(
-        `/users/unblock/${otherUser?.id}`,
-      );
+      const { data } = await axios.delete(`/users/unblock/${otherUser?.id}`);
       return data;
     },
     onSuccess: () => {
@@ -176,13 +179,7 @@ const page = ({ params }: { params: { id: number } }) => {
           <div className="h-fit bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg flex items-center py-3  rounded-xl  justify-between ">
             <div className="flex items-center space-x-2 ">
               <Link href={`/chat`}>
-                <Image
-                  className="h-full  md:hidden mx-2"
-                  src={"/img/back.svg"}
-                  width={18}
-                  height={18}
-                  alt=""
-                />
+                <ArrowLeftCircle size={32} color="#7ac7c4" strokeWidth={1.5} />
               </Link>
               {otherUser?.image && (
                 <Image
@@ -203,7 +200,7 @@ const page = ({ params }: { params: { id: number } }) => {
                 <MoreHorizontal color="#7AC7C4" strokeWidth={4} />
               </button>
               <div className="relative">
-                {isOpen && <More user={otherUser} />}
+                {isOpen && <More user={otherUser} setIsOpen={setIsOpen} />}
               </div>
             </div>
           </div>
@@ -232,7 +229,21 @@ const page = ({ params }: { params: { id: number } }) => {
                   onChange={(e: any) => setInput(e.target.value)}
                 />
                 <button className="p-2 rounded-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-send-horizontal"><path d="m3 3 3 9-3 9 19-9Z"/><path d="M6 12h16"/></svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    className="lucide lucide-send-horizontal"
+                  >
+                    <path d="m3 3 3 9-3 9 19-9Z" />
+                    <path d="M6 12h16" />
+                  </svg>
                 </button>
               </form>
             ) : blocked.data.blocker === otherUser.id ? (
