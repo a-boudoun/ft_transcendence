@@ -3,8 +3,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import {Engine, Render, Body, Events, Composite, Runner} from "matter-js";
 import PlayersScore from "@/components/game/score";
-import Won from "@/components/game/winner";
-import Lost from "@/components/game/loser";
+import WonOffline from "@/components/game/winnerOffline";
+import LostOffline from "@/components/game/loserOffline";
 import { drawRect, drawCircle } from "@/components/game/draw";
 import { useRouter } from "next/navigation";
 
@@ -25,7 +25,6 @@ function RobotGame({difficulty} : {difficulty: number}){
 	const maxScore = 5;
 
 	useEffect(() => {
-		console.log("--------------------");
 		if (!divRef.current) return;
 			
 		let H = 900;
@@ -272,8 +271,8 @@ function RobotGame({difficulty} : {difficulty: number}){
 				leave
 			</button>
 		</div>}
-		{rightScore >= maxScore && <Won/>}
-		{leftScore >=  maxScore && <Lost/>}
+		{rightScore >= maxScore && <WonOffline/>}
+		{leftScore >=  maxScore && <LostOffline/>}
 	</>
 	);
 }

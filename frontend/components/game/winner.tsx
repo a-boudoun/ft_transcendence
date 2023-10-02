@@ -9,10 +9,10 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 interface prop {
-  setWon ?: (val: string) => void;
-  setLost ?: (val: string) => void;
-  me ?: string;
-  other ?: string;
+  setWon : (val: string) => void;
+  setLost : (val: string) => void;
+  me : string;
+  other : string;
 }
 
 export default function Won({ setWon, setLost, me, other } : prop) {

@@ -58,9 +58,11 @@ const InviteDisplay = ({socketId, setdisplay, userid, map}: prop) => {
 					>Decline</button>
 					<button className="bg-[rgba(86,245,65,0.75)] rounded-xl px-2 py-1 sm:px-4 sm:py-2"
 					onClick={() => {
-						socket.emit('accept-invitation', {senderUsername: userid, senderSocketId: socketId});
-						setdisplay(null);
 						localStorage.setItem("map", map);
+						setTimeout(() => {
+							socket.emit('accept-invitation', {senderUsername: userid, senderSocketId: socketId});
+							setdisplay(null);
+						}, 300);
 					}}
 					>Accept</button>
 				</div>
