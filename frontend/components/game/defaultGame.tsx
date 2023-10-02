@@ -20,9 +20,6 @@ function DefaultGame({roomid, me, RightPlayer} : Prop){
 	useEffect(() => {
 		if (roomid!== '')
 		{
-			console.log('roomid', roomid);
-			console.log('me', me);
-			console.log('RightPlayer', RightPlayer);
 			const handleKeyDown = (e: KeyboardEvent) => {
 				if (!keyClicked)
 				{
