@@ -23,75 +23,87 @@ export default function Maps() {
 
   return (
     <main className="min-h-screen  grid place-content-center pt-14 bg-bg bg-cover">
-      <div className="h-fit flex flex-col items-center gap-8 p-8 sm:gap-16  sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg sm:drop-shadow-lg sm:rounded-3xl">
-        <div className="bg-[#4b5468a0]  rounded-[10px] p-4 ">
+      <div className="flex flex-col items-center gap-8 p-8 sm:gap-16  sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg sm:drop-shadow-lg sm:rounded-3xl">
+        <div className="bg-[#4b5468a0] rounded-[10px] p-4 ">
           <h3 className="text-[#B5B3BD] tracking-wide [word-spacing:3px] font-medium text-xl sm:text-3xl">
             selet the map
           </h3>
         </div>
-        <div className="flex justify-center gap-8 items-center flex-col sm:flex-row w-full">
+        <div className="flex justify-center gap-8 items-center flex-col sm:flex-row">
           <button
-            onClick={() => { setmapToLocalStorage("football-mode")}}
-            className={`flex flex-col items-center border-b-[5px] border-opacity-0  hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px] border-b-[#2DFCEE] rounded-b-[8px] ${
-				selectedMap === "football-mode"
-                ? "border-opacity-100 border-b-[#2DFCEE] rounded-b-[8px]"
-                : ""
-            }`}
+            onClick={() => {
+              setmapToLocalStorage("football-mode");
+            }}
+            className={`flex flex-col items-center gap-4`}
           >
-			<div className="max-w-[260px]">
-				<Image
-				width={260}
-				height={260}
-				alt="#"
-				src="/game/football-map-select.svg"
-				className="h-full w-full"
-				/>
-			</div>
-            <p className="text-white text-center mt-[10px] font-bold">
-              football-mode
-            </p>
+            <div
+              className={`${
+                selectedMap === "football-mode"
+                  ? "shadow-[0_20px_50px_rgba(_89,_203,_76,_1)]  "
+                  : " "
+              } rounded-xl max-w-[260px] hover:shadow-[0_20px_50px_rgba(_89,_203,_76,_1)] overflow-hidden`}
+            >
+              <Image
+                width={260}
+                height={0}
+                alt="#"
+                src="/game/football-map-select.svg"
+                className={`h-full w-full transition-transform ${
+                  selectedMap === "football-mode" ? "scale-110" : ""
+                } hover:scale-110`}
+              />
+            </div>
+            <span className="font-bold">football-mode</span>
           </button>
           <button
-           className={`flex flex-col items-center border-b-[5px] border-opacity-0  hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px] border-b-[#2DFCEE] rounded-b-[8px] ${
-			   selectedMap === "space-mode"
-			   ? "border-opacity-100 border-b-[#2DFCEE] rounded-b-[8px]"
-			   : ""
-			}`}
-			onClick={() => setmapToLocalStorage("space-mode")}
+            onClick={() => {
+              setmapToLocalStorage("space-mode");
+            }}
+            className={`flex flex-col items-center gap-4`}
           >
-			<div className="max-w-[260px]">
-				<Image
-				width={260}
-				height={0}
-				alt="#"
-				src="/game/space-map-select.svg"
-				className="h-full w-full"
-				/>
-			</div>
-            <p className="text-white text-center mt-[10px] font-bold">
-              space-mode
-            </p>
+            <div
+              className={`${
+                selectedMap === "space-mode"
+                  ? "shadow-[0_20px_50px_rgba(_179,_54,_144,_1)]"
+                  : " "
+              } rounded-xl max-w-[260px] hover:shadow-[0_20px_50px_rgba(_179,_54,_144,_1)] overflow-hidden`}
+            >
+              <Image
+                width={260}
+                height={0}
+                alt="#"
+                src="/game/space-map-select.svg"
+                className={`h-full w-full transition-transform ${
+                  selectedMap === "space-mode" ? "scale-110" : ""
+                } hover:scale-110`}
+              />
+            </div>
+            <span className="font-bold">football-mode</span>
           </button>
           <button
-          className={`flex flex-col items-center border-b-[5px] border-opacity-0  hover:border-b-[5px] hover:border-b-[#2DFCEE] hover:rounded-b-[8px] border-b-[#2DFCEE]  rounded-b-[8px] ${
-			selectedMap === "default"
-			? "border-opacity-100 border-b-[#2DFCEE] rounded-b-[8px]"
-			: ""
-		 }`}
-            onClick={() => setmapToLocalStorage("default")}
+            onClick={() => {
+              setmapToLocalStorage("default");
+            }}
+            className={`flex flex-col items-center gap-4`}
           >
-			<div className="max-w-[260px]">
-				<Image
-				width={260}
-				height={0}
-				alt="#"
-				src="/game/default-map-select.svg"
-				className="h-full w-full"
-				/>
-			</div>
-            <p className="text-white text-center mt-[10px] font-bold">
-              default
-            </p>
+            <div
+              className={`${
+                selectedMap === "default"
+                  ? "shadow-[0_20px_50px_rgba(_134,_195,_187,_1)]"
+                  : " "
+              } rounded-xl max-w-[260px] hover:shadow-[0_20px_50px_rgba(_134,_195,_187,_1)] overflow-hidden`}
+            >
+              <Image
+                width={260}
+                height={0}
+                alt="#"
+                src="/game/default-map-select.svg"
+                className={`h-full w-full transition-transform ${
+                  selectedMap === "default" ? "scale-110" : ""
+                } hover:scale-110`}
+              />
+            </div>
+            <span className="font-bold">football-mode</span>
           </button>
         </div>
         <button
