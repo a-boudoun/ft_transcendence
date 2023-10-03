@@ -30,7 +30,7 @@ const User = ({ user, isMe }: { user: any; isMe: boolean }) => {
     const uploadimage = await uploadImage(e.target.files[0]);
     user.baner = uploadimage;
     await updateBaner.mutate(user);
-    await Client.refetchQueries(["User"]);
+    await Client.refetchQueries(["user", "me"]);
     setIsLoading(false);
   };
 

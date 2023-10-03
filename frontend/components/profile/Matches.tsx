@@ -24,7 +24,7 @@ const Match = ({ match, id }: { match: MatchProps; id: number }) => {
         className="flex flex-col items-center gap-2"
         href={`/profile/${match.winner.username}`}
       >
-        <div className="h-[64px] w-[64px] rounded-full overflow-auto">
+        <div className="h-[64px] w-[64px] rounded-full overflow-hidden">
           <Image
             className="h-full w-full"
             src={match.winner.image}
@@ -40,7 +40,7 @@ const Match = ({ match, id }: { match: MatchProps; id: number }) => {
         className="flex flex-col items-center gap-2"
         href={`/profile/${match.loser.username}`}
       >
-        <div className="h-[64px] w-[64px] rounded-full overflow-auto">
+        <div className="h-[64px] w-[64px] rounded-full overflow-hidden">
           <Image
             className="h-full w-full"
             src={match.loser.image}
@@ -57,7 +57,7 @@ const Match = ({ match, id }: { match: MatchProps; id: number }) => {
 
 const DisplayMatchs = ({ id }: { id: number }) => {
   const Matchs = useQuery({
-    queryKey: ["matches", id],
+    queryKey: ["matches"],
     queryFn: async () => {
       const { data } = await axios.get(`/gameHistory/getHistory/${id}`);
       return data;
@@ -66,7 +66,7 @@ const DisplayMatchs = ({ id }: { id: number }) => {
   if (Matchs.isLoading) return <div> loading... </div>;
   else {
     return (
-      <div className="grow flex flex-col gap-4 p-4 overflow-y-scroll  xl:rounded-b-3xl">
+      <div className="grow flex flex-col gap-4 p-4 overflow-scroll  xl:rounded-b-3xl">
         {Matchs.data.map((match: any) => {
           return <Match key={match.id} match={match} id={id} />;
         })}

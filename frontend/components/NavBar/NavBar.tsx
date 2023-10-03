@@ -62,7 +62,7 @@ const Mid = () => {
 
 const Right = () => {
   const {data, isLoading} = useQuery({
-    queryKey: ["user"],
+    queryKey: ["user", "me"],
     queryFn: async () => {
       const { data } = await axios.get("/users/getUser/me");
       return data;
