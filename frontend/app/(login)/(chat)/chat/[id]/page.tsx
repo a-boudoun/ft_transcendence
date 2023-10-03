@@ -79,6 +79,7 @@ const page = ({ params }: { params: { id: number } }) => {
       const { data } = await axios.get(`/channels/directchannel/${params.id}`);
 
       setMessages(data.messages);
+      console.log("data", data.messages);
       socket.emit("join", { channel: data.id });
       if (!data || data.type !== "Direct") {
         router.push("/chat");
