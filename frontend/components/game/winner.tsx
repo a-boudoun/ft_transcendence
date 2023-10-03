@@ -20,7 +20,7 @@ export default function Won({ setWon, setLost, me, other } : prop) {
   const [event, setEvent] = useState<string>("retry-game");
   const [senderName, setSenderName] = useState<string>(me);
   const [senderSocketId, setSenderSocketId] = useState<string>("");
-  const [timeLeft, setTimeLeft] = useState<number>(5);
+  const [timeLeft, setTimeLeft] = useState<number>(30);
   const [notif, setNotif] = useState<number>(0);
 
   useEffect(() => {
@@ -48,6 +48,7 @@ export default function Won({ setWon, setLost, me, other } : prop) {
     setSenderSocketId(data.senderSocketId);
     setEvent("accept-retry");
     setNotif(69);
+    console.log(`event: ${event}`);
   });
 
   const {data, isLoading} = useQuery({

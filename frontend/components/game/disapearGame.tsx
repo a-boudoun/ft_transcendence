@@ -148,7 +148,7 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 				} else {
 				  Body.setPosition(blackHole, { x: 2000, y: 2000 });
 				}
-			}, 8000);
+			}, 5000);
 			
 			setInterval(() => {
 				if (ball.position.x < 30 || ball.position.x > 1670 || (ball.position.x === H / 2 && ball.position.y === W / 2)) {
