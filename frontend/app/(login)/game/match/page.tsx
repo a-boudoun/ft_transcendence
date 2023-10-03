@@ -11,27 +11,28 @@ import  Game  from '@/components/game/fullGame';
 export default function MatchPlayers() {
 	const [gameStart, setGameStart] = useState<boolean>(false);
 
-
 	const user = useQuery({
 		queryKey: ["user", "me"],
 		queryFn: async () => {
 			const { data } = await axios.get(`/users/getUser/me`);
 			return data;
 		},
-		onSuccess: () => {
-			socket.emit('player-status', user.data.id);
 
-			socket.on('player-status', (status : string)=> {
-				if (status === 'not-looking'){
-					socket.emit('looking-for-match', user.data.id)
-				}
-				else{
-					setGameStart(true);
-				}
-			});
-		}
 	  });
-	
+
+	if (user.isLoading)
+	  return <div>loading...</div>;
+
+	  socket.emit('player-status', user.data.id);
+	  socket.on('player-status', (status : string)=> {
+		  if (status === 'not-looking'){
+			  socket.emit('looking-for-match', user.data.id)
+		  }
+		  else{
+			  setGameStart(true);
+		  }
+	  });
+
 	return (
 
 		<>
