@@ -3,27 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import RobotGame from "@/components/game/robotGame";
+import { Gamepad2 } from "lucide-react";
 
 const Difficulty = () => {
   console.log("difficulty");
   const [difficulty, setDifficulty] = useState<number>(12);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
-
-  const handleSliderChange = (event: any) => {
-    const value = event.target.value;
-
-    switch (parseInt(value)) {
-      case 1:
-        setDifficulty(14);
-        break;
-      case 2:
-        setDifficulty(12);
-        break;
-      case 3:
-        setDifficulty(10);
-        break;
-    }
-  };
 
   return (
     <>
@@ -37,66 +22,65 @@ const Difficulty = () => {
                 select the difficulty
               </h3>
             </div>
-            <div className="flex flex-col items-center gap-8">
-              <div className="flex justify-center gap-8 items-center flex-col sm:flex-row">
-                <button className={`flex flex-col items-center gap-4`}>
-                  <div className={`rounded-xl max-w-[260px] overflow-hidden`}>
-                    <Image
-                      width={260}
-                      height={0}
-                      alt="football-mode"
-                      src="/game/robot.svg"
-                      className={`w-260 object-cover object-center transition-transform ${
-                        difficulty === 14 ? "scale-110" : ""
-                      } hover:scale-110`}
-                    />
-                  </div>
-                  <span className="text-xl font-bold">Easy</span>
-                </button>
-                <div className={`flex flex-col items-center gap-4`}>
-                  <div className={`rounded-xl max-w-[260px] overflow-hidden`}>
-                    <Image
-                      width={260}
-                      height={0}
-                      alt="Space-mode"
-					  src="/game/robot.svg"
-                      className={`w-260 object-cover object-center transition-transform ${
-                        difficulty === 12 ? "scale-110" : ""
-                      } hover:scale-110`}
-                    />
-                  </div>
-                  <span className="text-xl font-bold">medium</span>
+            <div className="flex justify-center gap-8 items-center flex-col sm:flex-row">
+              <button
+                className={`flex flex-col items-center gap-4`}
+                onClick={() => setDifficulty(14)}
+              >
+                <div className={`rounded-xl max-w-[260px] overflow-hidden`}>
+                  <Image
+                    width={260}
+                    height={0}
+                    alt="football-mode"
+                    src="/game/robot.svg"
+                    className={`w-260 object-cover object-center transition-transform ${
+                      difficulty === 14 ? "scale-110" : ""
+                    } hover:scale-110`}
+                  />
                 </div>
-                <div className={`flex flex-col items-center gap-4`}>
-                  <div className={`rounded-xl max-w-[260px] overflow-hidden`}>
-                    <Image
-                      width={260}
-                      height={0}
-                      alt="Ping pong"
-					  src="/game/robot.svg"
-                      className={`w-260 transition-transform ${
-                        difficulty === 10 ? "scale-110" : ""
-                      } hover:scale-110`}
-                    />
-                  </div>
-                  <span className="text-xl font-bold">Hard</span>
+                <span className="text-xl font-bold">Easy</span>
+              </button>
+              <button
+                className={`flex flex-col items-center gap-4`}
+                onClick={() => setDifficulty(12)}
+              >
+                <div className={`rounded-xl max-w-[260px] overflow-hidden`}>
+                  <Image
+                    width={260}
+                    height={0}
+                    alt="Space-mode"
+                    src="/game/robot.svg"
+                    className={`w-260 object-cover object-center transition-transform ${
+                      difficulty === 12 ? "scale-110" : ""
+                    } hover:scale-110`}
+                  />
                 </div>
-              </div>
-              <input
-                className="w-full rounded-none"
-                type="range"
-                min="1"
-                max="3"
-                step="1"
-                value={difficulty === 14 ? 1 : difficulty === 12 ? 2 : 3}
-                onChange={handleSliderChange}
-              />
+                <span className="text-xl font-bold">medium</span>
+              </button>
+              <button
+                className={`flex flex-col items-center gap-4`}
+                onClick={() => setDifficulty(10)}
+              >
+                <div className={`rounded-xl max-w-[260px] overflow-hidden`}>
+                  <Image
+                    width={260}
+                    height={0}
+                    alt="Ping pong"
+                    src="/game/robot.svg"
+                    className={`w-260 transition-transform ${
+                      difficulty === 10 ? "scale-110" : ""
+                    } hover:scale-110`}
+                  />
+                </div>
+                <span className="text-xl font-bold">Hard</span>
+              </button>
             </div>
             <button
-              className="text-white text-3xl bg-red  py-2 px-8 sm:px-16 rounded-[10px] hover:bg-[#FBACB3] font-bold"
+              className="flex gap-2 items-center text-3xl bg-red py-2 px-8 rounded-[10px] hover:bg-[#FBACB3] font-bold"
               onClick={() => setGameStarted(true)}
             >
-              Play
+              <span>Play</span>
+              <Gamepad2 size={32} strokeWidth={2}  />
             </button>
           </div>
         </main>

@@ -53,7 +53,7 @@ export default function Lost({ setWon, setLost, me, other } : prop) {
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: ["user"],
+    queryKey: ["user", "me"],
     queryFn: async () => {
       const { data } = await axios.get("/users/getUser/me");
       return data;
