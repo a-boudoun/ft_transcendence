@@ -52,6 +52,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.emit('play-a-friend');
       return;
     }
+    if (this.gameService.isInGame(data.senderUsername) !== null){
+      return;
+    }
     const freindSocket: Socket = this.server.sockets.sockets.get(data.senderSocketId);
     const player1: string = client.data.username;
     const player2: string = data.senderUsername;
