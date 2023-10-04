@@ -44,9 +44,6 @@ export class Channel {
     @Column({nullable : true})
     password: string;
     
-    @OneToMany(() => Administration, administration => administration.channel)
-    administrators: Administration[];
-    
     @OneToMany(() => Membership, membership => membership.channel)
     memberships: Membership[];
     
@@ -95,19 +92,6 @@ export class Message {
     content: string;
 }
 
-@Entity({ name: 'Administration' })
-export class Administration {
-    @PrimaryGeneratedColumn()
-    id: number;
-    
-    @ManyToOne(() => Channel, (channel) => channel.administrators, {
-        onDelete: 'CASCADE',
-    })
-    channel: Channel;
-    
-    @ManyToOne(() => User, (user) => user.administratedChannels)
-    admin: User;
-}
 
 @Entity({ name: 'Membership' })
 export class Membership {

@@ -1,4 +1,4 @@
-import { AdministrationDTO, ChannelDTO, MessageDTO, MutationDTO} from "src/channels/dto/create-channel.dto";
+import { ChannelDTO, MessageDTO, MutationDTO} from "src/channels/dto/create-channel.dto";
 import { Status } from "../../entities/user.entity";
 import { FriendshipDTO } from "src/friendship/dto/create-friendship.dto";
 import {
@@ -61,7 +61,6 @@ export class UserDTO {
     blockedByUsers: UserDTO[];
     mutations: MutationDTO[];
     messages: MessageDTO[];
-    administratedChannels: AdministrationDTO[];
 }
 
 export class BlockageDTO {
