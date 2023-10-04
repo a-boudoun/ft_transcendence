@@ -79,7 +79,6 @@ const page = ({ params }: { params: { id: number } }) => {
       const { data } = await axios.get(`/channels/directchannel/${params.id}`);
 
       setMessages(data.messages);
-      console.log("data", data.messages);
       socket.emit("join", { channel: data.id });
       if (!data || data.type !== "Direct") {
         router.push("/chat");
@@ -103,7 +102,6 @@ const page = ({ params }: { params: { id: number } }) => {
     queryFn: async () => {
       if (!otherUser) return;
       const { data } = await axios.get(`/users/isBlocked/${otherUser.id}`);
-      console.log("data", user.id, data);
       return data;
     },
   });

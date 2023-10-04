@@ -80,7 +80,7 @@ const JoinChannel = ({type}:{type:string}) => {
           alt=""
         />
         <h1 className="absolute h-1 top-48 left-0 right-0  text-white font-semibold">{channel.name}</h1>
-        <input type="password" className={`${channel.type === "Protected" ? '': 'hidden' } w-1/2 absolute top-60 left-24 rounded-md py-1 px-3 outline-none`} placeholder="Enter Password"  onChange={onChange}/>
+        <input type="password" className={`${channel.type === "Protected" ? '': 'hidden' } w-1/2 absolute top-60 left-24 rounded-md py-1 px-3 outline-none`} placeholder="Enter Password" autoComplete="current-password"  onChange={onChange} />
         <div className="absolute h-1 top-[72%] left-0 right-0 text-[#FF9494]">{error}</div>
         <button className=" w-[96%] absolute bottom-0 left-0 bg-blue text-white font-semibold text-base m-2 py-1 rounded-lg" onClick={onClick}>Join</button>
       </div>
