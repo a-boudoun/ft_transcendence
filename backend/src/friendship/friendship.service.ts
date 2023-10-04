@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Channel, Friendship, Fstatus, User } from 'src/entities/user.entity';
+import { Channel } from 'src/entities/channel.entity';
+import { Friendship, Fstatus, User } from 'src/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {ChannelType, MemberTitle, Membership } from 'src/entities/channel.entity';

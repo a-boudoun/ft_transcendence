@@ -145,4 +145,3 @@ export class Friendship {
     @Column( )
     status: Fstatus;
 }
-export { Channel };
