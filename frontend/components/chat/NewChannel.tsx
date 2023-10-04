@@ -5,25 +5,25 @@ import { useState } from 'react';
 import  channelDto  from '@/dto/channelDto'
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
-import { setcurrentChannel, setnewchannel } from '@/redux/features/currentChannel';
+import { setcurrentchannel, setnewchannel } from '@/redux/features/globalState';
 import { useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { Client } from '@/providers/QueryProvider';
+import axios from '@/apis/axios';
 import { useRouter } from 'next/navigation';
 
 const NewChannel = () => {
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
-    const owner = useSelector((state: any) => state.currentChannel.user);
+    const owner = useSelector((state: any) => state.globalState.user);
     const [isclicked, setIsclicked] = useState(false);
     const [name , setName] = useState('')
     const [password , setPassword] = useState('')
     const [type, setType] = useState('Public');
     const [image, setImage] = useState<any>(null);
     const [imagePreview, setImagePreview] = useState<string>('/img/a.jpeg');
-    // const [channel, setChannel] = useState<channelDto>({});
+    const [passwordError, setPasswordError] = useState('');
+    
     const handleclick = () => {
         setIsclicked(!isclicked);
     }
@@ -33,37 +33,41 @@ const NewChannel = () => {
         setIsclicked(!isclicked);
     }
 
-    
-
     const handleChange = (e: any) => {
           setImage(e.target.files[0]);
           setImagePreview(URL.createObjectURL(e.target.files[0]));
       };
 
-
-      const NewChannel = useMutation(async(channel : channelDto) => {
-            const res = await axios.post('http://localhost:8000/channels/createChannel', {name : channel.name, image: channel.image,  type: channel.type, password: channel.password, owner: channel.owner}, { withCredentials: true });
+      const NewChannel = useMutation(async(channel : any) => {
+            const res = await axios.post('/channels/createChannel', {name : channel.name, image: channel.image,  type: channel.type, password: channel.password, owner: channel.owner});
+            
             return res.data;
         },
         {
         onSuccess: (data: any) => {
-            Client.refetchQueries('channels');
+           
             dispatch(setnewchannel(data));
-            dispatch(setcurrentChannel(data));
+            dispatch(setcurrentchannel(data));
             router.push(`/channel/${data.id}`);
 
         },           
     });
       const handleSubmit = async(e: any) => {
         e.preventDefault();
+        if (type === 'Protected' && password.length < 8)
+        {
+            setPasswordError('Password must be at least 8 characters');
+            return;
+        }
         setImagePreview('/img/a.jpeg');
         setName('');
         setPassword('');
+        setPasswordError('');
 
-        let channel:channelDto = {};
+        let channel:any = {};
+
 
         const formdata = new FormData();
-
         if (image)
         {
           formdata.append('file', image);
@@ -74,7 +78,7 @@ const NewChannel = () => {
               body: formdata,
           });
           const data = await res.json();
-          console.log(data.secure_url);
+        
           channel.image = data.secure_url;
         }
         else
@@ -89,14 +93,14 @@ const NewChannel = () => {
     }
     return (
 
-        <form className=' w-full bg-dark-gray p-4 rounded-xl '  onSubmit={handleSubmit}>
+        <form className='mx-4 bg-white bg-opacity-20  ackdrop-blur-lg drop-shadow-lg p-4 rounded-xl '  onSubmit={handleSubmit}>
             <div className='w-fit mx-auto my-3 hover:opacity-60'>
                 <label htmlFor="id" className='bg-red'>
                 <Image className='rounded-full cursor-pointer w-[150px] h-[150px]' src={imagePreview} width={150} height={150} alt="avatar" />
               </label> 
               <input type="file" className="hidden" id='id' onChange={handleChange} />
             </div>
-            <input required id={'name'} className='w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none' placeholder='Name of channel' value={name} onChange={(e:any)=> setName(e.target.value)}/>
+            <input required id={'name'} className='w-full  rounded-lg px-5 py-2 text-lg bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg my-2 outline-none placeholder-white'  placeholder='Name of channel' value={name} onChange={(e:any)=> setName(e.target.value)}/>
             <button type='button'  className="hover:opacity-60 text-white w-full  rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center justify-center bg-blue" onClick={handleclick}>
                 {type}
                 <svg
@@ -126,7 +130,8 @@ const NewChannel = () => {
 
                 </div>
             </div>
-            <input  required={type === 'Protected'} type='password' value={password} className={`${type !== 'Protected' ? 'hidden' : ''} w-full rounded-lg px-5 py-2 text-lg bg-light-gray my-2 outline-none`} placeholder='Password' onChange={(e:any)=> setPassword(e.target.value)}/>
+            <input  required={type === 'Protected'} type='password' value={password} className={`${type !== 'Protected' ? 'hidden' : ''} w-full rounded-lg px-5 py-2 text-lg bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg placeholder-white my-2 outline-none`} placeholder='Password' onChange={(e:any)=> setPassword(e.target.value)}/>
+            <div className='w-full text-black'>{passwordError}</div>
             <button className='bg-red w-full mt-5 rounded-lg py-2 hover:opacity-60'>Create</button>
         </form>
 

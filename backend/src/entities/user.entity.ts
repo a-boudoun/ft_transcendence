@@ -7,15 +7,14 @@ import {
     ManyToMany,
     JoinTable,
     Index,
-    DataSource,
     CreateDateColumn
   } from 'typeorm';
-import { Administration, Channel, Message, Sanction } from './channel.entity';
+import {  Channel, Message, Mutation, Bannation } from './channel.entity';
   
 export enum Status {
     ONLINE = 'online',
     OFFLINE = 'offline',
-    INGAME = 'ingame'
+    INGAME = 'in game'
 }
   
 @Entity({ name: 'User' })
@@ -23,15 +22,15 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ length: 25 })
+    @Column({nullable: true})
+    @Index({unique: true})
+    intraID: number;
+
+    @Column({ length: 10, nullable: true})
     @Index({unique: true})
     username: string;
 
-    @Column({unique: true})
-    name: string;
-
-    
-    @Column({nullable: true,})
+    @Column({nullable: true})
     image: string;
 
     @Column({
@@ -42,10 +41,10 @@ export class User {
     @Column('text' , { nullable: true })
     status: Status;
     
-    @Column()
+    @Column('decimal', { precision: 6, scale: 2, nullable: true})
     level: number;
     
-    @Column()
+    @Column({nullable: true})
     XP: number;
 
     @Column({ nullable: true })
@@ -80,8 +79,8 @@ export class User {
     @OneToMany(() => Blockage, (blockage) => blockage.blocked)
     blockedByUsers: User[];
     
-    @OneToMany(() => Sanction, (sanction) => sanction.member)
-    sanctions: Sanction[];
+    @OneToMany(() => Mutation, (mutation) => mutation.member)
+    mutations: Mutation[];
     
     @OneToMany(() => GameHistory, (gameHistory) => gameHistory.winner)
     wonGames: GameHistory[];
@@ -91,9 +90,9 @@ export class User {
     
     @OneToMany(() => Message, (message) => message.sender)
     messages: Message[];
-    
-    @OneToMany(() => Administration, (administration) => administration.admin)
-    administratedChannels: Administration[];
+
+    @OneToMany(() => Bannation, (bannation) => bannation.member)
+    bannations: Bannation[];
 }
 
 @Entity({ name: 'GameHistory' })
@@ -131,7 +130,7 @@ export enum Fstatus {
     ACCEPTED = 'accepted',
     NONE = 'none'
 }
-  
+
 @Entity({ name: 'Friendship' })
 export class Friendship {
     @PrimaryGeneratedColumn()
@@ -146,4 +145,3 @@ export class Friendship {
     @Column( )
     status: Fstatus;
 }
-export { Channel };

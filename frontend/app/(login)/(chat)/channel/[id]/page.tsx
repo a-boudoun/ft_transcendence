@@ -3,8 +3,8 @@ import React, { useEffect } from 'react'
 import Mid from '@/components/chat/Mid';
 import Right from '@/components/chat/Right';
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios';
-import { setcurrentChannel, resetcurrent } from "@/redux/features/currentChannel";
+import axios from '@/apis/axios';
+import { setcurrentchannel, setMemberships, setuser } from "@/redux/features/globalState";
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { useParams, usePathname } from 'next/navigation';
@@ -12,30 +12,44 @@ import Channel from '@/dto/Channel';
 import Modal from '@/components/chat/Modal';
 import { socket } from '@/components/chat/chatSocket';
 import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { channel } from 'diagnostics_channel';
 
 
-const Page =  ({ params }: { params: number }) => {
+
+const Page =  ({ params }: { params: {id:number} }) => {
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-
-  const fetchData = useQuery(
+ 
+  const {data, isLoading} = useQuery(
   {
       queryKey: ['channel'],
       queryFn: async () => {
-        const channel = await axios.get(`http://localhost:8000/channels/${params.id}`, { withCredentials: true });
-        if(!channel.data)
+        const channel = await axios.get(`/channels/${params.id}`);
+        const user = await axios.get(`/users/getUser/me`);
+        
+        if(!channel.data )
         {
-          // alert('Channel not found');
           router.push('/channel');
-          return;
+          return channel.data;
         }
-        dispatch(setcurrentChannel(channel.data));
+        if(channel.data.type === 'Direct')
+           router.push(`/chat/${channel.data.id}`);
+        dispatch(setcurrentchannel(channel.data));
+        dispatch(setuser(user.data));
         socket.emit('join', { channel: channel.data.id })
         return channel.data;
       }
   });
-
+  if (isLoading)
+    return( 
+    <div className='w-full  md:w-1/2 lg:w-8/12 h-full rounded-[2.5rem] bg-white bg-opacity-20 ackdrop-blur-lg  drop-shadow-lg p-4'>
+      <div className='w-full h-full bg-white bg-opacity-20 ackdrop-blur-lg  drop-shadow-lg rounded-[2rem] flex justify-center items-center text-blue'>
+            Loading...
+      </div>
+    </div>);
+  else if(data.type !== 'Direct')
   return (
     <>
       <Mid />

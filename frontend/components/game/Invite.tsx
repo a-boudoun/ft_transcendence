@@ -2,30 +2,29 @@
 
 import Image from 'next/image'
 import socket from '@/components/socketG';
-import axios from 'axios';
+import axios from '@/apis/axios';
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
-import { usePathname } from 'next/navigation';
 
 interface prop {
-	username: string;
 	socketId: string;
+	userid: number;
 	setdisplay: (val: string | null) => void;
+	map: string;
 }
 
-const InviteDisplay = ({username, socketId, setdisplay}: prop) => {
+const InviteDisplay = ({socketId, setdisplay, userid, map}: prop) => {
 
 	const [timeLeft, setTimeLeft] = useState(4);
 	const [image, setImage] = useState<string>('/game/unknown.svg');
 	const [name, setName] = useState<string>('');
 	let loadingBarWidth: string = '0%';
-	
 	useQuery({
 		queryKey: ['left'],
 		queryFn: async ()=> {
-		  const {data} = await axios.get(`http://localhost:8000/users/byUsername/${username}`, { withCredentials: true })
-		  setName(data.name);
+		  const {data} = await axios.get(`/users/getId/${userid}`)
+		  setName(data.username);
 		  setImage(data.image);
 		}
 	});
@@ -59,8 +58,9 @@ const InviteDisplay = ({username, socketId, setdisplay}: prop) => {
 					>Decline</button>
 					<button className="bg-[rgba(86,245,65,0.75)] rounded-xl px-2 py-1 sm:px-4 sm:py-2"
 					onClick={() => {
-						socket.emit('accept-invitation', {senderUsername: username, senderSocketId: socketId});
+						localStorage.setItem("map", map);
 						setdisplay(null);
+						socket.emit('accept-invitation', {senderUsername: userid, senderSocketId: socketId});
 					}}
 					>Accept</button>
 				</div>
@@ -75,23 +75,20 @@ const InviteDisplay = ({username, socketId, setdisplay}: prop) => {
 const Invite = () => {
 	
 	const[display, setDisplay] = useState<string | null>(null);
-	const [username, setUsername] = useState<string>('');
 	const [socketId, setSocketId] = useState<string>('');
+	const [userId, setUserId] = useState<number>(0);
+	const [map, setMap] = useState<string>('default');
 	const router = useRouter();
-	const pathname = usePathname();
 	
 	useEffect(() => {
 		socket.on('play-a-friend', () =>{
-			if (pathname !== '/game/match')
-				router.push('/game/match');
-			else {
-				router.refresh();
-			}
+			router.push('/game/match');
 		});
 		socket.on('game-invitation', (data: any) => {
-			setUsername(data.sender);
 			setDisplay(data.sender);
+			setMap(data.map);
 			setSocketId(data.senderSocketId);
+			setUserId(data.sender);
 		});
 
 		return () => {
@@ -101,7 +98,7 @@ const Invite = () => {
 	}, []);
 
 	useEffect(() => {
-		let timer: number;
+		let timer: NodeJS.Timeout;
 		if (display !== null) {
 			timer = setTimeout(() => {
 				setDisplay(null);
@@ -115,9 +112,10 @@ const Invite = () => {
 	return (
     <div className='absolute right-3 bottom-10 z-10'>
 	 {display !== null && <InviteDisplay 
-	 	username={username} 
+		userid={userId} 
 		socketId={socketId}
 		setdisplay={setDisplay}
+		map={map}
 		/>}
 	</div>
   );

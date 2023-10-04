@@ -1,6 +1,9 @@
 import { io } from "socket.io-client";
+import { config } from 'dotenv';
 
-const socket = io('http://localhost:8000', {
+config();
+
+const socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}`, {
 	autoConnect: true,
 	transports: ['websocket'],
 });

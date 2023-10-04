@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import userDto from "@/dto/userDto";
+import {userDto} from "@/dto/userDto";
 import channelDto from "@/dto/channelDto";
-import axios from "axios";
+
 import { useSelector } from "react-redux";
-import Channel from "@/dto/Channel";
+
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { setisMember } from "@/redux/features/currentChannel";
+
 
 interface Data{
     id: number;
@@ -23,18 +23,18 @@ interface Data{
 
 
 const ChannelItems = ({path}:{path:string}) => {
-
-    const data :channelDto[] = useSelector((state: any) => state.currentChannel.channels);
-    const user = useSelector((state: any) => state.currentChannel.user);
+    const dispatch = useDispatch<AppDispatch>();
+    const data1 :channelDto[] = useSelector((state: any) => state.globalState.channels);
+    const user = useSelector((state: any) => state.globalState.user);
     return (
         
         <div className="h-[90%] overflow-y-scroll py-2 ">
             {
-            data?.map((data: channelDto) =>(
-                <Link  key={data.id} href={`/channel/${data.id}` }>
-                    <ChannelItem channel={data} user={user} />
-                </Link>
-            ))
+                data1.map((data: channelDto) =>(
+                    <Link  key={data.id} href={`/channel/${data.id}` }>
+                        <ChannelItem channel={data} user={user} />
+                    </Link>
+                ))
         
             }
         </div>
@@ -46,7 +46,7 @@ export default ChannelItems;
 export const ChannelItem = ({channel, user}:{channel:any , user:userDto}) => { 
     const dispatch: AppDispatch = useDispatch();
     const [isMember, setIsMember] = useState(false);
-    const channels = useSelector((state: any) => state.currentChannel.channels);
+    const channels = useSelector((state: any) => state.globalState.channels);
    
     useEffect(() => {
             function ss(member: any) {
@@ -56,7 +56,7 @@ export const ChannelItem = ({channel, user}:{channel:any , user:userDto}) => {
     }, [channels]);
 
     return (
-        <div className={`bg-dark-gray h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white flex justify-between`}>
+        <div className={`bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-fit px-4 py-2 my-1 mx-2 rounded-xl text-white flex justify-between`}>
             <div className="flex items-center space-x-5">
                 <Image
                 className="w-10 h-10 rounded-full self-center"

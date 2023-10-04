@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from "react";
-import {Engine, Render, Body, Composite} from "matter-js";
+import {Engine, Render, Bodies, Events, Body, Composite} from "matter-js";
 import socket from "../socketG";
-import { drawRect, drawCircle } from "./draw";
 
 
 interface Prop{
@@ -13,22 +12,13 @@ interface Prop{
 }
 function DisapGame({roomid, me, RightPlayer} : Prop){
 	const divRef = useRef<HTMLDivElement | null>(null);
-	let sx : number = 1;
-	let sy : number = 1;
+	const [sx, setSx] = useState<number>(1);
+	const [sy, setSy] = useState<number>(1);
 	let keyClicked : boolean = false;
 
 	useEffect(() => {
 		if (roomid!== '')
 		{
-			const handleResize = () => {
-				if (!divRef.current) return;
-
-					render.canvas.width = divRef.current.offsetWidth;
-					render.canvas.height = divRef.current.offsetHeight;
-					sx = divRef.current.offsetWidth / 2048;
-					sy = divRef.current.offsetHeight / 890;
-			}
-
 			const handleKeyDown = (e: KeyboardEvent) => {
 				if (!keyClicked)
 				{
@@ -73,14 +63,17 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 					}
 				}
 			}
-
 			
+			const balckHoleCollision = (ball : any, blackhole : any) : boolean => {
+				return ( (blackHole.position.x - 100 <= ball.position.x && ball.position.x <= blackHole.position.x + 100)
+					&& (blackHole.position.y - 100 <= ball.position.y && ball.position.y <= blackHole.position.y + 100))
+
+			}
+
 			if (!divRef.current) return;
 			
-			const H = divRef.current.offsetHeight;
-			const W = divRef.current.offsetWidth;
-			sx = W / 2048;
-			sy = H / 890;
+			const H = 900;
+			const W = 1700;
 			
 			let engine = Engine.create(),
 			render = Render.create({
@@ -91,22 +84,93 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 					height: H,
 					pixelRatio: 1,
 					wireframes: false,
-					background: "#FF6000",
+					background: 'url("https://i.pinimg.com/originals/3a/0b/40/3a0b40d96c53860572a1c29970ce14a8.gif")',
+					// backgroundSize: 'cover', // Adjust as needed
 				}
 			});
 
-			const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#4C3D3D');
-			const leftBoard = drawRect(35, H / 2, 20, 120, '#4C3D3D');
+			const rightBoard = Bodies.rectangle(W - 35, H / 2, 20, 120,{
+				isStatic: true,
+				render: {
+					sprite: {
+						texture: '/game/space-paddle.webp',
+						xScale: 0.07,
+						yScale: 0.19,
+					}
+			},
+			});
+			const leftBoard = Bodies.rectangle(35, H / 2, 20, 120,{
+				isStatic: true,
+				render: {
+					sprite: {
+						texture: '/game/space-paddle.webp',
+						xScale: 0.07,
+						yScale: 0.19,
+					}
+			},
+			});
 
-			const ball = drawCircle(W / 2, H / 2, 15, '#FFE6C7');
-			Composite.add(engine.world, [ball, rightBoard, leftBoard]);
-			window.addEventListener("resize", handleResize);
+			const ball = Bodies.circle(W / 2, H / 2, 15,{
+				restitution: 1, // Make the ball fully elastic
+				friction: 0, // Remove friction
+				frictionAir: 0, // Remove air friction
+				inertia: Infinity, // prevent ball from slowing down
+				render: {
+					sprite: {
+						texture: '/game/space-rock.webp',
+						xScale: 0.08,
+						yScale: 0.08,
+					}
+				},
+			});
+			
+			const blackHole = Bodies.circle( 2000, 2000, 100, {
+				isStatic: true, // Make it immovable
+				render: {
+					sprite: {
+						texture: '/game/blackhole.webp',
+						xScale: 0.08,
+						yScale: 0.08,
+					},
+				},
+			  });
+			
+			Composite.add(engine.world, [blackHole, ball, rightBoard, leftBoard]);
 			document.addEventListener('keyup', handlekeyUp);
 			document.addEventListener('keydown', handleKeyDown);
-			Render.run(render);
+			
+			setInterval(() => {
+				let randomX = Math.floor(Math.random() * (1000 - 100 + 1)) + 100;
+				let randomY = Math.floor(Math.random() * (800 - 100 + 1)) + 100;
+			  
+				if (blackHole.position.x === 2000 && blackHole.position.y === 2000) {
+				  Body.setPosition(blackHole, { x: randomX, y: randomY });
+				} else {
+				  Body.setPosition(blackHole, { x: 2000, y: 2000 });
+				}
+			}, 8000);
+			
+			setInterval(() => {
+				if (ball.position.x < 30 || ball.position.x > 1670 || (ball.position.x === H / 2 && ball.position.y === W / 2)) {
+					ball.render.opacity = 1;
+				}
+				else if (balckHoleCollision(ball, blackHole)) {
+					ball.render.opacity = 0.15;
+					setTimeout(() => {
+						Body.setPosition(blackHole, { x: 2000, y: 2000 });
+					}, 400);
 
+					setTimeout(() => {
+						ball.render.opacity = 1;
+					}, 3000);
+				}
+			}, 20);
+
+			Render.run(render);
+			
+			
 			socket.on('sound', () => {
-				const audio = new Audio('/game/bounce.mp3');
+				const audio = new Audio('/game/space-sound.mp3');
 				audio.play();
 			});
 
@@ -114,46 +178,79 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 				Body.setPosition(
 					rightBoard,
 					{
-						x: data.rightBoardX * sx,
-						y: data.rightBoardY * sy,
+						x: data.rightBoardX,
+						y: data.rightBoardY,
 					}
-				);
-				Body.setPosition(
-					leftBoard,
-					{
-						x: data.leftBoardX * sx,
-						y: data.leftBoardY * sy,
-					}
-				);
+					);
+					Body.setPosition(
+						leftBoard,
+						{
+							x: data.leftBoardX,
+							y: data.leftBoardY,
+						}
+						);
 			});
 			socket.on('ball', ({x, y}) => {
 				Body.setPosition(
 					ball,
 					{
-						x: x * sx,
-						y: y * sy,
+						x: x,
+						y: y,
 					}
-				);
+					);
 			});
-			
+				
 			return () => {
-				window.removeEventListener("resize", handleResize);
 				document.removeEventListener('keyup', handlekeyUp);
 				document.removeEventListener('keydown', handleKeyDown);
 				socket.off('positions');
 				socket.off('ball');
+				socket.off('sound');
 				Engine.clear(engine);
 				Render.stop(render);
 			};
 		}
 	}, [roomid]);
-
-	return (
-		<div ref={divRef} className="h-4/6 w-4/5 mt-20 relative">
-			<div className="h-full w-1 bg-white absolute left-1/2 transform -translate-x-1/2">
-			<div className="bg-white w-full" style={{backgroundImage: 'repeating-linear-gradient(2deg, transparent, transparent 40px, white 40px, white 80px)'}}></div>
+				
+	useEffect(() => {
+		let canvasWidth: number = 1700;
+		let canvasHeight: number = 900;
+		
+		let windowWidth: number = window.innerWidth;
+		let windowHeight: number = window.innerHeight;
+		
+		let scaleFactor: number = Math.min(windowWidth / canvasWidth, windowHeight / canvasHeight);
+		
+		let scalex: number = scaleFactor > 1 ? 1 : scaleFactor * 0.95;
+		let scaley: number = scaleFactor > 1 ? 1 : scaleFactor * 0.85; // adding the navbar height
+		setSx(scalex);
+		setSy(scaley);
+		window.addEventListener("resize", handleResize);
+		
+		function handleResize(){
+			windowWidth = window.innerWidth;
+			windowHeight = window.innerHeight;
+			scaleFactor = Math.min(windowWidth / canvasWidth, windowHeight / canvasHeight);
+			scalex = scaleFactor > 1 ? 1 : scaleFactor * 0.95;
+			scaley = scaleFactor > 0.95 ? 1 : scaleFactor * 0.85; // adding the navbar height
+			setSx(scalex);
+			setSy(scaley);
+		}
+		
+		return () => {
+			window.removeEventListener("resize", handleResize);
+		}
+		}, []);
+				
+		return (
+			<div ref={divRef} 
+			className="h-[900px] w-[1700px] mt-20 relative"
+			style={{
+				transform: `scale(${sx}, ${sy})`,
+			}}
+			>
 			</div>
-		</div>
-	);
+		);
 }
 export default DisapGame;
+

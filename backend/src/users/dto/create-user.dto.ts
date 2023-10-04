@@ -1,32 +1,66 @@
-import { AdministrationDTO, ChannelDTO, MessageDTO, SanctionDTO } from "src/channels/dto/create-channel.dto";
+import { ChannelDTO, MessageDTO, MutationDTO} from "src/channels/dto/create-channel.dto";
 import { Status } from "../../entities/user.entity";
-import { GameHistoryDTO } from "src/game-history/dto/create-game-history.dto";
 import { FriendshipDTO } from "src/friendship/dto/create-friendship.dto";
+import {
+    IsNotEmpty,
+    IsString,
+    MinLength,
+    IsInt,
+    IsBoolean,
+    IsNumber,
+    IsEnum,
+    MaxLength,
+    IsNumberString
+  } from 'class-validator';
 
 export class UserDTO {
+    @IsInt()
     id: number;
+    
+    @IsInt()
+    intraID: number; 
+
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(3)
+    @MaxLength(10)
     username: string;
-    name: string;
+
+    @IsString()
     image: string;
+
+    @IsString()
     baner: string;
+
+    @IsEnum(Status)
     status: Status;
+
+    @IsNumberString()
     level: number;
+
+    @IsInt()
     XP: number;
+
+    @IsNumber()
     wins: number;
+
+    @IsInt()
     loses: number;
+
+    @IsBoolean()
     fact2Auth: boolean;
+
+    @IsString()
     fact2Secret: string;
+
     ownedChannels: ChannelDTO[];
     channels: ChannelDTO[];
     initiatedFriendships: FriendshipDTO[];
     receivedFriendships: FriendshipDTO[];
     blockedUsers: UserDTO[];
     blockedByUsers: UserDTO[];
-    sanctions: SanctionDTO[];
-    wonGames: GameHistoryDTO[];
-    lostGames: GameHistoryDTO[];
+    mutations: MutationDTO[];
     messages: MessageDTO[];
-    administratedChannels: AdministrationDTO[];
 }
 
 export class BlockageDTO {
