@@ -244,7 +244,7 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 				
 		return (
 			<div ref={divRef} 
-			className="h-[900px] w-[1700px] mt-20 relative"
+			className="shadow-[0_20px_50px_rgba(_179,_54,_144,_1)]"
 			style={{
 				transform: `scale(${sx}, ${sy})`,
 			}}

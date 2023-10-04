@@ -22,7 +22,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 	let keyClicked : boolean = false;;
 	let leftInterval : NodeJS.Timeout;
 	let keyInterval : NodeJS.Timeout;
-	const maxScore = 30;
+	const maxScore = 5;
 
 	useEffect(() => {
 		if (!divRef.current) return;
