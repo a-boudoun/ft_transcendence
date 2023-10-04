@@ -1,6 +1,7 @@
 "use client";
 import React, { use, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Gamepad2 } from "lucide-react";
 
 import Image from "next/image";
 
@@ -89,9 +90,9 @@ export default function Maps() {
             <div
               className={`${
                 selectedMap === "default"
-                  ? "shadow-[0_20px_50px_rgba(_134,_195,_187,_1)]"
+                  ? "shadow-[0px_20px_50px_0px_#86c3bb,0px_-10px_50px_0px_#d3455c]"
                   : " "
-              } rounded-xl  max-w-[260px] hover:shadow-[0_20px_50px_rgba(_134,_195,_187,_1)] overflow-hidden`}
+              } rounded-xl  max-w-[260px] overflow-hidden hover:shadow-[0px_20px_50px_0px_#86c3bb,0px_-10px_50px_0px_#d3455c] `}
             >
               <Image
                 width={260}
@@ -107,13 +108,12 @@ export default function Maps() {
           </button>
         </div>
         <button
-          className="text-white text-3xl bg-red  py-2 px-8 sm:px-16 rounded-[10px] hover:bg-[#FBACB3] font-bold"
-          onClick={() => {
-            router.push("/game/match");
-          }}
-        >
-          Next
-        </button>
+              className="flex gap-2 items-center text-3xl bg-red py-2 px-8 rounded-[10px] hover:bg-[#FBACB3] font-bold"
+              onClick={() => router.push("/game/match")}
+            >
+              <span>Play</span>
+              <Gamepad2 size={32} strokeWidth={2}  />
+            </button>
       </div>
     </main>
   );

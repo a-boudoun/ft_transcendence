@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { AdministrationDTO, ChannelDTO } from './dto/create-channel.dto';
-import { Administration, Bannation, Channel, MemberTitle, Membership, Message, Mutation } from '../entities/channel.entity';
+import { ChannelDTO } from './dto/create-channel.dto';
+import {  Bannation, Channel, MemberTitle, Membership, Message, Mutation } from '../entities/channel.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ChannelType } from '../entities/channel.entity';
@@ -118,7 +118,7 @@ export class ChannelsService {
 }
 
 async findOne(id: number) {
-  return this.channelRepo.findOne({
+  const channel =  await this.channelRepo.findOne({
     where: {
       id: id,
     },
@@ -129,6 +129,8 @@ async findOne(id: number) {
     },
     relations: ['messages.sender', 'memberships.member', 'bannations.member', 'mutations.member'],
   });
+  // channel.messages = await channel.messages.sort((a, b) => a.id - b.id);
+  return channel;
 }
 
 async update(id: number, updateChannelDto: any) {

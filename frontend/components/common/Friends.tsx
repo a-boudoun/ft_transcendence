@@ -39,9 +39,7 @@ export const Friend = ({ user, isMe }: { user: any; isMe: boolean }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["direct", user.id],
     queryFn: async () => {
-      const { data } = await axios.get(`/channels/getChannelId/${user.id}`, {
-        withCredentials: true,
-      });
+      const { data } = await axios.get(`/channels/getChannelId/${user.id}`);
       return data;
     },
   });

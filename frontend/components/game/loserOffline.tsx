@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function Lost(){
   const {data, isLoading} = useQuery({
-		queryKey: ['user'],
+		queryKey: ['user', 'me'],
 		queryFn: async ()=> {
 		  const {data} = await axios.get('http://localhost:8000/users/me', { withCredentials: true })
 		  return data;
