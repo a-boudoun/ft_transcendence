@@ -1,18 +1,18 @@
 import axios from 'axios';
+import { config } from 'dotenv';
 
-const baseURL = process.env.BACKEND || "http://localhost:8000/";
+config();
 
+const baseURL = process.env.NEXT_PUBLIC_BACKEND_HOST;
 axios.defaults.baseURL = baseURL;
-
 
 axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 axios.defaults.headers.common["Content-Type"] =  'application/json';
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use(
-	async function (config) {
-		
-			return config
+	async function (conf) {
+			return conf
 	},
 
 	function (error) {
@@ -25,6 +25,7 @@ axios.interceptors.response.use(
 		return response;
 	},
 	function (error) {
+		console.log(error);
 		return Promise.reject(error);
 	}
 );

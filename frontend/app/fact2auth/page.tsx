@@ -1,17 +1,10 @@
 import React from 'react'
-import { redirect } from 'next/navigation';
-import getData from  "@/apis/server/get";
-import userDto from "@/dto/userDto";
+
 import Fact2AuthForm from '@/components/fact2Auth/Fact2AuthForm'
 
 const Fact2Auth = async() => {
-
-  // const data: userDto | null = await getData('/users/me');
-  // if (!data)
-  //   redirect('/');
-
   return (
-    <main className="grid place-content-center h-screen w-h-screen bg-ping-pong bg-cover text-base">
+    <main className="h-full grid place-content-center  text-base">
         <section className="flex flex-col items-center bg-light-gray/60 rounded-[50px] py-[5.5rem] px-[2.25rem]
                     md:py-[5rem] md:px-[5.25rem] lg:px-[9rem] lg:py-[7.25rem] ">
           <h1 className="text-3xl font-bold text-center text-blue mb-10">tow factor authentication</h1>

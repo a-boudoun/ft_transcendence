@@ -7,9 +7,6 @@ import { AuthService } from 'src/auth/auth.service';
 import {UseGuards} from '@nestjs/common'
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
 
-//Cross-Origin-Resource-Sharing (CORS) is a mechanism that uses additional HTTP headers to tell browsers 
-//to give a web application running at one origin,
-//access to selected resources from a different origin
 @WebSocketGateway()
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
@@ -23,13 +20,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   recentRomm: string | null;
 
   @UseGuards(Jwt2faAuthGuard)
-  handleConnection(client: Socket, data: any) {
+  handleConnection(client: Socket) {
     const cookie: string = client.handshake.headers.cookie;
     if (!cookie || cookie === undefined)
       return;
-    const username: string = this.auth.getUsername(cookie);
-    client.data.username = username;
-    client.join(username);
+    const id: string = this.auth.getId(cookie).toString();
+    client.data.username = id;
+    client.join(id);
   }
   
   handleDisconnect(client: Socket) {
@@ -41,10 +38,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('invite-freind')
-  handleInviteFreind(client: Socket, reciever: string) {
-    if (client.data.username === reciever || this.gameService.isInGame(reciever) !== null)
+  handleInviteFreind(client: Socket, data: any) {
+    if (client.data.username === data.reciever || this.gameService.isInGame(data.reciever) !== null)
       return;
-    this.server.to(reciever).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id});
+    this.server.to(data.reciever.toString()).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id, map: data.map});
   }
 
   @SubscribeMessage('accept-invitation')
@@ -68,11 +65,57 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       await this.engineService.createGameSimulation(room);
       this.engineService.sendPosition(room, this.endGameSimulation.bind(this));
       this.engineService.addServerToGame(room.id, this.server);
-      client.emit('play-a-friend');
-      freindSocket.emit('play-a-friend');
+      client.emit('play-a-friend'); // to avoid sending all the sockets to game
+      freindSocket.emit('play-a-friend'); // to avoid sending all the sockets to game
+      const data: any = {
+        room: room.id,
+        leftPlayer: room.players[0].position === 'left' ? room.players[0].username : room.players[1].username,
+        rightPlayer: room.players[0].position === 'right' ? room.players[0].username : room.players[1].username,
+      }
+      client.emit('game-info', data);
+      client.emit('refresh-page');
     }
   }
-  
+
+  @SubscribeMessage('retry-game')
+  handleRetryGame(client: Socket, data: any) {
+    if (client.data.username === data.reciever || this.gameService.isInGame(data.reciever) !== null)
+      return;
+    this.server.to(data.reciever.toString()).emit('retry-game', {sender: client.data.username, senderSocketId: client.id});
+  }
+
+  @SubscribeMessage('accept-retry')
+  async handleAcceptRetry(client: Socket, data: any) {
+    // if invited is already accepted
+    // send the player to the game direct without creating a new room
+    if (this.gameService.isInGame(client.data.username) !== null){
+      return;
+    }
+    const freindSocket: Socket = this.server.sockets.sockets.get(data.senderSocketId);
+    const player1: string = client.data.username;
+    const player2: string = data.senderUsername;
+    const socket1: Array<Socket> = Array<Socket>(client);
+    const socket2: Array<Socket> = Array<Socket>(freindSocket);
+    const room: Room = this.gameService.creatRoom(socket1, socket2, player1, player2);
+    
+    if (room) {
+      this.gameService.removePlayerFromQueue(client);
+      this.gameService.removePlayerFromQueue(freindSocket);
+      await this.engineService.createGameSimulation(room);
+      this.engineService.sendPosition(room, this.endGameSimulation.bind(this));
+      this.engineService.addServerToGame(room.id, this.server);
+      const data: any = {
+        room: room.id,
+        leftPlayer: room.players[0].position === 'left' ? room.players[0].username : room.players[1].username,
+        rightPlayer: room.players[0].position === 'right' ? room.players[0].username : room.players[1].username,
+      }
+      client.emit('game-info', data);
+      freindSocket.emit('game-info', data);
+      client.emit('refresh-page');
+      freindSocket.emit('refresh-page');
+    }
+  }
+
   @SubscribeMessage('rightPaddle')
   handlerPaddle(client: Socket, data: any) {
     this.engineService.setRightBoardPosition(data.room, data.direction);
@@ -84,7 +127,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('full-Game')
-  handleFullGame(client: Socket, data: any) {
+  handleFullGame(client: Socket, data: string) {
     const room: Room = this.gameService.findRoomByPlayer(data);
     if (room !== undefined) {
       const data: any = {
@@ -132,10 +175,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleAlreadyLooking(client: Socket, data: any) {
     let roomId: string | null;
 
-    if (this.gameService.isInQueue(client)){
-      client.emit(data, 'player-status', 'already-looking');
-    }
-    else if (roomId = this.gameService.isInGame(data)){
+    if (roomId = this.gameService.isInGame(data)){
       client.join(roomId);
       client.emit('player-status', 'already-playing');
     }

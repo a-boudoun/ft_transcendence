@@ -5,10 +5,11 @@ import { Blockage, Friendship, GameHistory, User } from 'src/entities/user.entit
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from 'src/users/users.service';
 import { FriendshipService } from 'src/friendship/friendship.service';
-
+import { Channel, Membership } from 'src/entities/channel.entity';
+import { UsersGateway } from 'src/usersGateway/user.gateway';
 @Module({
-  imports: [TypeOrmModule.forFeature([GameHistory, User, Blockage, Friendship])],
+  imports: [TypeOrmModule.forFeature([GameHistory, User, Blockage, Friendship, Channel, Membership])],
   controllers: [GameHistoryController],
-  providers: [GameHistoryService, UsersService, FriendshipService],
+  providers: [GameHistoryService, UsersService, FriendshipService, UsersGateway],
 })
 export class GameHistoryModule {}

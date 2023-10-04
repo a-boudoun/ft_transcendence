@@ -1,75 +1,84 @@
 "user client";
 
-import React from 'react'
-import Image from 'next/image'
-import NavLink from './NavLink';
-import { useState, useEffect } from 'react';
-import useCloseOutSide from '@/hookes/useCloseOutSide';
-import { LogOut } from 'lucide-react';
-import {useMutation} from "@tanstack/react-query";
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import React from "react";
+import Image from "next/image";
+import { useState } from "react";
+import useCloseOutSide from "@/hookes/useCloseOutSide";
+import { useQuery } from "@tanstack/react-query";
+import axios from "@/apis/axios";
+import { UserCircle2, XCircle, Settings } from "lucide-react";
+import Link from "next/link";
+import Logout from "./Logout";
+
 interface Props {
   src: string;
   setIsOpen: (isOpen: boolean) => void;
 }
 
-
-function DropDown({src, setIsOpen}: Props) {
-  const router = useRouter();
-  const {divref} = useCloseOutSide({setIsOpen});
-  
-  const logout = useMutation({
-      mutationFn: async() => {
-        const {data} = await axios.delete('http://localhost:8000/auth/logout', {withCredentials: true});
-        return data;
-      },
-      onSuccess: () => {
-        router.push('/');
-      }
-  });
-
+const DropDown = ({ src, setIsOpen }: Props) => {
+  const { divref } = useCloseOutSide({ setIsOpen });
 
   return (
     <div
       ref={divref}
-      className='hidden md:flex flex-col justify-around  absolute top-[56px] right-0 w-[56px] h-[160px] bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg'
+      className="hidden md:flex flex-col justify-around  absolute top-[56px] right-0 w-[56px] h-[160px] bg-black  bg-opacity-50 ackdrop-blur-lg drop-shadow-lg"
     >
-                          <NavLink route={'/profile'} src={src} alt={'profile'} setIsOpen={setIsOpen}/>
-                          {/* <button className='grid place-content-center h-[55px] w-[56px] hover:bg-light-gray' onClick={ () => setIsSettingsOpen(!isSettingsOpen)}>
-                            <Image src={'/icons/navBar/settings.svg'} alt={'settings'} width={28} height={28} /> 
-                          </button> */}
-                          <NavLink route={'/settings'} src={'/icons/navBar/settings.svg'} alt={'settings'} setIsOpen={setIsOpen}/>
-                          {/* <NavLink route={'/'} src={'/icons/navBar/logout.svg'} alt={'logout'} setIsOpen={setIsOpen}/> */}
-                          <button className='flex justify-center items-center h-[56px] w-[56px] hover:bg-light-gray' onClick={() => logout.mutate()}> 
-                              <LogOut size={28} color="#EA5581" strokeWidth={1.5} />
-                          </button>
-                      </div>
-  )
-}
+      <Link href={"/profile"}>
+        <div
+          className={`grid place-content-center h-[55px] w-[56px] hover:opacity-50`}
+        >
+          <Image
+            className="rounded-full h-[28px] w-[28px]"
+            src={src}
+            alt={"profile"}
+            width={28}
+            height={28}
+            onClick={() => setIsOpen(false)}
+          />
+        </div>
+      </Link>
+      <Link href={"/settings"}>
+        <div
+          className={`grid place-content-center h-[55px] w-[56px] hover:opacity-50`}
+        >
+          <Settings size={28} color="#7ac7c4" strokeWidth={1.5} />
+        </div>
+      </Link>
+      <Logout />
+    </div>
+  );
+};
 
-const AccountDropDown = () => {
-
-  const src: string = "/icons/navBar/avatar.svg";
-
+const AccountDropDown = ({isLoading, src} : {isLoading : boolean, src : string}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
 
   return (
     <>
-        <button className='hidden md:grid place-content-center mr-[14px]' onClick={() => setIsOpen(!isOpen)}>
-          {isOpen &&  <Image src={'/icons/navBar/x.svg'} alt={"user image"} width={28} height={28} />}
-          {!isOpen && <Image src={src} alt={"user image"} width={28} height={28} />}
+      {isLoading ? (
+        <div className="hidden md:grid place-content-center mr-[14px]">
+          <UserCircle2 size={28} color="#7ac7c4" strokeWidth={1.5} />
+        </div>
+      ) : (
+        <button
+          className="hidden md:grid place-content-center mr-[14px] overflow-hidden hover:opacity-50"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? (
+            <XCircle size={28} color="#EA5581" strokeWidth={1.5} />
+          ) : (
+            <Image
+              className="rounded-full h-[28px] w-[28px]"
+              src={src}
+              alt={"user image"}
+              width={28}
+              height={28}
+            />
+          )}
         </button>
-        {
-            isOpen && <DropDown src={src} setIsOpen={setIsOpen}/>
-        }
-        {/* {
-          isSettingsOpen && <Settings/>
-        } */}
-
+      )}
+      {isOpen && <DropDown src={src} setIsOpen={setIsOpen} />}
     </>
-  )
-}
+  );
+};
 
-export default AccountDropDown
+export default AccountDropDown;

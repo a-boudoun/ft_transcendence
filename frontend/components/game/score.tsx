@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios from "@/apis/axios";
 
 
 interface score{
@@ -22,7 +22,7 @@ function MePlayer({ score, name} : pScore) {
 		const {data, isLoading} = useQuery({
 			queryKey: ['scoreleft'],
 			queryFn: async ()=> {
-			  const {data} = await axios.get(`http://localhost:8000/users/getUser/me`, { withCredentials: true })
+			  const {data} = await axios.get(`/users/getUser/me`)
 			  return data;
 			}
 		  });
@@ -32,7 +32,7 @@ function MePlayer({ score, name} : pScore) {
 				  <div className="flex items-center gap-2">
 					  <div className="flex flex-col items-center w-[80px] h-[80px]">
 						  <Image src={data.image} width={100} height={100} alt="#" className="w-full h-full rounded-full"/>
-						  <h1 className="text-[#F2F2F2] font-bold">{data.name}</h1>
+						  <h1 className="text-[#F2F2F2] font-bold">{data.username}</h1>
 					  </div>
 					  <h1>
 						  score: {score}
@@ -45,7 +45,7 @@ function MePlayer({ score, name} : pScore) {
 		const {data, isLoading} = useQuery({
 			queryKey: ['scoreleft'],
 			queryFn: async ()=> {
-				const {data} = await axios.get(`http://localhost:8000/users/byUsername/${name}`, { withCredentials: true })
+				const {data} = await axios.get(`/users/getId/${name}`)
 				return data;
 			}
 		});
@@ -55,7 +55,7 @@ function MePlayer({ score, name} : pScore) {
 				<div className="flex items-center gap-2">
 					<div className="flex flex-col items-center w-[80px] h-[80px]">
 						<Image src={data.image} width={100} height={100} alt="#" className="w-full h-full rounded-full"/>
-						<h1 className="text-[#F2F2F2] font-bold">{data.name}</h1>
+						<h1 className="text-[#F2F2F2] font-bold">{data.username}</h1>
 					</div>
 					<h1>
 						score: {score}
@@ -84,7 +84,7 @@ function OtherPlayer({ score, name } : pScore) {
 		const {data, isLoading} = useQuery({
 			queryKey: ['scoreright'],
 			queryFn: async ()=> {
-			const {data} = await axios.get(`http://localhost:8000/users/byUsername/${name}`, { withCredentials: true })
+			const {data} = await axios.get(`/users/getId/${name}`)
 			return data;
 			}
 		});
@@ -97,7 +97,7 @@ function OtherPlayer({ score, name } : pScore) {
 					</h1>
 					<div className="flex flex-col items-center w-[80px] h-[80px]">
 						<Image src={data.image} width={100} height={100} alt="#" className="w-full h-full rounded-full"/>
-						<h1 className="text-[#F2F2F2] font-bold">{data.name}</h1>
+						<h1 className="text-[#F2F2F2] font-bold">{data.username}</h1>
 					</div>
 				</div>
 			);

@@ -2,7 +2,7 @@ import ProfileComponent from "@/components/profile/ProfileComponent";
 
 const Profile = () => {
     return (
-      <ProfileComponent />
+      <ProfileComponent username="me"/>
     )
 }
 

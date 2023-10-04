@@ -1,6 +1,6 @@
 import { Injectable, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Request, Response } from 'express';
+import {Response } from 'express';
 
 @Injectable()
 export class Jwt2faAuthGuard extends AuthGuard('jwt-2fa') {

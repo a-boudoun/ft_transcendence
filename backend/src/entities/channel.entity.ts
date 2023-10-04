@@ -8,15 +8,15 @@ import {
     JoinTable,
     Index,
     DataSource,
-    CreateDateColumn
+    CreateDateColumn,
   } from 'typeorm';
 import { User } from './user.entity';
   
 export enum ChannelType {
-    DIRECT = 'direct',
-    PUBLIC = 'public',
-    PRIVATE = 'private',
-    PROTECTED = 'protected'
+    DIRECT = 'Direct',
+    PUBLIC = 'Public',
+    PRIVATE = 'Private',
+    PROTECTED = 'Protected'
 }
 export enum MemberTitle {
     MEMBER = 'member',
@@ -41,24 +41,38 @@ export class Channel {
     @ManyToOne(() => User, user => user.ownedChannels)
     owner: User;
     
-    @Column({ length: 25 ,
-    nullable : true})
+    @Column({nullable : true})
     password: string;
-    
-    @OneToMany(() => Administration, administration => administration.channel)
-    administrators: Administration[];
     
     @OneToMany(() => Membership, membership => membership.channel)
     memberships: Membership[];
     
-    @OneToMany(() => Sanction, sanction => sanction.channel)
-    sanctions: Sanction[];
+    @OneToMany(() => Mutation, mutation => mutation.channel)
+    mutations: Mutation[];
     
     @OneToMany(() => Message, message => message.channel)
     messages: Message[];
+
+    @OneToMany(() => Bannation, bannation => bannation.channel)
+    bannations: Bannation[];
+
 }
 
-@Entity({ name: 'Message' })
+@Entity({ name: 'Bannation' })
+export class Bannation {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @ManyToOne(() => Channel, (channel) => channel.bannations, {
+        onDelete: 'CASCADE',
+    })
+    channel: Channel;
+
+    @ManyToOne(() => User, (user) => user.bannations)
+    member: User;
+}
+
+@Entity({ name: 'Message', orderBy: { date: 'ASC' } })
 export class Message {
     @PrimaryGeneratedColumn()
     id: number;
@@ -66,34 +80,27 @@ export class Message {
     @CreateDateColumn()
     date: Date;
   
-    @ManyToOne(() => Channel, (channel) => channel.messages)
+    @ManyToOne(() => Channel, (channel) => channel.messages, {
+        onDelete: 'CASCADE',
+    })
     channel: Channel;
   
     @ManyToOne(() => User, (user) => user.messages)
     sender: User;
   
-    @Column({ length: 250 })
+    @Column()
     content: string;
 }
 
-@Entity({ name: 'Administration' })
-export class Administration {
-    @PrimaryGeneratedColumn()
-    id: number;
-    
-    @ManyToOne(() => Channel, (channel) => channel.administrators)
-    channel: Channel;
-    
-    @ManyToOne(() => User, (user) => user.administratedChannels)
-    admin: User;
-}
 
 @Entity({ name: 'Membership' })
 export class Membership {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @ManyToOne(() => Channel, (channel) => channel.memberships)
+    @ManyToOne(() => Channel, (channel) => channel.memberships, {
+        onDelete: 'CASCADE',
+    })
     channel: Channel;
     
     @ManyToOne(() => User, (user) => user.channels)
@@ -109,20 +116,22 @@ export enum SanctionType {
     MUTED = 'muted'
 }
 
-@Entity({ name: 'Sanction' })
-export class Sanction {
+@Entity({ name: 'Mutation' })
+export class Mutation {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @ManyToOne(() => Channel, (channel) => channel.sanctions)
+    @ManyToOne(() => Channel, (channel) => channel.mutations, {
+        onDelete: 'CASCADE',
+    })
     channel: Channel;
     
-    @ManyToOne(() => User, (user) => user.sanctions)
+    @ManyToOne(() => User, (user) => user.mutations)
     member: User;
 
-    @Column('text')
-    type: SanctionType;
-
-    @Column({ type: 'date' })
-    duration: Date;
+    @Column({ type: 'timestamp' })
+    mut_date: Date;
+    
+    @Column()
+    duration: number;
 }
