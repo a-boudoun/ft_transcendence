@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { AdministrationDTO, ChannelDTO } from './dto/create-channel.dto';
-import { Administration, Bannation, Channel, MemberTitle, Membership, Message, Mutation } from '../entities/channel.entity';
+import { ChannelDTO } from './dto/create-channel.dto';
+import {  Bannation, Channel, MemberTitle, Membership, Message, Mutation } from '../entities/channel.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ChannelType } from '../entities/channel.entity';
@@ -326,7 +326,7 @@ async banner(channelId: number, username: string) {
       const channel = await this.membershipRepo.createQueryBuilder('membership')
       .innerJoin('membership.channel', 'channel')
       .where('membership.member = :me', { me })
-      .groupBy('membership.channel')
+      .groupBy('membership.channel') // should be removed
       .where('channel.type = :type', { type: ChannelType.DIRECT })
       .andWhere('membership.member = :id', { id })
       .select('membership.channel')
