@@ -64,7 +64,6 @@ export const UpdateChannel = ({type}:{type:string}) => {
       },
       onSuccess: (data: any) => {
           Client.refetchQueries(['channels']);
-          console.log("joined")
       }
   }); 
     const handelsubmit = async(e: any) => {
