@@ -326,7 +326,7 @@ async banner(channelId: number, username: string) {
       const channel = await this.membershipRepo.createQueryBuilder('membership')
       .innerJoin('membership.channel', 'channel')
       .where('membership.member = :me', { me })
-      .groupBy('membership.channel')
+      .groupBy('membership.channel') // should be removed
       .where('channel.type = :type', { type: ChannelType.DIRECT })
       .andWhere('membership.member = :id', { id })
       .select('membership.channel')
