@@ -24,7 +24,7 @@ export class ChannelsService {
     ) { }
     async create(channel: ChannelDTO) {
       
-      const newChannel : ChannelDTO = await this.channelRepo.create(channel);
+      const newChannel = await this.channelRepo.create(channel);
       // const newChannel : Channel = new Channel();
       // newChannel.name = channel.name;
       // newChannel.image = channel.image;

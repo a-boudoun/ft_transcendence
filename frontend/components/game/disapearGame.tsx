@@ -12,8 +12,6 @@ interface Prop{
 }
 function DisapGame({roomid, me, RightPlayer} : Prop){
 	const divRef = useRef<HTMLDivElement | null>(null);
-	const [sx, setSx] = useState<number>(1);
-	const [sy, setSy] = useState<number>(1);
 	let keyClicked : boolean = false;
 
 	useEffect(() => {
@@ -212,43 +210,9 @@ function DisapGame({roomid, me, RightPlayer} : Prop){
 		}
 	}, [roomid]);
 				
-	useEffect(() => {
-		let canvasWidth: number = 1700;
-		let canvasHeight: number = 900;
-		
-		let windowWidth: number = window.innerWidth;
-		let windowHeight: number = window.innerHeight;
-		
-		let scaleFactor: number = Math.min(windowWidth / canvasWidth, windowHeight / canvasHeight);
-		
-		let scalex: number = scaleFactor > 1 ? 1 : scaleFactor * 0.95;
-		let scaley: number = scaleFactor > 1 ? 1 : scaleFactor * 0.85; // adding the navbar height
-		setSx(scalex);
-		setSy(scaley);
-		window.addEventListener("resize", handleResize);
-		
-		function handleResize(){
-			windowWidth = window.innerWidth;
-			windowHeight = window.innerHeight;
-			scaleFactor = Math.min(windowWidth / canvasWidth, windowHeight / canvasHeight);
-			scalex = scaleFactor > 1 ? 1 : scaleFactor * 0.95;
-			scaley = scaleFactor > 0.95 ? 1 : scaleFactor * 0.85; // adding the navbar height
-			setSx(scalex);
-			setSy(scaley);
-		}
-		
-		return () => {
-			window.removeEventListener("resize", handleResize);
-		}
-		}, []);
-				
 		return (
 			<div ref={divRef} 
-			className="shadow-[0_20px_50px_rgba(_179,_54,_144,_1)]"
-			style={{
-				transform: `scale(${sx}, ${sy})`,
-			}}
-			>
+			className="shadow-[0_20px_50px_rgba(_179,_54,_144,_1)]">
 			</div>
 		);
 }
