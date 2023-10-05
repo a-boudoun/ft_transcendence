@@ -24,47 +24,50 @@ export class ChannelsService {
     ) { }
     async create(channel: ChannelDTO) {
       
-      const newChannel : Channel = new Channel();
-      newChannel.name = channel.name;
-      newChannel.image = channel.image;
-      newChannel.type = channel.type;
+      const newChannel : ChannelDTO = await this.channelRepo.create(channel);
+      // const newChannel : Channel = new Channel();
+      // newChannel.name = channel.name;
+      // newChannel.image = channel.image;
+      // newChannel.type = channel.type;
       if(channel.password != '')
       {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(channel.password, salt);
         newChannel.password = hashedPassword;
       }
-      else
-      newChannel.password = '';
-    const cchannel = this.channelRepo.create(newChannel);
-    const ret = await this.channelRepo.save(cchannel);
+      // else
+      // newChannel.password = '';
+    // const cchannel = this.channelRepo.create(newChannel);
+    const ret = await this.channelRepo.save(newChannel);
     
     const membership : MembershipDTO  = this.membershipRepo.create();
     membership.channel = ret;
     membership.member = channel.owner;
     membership.title = MemberTitle.OWNER;
     await this.membershipRepo.save(membership);
-    
-    
+
+    ///////////// ca sert a quoi ??:
     const channel1 = await this.channelRepo.findOne({
       where: {
         id: ret.id,
-        
       },
-      relations: [ 'memberships.member'],
+      relations: ['memberships.member'],
     });
+    ////////////////////////////////
+    
     return channel1;
   }
   
   async findAll(username: string) {
-    const banedid : number[] = await this.bannationRepo
-    .createQueryBuilder('bannation')
-    .innerJoin('bannation.channel', 'channel')
-    .innerJoin('bannation.member', 'member')
-    .select('channel.id')
-    .where('member.username = :username', { username: username })
-    .getRawMany()
-    .then((res) => res.map((res) => res.channel_id));
+
+    // const banedid : number[] = await this.bannationRepo
+    // .createQueryBuilder('bannation')
+    // .innerJoin('bannation.channel', 'channel')
+    // .innerJoin('bannation.member', 'member')
+    // .select('channel.id')
+    // .where('member.username = :username', { username: username })
+    // .getRawMany()
+    // .then((res) => res.map((res) => res.channel_id));
     
     
     let channels = await this.channelRepo.find({
@@ -75,8 +78,15 @@ export class ChannelsService {
       ],
       relations: ['messages', 'memberships.member', 'bannations.member'],
     });
+
+    const banedid : number[] = await this.bannationRepo.find({
+      where: {
+        member: { username: username },
+      },
+      relations: ['channel'],
+    }).then((res) => res.map((res) => res.channel.id));
+
     channels = channels.filter((channel) => !banedid.includes(channel.id));
-    
     return channels;
   }
   
@@ -86,9 +96,10 @@ export class ChannelsService {
     
     let channel= await this.channelRepo.findOne({
       where: [
-        { id: id, type: ChannelType.PUBLIC },
-        { id: id, type: ChannelType.PROTECTED },
-        { id: id, type: ChannelType.PRIVATE}
+        { id: id, type: Not(ChannelType.DIRECT) },
+        // { id: id, type: ChannelType.PUBLIC },
+        // { id: id, type: ChannelType.PROTECTED },
+        // { id: id, type: ChannelType.PRIVATE}
       ],
       order: {
         messages: {
@@ -112,8 +123,8 @@ export class ChannelsService {
         },
       });
       if(!membership)
-      return null;
-  }
+        return null;
+    }
   return channel;
 }
 
@@ -135,22 +146,22 @@ async findOne(id: number) {
 
 async update(id: number, updateChannelDto: any) {
   let channel = await this.findOne(id);
-  if(updateChannelDto.name != channel.name)
+  // if(updateChannelDto.name != channel.name)
   channel.name = updateChannelDto.name;
 
-if(updateChannelDto.image != channel.image)
-channel.image = updateChannelDto.image;
+  // if(updateChannelDto.image != channel.image)
+  channel.image = updateChannelDto.image;
 
-if(updateChannelDto.password && !(await bcrypt.compare(updateChannelDto.password, channel.password)))
-{
-  const salt = await bcrypt.genSalt();
-  const hashedPassword = await bcrypt.hash(updateChannelDto.password, salt);
-  channel.password = hashedPassword;
-}
-if(updateChannelDto.type != channel.type)
-channel.type = updateChannelDto.type;
+  if(updateChannelDto.password && !(await bcrypt.compare(updateChannelDto.password, channel.password)))
+  {
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(updateChannelDto.password, salt);
+    channel.password = hashedPassword;
+  }
+// if(updateChannelDto.type != channel.type)
+  channel.type = updateChannelDto.type;
 
-return this.channelRepo.save(channel);
+  return this.channelRepo.save(channel);
 }
 
 async remove(id: number) {
@@ -158,10 +169,8 @@ async remove(id: number) {
 }
 
 async removeMembership(channelId: number, membershipId: number) {
-  
   return this.membershipRepo.delete(membershipId);
 } 
-
 
 async joinChannel(id: number, user: UserDTO, password: string) {
   const channel = await this.findOne(id);
@@ -182,36 +191,38 @@ async addFriendtoChannel(channelId: number, friend: UserDTO) {
       member: { id: friend.id},
     },
   });
-  
   if(member)
-  return member;
-const channel = await this.findOne(channelId);
-const membership = await this.membershipRepo.create({channel: channel, member: friend, title: MemberTitle.MEMBER});
-return this.membershipRepo.save(membership);
+    return member;
+  const channel = await this.findOne(channelId);
+  const membership = await this.membershipRepo.create({channel: channel, member: friend, title: MemberTitle.MEMBER});
+  return this.membershipRepo.save(membership);
 }
 
 async updateMembershipTitle(channelId: number, membershipId: number)
 {
-  
-  const channel = await this.findOne(channelId);
-  const membership = channel.memberships.find(
-    (membership) => membership.id === membershipId,
-    );
-    if(membership.title === MemberTitle.ADMIN)
+  // const channel = await this.findOne(channelId);
+  // const membership = channel.memberships.find(
+  //   (membership) => membership.id === membershipId,
+  // );
+  const membership = await this.membershipRepo.findOneById(membershipId);
+  if(membership.title === MemberTitle.ADMIN)
     membership.title = MemberTitle.MEMBER;
   else if (membership.title === MemberTitle.MEMBER)
-  membership.title = MemberTitle.ADMIN;
-return  this.membershipRepo.save(membership);
+    membership.title = MemberTitle.ADMIN;
+  return  this.membershipRepo.save(membership);
 }
 
 async addmessge(channelId: number, message: string, username: string) {
   
-  const channel = await this.channelRepo.findOne(({
-    where: {id: channelId,},
-    relations: [ 'memberships.member'],
-  }));
+  // const channel = await this.channelRepo.findOne(({
+  //   where: {id: channelId,},
+  //   relations: [ 'memberships.member'],
+  // }));
   
-  const user = channel?.memberships?.find((membership : any) => membership.member.username === username)?.member;
+  // const user = channel?.memberships?.find((membership : any) => membership.member.username === username)?.member;
+  const channel = await this.channelRepo.findOneBy({id: channelId});
+  const user = await this.userRepo.findOneBy({username: username});
+
   const newMessage = await this.messageRepo.create({
     channel: channel,
     sender: user,
@@ -221,62 +232,84 @@ async addmessge(channelId: number, message: string, username: string) {
 }
 
 async banner(channelId: number, username: string) {
-  const channel = await this.findOne(channelId);
-  const memship = await channel.memberships.find(
-    (membership : MembershipDTO) => membership.member.username === username,
-    );
-    await this.membershipRepo.delete(memship.id);
-    const bannation = await this.bannationRepo.create({
-      channel: channel,
+  // const channel = await this.findOne(channelId);
+  // const memship = await channel.memberships.find(
+  //   (membership : MembershipDTO) => membership.member.username === username,
+  //   );
+  const memship = await this.membershipRepo.findOne({
+    where: {
+      channel: { id: channelId},
+      member: { username: username},
+    },
+  });
+  await this.membershipRepo.delete(memship.id);
+  const bannation = await this.bannationRepo.create({
+      // channel: channel,
+      channel: memship.channel,
       member: memship.member,
-    });
-    return this.bannationRepo.save(bannation);
+  });
+  return this.bannationRepo.save(bannation);
   }
   
   
-  async mut(channelId: number, id: number, duration: number) {
-    const channel = await this.findOne(channelId);
-    const memship = await channel.memberships.find(
-      (membership : MembershipDTO) => membership.member.id === id,
-      );
-      const userMutation = await this.mutationRepo.findOne({
-        where: {
-          channel: { id: channel.id},
-          member: { id: memship.member.id},
-        },
-      });
-      if (userMutation) {
-        userMutation.duration = duration;
-        userMutation.mut_date = new Date();
-        return this.mutationRepo.save(userMutation);
-      }
-      const mut = await this.mutationRepo.create({
-        channel: channel,
-        member: memship.member,
-        mut_date: new Date(),
-        duration: duration,
-      });
-      return this.mutationRepo.save(mut);
-    }
+async mut(channelId: number, id: number, duration: number) {
+  // const channel = await this.findOne(channelId);
+  // const memship = await channel.memberships.find(
+  //   (membership : MembershipDTO) => membership.member.id === id,
+  //   );
+  const memship = await this.membershipRepo.findOne({
+    where: {
+      channel: { id: channelId},
+      member: { id: id},
+    },
+    relations: ['channel', 'member'],
+  });
+  const userMutation = await this.mutationRepo.findOne({
+      where: {
+        // channel: { id: channel.id},
+        channel: { id: memship.channel.id},
+        member: { id: memship.member.id},
+      },
+  });
+  if (userMutation) {
+    userMutation.duration = duration;
+    userMutation.mut_date = new Date();
+    return this.mutationRepo.save(userMutation);
+  }
+  const mut = await this.mutationRepo.create({
+      // channel: channel,
+      channel: memship.channel,
+      member: memship.member,
+      mut_date: new Date(),
+      duration: duration,
+  });
+  return this.mutationRepo.save(mut);
+}
     
-    async isMuted(channelId: number, username: string) {
-      if(!username || !channelId)
-      return false;
-    const channel = await this.findOne(channelId);
-    if(!channel || !channel.mutations || channel.mutations.length === 0)
-    return false; 
-  const mut = await channel.mutations.find(
-    (mutation : Mutation) => mutation.member.username === username,
-    );
-    if (mut) {
-      const now = new Date();
-      const duration = mut.mut_date.getTime() + (mut.duration * 60000);
-      if (now.getTime() < duration) {
-        return true;
-      }
-    }
+async isMuted(channelId: number, username: string) {
+  if(!username || !channelId)
     return false;
+  // const channel = await this.findOne(channelId);
+  // if(!channel || !channel.mutations || channel.mutations.length === 0)
+  //   return false; 
+  // const mut = await channel.mutations.find(
+  //   (mutation : Mutation) => mutation.member.username === username,
+  // );
+  const mut = await this.mutationRepo.findOne({
+    where: {
+      channel: { id: channelId},
+      member: { username: username},
+    },
+  });
+  if (mut) {
+    const now = new Date();
+    const duration = mut.mut_date.getTime() + (mut.duration * 60000);
+    if (now.getTime() < duration) {
+      return true;
+    }
   }
+  return false;
+}
   
   async getDirectChannel(username: string) {
     const channels = await this.channelRepo.find({
@@ -284,7 +317,6 @@ async banner(channelId: number, username: string) {
         type: ChannelType.DIRECT, memberships: { member: { username: username } },
       },
     });
-    
     
     return await  Promise.all(channels.map(async (channel) => {
       const member = await  this.membershipRepo.findOne({
@@ -312,15 +344,20 @@ async banner(channelId: number, username: string) {
   }
   
   async isBanned(channelId: number, username: string) {
-    const channel = await this.findOne(channelId);
-    const ban = await channel.bannations.find(
-      (bannation : Bannation) => bannation.member.username === username,
-      );
-      if (ban) {
-        return true;
-      }
-      return false;
-    }
+    // const channel = await this.findOne(channelId);
+    // const ban = await channel.bannations.find(
+    //   (bannation : Bannation) => bannation.member.username === username,
+    //   );
+    const ban = await this.bannationRepo.findOne({
+      where: {
+        channel: { id: channelId},
+        member: { username: username},
+      },
+    });
+    if (ban) 
+      return true;
+    return false;
+}
     
    async getChannelId(me: number, id: number) {
       const channel = await this.membershipRepo.createQueryBuilder('membership')
