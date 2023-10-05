@@ -6,7 +6,6 @@ import RobotGame from "@/components/game/robotGame";
 import { Gamepad2 } from "lucide-react";
 
 const Difficulty = () => {
-  console.log("difficulty");
   const [difficulty, setDifficulty] = useState<number>(12);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
 

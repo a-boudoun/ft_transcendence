@@ -93,7 +93,6 @@ const SignInFrom = ({ user }: { user: any }) => {
           </div>
         </label>
         <input
-          id={"name"}
           className="h-16 rounded-2xl text-black text-center focus:outline-0 focus:border-black focus:border-[2px] hover:opacity-60"
           type="text"
           placeholder={user.username}
