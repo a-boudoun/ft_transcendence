@@ -32,7 +32,7 @@ const Difficulty = () => {
                     width={260}
                     height={0}
                     alt="football-mode"
-                    src="/game/robot.svg"
+                    src="/game/easy-robot.webp"
                     className={`w-260 object-cover object-center transition-transform ${
                       difficulty === 14 ? "scale-110" : ""
                     } hover:scale-110`}
@@ -49,7 +49,7 @@ const Difficulty = () => {
                     width={260}
                     height={0}
                     alt="Space-mode"
-                    src="/game/robot.svg"
+                    src="/game/medium-robot.webp"
                     className={`w-260 object-cover object-center transition-transform ${
                       difficulty === 12 ? "scale-110" : ""
                     } hover:scale-110`}
@@ -66,7 +66,7 @@ const Difficulty = () => {
                     width={260}
                     height={0}
                     alt="Ping pong"
-                    src="/game/robot.svg"
+                    src="/game/hard-robot.webp"
                     className={`w-260 transition-transform ${
                       difficulty === 10 ? "scale-110" : ""
                     } hover:scale-110`}
