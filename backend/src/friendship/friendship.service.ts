@@ -38,37 +38,32 @@ export class FriendshipService {
       this.usersGateway.sendFriedRequest(receiver);
       return ;
     }
-    
+   
     async getFriends(id: number) {
-      const friendship = await this.friendshipRepo.find({
+      const friendships = await this.friendshipRepo.find({
         where: [
-          { initiater: { id: id } , status: Fstatus.ACCEPTED },
+          { initiater: { id: id }, status: Fstatus.ACCEPTED },
+          { receiver: { id: id }, status: Fstatus.ACCEPTED },
         ],
-        relations: ['receiver']
-      });
-      const receivers =  friendship.map(f => f.receiver);
-      
-      const friendship1 = await this.friendshipRepo.find({
-        where: [
-          { receiver: { id: id } , status: Fstatus.ACCEPTED },
-        ],
-        relations: ['initiater']
+        relations: ['initiater', 'receiver'],
       });
       
-      const senders =  friendship1.map(f => f.initiater);
-      
-      if(receivers.length == 0 && senders.length == 0)
+      if (friendships.length == 0)
         return [];
-      else if(receivers.length == 0)
-        return senders;
-      else if (senders.length == 0)
-        return receivers;
 
-      return receivers.concat(senders);
-}
+      const friends = friendships.map((friendship) => {
+          if (friendship.initiater.id === id) {
+            return friendship.receiver;
+          } else {
+            return friendship.initiater;
+          }
+        });
+    
+      return friends;
+    }
 
 async accept(id: number, sender: number) {
-  
+
   const friendship = await this.friendshipRepo.findOne({
       where: [ { initiater: { id: sender }, receiver: { id: id } } ],
     });
