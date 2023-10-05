@@ -39,7 +39,7 @@ export class gameSimulation{
 	private lost: string;
 	private lostscore: number;
 	//limits
-	private readonly MAX = 15;
+	private readonly MAX = 5;
 	private readonly Bspeed = 10;
 	// intervals
 	private id: any;
