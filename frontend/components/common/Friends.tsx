@@ -81,7 +81,7 @@ export const Friend = ({ user, isMe }: { user: userDto; isMe: boolean }) => {
   );
 };
 
-const ChallengeDropDown = ({ id }: { id: number }) => {
+const ChallengeDropDown = ({ id }: { id: number | undefined }) => {
   return (
       <div className="absolute top-12 right-4 flex flex-col gap-4 rounded-2xl  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg p-4">
         <h3 className="text-blue"> challenge game of: </h3>
