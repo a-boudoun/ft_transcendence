@@ -20,7 +20,7 @@ export default function Won({ setWon, setLost, me, other } : prop) {
   const [event, setEvent] = useState<string>("retry-game");
   const [senderName, setSenderName] = useState<string>(me);
   const [senderSocketId, setSenderSocketId] = useState<string>("");
-  const [timeLeft, setTimeLeft] = useState<number>(30);
+  const [timeLeft, setTimeLeft] = useState<number>(10);
   const [notif, setNotif] = useState<number>(0);
 
   useEffect(() => {
