@@ -232,7 +232,8 @@ async addmessge(channelId: number, message: string, username: string) {
 }
 
 async banner(channelId: number, username: string) {
-  // const channel = await this.findOne(channelId);
+
+  const channel = await this.findOne(channelId);
   // const memship = await channel.memberships.find(
   //   (membership : MembershipDTO) => membership.member.username === username,
   //   );
@@ -311,7 +312,7 @@ async isMuted(channelId: number, username: string) {
   return false;
 }
   
-  async getDirectChannel(username: string) {
+  async getDirectChannels(username: string) {
     const channels = await this.channelRepo.find({
       where: {
         type: ChannelType.DIRECT, memberships: { member: { username: username } },
@@ -328,8 +329,6 @@ async isMuted(channelId: number, username: string) {
         id: channel.id, member:  member,
       };
     }));
-    
-  
   }
   
   async unban(banId: number) {
@@ -360,22 +359,26 @@ async isMuted(channelId: number, username: string) {
 }
     
    async getChannelId(me: number, id: number) {
-      const channel = await this.membershipRepo.createQueryBuilder('membership')
-      .innerJoin('membership.channel', 'channel')
-      .where('membership.member = :me', { me })
-      .groupBy('membership.channel') // should be removed
-      .where('channel.type = :type', { type: ChannelType.DIRECT })
-      .andWhere('membership.member = :id', { id })
-      .select('membership.channel')
-      .getRawOne();
+      const membership = await this.membershipRepo.findOne({
+        where: [{
+          member: { id: me},
+          channel: { type: ChannelType.DIRECT , owner: { id: id}},
+        },
+        {
+          member: { id: id},
+          channel: { type: ChannelType.DIRECT , owner: { id: me}},
+        },
+      ],
+        relations: ['channel.owner', 'member', 'channel'],
+      })
 
-      if(!channel){
+      if(!membership?.channel){
         const user1 = await this.userRepo.findOneBy({id: me});
         const user2 = await this.userRepo.findOneBy({id: id});
 
         const channelName : string =  (user1.id < user2.id) ? user1.username + user2.username : user2.username + user1.username;
 
-        const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" });
+        const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, owner: user1, image: "/img/more.svg" });
         const rt = await this.channelRepo.save(channel);
         const membership1 = await this.membershipRepo.create({channel: rt, member: user1, title: MemberTitle.MEMBER});
         const membership2 = await this.membershipRepo.create({channel: rt, member: user2, title: MemberTitle.MEMBER});
@@ -385,6 +388,6 @@ async isMuted(channelId: number, username: string) {
         return rt.id;
       }
         
-      return channel.channelId;
+      return membership.channel.id;
     }
   }

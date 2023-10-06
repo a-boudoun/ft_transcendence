@@ -20,8 +20,8 @@ export default function Won({ setWon, setLost, me, other } : prop) {
   const [event, setEvent] = useState<string>("retry-game");
   const [senderName, setSenderName] = useState<string>(me);
   const [senderSocketId, setSenderSocketId] = useState<string>("");
-  const [timeLeft, setTimeLeft] = useState<number>(5);
-  const [notif, setNotif] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(10);
+  const [retry, setRetry] = useState<string>("Retry");
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -47,7 +47,8 @@ export default function Won({ setWon, setLost, me, other } : prop) {
     setSenderName(data.sender);
     setSenderSocketId(data.senderSocketId);
     setEvent("accept-retry");
-    setNotif(69);
+    setRetry("Click to retry");
+    console.log(`event: ${event}`);
   });
 
   const {data, isLoading} = useQuery({
@@ -63,21 +64,18 @@ export default function Won({ setWon, setLost, me, other } : prop) {
       <div className='flex w-full h-full items-center justify-center '>
         <div className='flex flex-col gap-8 W-[600px] h-[600px] '>
           <h1 className='text-6xl font-bold text-[#4bff60f5] '>You Won</h1>
-          <h1 className='text-2xl font-bold font-serif text-teal-600'>+10xp</h1>
           <div className='flex w-[400px] h-[400px] border-black'>
             <Image width={1000} height={1000} alt="#" src={data.image} className="h-full w-full rounded-full"/>
           </div>
           <button className="text-white font-bold text-2xl h-[100px] bg-red rounded-[10px] hover:bg-[#FBACB3]"
           onClick={() => {socket.emit(event, {senderUsername: senderName, reciever: other, senderSocketId: senderSocketId})}}
           >
-   				    Retry 
-               <p>{notif}</p>
+            {retry}
   				</button>
           <button className="text-white font-bold text-2xl bg-red rounded-[10px] hover:bg-[#FBACB3]"
             onClick={() => {router.push("/game")}}
           >
-   				    Leave
-              <p>{timeLeft}</p>
+   				    Leave {timeLeft}
   				</button>
         </div>
       </div>

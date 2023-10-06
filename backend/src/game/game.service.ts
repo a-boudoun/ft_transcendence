@@ -109,11 +109,10 @@ isInGame(username: string): string | null {
   const room: Room | undefined = Array.from(this.rooms.values()).find((room: Room) => {
     return room.players.find((player: Player) => player.username.toString() === username.toString());
   });
-  if (room) {
+  if (room !== undefined) {
     return room.id;
   }
   return null;
-
 }
 
 }

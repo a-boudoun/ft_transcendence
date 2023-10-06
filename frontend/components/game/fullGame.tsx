@@ -26,6 +26,8 @@ export default function Game({ meId }: Prop) {
   const [Winner, setWinner] = useState<string>("");
   const [Loser, setLoser] = useState<string>("");
   const [map, setMap] = useState<string>("default");
+  const [sx, setSx] = useState<number>(1);
+	const [sy, setSy] = useState<number>(1);
 
   useEffect(() => {
     let selected: string | null = localStorage.getItem("map");
@@ -76,49 +78,87 @@ export default function Game({ meId }: Prop) {
     }
   }, [countDownValue]);
 
+  useEffect(() => {
+    let canvasWidth: number = 1750;
+    let canvasHeight: number = 1200;
+    
+    let windowWidth: number = window.innerWidth;
+    let windowHeight: number = window.innerHeight;
+    
+    let scaleFactor: number = Math.min(windowWidth / canvasWidth, windowHeight / canvasHeight);
+    
+    let scalex: number = scaleFactor > 1 ? 1 : scaleFactor * 0.95;
+    let scaley: number = scaleFactor > 0.95 ? 1 : scaleFactor * 0.85; // adding the navbar height
+    setSx(scalex);
+    setSy(scaley);
+    window.addEventListener("resize", handleResize);
+    
+    function handleResize(){
+      windowWidth = window.innerWidth;
+      windowHeight = window.innerHeight;
+      scaleFactor = Math.min(windowWidth / canvasWidth, windowHeight / canvasHeight);
+      scalex = scaleFactor > 1 ? 1 : scaleFactor * 0.95;
+      scaley = scaleFactor > 1 ? 1 : scaleFactor * 0.85; // adding the navbar height
+      setSx(scalex);
+      setSy(scaley);
+    }
+    
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    }
+    }, []);
+
   return (
-    <main className="min-h-screen  grid place-content-center pt-14">
+    <main className="w-full h-full grid place-content-center pt-14">
       {Winner === "" && Loser === "" && (
         <>
-          {PVisible && !leftScore && !rightScore && (
-            <p className="absolute font-bold text-[#f6f6f6] z-10 text-[90px] mb-[150px] ">
-              {countDownValue}
-            </p>
-          )}
 
-          <div className="flex flex-col gap-8 p-16 sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg sm:drop-shadow-lg sm:rounded-3xl">
+          <div className="flex flex-col gap-8 p-16 sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg sm:drop-shadow-lg sm:rounded-3xl"
+              style={{
+                transform: `scale(${sx}, ${sy})`,
+              }}
+              >
             {LeftPlayer !== "" && RightPlayer !== "" && (
               <PlayersScore
-                left={leftScore}
-                right={rightScore}
-                leftPlayer={LeftPlayer}
-                rightPlayer={RightPlayer}
+              left={leftScore}
+              right={rightScore}
+              leftPlayer={LeftPlayer}
+              rightPlayer={RightPlayer}
               />
-            )}
+              )}
 
-            {map === "default" && (
-              <DefaultGame
-                roomid={roomid}
-                me={meId.toString()}
-                RightPlayer={RightPlayer}
-              />
-            )}
+            <div className="relative" > 
+                {PVisible && !leftScore && !rightScore && (
+                <p className="absolute top-[50%] left-[50%]  font-bold text-[#f6f6f6] z-10 text-[90px] mb-[150px] ">
+                  {countDownValue}
+                </p>
+              )}
 
-            {map === "football-mode" && (
-              <FootGame
-                roomid={roomid}
-                me={meId.toString()}
-                RightPlayer={RightPlayer}
-              />
-            )}
+              {map === "default" && (
+                <DefaultGame
+                  roomid={roomid}
+                  me={meId.toString()}
+                  RightPlayer={RightPlayer}
+                />
+              )}
 
-            {map === "space-mode" && (
-              <DisapGame
-                roomid={roomid}
-                me={meId.toString()}
-                RightPlayer={RightPlayer}
-              />
-            )}
+              {map === "football-mode" && (
+                <FootGame
+                  roomid={roomid}
+                  me={meId.toString()}
+                  RightPlayer={RightPlayer}
+                />
+              )}
+
+              {map === "space-mode" && (
+                <DisapGame
+                  roomid={roomid}
+                  me={meId.toString()}
+                  RightPlayer={RightPlayer}
+                />
+              )}
+
+            </div>
             <button
               className="ml-auto mt-10  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]"
               onClick={() => {
