@@ -13,7 +13,7 @@ const ChallengeDropDown = ({ id, setIsOpen }: ChallengeDropDownProps) => {
   return (
     <div
       ref={divref}
-      className="absolute top-12 right-4 flex flex-col gap-4 rounded-2xl  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg p-4"
+      className="absolute top-[-16px] right-4 flex flex-col gap-4 rounded-2xl  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg p-4 z-40"
     >
       <h3 className="text-blue"> challenge game of: </h3>
       <div className="flex flex-col gap-2">

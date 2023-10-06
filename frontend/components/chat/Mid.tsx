@@ -147,7 +147,11 @@ function Mid() {
               <div className="h-fit  flex items-center py-3   justify-between px-3 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
                 <div className="flex items-center space-x-2 ">
                   <Link href={`/channel`}>
-                    <ArrowLeftCircle size={24} color="#7ac7c4" strokeWidth={1.5} />
+                    <ArrowLeftCircle
+                      size={24}
+                      color="#7ac7c4"
+                      strokeWidth={1.5}
+                    />
                   </Link>
                   <Image
                     className="h-10 w-10 rounded-full  "
@@ -160,11 +164,11 @@ function Mid() {
                 </div>
                 <div className="text-3xl mr-5 flex items-center justify-center lg:hidden ">
                   <button onClick={() => dispatch(setisMid(false))}>
-                    <Info  size={24} color="#7ac7c4" strokeWidth={1.5}/>
+                    <Info size={24} color="#7ac7c4" strokeWidth={1.5} />
                   </button>
                 </div>
               </div>
-              <div className="overflow-y-auto flex-grow py-3 px-2">
+              <div className="overflow-auto scrollbar flex-grow py-3 px-2">
                 {" "}
                 {/* ref={messageContainerRef} */}
                 {messages?.map((msg: Message, id: number) => (

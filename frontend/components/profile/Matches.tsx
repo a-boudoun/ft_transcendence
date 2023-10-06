@@ -66,7 +66,7 @@ const DisplayMatchs = ({ id }: { id: number }) => {
   if (Matchs.isLoading) return <div> loading... </div>;
   else {
     return (
-      <div className="grow flex flex-col gap-4 p-4 overflow-scroll  xl:rounded-b-3xl">
+      <div className="grow flex flex-col gap-4 p-4 overflow-auto scrollbar	xl:rounded-b-3xl">
         {Matchs.data.map((match: any) => {
           return <Match key={match.id} match={match} id={id} />;
         })}
@@ -77,7 +77,7 @@ const DisplayMatchs = ({ id }: { id: number }) => {
 
 const MatchesHistory = ({ id }: { id: number }) => {
   return (
-    <div className="flex-[0.5]  flex flex-col xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg overflow-scroll">
+    <div className="flex-[0.5]  flex flex-col xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg overflow-hidden">
       <div className="hidden xl:block rounded-t-3xl  p-4 ">
         <div
           className={`h-[56px] w-fit flex justify-center items-center m-auto p-2 border-b border-blue`}

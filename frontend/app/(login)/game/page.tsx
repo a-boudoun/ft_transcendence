@@ -26,7 +26,7 @@ export default function Gamehome() {
                   width={340}
                   height={0}
                   alt="football-mode"
-                  src="/game/offline-game-select.webp"
+                  src="/game/offline-game-select.svg"
                   className="w-[340px] object-cover object-center transition-transform hover:scale-110 "
                 />
               </div>
