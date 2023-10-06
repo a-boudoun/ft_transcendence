@@ -7,16 +7,11 @@ export class ChannelDTO {
     type?: ChannelType;
     password?: string;
     owner?: UserDTO;
-    administrators?: AdministrationDTO[];
     memberships?: MembershipDTO[];
     mutations?: MutationDTO[];
     messages?: MessageDTO[];
 }
 
-export class AdministrationDTO {
-    channel: ChannelDTO;
-    admin: UserDTO;
-}
 
 export class MembershipDTO {
     channel: ChannelDTO;

@@ -79,7 +79,7 @@ function FootGame({roomid, me, RightPlayer} : Prop){
 					height: H,
 					pixelRatio: 1,
 					wireframes: false,
-					background: "/game/pitch2.jpg",
+					background: "/game/pitch.jpg",
 				}
 			});
 
@@ -87,7 +87,7 @@ function FootGame({roomid, me, RightPlayer} : Prop){
 				isStatic: true,
 				render: {
 					sprite: {
-						texture: '/game/rightglove.png',
+						texture: '/game/rightglove.webp',
 						xScale: 0.045,
 						yScale: 0.05,
 					}
@@ -97,7 +97,7 @@ function FootGame({roomid, me, RightPlayer} : Prop){
 				isStatic: true,
 				render: {
 					sprite: {
-						texture: '/game/leftglove.png',
+						texture: '/game/leftglove.webp',
 						xScale: 0.045,
 						yScale: 0.05,
 					}
@@ -198,7 +198,7 @@ function FootGame({roomid, me, RightPlayer} : Prop){
 				
 				return (
 					<div ref={divRef} 
-					className="h-[900px] w-[1700px] mt-20 relative"
+					className="shadow-[0_20px_50px_rgba(_89,_203,_76,_1)]"
 					style={{
 				transform: `scale(${sx}, ${sy})`,
 				}}

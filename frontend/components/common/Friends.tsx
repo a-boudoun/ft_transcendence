@@ -5,9 +5,9 @@ import Link from "next/link";
 import { userDto } from "@/dto/userDto";
 import axios from "@/apis/axios";
 import { useQuery } from "@tanstack/react-query";
-import socket from "../socketG";
 import { MessagesSquare, Gamepad2 } from "lucide-react";
 import { useState } from "react";
+import ChallengeDropDown  from "@/components/common/ChallengeDropDown";
 
 const Friends = ({ id, isMe }: { id: number; isMe: boolean }) => {
   const { data, isLoading } = useQuery({
@@ -22,7 +22,7 @@ const Friends = ({ id, isMe }: { id: number; isMe: boolean }) => {
   else {
     return (
       <div
-        className={"h-full flex flex-col gap-1 overflow-y-scroll rounded-2xl"}
+        className={"h-full flex flex-col gap-1 rounded-2xl overflow-scroll"}
       >
         {data.map((friend: userDto) => {
           return <Friend key={friend.id} user={friend} isMe={isMe} />;
@@ -33,15 +33,13 @@ const Friends = ({ id, isMe }: { id: number; isMe: boolean }) => {
 };
 export default Friends;
 
-export const Friend = ({ user, isMe }: { user: userDto; isMe: boolean }) => {
+export const Friend = ({ user, isMe }: { user: any; isMe: boolean }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["direct", user.id],
     queryFn: async () => {
-      const { data } = await axios.get(`/channels/getChannelId/${user.id}`, {
-        withCredentials: true,
-      });
+      const { data } = await axios.get(`/channels/getChannelId/${user.id}`);
       return data;
     },
   });
@@ -74,7 +72,7 @@ export const Friend = ({ user, isMe }: { user: userDto; isMe: boolean }) => {
               <Gamepad2 size={32} color="#7ac7c4" strokeWidth={1.5} />
             </button>
           </div>
-          {isOpen && <ChallengeDropDown id={user.id} />}
+          {isOpen && <ChallengeDropDown id={user.id} setIsOpen={setIsOpen} />}
         </>
       )}
     </div>

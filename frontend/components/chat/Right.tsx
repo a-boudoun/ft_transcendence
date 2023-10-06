@@ -24,7 +24,8 @@ import {
   ShieldCheck,
   UserX2,
   Ban,
-  VolumeX
+  VolumeX,
+  XCircle,
 } from "lucide-react";
 
 const Right = () => {
@@ -61,17 +62,19 @@ const Right = () => {
   };
 
   return (
-    <div className={` ${isMid === false ? 'w-full md:w-1/2  lg:w-4/12 ' : 'hidden lg:w-5/12 lg:flex lg:flex-col max-w-xs'} h-full sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:rounded-[2.5rem] sm:p-4 min-w-[300px]`}>
-        <div className='overflow-y-scroll bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-full sm:rounded-[2rem] relative'>
-
-      <button className='absolute top-4 left-4  hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg w-[36px] h-[36px] rounded-full flex justify-center items-center lg:hidden ' onClick={() => dispatch(setisMid(true))} >
-        <Image
-          className="h-[24px] w-[24px]  rounded-full    "
-          src={'/img/cancel.svg'}
-          width={1000}
-          height={1000}
-          alt=""
-          />
+    <div
+      className={` ${
+        isMid === false
+          ? "w-full md:w-1/2  lg:w-4/12 "
+          : "hidden lg:w-5/12 lg:flex lg:flex-col max-w-xs"
+      } h-full sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:rounded-[2.5rem] sm:p-4 `}
+    >
+      <div className="overflow-y-scroll bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-full sm:rounded-[2rem] relative">
+        <button
+          className="absolute top-4 left-4  hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg w-[36px] h-[36px] rounded-full flex justify-center items-center lg:hidden "
+          onClick={() => dispatch(setisMid(true))}
+        >
+          <XCircle size={28} color="#EA5581" strokeWidth={1.5} />
         </button>
         <div className="h-fit w-full rounded-xl  py-3 ">
           <Image
