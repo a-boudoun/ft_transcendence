@@ -36,7 +36,7 @@ const UserDetails = (props: UserDetailsProps) => {
   }, []);
 
   return (
-    <div className="grow flex flex-col overflow-hidden xl:w-auto sm:rounded-3xl sm:shadow-2xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
+    <div className="flex-[0.5] grow flex flex-col overflow-hidden  sm:rounded-3xl sm:shadow-2xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
       <div className="flex justify-around xl:p-4 sm:rounded-t-3xl">
         <button
           aria-label="stats"
@@ -122,7 +122,7 @@ const UserDetails = (props: UserDetailsProps) => {
           </div>
         </button>
       </div>
-      <div className="grow  p-4 overflow-scroll   sm:rounded-b-3xl">
+      <div className="h-full grow p-4 overflow-scroll sm:rounded-b-3xl">
         {stats && props.Stats}
         {achievements && props.Archievement}
         {matches && props.Matches}

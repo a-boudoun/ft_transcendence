@@ -20,9 +20,6 @@ function DefaultGame({roomid, me, RightPlayer} : Prop){
 	useEffect(() => {
 		if (roomid!== '')
 		{
-			console.log('roomid', roomid);
-			console.log('me', me);
-			console.log('RightPlayer', RightPlayer);
 			const handleKeyDown = (e: KeyboardEvent) => {
 				if (!keyClicked)
 				{
@@ -171,7 +168,7 @@ function DefaultGame({roomid, me, RightPlayer} : Prop){
 
 				return (
 					<div ref={divRef} 
-					className="h-[900px] w-[1700px] mt-20 relative"
+					className="shadow-[0px_20px_50px_0px_#86c3bb,0px_-10px_50px_0px_#d3455c]"
 					style={{
 				transform: `scale(${sx}, ${sy})`,
 			}}

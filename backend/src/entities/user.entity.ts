@@ -9,7 +9,8 @@ import {
     Index,
     CreateDateColumn
   } from 'typeorm';
-import { Administration, Channel, Message, Mutation, Bannation } from './channel.entity';
+  
+import {  Channel, Message, Mutation, Bannation } from './channel.entity';
   
 export enum Status {
     ONLINE = 'online',
@@ -90,9 +91,6 @@ export class User {
     
     @OneToMany(() => Message, (message) => message.sender)
     messages: Message[];
-    
-    @OneToMany(() => Administration, (administration) => administration.admin)
-    administratedChannels: Administration[];
 
     @OneToMany(() => Bannation, (bannation) => bannation.member)
     bannations: Bannation[];
@@ -148,4 +146,3 @@ export class Friendship {
     @Column( )
     status: Fstatus;
 }
-export { Channel };

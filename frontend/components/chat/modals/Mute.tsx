@@ -23,7 +23,6 @@ const Mute = ({type}:{type:string}) => {
         return data;
       },
       onSuccess: () => {
-          console.log("joined")
       }
   });
 

@@ -4,12 +4,9 @@ import {
     Column,
     ManyToOne,
     OneToMany,
-    ManyToMany,
-    JoinTable,
-    Index,
-    DataSource,
     CreateDateColumn,
   } from 'typeorm';
+  
 import { User } from './user.entity';
   
 export enum ChannelType {
@@ -43,9 +40,6 @@ export class Channel {
     
     @Column({nullable : true})
     password: string;
-    
-    @OneToMany(() => Administration, administration => administration.channel)
-    administrators: Administration[];
     
     @OneToMany(() => Membership, membership => membership.channel)
     memberships: Membership[];
@@ -95,19 +89,6 @@ export class Message {
     content: string;
 }
 
-@Entity({ name: 'Administration' })
-export class Administration {
-    @PrimaryGeneratedColumn()
-    id: number;
-    
-    @ManyToOne(() => Channel, (channel) => channel.administrators, {
-        onDelete: 'CASCADE',
-    })
-    channel: Channel;
-    
-    @ManyToOne(() => User, (user) => user.administratedChannels)
-    admin: User;
-}
 
 @Entity({ name: 'Membership' })
 export class Membership {
@@ -124,12 +105,6 @@ export class Membership {
 
     @Column({ length: 25 })
     title: MemberTitle;
-}
-
-export enum SanctionType {
-    KICKED = 'kicked',
-    BANNED = 'banned',
-    MUTED = 'muted'
 }
 
 @Entity({ name: 'Mutation' })
