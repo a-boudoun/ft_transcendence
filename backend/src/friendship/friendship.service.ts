@@ -80,7 +80,7 @@ async accept(id: number, sender: number) {
     });
 
     if (!ch) {
-      const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" });
+      const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT,owner: user1, image: "/img/more.svg" });
       const rt = await this.channelRepo.save(channel);
       const membership1 = await this.memRepo.create({channel: rt, member: user1, title: MemberTitle.MEMBER});
       const membership2 = await this.memRepo.create({channel: rt, member: user2, title: MemberTitle.MEMBER});

@@ -12,7 +12,7 @@ const ChannelItems = ({ path }: { path: string }) => {
   );
   const user = useSelector((state: any) => state.globalState.user);
   return (
-    <div className="h-[90%] overflow-y-scroll py-2 ">
+    <div className="h-[90%] overflow-auto scrollbar py-2 ">
       {data1.map((data: channelDto) => (
         <Link key={data.id} href={`/channel/${data.id}`}>
           <ChannelItem channel={data} user={user} />
@@ -57,7 +57,11 @@ export const ChannelItem = ({
         />
         <h3>{channel.name}</h3>
       </div>
-      <div className={`flex items-center ${isMember === false ? "flex flex-row" : "hidden"} `}>
+      <div
+        className={`flex items-center ${
+          isMember === false ? "flex flex-row" : "hidden"
+        } `}
+      >
         <div className={`${channel.type === "Protected" ? "" : "hidden"}`}>
           <Lock size={28} color="#7ac7c4" strokeWidth={1.5} />
         </div>
