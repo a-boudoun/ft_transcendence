@@ -2,7 +2,7 @@ import { Award } from "lucide-react";
 
 const DisplyAchievements = ({ wins }: { wins: number }) => {
   return (
-    <div className="flex flex-col gap-4 p-4 overflow-scroll">
+    <div className="flex flex-col gap-4 p-4 overflow-auto scrollbar">
       <div className="flex gap-2 justify-start p-4 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-2xl">
         <Award size={48} />
         <div className="flex flex-col items-start">
@@ -25,7 +25,7 @@ const DisplyAchievements = ({ wins }: { wins: number }) => {
 
 const Achievements = ({ wins }: { wins: number }) => {
   return (
-    <div className="flex-[0.5] flex flex-col  xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg overflow-scroll">
+    <div className="flex-[0.5] flex flex-col  xl:rounded-3xl xl:shadow-2xl xl:bg-white xl:bg-opacity-20 xl:ackdrop-blur-lg xl:drop-shadow-lg overflow-hidden">
       <div className="hidden xl:block rounded-t-3xl p-4 ">
         <div
           className={`h-[56px] w-fit flex justify-center items-center m-auto p-2 border-b border-blue`}

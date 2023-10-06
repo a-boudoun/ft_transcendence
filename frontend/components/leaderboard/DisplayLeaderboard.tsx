@@ -101,7 +101,7 @@ const DisplayLeaderboard = () => {
   return (
     <div className="h-full max-w-[860px] grow flex flex-col gap-2 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 sm:rounded-[2.5rem] sm:shadow-2xl">
       <Me user={currentUser.data} rank={rank} />
-      <div className="grow p-4 rounded-3xl overflow-scroll">
+      <div className="grow p-4 rounded-3xl overflow-auto scrollbar">
         {data.users?.map((user: userDto, index: number) => {
           return <User key={user.id} user={user} rank={index + 1} />;
         })}
