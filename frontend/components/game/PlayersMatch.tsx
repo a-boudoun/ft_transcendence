@@ -32,7 +32,7 @@ function LeftPlayer(){
 
 function LoadingPlayer({setGame}: prop){
 	// setClicked false 
-		const [image, setImage] = useState<string>('/game/unknown.svg');
+		const [image, setImage] = useState<string>('/game/unknown.webp');
 		const [name, setName] = useState<string>('searching...');
 	
 	

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from "react";
-import {Engine, Render, Body, Composite} from "matter-js";
+import React, { useEffect, useRef } from "react";
+import {Engine, Render, Body, Composite, Bodies} from "matter-js";
 import socket from "../socketG";
-import { drawRect, drawCircle } from "./draw";
+import { drawRect } from "./draw";
 
 
 interface Prop{
@@ -85,7 +85,20 @@ function DefaultGame({roomid, me, RightPlayer} : Prop){
 			const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#FFFFFF');
 			const leftBoard = drawRect(35, H / 2, 20, 120, '#FFFFFF');
 
-			const ball = drawCircle(W / 2, H / 2, 15, '#FFFFFF');
+			const ball = Bodies.circle(W / 2, H / 2, 15,{
+				restitution: 1, // Make the ball fully elastic
+				friction: 0, // Remove friction
+				frictionAir: 0, // Remove air friction
+				inertia: Infinity, // prevent ball from slowing down
+				render: {
+					// fillStyle: color,
+					sprite: {
+						texture: '/game/default-ball.webp',
+						xScale: 0.07,
+						yScale: 0.07,
+					}
+			},
+			});
 			Composite.add(engine.world, [ball, rightBoard, leftBoard]);
 			document.addEventListener('keyup', handlekeyUp);
 			document.addEventListener('keydown', handleKeyDown);

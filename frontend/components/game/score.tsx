@@ -27,18 +27,20 @@ function MePlayer({ score, name }: pScore) {
     if (isLoading) return <div>Loading...</div>;
     else {
       return (
-        <div className="flex items-center gap-2">
-          <div className="flex flex-col items-center w-[80px] h-[80px]">
-            <Image
-              src={data.image}
-              width={100}
-              height={100}
-              alt="#"
-              className="w-full h-full rounded-full"
-            />
+        <div className="flex items-center gap-4">
+          <h1 className="text-blue text-3xl">{score}</h1>
+          <div className="flex flex-col items-center">
+            <div className="w-[80px] h-[80px] rounded-full overflow-hidden">
+              <Image
+                src={data.image}
+                width={100}
+                height={100}
+                alt="#"
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
             <h1 className="text-[#F2F2F2] font-bold">{data.username}</h1>
           </div>
-          <h1>score: {score}</h1>
         </div>
       );
     }
@@ -76,18 +78,20 @@ function MePlayer({ score, name }: pScore) {
 function OtherPlayer({ score, name }: pScore) {
   if (name == "robot") {
     return (
-      <div className="flex items-center gap-2">
-        <div className="flex flex-col items-center w-[80px] h-[80px]">
-          <Image
-            src="/game/robot.svg"
-            width={100}
-            height={100}
-            alt="#"
-            className="w-full h-full rounded-full"
-          />
-          <h1 className="text-[#F2F2F2] font-bold">{name}</h1>
+      <div className="flex items-center gap-4">
+      <div className="flex flex-col items-center">
+        <div className="w-[80px] h-[80px] rounded-full overflow-hidden">
+        <Image
+          src="/game/robot.webp"
+          width={100}
+          height={100}
+          alt="#"
+          className="w-full h-full object-cover object-center"
+        />
         </div>
-        <h1>score: {score}</h1>
+        <h1 className="text-[#F2F2F2] font-bold">boot</h1>
+      </div>
+      <h1 className="text-blue text-3xl">{score}</h1>
       </div>
     );
   } else {
