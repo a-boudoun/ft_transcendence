@@ -18,7 +18,6 @@ import { MoreHorizontal, Gamepad2, ArrowLeftCircle } from "lucide-react";
 import ChallengeDropDown from "@/components/common/ChallengeDropDown";
 import useCloseOutSide from "@/hookes/useCloseOutSide";
 
-
 interface MoreProps {
   user: any;
   setIsOpen: (isOpen: boolean) => void;
@@ -30,8 +29,10 @@ const More = ({ user, setIsOpen }: MoreProps) => {
 
   const router = useRouter();
   return (
-    <div ref= {divref}
-    className="absolute w-60  rounded-[1.4rem]   top-4 right-3  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg p-3 ">
+    <div
+      ref={divref}
+      className="absolute w-60  rounded-[1.4rem]   top-4 right-3  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg p-3 "
+    >
       <div className="bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-[1.2rem] overflow-hidden">
         <button
           className="flex items-center justify-start px-4 py-2 w-full hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg rounded-t-lg"
@@ -53,11 +54,15 @@ const More = ({ user, setIsOpen }: MoreProps) => {
           onClick={() => setIsChallenge(!isChallenge)}
         >
           <Gamepad2 size={32} color="#7ac7c4" strokeWidth={1.5} />
-          <span className="px-6 text-base font-semibold text-blue">Challenge</span>
+          <span className="px-6 text-base font-semibold text-blue">
+            Challenge
+          </span>
         </button>
       </div>
       <div className="relative text-sm top-[-46px] right-[-24px]">
-        {isChallenge && <ChallengeDropDown id={user.id} setIsOpen={setIsChallenge} />}
+        {isChallenge && (
+          <ChallengeDropDown id={user.id} setIsOpen={setIsChallenge} />
+        )}
       </div>
     </div>
   );
@@ -203,7 +208,7 @@ const page = ({ params }: { params: { id: number } }) => {
               </div>
             </div>
           </div>
-          <div className="overflow-y-auto flex-grow py-3 px-2">
+          <div className="overflow-auto scrollbar flex-grow py-3 px-2">
             {messages.map((message: MessageDto, id: number) => (
               <Message
                 key={id}

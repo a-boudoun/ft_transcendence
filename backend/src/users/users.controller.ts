@@ -3,7 +3,6 @@ import { UsersService } from './users.service';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { Jwt2faAuthGuard } from '../auth/guards/jwt-2fa-auth.guard';
 import { JwtSigninGuard } from '../auth/guards/jwt-signin.guard';
-import con from 'ormconfig';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -20,18 +19,6 @@ export class UsersController {
   async search(@Param('key') key: string, @Req() req) {
     const users =  await this.usersService.search(req.user.id, key);
     return {users: users};
-  }
-  
-  @Get('DM')
-  @UseGuards(Jwt2faAuthGuard)
-  getDM(@Req() req) {
-    return this.usersService.getDM(req.user.username);
-  }
-  
-  @Get('Channels')
-  @UseGuards(Jwt2faAuthGuard)
-  getChannels(@Req() req) {
-    return this.usersService.getChannels(req.user.username);
   }
   
   @Get('getUser/me')
