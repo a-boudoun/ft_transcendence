@@ -46,16 +46,12 @@ export class ChannelsService {
     membership.title = MemberTitle.OWNER;
     await this.membershipRepo.save(membership);
 
-    ///////////// ca sert a quoi ??:
-    const channel1 = await this.channelRepo.findOne({
+    return await this.channelRepo.findOne({
       where: {
         id: ret.id,
       },
       relations: ['memberships.member'],
     });
-    ////////////////////////////////
-    
-    return channel1;
   }
   
   async findAll(username: string) {
@@ -97,9 +93,6 @@ export class ChannelsService {
     let channel= await this.channelRepo.findOne({
       where: [
         { id: id, type: Not(ChannelType.DIRECT) },
-        // { id: id, type: ChannelType.PUBLIC },
-        // { id: id, type: ChannelType.PROTECTED },
-        // { id: id, type: ChannelType.PRIVATE}
       ],
       order: {
         messages: {
@@ -140,7 +133,6 @@ async findOne(id: number) {
     },
     relations: ['messages.sender', 'memberships.member', 'bannations.member', 'mutations.member'],
   });
-  // channel.messages = await channel.messages.sort((a, b) => a.id - b.id);
   return channel;
 }
 
@@ -200,10 +192,6 @@ async addFriendtoChannel(channelId: number, friend: UserDTO) {
 
 async updateMembershipTitle(channelId: number, membershipId: number)
 {
-  // const channel = await this.findOne(channelId);
-  // const membership = channel.memberships.find(
-  //   (membership) => membership.id === membershipId,
-  // );
   const membership = await this.membershipRepo.findOneById(membershipId);
   if(membership.title === MemberTitle.ADMIN)
     membership.title = MemberTitle.MEMBER;
@@ -214,12 +202,6 @@ async updateMembershipTitle(channelId: number, membershipId: number)
 
 async addmessge(channelId: number, message: string, username: string) {
   
-  // const channel = await this.channelRepo.findOne(({
-  //   where: {id: channelId,},
-  //   relations: [ 'memberships.member'],
-  // }));
-  
-  // const user = channel?.memberships?.find((membership : any) => membership.member.username === username)?.member;
   const channel = await this.channelRepo.findOneBy({id: channelId});
   const user = await this.userRepo.findOneBy({username: username});
 
@@ -232,10 +214,6 @@ async addmessge(channelId: number, message: string, username: string) {
 }
 
 async banner(channelId: number, username: string) {
-  // const channel = await this.findOne(channelId);
-  // const memship = await channel.memberships.find(
-  //   (membership : MembershipDTO) => membership.member.username === username,
-  //   );
   const memship = await this.membershipRepo.findOne({
     where: {
       channel: { id: channelId},
@@ -244,7 +222,6 @@ async banner(channelId: number, username: string) {
   });
   await this.membershipRepo.delete(memship.id);
   const bannation = await this.bannationRepo.create({
-      // channel: channel,
       channel: memship.channel,
       member: memship.member,
   });
@@ -253,10 +230,6 @@ async banner(channelId: number, username: string) {
   
   
 async mut(channelId: number, id: number, duration: number) {
-  // const channel = await this.findOne(channelId);
-  // const memship = await channel.memberships.find(
-  //   (membership : MembershipDTO) => membership.member.id === id,
-  //   );
   const memship = await this.membershipRepo.findOne({
     where: {
       channel: { id: channelId},
@@ -266,7 +239,6 @@ async mut(channelId: number, id: number, duration: number) {
   });
   const userMutation = await this.mutationRepo.findOne({
       where: {
-        // channel: { id: channel.id},
         channel: { id: memship.channel.id},
         member: { id: memship.member.id},
       },
@@ -277,7 +249,6 @@ async mut(channelId: number, id: number, duration: number) {
     return this.mutationRepo.save(userMutation);
   }
   const mut = await this.mutationRepo.create({
-      // channel: channel,
       channel: memship.channel,
       member: memship.member,
       mut_date: new Date(),
@@ -289,12 +260,6 @@ async mut(channelId: number, id: number, duration: number) {
 async isMuted(channelId: number, username: string) {
   if(!username || !channelId)
     return false;
-  // const channel = await this.findOne(channelId);
-  // if(!channel || !channel.mutations || channel.mutations.length === 0)
-  //   return false; 
-  // const mut = await channel.mutations.find(
-  //   (mutation : Mutation) => mutation.member.username === username,
-  // );
   const mut = await this.mutationRepo.findOne({
     where: {
       channel: { id: channelId},
@@ -344,10 +309,6 @@ async isMuted(channelId: number, username: string) {
   }
   
   async isBanned(channelId: number, username: string) {
-    // const channel = await this.findOne(channelId);
-    // const ban = await channel.bannations.find(
-    //   (bannation : Bannation) => bannation.member.username === username,
-    //   );
     const ban = await this.bannationRepo.findOne({
       where: {
         channel: { id: channelId},

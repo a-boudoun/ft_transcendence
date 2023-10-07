@@ -3,25 +3,41 @@ import { Server, Socket } from 'socket.io';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Status, User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { UserDTO } from 'src/users/dto/create-user.dto';
 
 @WebSocketGateway()
 export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(
-        @InjectRepository(User) private userRepo: Repository<User>) 
+        @InjectRepository(User) private userRepo: Repository<User>,
+        private jwtService: JwtService) 
         { }
     @WebSocketServer() server: Server;
 
     async handleConnection(socket: Socket) {
-        const id =  socket.data.username;
+        const cookie: string = socket.handshake.headers.cookie;
+        if (!cookie || cookie === undefined)
+          return;
+
+        const token = cookie.split('=')[1];
+        const decodedJwt = this.jwtService.decode(token) as UserDTO;
+        const id = decodedJwt.id;
+
         const user = await this.userRepo.findOneBy({id});
         if (user){
             user.status = Status.ONLINE;
             await this.userRepo.save(user);
         }
+
+        socket.data.username = id.toString();
+        socket.join(id.toString());
+
+        console.log("connected", id);
     }
 
     async handleDisconnect(socket: Socket) {
         const id =  socket.data.username
+        console.log("disconnected", id);
         const user =  await this.userRepo.findOneBy({id});
         if (user){
             user.status = Status.OFFLINE;

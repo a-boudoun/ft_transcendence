@@ -24,63 +24,53 @@ const Difficulty = () => {
             <div className="flex justify-center gap-8 items-center flex-col sm:flex-row">
               <button
                 className={`flex flex-col items-center gap-4`}
-                onClick={() => setDifficulty(14)}
+                onClick={() => {
+                  setDifficulty(14)
+                  setGameStarted(true)}
+                }
               >
-                <div className={`rounded-xl max-w-[260px] overflow-hidden`}>
                   <Image
                     width={260}
-                    height={0}
+                    height={260}
                     alt="football-mode"
                     src="/game/easy-robot.webp"
-                    className={`w-260 object-cover object-center transition-transform ${
-                      difficulty === 14 ? "scale-110" : ""
-                    } hover:scale-110`}
+                    className={`w-[260px] h-[260px] transform hover:scale-110`}
                   />
-                </div>
                 <span className="text-xl font-bold">Easy</span>
               </button>
               <button
                 className={`flex flex-col items-center gap-4`}
-                onClick={() => setDifficulty(12)}
+                onClick={() => {
+                  setDifficulty(12)
+                  setGameStarted(true)}
+                }
               >
-                <div className={`rounded-xl max-w-[260px] overflow-hidden`}>
                   <Image
                     width={260}
                     height={0}
                     alt="Space-mode"
                     src="/game/medium-robot.webp"
-                    className={`w-260 object-cover object-center transition-transform ${
-                      difficulty === 12 ? "scale-110" : ""
-                    } hover:scale-110`}
+                    className={`transition-transform hover:scale-110`}
                   />
-                </div>
                 <span className="text-xl font-bold">medium</span>
               </button>
               <button
                 className={`flex flex-col items-center gap-4`}
-                onClick={() => setDifficulty(10)}
+                onClick={() => {
+                  setDifficulty(10)
+                  setGameStarted(true)}
+                }
               >
-                <div className={`rounded-xl max-w-[260px] overflow-hidden`}>
                   <Image
                     width={260}
                     height={0}
                     alt="Ping pong"
                     src="/game/hard-robot.webp"
-                    className={`w-260 transition-transform ${
-                      difficulty === 10 ? "scale-110" : ""
-                    } hover:scale-110`}
+                    className={`transition-transform hover:scale-110`}
                   />
-                </div>
                 <span className="text-xl font-bold">Hard</span>
               </button>
             </div>
-            <button
-              className="flex gap-2 items-center text-3xl bg-red py-2 px-8 rounded-[10px] hover:bg-[#FBACB3] font-bold"
-              onClick={() => setGameStarted(true)}
-            >
-              <span>Play</span>
-              <Gamepad2 size={32} strokeWidth={2}  />
-            </button>
           </div>
         </main>
       )}

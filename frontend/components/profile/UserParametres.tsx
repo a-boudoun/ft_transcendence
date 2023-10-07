@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+
 import AddFriend from "@/components/profile/AddFriend";
 import { useState } from "react";
 import { MoreVertical } from "lucide-react";
@@ -14,19 +14,6 @@ interface dropProps {
   id: number;
   setIsOpen: (isOpen: boolean) => void;
 }
-
-const Challnege = ({ id }: { id: number }) => {
-  return (
-    <button
-      className="bg-blue px-3 py-1 text-black rounded-xl"
-      onClick={() => {
-        socket.emit("invite-freind", id);
-      }}
-    >
-      Challnege
-    </button>
-  );
-};
 
 const Block = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -56,24 +43,26 @@ const Block = ({ id }: { id: number }) => {
 };
 
 const Mesage = ({ id }: { id: number }) => {
+  const router = useRouter();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["direct", id],
-    queryFn: async () => {
-      const { data } = await axios.get(`/channels/getChannelId/${id}`);
-      return data;
+  const ChannleId =  useMutation({
+        mutationFn: async (id: number) => {
+        const { data } = await axios.get(`/channels/getChannelId/${id}`);
+        console.log("----------", data);
+        return data;
+      },
+      onSuccess: (data : number) => {
+      router.push(`/chat/${data}`);
     },
   });
 
-  return isLoading ? (
-    <div></div>
-  ) : (
-    <Link
+  return (
+    <button
+      onClick={() => {ChannleId.mutate(id)}}
       className="bg-blue px-3 py-1 text-black rounded-xl"
-      href={`/chat/${data}`}
-    >
+      >
       Mesage
-    </Link>
+    </button>
   );
 };
 
@@ -95,7 +84,6 @@ const Drop = ({ id, setIsOpen }: dropProps) => {
     >
       <AddFriend id={id} Status={Status} />
       <Mesage id={id} />
-      {Status.data?.status === "accepted" && <Challnege id={id} />}
       <Block id={id} />
     </div>
   );
