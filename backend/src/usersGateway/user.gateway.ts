@@ -31,13 +31,11 @@ export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         socket.data.username = id.toString();
         socket.join(id.toString());
-
-        console.log("connected", id);
     }
 
     async handleDisconnect(socket: Socket) {
         const id =  socket.data.username
-        console.log("disconnected", id);
+
         const user =  await this.userRepo.findOneBy({id});
         if (user){
             user.status = Status.OFFLINE;
