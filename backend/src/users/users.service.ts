@@ -71,19 +71,7 @@ export class UsersService {
         },
       });
     }
-    
-    async getDM(username: string) {
-      const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type = :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
-      return channels;
-      // return this.userRepo.findOne({where: {
-        //   username: username,
-        // }, relations: ['channels', 'channels.type']});
-      }
-      
-      async getChannels(username: string) {
-        const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type != :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
-        return channels;
-      }
+  
       
       async update(id: number, updateUser: UpdateUserDTO) {
         const user = await this.findOneById(id);

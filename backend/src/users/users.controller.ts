@@ -24,15 +24,7 @@ export class UsersController {
   
   @Get('DM')
   @UseGuards(Jwt2faAuthGuard)
-  getDM(@Req() req) {
-    return this.usersService.getDM(req.user.username);
-  }
-  
-  @Get('Channels')
-  @UseGuards(Jwt2faAuthGuard)
-  getChannels(@Req() req) {
-    return this.usersService.getChannels(req.user.username);
-  }
+
   
   @Get('getUser/me')
   @UseGuards(Jwt2faAuthGuard)
