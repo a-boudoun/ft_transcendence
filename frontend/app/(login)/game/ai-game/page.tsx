@@ -47,10 +47,10 @@ const Difficulty = () => {
               >
                   <Image
                     width={260}
-                    height={0}
+                    height={260}
                     alt="Space-mode"
                     src="/game/medium-robot.webp"
-                    className={`transition-transform hover:scale-110`}
+                    className={`w-[260px] h-[260px] transition-transform hover:scale-110`}
                   />
                 <span className="text-xl font-bold">medium</span>
               </button>
@@ -63,10 +63,10 @@ const Difficulty = () => {
               >
                   <Image
                     width={260}
-                    height={0}
+                    height={260}
                     alt="Ping pong"
                     src="/game/hard-robot.webp"
-                    className={`transition-transform hover:scale-110`}
+                    className={`w-[260px] h-[260px] transition-transform hover:scale-110`}
                   />
                 <span className="text-xl font-bold">Hard</span>
               </button>
