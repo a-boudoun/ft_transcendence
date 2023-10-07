@@ -46,7 +46,6 @@ export const Friend = ({ user, isMe }: { user: any; isMe: boolean }) => {
       return data;
     },
   });
-
   return (
     <>
     <div className="relative flex justify-between px-4 py-2 mx-2 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">

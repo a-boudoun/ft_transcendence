@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { ChannelType } from '../entities/channel.entity';
 import { MembershipDTO } from './dto/create-channel.dto';
 import { UserDTO } from 'src/users/dto/create-user.dto';
-import { User } from 'src/entities/user.entity';
+import { Blockage, User } from 'src/entities/user.entity';
 
 import * as bcrypt from 'bcrypt';
 import { Not } from 'typeorm';
@@ -21,6 +21,7 @@ export class ChannelsService {
     @InjectRepository(Bannation) private bannationRepo: Repository<Bannation>,
     @InjectRepository(Mutation) private mutationRepo: Repository<Mutation>,
     @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Blockage) private blockRepo: Repository<Blockage>,
     ) { }
     async create(channel: ChannelDTO) {
       
@@ -90,10 +91,23 @@ export class ChannelsService {
     return channels;
   }
   
+  async block(username: string) {
   
+      const blockedUsers = (await this.blockRepo.find({
+        where: {blocker : {username: username }},
+        relations: ['blocked']}))
+        .map(b => b.blocked.id);
+
+      const blockedByUsers = (await this.blockRepo.find({
+        where: {blocked : {username: username }},  
+        relations: ['blocker']}))
+        .map(b => b.blocker.id);
+
+        return [...blockedUsers, ...blockedByUsers];
+  }
   
   async findChannel(id: number, username: string) {
-    
+
     let channel= await this.channelRepo.findOne({
       where: [
         { id: id, type: Not(ChannelType.DIRECT) },
@@ -125,6 +139,12 @@ export class ChannelsService {
       if(!membership)
         return null;
     }
+
+    const block =( await this.block(username));
+
+    channel.messages = channel.messages.filter((message) => !block.includes(message.sender.id));
+    
+
   return channel;
 }
 
@@ -140,7 +160,6 @@ async findOne(id: number) {
     },
     relations: ['messages.sender', 'memberships.member', 'bannations.member', 'mutations.member'],
   });
-  // channel.messages = await channel.messages.sort((a, b) => a.id - b.id);
   return channel;
 }
 
@@ -233,22 +252,18 @@ async addmessge(channelId: number, message: string, username: string) {
 
 async banner(channelId: number, username: string) {
 
-  const channel = await this.findOne(channelId);
-  // const memship = await channel.memberships.find(
-  //   (membership : MembershipDTO) => membership.member.username === username,
-  //   );
   const memship = await this.membershipRepo.findOne({
     where: {
       channel: { id: channelId},
       member: { username: username},
     },
+    relations: ['channel', 'member']
+  });
+  const bannation = await this.bannationRepo.create({
+    channel: memship.channel,
+    member: memship.member,
   });
   await this.membershipRepo.delete(memship.id);
-  const bannation = await this.bannationRepo.create({
-      // channel: channel,
-      channel: memship.channel,
-      member: memship.member,
-  });
   return this.bannationRepo.save(bannation);
   }
   
@@ -286,7 +301,7 @@ async mut(channelId: number, id: number, duration: number) {
   });
   return this.mutationRepo.save(mut);
 }
-    
+     
 async isMuted(channelId: number, username: string) {
   if(!username || !channelId)
     return false;
