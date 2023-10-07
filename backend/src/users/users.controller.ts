@@ -3,7 +3,6 @@ import { UsersService } from './users.service';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { Jwt2faAuthGuard } from '../auth/guards/jwt-2fa-auth.guard';
 import { JwtSigninGuard } from '../auth/guards/jwt-signin.guard';
-import con from 'ormconfig';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
