@@ -25,9 +25,18 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('prevmessage')
-    handleMessage(client: Socket, data: any) {
-        this.server.to(data.channel).emit('message',{content: data.message, from: data.from});
+    async handleMessage(client: Socket, data: any) {
+        const block =( await this.channelsService.block(data.from)).map((user) => user.toString());
+        const room = this.server.sockets.adapter.rooms.get(data.channel);
+        let users = [...new Set(Array.from(room).map((id) => this.server.sockets.sockets.get(id).data.username))];
+        users = users.filter((user) => !block.includes(user));
+        users.forEach((user) => {
+            console.log(`${data.channel}/${user}`);
+            this.server.to(user).emit(`${data.channel}/${user}`, {content: data.message, from: data.from});
+        });
+        // this.server.to(data.channel).emit('message',{content: data.message, from: data.from});
         this.channelsService.addmessge(data.channel, data.message, data.from);
+        
     }
    
 

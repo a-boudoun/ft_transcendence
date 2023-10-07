@@ -112,9 +112,9 @@ function Mid() {
         })
       );
     };
-    socket.on("message", onMsg);
+    socket.on(`${channel.id}/${user.id}`, onMsg);
     return () => {
-      socket.off("message", onMsg);
+      socket.off(`${channel.id}/${user.id}`, onMsg);
     };
   }, [channel]);
 
