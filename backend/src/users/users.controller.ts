@@ -22,10 +22,6 @@ export class UsersController {
     return {users: users};
   }
   
-  @Get('DM')
-  @UseGuards(Jwt2faAuthGuard)
-
-  
   @Get('getUser/me')
   @UseGuards(Jwt2faAuthGuard)
   async me(@Req() req) {

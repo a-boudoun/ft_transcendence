@@ -1,10 +1,9 @@
 import { Injectable} from '@nestjs/common';
 import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
-import { Blockage, User } from '../entities/user.entity'
+import { Blockage, User, Friendship } from '../entities/user.entity'
 import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FriendshipService } from '../friendship/friendship.service';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +11,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Blockage) private blockRepo: Repository<Blockage>,
-    private readonly friendService: FriendshipService,
+    @InjectRepository(Friendship) private friendshipRepo: Repository<Friendship>,
     ) {}
     
     create(userDTO: UserDTO) {
@@ -71,7 +70,6 @@ export class UsersService {
         },
       });
     }
-  
       
       async update(id: number, updateUser: UpdateUserDTO) {
         const user = await this.findOneById(id);
@@ -92,7 +90,14 @@ export class UsersService {
         const block = await this.blockRepo.create();
         block.blocker = await this.findOneById(bloker);
         block.blocked = await this.findOneById(blocked);
-        await this.friendService.remove(bloker, blocked);
+        const friendship = await this.friendshipRepo.find({
+          where: [
+            { initiater: { id: bloker } ,  receiver: { id: blocked } },
+            { initiater: { id: blocked } ,  receiver: { id: bloker } }
+          ],
+        });
+        if (friendship.length !== 0)
+          await this.friendshipRepo.remove(friendship);
         return this.blockRepo.save(block);
       }
       

@@ -10,7 +10,7 @@ import { UsersGateway } from '../usersGateway/user.gateway';
 @Module({
   imports: [TypeOrmModule.forFeature([Friendship, Channel, Blockage, User, Membership])],
   controllers: [UsersController],
-  providers: [UsersService, FriendshipService, UsersGateway],
+  providers: [UsersService, UsersGateway],
   exports: [UsersService]
 })
 export class UsersModule {}
