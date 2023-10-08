@@ -129,9 +129,9 @@ function Mid() {
           );
       }
     };
-    socket.on(`message`, onMsg);
+    socket.on(`message/${channel.id}`, onMsg);
     return () => {
-      socket.off(`message`, onMsg);
+      socket.off(`message/${channel.id}`, onMsg);
     };
   }, [channel]);
 

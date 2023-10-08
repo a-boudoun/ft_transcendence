@@ -26,7 +26,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage('prevmessage')
     handleMessage(client: Socket, data: any) {
-        this.server.to(data.channel).emit('message',{content: data.message, from: data.from});
+        this.server.to(data.channel).emit(`message/${data.channel}`,{content: data.message, from: data.from});
         this.channelsService.addmessge(data.channel, data.message, data.from);
     }
    
