@@ -25,6 +25,7 @@ interface MoreProps {
 }
 
 const More = ({ user, setIsOpen }: MoreProps) => {
+  c
   const { divref } = useCloseOutSide({ setIsOpen });
   const [isChallenge, setIsChallenge] = useState<boolean>(false);
 

@@ -141,7 +141,7 @@ const NewChannel = () => {
 
                 </div>
             </div>
-            <input  required={type === 'Protected'} type='password' value={password} className={`${type !== 'Protected' ? 'hidden' : ''} w-full rounded-lg px-5 py-2 text-lg bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg placeholder-white my-2 outline-none`} placeholder='Password' onChange={(e:any)=> setPassword(e.target.value)}/>
+            <input  required={type === 'Protected'} type='password' value={password} className={`${type !== 'Protected' ? 'hidden' : ''} w-full rounded-lg px-5 py-2 text-lg bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg placeholder-white my-2 outline-none`} placeholder='Password' autoComplete="current-password" onChange={(e:any)=> setPassword(e.target.value)}/>
             <div className='w-full text-black'>{passwordError}</div>
             <button className='bg-red w-full mt-5 rounded-lg py-2 hover:opacity-60'>Create</button>
         </form>
