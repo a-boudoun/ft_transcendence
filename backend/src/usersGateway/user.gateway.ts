@@ -27,6 +27,7 @@ export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (user){
             user.status = Status.ONLINE;
             await this.userRepo.save(user);
+            this.updeteUser(id);
         }
 
         socket.data.username = id.toString();
@@ -45,5 +46,13 @@ export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     sendFriedRequest(id: number) {
         this.server.to(id.toString()).emit('friendRequest');
+    }
+
+    updeteFriendList(id: number) {
+        this.server.to(id.toString()).emit('friends');
+    }
+
+    updeteUser(id: number) {
+        this.server.emit('profile', id);
     }
 }

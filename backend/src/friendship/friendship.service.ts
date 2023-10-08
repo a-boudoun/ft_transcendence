@@ -88,7 +88,8 @@ async accept(id: number, sender: number) {
       await this.memRepo.save(membership2);      
     }
 
-    return await this.friendshipRepo.save(friendship);
+    await this.friendshipRepo.save(friendship);
+    return  this.usersGateway.updeteFriendList(sender);
   }
 
   async status(id: number, receiver: number) {
@@ -109,14 +110,16 @@ async accept(id: number, sender: number) {
 
   }
 
-  async remove(id: number, sender: number) {
+  async remove(sender: number, receiver: number) {
     const friendship = await this.friendshipRepo.find({
       where: [
-        { initiater: { id: id } ,  receiver: { id: sender } },
-        { initiater: { id: sender } ,  receiver: { id: id } }
+        { initiater: { id: receiver } ,  receiver: { id: sender } },
+        { initiater: { id: sender } ,  receiver: { id: receiver  } }
       ],
     });
 
+    this.usersGateway.sendFriedRequest(receiver);
+    this.usersGateway.updeteFriendList(receiver);
     return await this.friendshipRepo.remove(friendship);
   }
 
