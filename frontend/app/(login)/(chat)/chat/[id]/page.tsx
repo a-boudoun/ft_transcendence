@@ -17,6 +17,7 @@ import { AppDispatch } from "@/redux/store";
 import { MoreHorizontal, Gamepad2, ArrowLeftCircle } from "lucide-react";
 import ChallengeDropDown from "@/components/common/ChallengeDropDown";
 import useCloseOutSide from "@/hookes/useCloseOutSide";
+import { channel } from "diagnostics_channel";
 
 interface MoreProps {
   user: any;
@@ -136,9 +137,9 @@ const page = ({ params }: { params: { id: any } }) => {
         { content: msg.content, sender: member, date: createdAt },
       ]);
     };
-    socket.on("message", onMsg);
+    socket.on(`message/${data.id}`, onMsg);
     return () => {
-      socket.off("message", onMsg);
+      socket.off(`message/${data.id}`, onMsg);
     };
   }, [data, socket, user, otherUser]);
 
