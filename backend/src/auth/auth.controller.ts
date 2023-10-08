@@ -43,16 +43,8 @@ export class AuthController {
 
   @Patch('2fa/turnOn')
   @UseGuards(Jwt2faAuthGuard)
-  async turnOn(@Req() req, @Body() {code} : {code: string}) {
-    try {
-      await this.authService.validate2FA(code, req.user.id);
-    }
-    catch (e) {
-      if (e instanceof Error)
-        return {valid: false, message: e.message};
-    }
-
-    return {valid: true, message: 'Valid 2FA code'};
+  async turnOn(@Req() req,  @Res({ passthrough: true }) res, @Body() {code} : {code: string}) {
+      return await this.authService.turnOn2FA(req.user.id, code, res);
   }
 
   @Patch('2fa/login')

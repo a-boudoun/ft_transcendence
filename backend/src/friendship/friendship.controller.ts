@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Patch, Param, Body, Delete, UseGuards, Req } from '@nestjs/common';
 import { FriendshipService } from './friendship.service';
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
-import { ParseIntPipe } from '@nestjs/common';
 
 @Controller('friendship')
 export class FriendshipController {
