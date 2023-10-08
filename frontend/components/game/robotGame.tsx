@@ -259,6 +259,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 		}
 		}, []);
 
+		
 	  return (
 		<>
 			{(leftScore < maxScore && rightScore < maxScore) && (
