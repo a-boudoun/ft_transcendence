@@ -68,7 +68,7 @@ const More = ({ user, setIsOpen }: MoreProps) => {
   );
 };
 
-const page = ({ params }: { params: { id: number } }) => {
+const page = ({ params }: { params: { id: any } }) => {
   const dispatsh = useDispatch<AppDispatch>();
 
   const router = useRouter();
@@ -81,6 +81,11 @@ const page = ({ params }: { params: { id: number } }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["direct", params.id],
     queryFn: async () => {
+      if(!parseInt(params.id))
+      {
+        router.push("/chat");
+        return null;
+      }
       const { data } = await axios.get(`/channels/directchannel/${params.id}`);
 
       setMessages(data.messages);
@@ -103,9 +108,10 @@ const page = ({ params }: { params: { id: number } }) => {
   }, [data, user]);
 
   const blocked = useQuery({
-    queryKey: ["blocked", otherUser?.id],
+    queryKey: ['blocked'],
     queryFn: async () => {
-      if (!otherUser) return;
+      if (!otherUser) 
+        return null;
       const { data } = await axios.get(`/users/isBlocked/${otherUser.id}`);
       return data;
     },
@@ -159,7 +165,8 @@ const page = ({ params }: { params: { id: number } }) => {
       return data;
     },
     onSuccess: () => {
-      Client.refetchQueries(["blocked", otherUser?.id]);
+      Client.refetchQueries(['blocked']);
+      Client.refetchQueries(["channel"]);
     },
   });
 
@@ -182,7 +189,7 @@ const page = ({ params }: { params: { id: number } }) => {
         >
           <div className="h-fit bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg flex items-center py-3  rounded-xl  justify-between ">
             <div className="flex items-center space-x-2 ">
-              <Link href={`/chat`}>
+              <Link href={`/chat`} className="md:hidden">
                 <ArrowLeftCircle size={32} color="#7ac7c4" strokeWidth={1.5} />
               </Link>
               {otherUser?.image && (
@@ -240,9 +247,9 @@ const page = ({ params }: { params: { id: number } }) => {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="lucide lucide-send-horizontal"
                   >
                     <path d="m3 3 3 9-3 9 19-9Z" />
