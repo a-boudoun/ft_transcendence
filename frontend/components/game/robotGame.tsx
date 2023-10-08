@@ -260,44 +260,33 @@ function RobotGame({difficulty} : {difficulty: number}){
 		}, []);
 
 	  return (
-		<main className="w-full h-full grid place-content-center pt-14">
-		  {leftScore < maxScore && rightScore < maxScore && (
-			<div
-			  className="flex flex-col gap-8 p-16 sm:bg-white sm:bg-opacity-20 sm:backdrop-blur-lg sm:drop-shadow-lg sm:rounded-3xl"
-			  style={{
-				transform: `scale(${sx}, ${sy})`,
-			  }}
-			>
-			  <PlayersScore
-				left={leftScore}
-				right={rightScore}
-				leftPlayer={"robot"}
-				rightPlayer={"me"}
-			  />
-			  <div className="relative">
-				{PVisible && !leftScore && !rightScore && (
-				  <p className="absolute top-[50%] left-[50%] font-bold text-[#f6f6f6] z-10 text-[90px] mb-[150px] ">
-					{countDownValue}
-				  </p>
-				)}
-				<div
-				  ref={divRef}
-				  className="shadow-[0px_20px_50px_0px_#86c3bb,0px_-10px_50px_0px_#d3455c]"
-				></div>
-				<button
-				  className="ml-auto mt-10 text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]"
-				  onClick={() => {
-					router.push("/game");
-				  }}
-				>
-				  leave
-				</button>
-			  </div>
+		<>
+		{ leftScore < maxScore && rightScore < maxScore && <div className="flex justify-center  items-center h-full w-full">
+			{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] z-10 ">{countDownValue}</p>}
+			<PlayersScore 
+			left={leftScore} 
+			right={rightScore}
+			leftPlayer={"robot"}
+			rightPlayer={"me"}
+			/>
+			<div ref={divRef} 
+					className="h-[900px] w-[1700px] mt-20 relative"
+					style={{
+						transform: `scale(${sx}, ${sy})`,
+					}}
+					>
 			</div>
-		  )}
+			<button 
+				className="absolute bottom-[50px] right-[50px]  m-4  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]" 
+				onClick={() => {
+					router.push("/game");
+				}}>
+				leave
+			</button>
+		</div>}
 		  {rightScore >= maxScore && <WonOffline />}
 		  {leftScore >= maxScore && <LostOffline />}
-		</main>
+		</>
 	  );
 	  
 }
