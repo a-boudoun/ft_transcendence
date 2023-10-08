@@ -4,13 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { userDto } from "@/dto/userDto";
 import axios from "@/apis/axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation} from "@tanstack/react-query";
 import { MessagesSquare, Gamepad2 } from "lucide-react";
 import { useState } from "react";
 import ChallengeDropDown from "@/components/common/ChallengeDropDown";
 import socket from "../socketG";
 import { useEffect } from "react";
 import { Client } from "@/providers/QueryProvider";
+import { useRouter } from "next/navigation";
 
 const Friends = ({ id, isMe }: { id: number; isMe: boolean }) => {
   const { data, isLoading } = useQuery({
@@ -46,15 +47,19 @@ const Friends = ({ id, isMe }: { id: number; isMe: boolean }) => {
 export default Friends;
 
 export const Friend = ({ user, isMe }: { user: any; isMe: boolean }) => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["direct", user.id],
-    queryFn: async () => {
-      const { data } = await axios.get(`/channels/getChannelId/${user.id}`);
-      return data;
-    },
-  });
+    const ChannleId =  useMutation({
+          mutationFn: async (id: number) => {
+          const { data } = await axios.get(`/channels/getChannelId/${id}`);
+          return data;
+        },
+        onSuccess: (data : number) => {
+        router.push(`/chat/${data}`);
+      },
+    });
+
   return (
     <>
     <div className="relative flex justify-between px-4 py-2 mx-2 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
@@ -73,13 +78,9 @@ export const Friend = ({ user, isMe }: { user: any; isMe: boolean }) => {
       {isMe && (
         <>
           <div className="flex items-center gap-4 z-40">
-            {isLoading ? (
-              <div></div>
-              ) : (
-                <Link href={`/chat/${data}`}>
+              <button onClick={() => {ChannleId.mutate(user.id)}} >
                 <MessagesSquare size={28} color="#7ac7c4" strokeWidth={1.5} />
-              </Link>
-            )}
+              </button>
             <button onClick={() => setIsOpen(!isOpen)}>
               <Gamepad2 size={32} color="#7ac7c4" strokeWidth={1.5} />
             </button>
@@ -93,26 +94,3 @@ export const Friend = ({ user, isMe }: { user: any; isMe: boolean }) => {
     </>
   );
 };
-
-// const ChallengeDropDown = ({ id }: { id: number | undefined }) => {
-//   return (
-//       <div className="absolute top-12 right-4 flex flex-col gap-4 rounded-2xl  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg p-4">
-//         <h3 className="text-blue"> challenge game of: </h3>
-//         <div className="flex gap-4">
-//           <div className="w-[200px] flex gap-4 items-center bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-2xl p-2">
-//             <div className="rounded-full h-[38px] w-[38px] overflow-hidden">
-//               <Image className="h-full w-full object-cover object-center"
-//                 src="/game/football-map-select.svg"
-//                 width={1000}
-//                 height={1000}
-//                 alt="rock"
-//               />
-//             </div>
-//             <span>futball</span>
-//           </div>
-//         </div>
-//       </div>
-//   );
-// };
-
-// () => {socket.emit('invite-freind', user.id)}
