@@ -10,7 +10,7 @@ import {
     CreateDateColumn
   } from 'typeorm';
   
-import {  Channel, Message, Mutation, Bannation } from './channel.entity';
+import {  Channel, Message, Mutation, Bannation, Membership } from './channel.entity';
   
 export enum Status {
     ONLINE = 'online',
@@ -64,9 +64,9 @@ export class User {
     @OneToMany(() => Channel, channel => channel.owner)
     ownedChannels: Channel[];
     
-    @ManyToMany(() => Channel, channel => channel.memberships)
-    @JoinTable()
-    channels: Channel[];
+    @OneToMany(() => Membership, membership => membership.member)
+    // @JoinTable()
+    memberships: Membership[];
     
     @OneToMany(() => Friendship, (friendship) => friendship.initiater)
     initiatedFriendships: Friendship[];

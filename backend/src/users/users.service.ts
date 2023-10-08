@@ -1,10 +1,11 @@
 import { Injectable} from '@nestjs/common';
 import { UserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
-import { Blockage, User } from '../entities/user.entity'
+import { Blockage, User, Friendship } from '../entities/user.entity'
 import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FriendshipService } from '../friendship/friendship.service';
+import { UsersGateway } from '../usersGateway/user.gateway';
+
 
 @Injectable()
 export class UsersService {
@@ -12,7 +13,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Blockage) private blockRepo: Repository<Blockage>,
-    private readonly friendService: FriendshipService,
+    @InjectRepository(Friendship) private friendshipRepo: Repository<Friendship>,
+    private usersGateway: UsersGateway,
     ) {}
     
     create(userDTO: UserDTO) {
@@ -71,23 +73,12 @@ export class UsersService {
         },
       });
     }
-    
-    async getDM(username: string) {
-      const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type = :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
-      return channels;
-      // return this.userRepo.findOne({where: {
-        //   username: username,
-        // }, relations: ['channels', 'channels.type']});
-      }
-      
-      async getChannels(username: string) {
-        const channels = await this.userRepo.createQueryBuilder('user').leftJoinAndSelect('user.channels', 'channel', 'channel.type != :type', {type: 'direct'}).where('user.username = :username', {username}).getMany();
-        return channels;
-      }
       
       async update(id: number, updateUser: UpdateUserDTO) {
         const user = await this.findOneById(id);
-        return await this.userRepo.save({...user, ...updateUser})
+        const updetedUser = await this.userRepo.save({...user, ...updateUser});
+        this.usersGateway.updeteUser(id);
+        return updetedUser;
       }
       
       async set2FAsecret(secret: string, id: number) {
@@ -104,7 +95,14 @@ export class UsersService {
         const block = await this.blockRepo.create();
         block.blocker = await this.findOneById(bloker);
         block.blocked = await this.findOneById(blocked);
-        await this.friendService.remove(bloker, blocked);
+        const friendship = await this.friendshipRepo.find({
+          where: [
+            { initiater: { id: bloker } ,  receiver: { id: blocked } },
+            { initiater: { id: blocked } ,  receiver: { id: bloker } }
+          ],
+        });
+        if (friendship.length !== 0)
+          await this.friendshipRepo.remove(friendship);
         return this.blockRepo.save(block);
       }
       

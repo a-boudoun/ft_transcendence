@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from "react";
-import {Engine, Render, Bodies, Events, Body, Composite} from "matter-js";
+import React, { useEffect, useRef } from "react";
+import {Engine, Render, Bodies, Body, Composite} from "matter-js";
 import socket from "../socketG";
 
 

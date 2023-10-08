@@ -72,7 +72,7 @@ export class ChannelsController {
   }
   @Patch('muteUser/:channelId')
    mute( @Param('channelId') channelId: number, @Body() dt: any) {
-    return this.channelsService.mut(channelId,+dt.id, 1);
+    return this.channelsService.mut(channelId,+dt.id, dt.duration);
   }
   @Get('isMuted/:channelId/:username')
   isMuted(@Param('channelId') channelId: number, @Param('username') username: string) {

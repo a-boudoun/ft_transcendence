@@ -118,6 +118,7 @@ const FriendRequest = () => {
   useEffect(() => {
     socket.on("friendRequest", () => {
       setNotif(true);
+      Client.refetchQueries(["friendrequests"]);
     });
   }, []);
 
