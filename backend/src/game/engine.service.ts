@@ -89,8 +89,8 @@ export class engineService {
 			await this.userRepo.save(winner);
 			await this.userRepo.save(loser);
 			this.gameSimulations.delete(roomId);
-			this.usersGateway.updeteUser(winner.id);
 			this.usersGateway.updeteUser(loser.id);
+			this.usersGateway.updeteUser(winner.id);
 			}
 		}
 	}

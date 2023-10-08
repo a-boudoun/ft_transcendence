@@ -21,12 +21,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @UseGuards(Jwt2faAuthGuard)
   handleConnection(client: Socket) {
-  //   const cookie: string = client.handshake.headers.cookie;
-  //   if (!cookie || cookie === undefined)
-  //     return;
-  //   const id: string = this.auth.getId(cookie)?.toString();
-  //   client.data.username = id;
-  //   client.join(id);
+    // const cookie: string = client.handshake.headers.cookie;
+    // if (!cookie || cookie === undefined)
+    //   return;
+    // const id: string = this.auth.getId(cookie).toString();
+    // client.data.username = id;
+    // client.join(id);
   }
   
   handleDisconnect(client: Socket) {
@@ -38,10 +38,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('invite-freind')
-  handleInviteFreind(client: Socket, reciever: string) {
-    if (client.data.username === reciever || this.gameService.isInGame(reciever) !== null)
+  handleInviteFreind(client: Socket, data: any) {
+    if (client.data.username === data.reciever || this.gameService.isInGame(data.reciever) !== null)
       return;
-    this.server.to(reciever.toString()).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id});
+    this.server.to(data.reciever.toString()).emit('game-invitation', {sender: client.data.username, senderSocketId: client.id, map: data.map});
   }
 
   @SubscribeMessage('accept-invitation')
@@ -50,6 +50,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // send the player to the game direct without creating a new room
     if (this.gameService.isInGame(client.data.username) !== null){
       client.emit('play-a-friend');
+      return;
+    }
+    if (this.gameService.isInGame(data.senderUsername) !== null){
       return;
     }
     const freindSocket: Socket = this.server.sockets.sockets.get(data.senderSocketId);
@@ -76,7 +79,46 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.emit('refresh-page');
     }
   }
-  
+
+  @SubscribeMessage('retry-game')
+  handleRetryGame(client: Socket, data: any) {
+    if (client.data.username === data.reciever || this.gameService.isInGame(data.reciever) !== null)
+      return;
+    this.server.to(data.reciever.toString()).emit('retry-game', {sender: client.data.username, senderSocketId: client.id});
+  }
+
+  @SubscribeMessage('accept-retry')
+  async handleAcceptRetry(client: Socket, data: any) {
+    // if invited is already accepted
+    // send the player to the game direct without creating a new room
+    if (this.gameService.isInGame(client.data.username) !== null){
+      return;
+    }
+    const freindSocket: Socket = this.server.sockets.sockets.get(data.senderSocketId);
+    const player1: string = client.data.username;
+    const player2: string = data.senderUsername;
+    const socket1: Array<Socket> = Array<Socket>(client);
+    const socket2: Array<Socket> = Array<Socket>(freindSocket);
+    const room: Room = this.gameService.creatRoom(socket1, socket2, player1, player2);
+    
+    if (room) {
+      this.gameService.removePlayerFromQueue(client);
+      this.gameService.removePlayerFromQueue(freindSocket);
+      await this.engineService.createGameSimulation(room);
+      this.engineService.sendPosition(room, this.endGameSimulation.bind(this));
+      this.engineService.addServerToGame(room.id, this.server);
+      const data: any = {
+        room: room.id,
+        leftPlayer: room.players[0].position === 'left' ? room.players[0].username : room.players[1].username,
+        rightPlayer: room.players[0].position === 'right' ? room.players[0].username : room.players[1].username,
+      }
+      client.emit('game-info', data);
+      freindSocket.emit('game-info', data);
+      client.emit('refresh-page');
+      freindSocket.emit('refresh-page');
+    }
+  }
+
   @SubscribeMessage('rightPaddle')
   handlerPaddle(client: Socket, data: any) {
     this.engineService.setRightBoardPosition(data.room, data.direction);
