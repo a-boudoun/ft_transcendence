@@ -55,7 +55,6 @@ export const Friend = ({ user, isMe }: { user: any; isMe: boolean }) => {
       return data;
     },
   });
-
   return (
     <>
     <div className="relative flex justify-between px-4 py-2 mx-2 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
@@ -94,3 +93,26 @@ export const Friend = ({ user, isMe }: { user: any; isMe: boolean }) => {
     </>
   );
 };
+
+// const ChallengeDropDown = ({ id }: { id: number | undefined }) => {
+//   return (
+//       <div className="absolute top-12 right-4 flex flex-col gap-4 rounded-2xl  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg p-4">
+//         <h3 className="text-blue"> challenge game of: </h3>
+//         <div className="flex gap-4">
+//           <div className="w-[200px] flex gap-4 items-center bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-2xl p-2">
+//             <div className="rounded-full h-[38px] w-[38px] overflow-hidden">
+//               <Image className="h-full w-full object-cover object-center"
+//                 src="/game/football-map-select.svg"
+//                 width={1000}
+//                 height={1000}
+//                 alt="rock"
+//               />
+//             </div>
+//             <span>futball</span>
+//           </div>
+//         </div>
+//       </div>
+//   );
+// };
+
+// () => {socket.emit('invite-freind', user.id)}

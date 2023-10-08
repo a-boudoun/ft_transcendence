@@ -1,12 +1,11 @@
 # Use Node.js as the base image
 FROM node:alpine
-COPY package.json ./
 
-RUN npm install
+WORKDIR /trans
 
 COPY . .
 
-EXPOSE 8000
+RUN npm install
 
 CMD [ "npm", "run", "start:dev" ]
 
