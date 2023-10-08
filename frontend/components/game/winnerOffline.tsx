@@ -1,9 +1,17 @@
-import React from 'react';
+import React from "react";
 import Image from "next/image";
-import axios from '@/apis/axios';
+import axios from "@/apis/axios";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function Won(){
+
+  const router = useRouter();
+
+  setTimeout(() => {
+    router.push("/game");
+  }, 3000);
+  
   const {data, isLoading} = useQuery({
 		queryKey: ['user', 'me'],
 		queryFn: async ()=> {
