@@ -82,6 +82,10 @@ export class ChannelsController {
   getChannelId(@Param('id') id: number, @Req() req) {
     return this.channelsService.getChannelId(req.user.id, id);
   }
+  @Get('blockedandblocker/:id')
+  getBlockedAndBlocker(@Req() req) {
+    return this.channelsService.block(req.user.username);
+  }
 
 
 }
