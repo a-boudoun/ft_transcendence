@@ -1,4 +1,4 @@
-import { ChannelDTO, MessageDTO, MutationDTO} from "src/channels/dto/create-channel.dto";
+import { ChannelDTO, MembershipDTO, MessageDTO, MutationDTO} from "src/channels/dto/create-channel.dto";
 import { Status } from "../../entities/user.entity";
 import { FriendshipDTO } from "src/friendship/dto/create-friendship.dto";
 import {
@@ -54,7 +54,8 @@ export class UserDTO {
     fact2Secret: string;
 
     ownedChannels: ChannelDTO[];
-    channels: ChannelDTO[];
+    memberships?: MembershipDTO[];
+    // channels: ChannelDTO[];
     initiatedFriendships: FriendshipDTO[];
     receivedFriendships: FriendshipDTO[];
     blockedUsers: UserDTO[];

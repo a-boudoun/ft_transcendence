@@ -100,7 +100,7 @@ export class Membership {
     })
     channel: Channel;
     
-    @ManyToOne(() => User, (user) => user.channels)
+    @ManyToOne(() => User, (user) => user.memberships)
     member: User;
 
     @Column({ length: 25 })
