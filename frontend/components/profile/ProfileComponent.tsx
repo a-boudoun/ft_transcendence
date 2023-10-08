@@ -11,6 +11,9 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "@/apis/axios";
 import { useRouter } from "next/navigation";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
+import { useEffect } from "react";
+import socket from "../socketG";
+import { Client } from "@/providers/QueryProvider";
 
 export const ProfileComponent = ({ username }: { username: string }) => {
   const router = useRouter();
@@ -22,6 +25,15 @@ export const ProfileComponent = ({ username }: { username: string }) => {
         return data;
       }
     });
+
+    // useEffect(() => {
+    //   socket.on("profile", (id : number) => 
+    //     if (id == user.data.id)
+    //       Client.refetchQueries(["friends"]);
+    //   });
+    // }, []);
+
+
     if (user.isLoading)
       return <ProfileSkeleton />;
     else if (!user.data){

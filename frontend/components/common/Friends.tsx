@@ -8,6 +8,9 @@ import { useQuery } from "@tanstack/react-query";
 import { MessagesSquare, Gamepad2 } from "lucide-react";
 import { useState } from "react";
 import ChallengeDropDown from "@/components/common/ChallengeDropDown";
+import socket from "../socketG";
+import { useEffect } from "react";
+import { Client } from "@/providers/QueryProvider";
 
 const Friends = ({ id, isMe }: { id: number; isMe: boolean }) => {
   const { data, isLoading } = useQuery({
@@ -17,6 +20,12 @@ const Friends = ({ id, isMe }: { id: number; isMe: boolean }) => {
       return data;
     },
   });
+
+  useEffect(() => {
+    socket.on("friends", () => {
+      Client.refetchQueries(["friends"]);
+    });
+  }, []);
 
   if (isLoading) return <div className="">loading... </div>;
   else {
