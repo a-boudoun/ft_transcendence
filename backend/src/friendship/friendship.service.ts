@@ -17,6 +17,7 @@ export class FriendshipService {
     ) {}
     
     async friendReq(username : string) {
+      
       const friendship = await this.friendshipRepo.find({
         where: [
           { receiver: { username: username }  , status: Fstatus.PENDING},
@@ -63,7 +64,6 @@ export class FriendshipService {
     }
 
 async accept(id: number, sender: number) {
-
   const friendship = await this.friendshipRepo.findOne({
       where: [ { initiater: { id: sender }, receiver: { id: id } } ],
     });
@@ -80,7 +80,7 @@ async accept(id: number, sender: number) {
     });
 
     if (!ch) {
-      const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" });
+      const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT,owner: user1, image: "/img/more.svg" });
       const rt = await this.channelRepo.save(channel);
       const membership1 = await this.memRepo.create({channel: rt, member: user1, title: MemberTitle.MEMBER});
       const membership2 = await this.memRepo.create({channel: rt, member: user2, title: MemberTitle.MEMBER});

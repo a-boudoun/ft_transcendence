@@ -112,9 +112,9 @@ function Mid() {
         })
       );
     };
-    socket.on("message", onMsg);
+    socket.on(`${channel.id}/${user.id}`, onMsg);
     return () => {
-      socket.off("message", onMsg);
+      socket.off(`${channel.id}/${user.id}`, onMsg);
     };
   }, [channel]);
 
@@ -146,7 +146,8 @@ function Mid() {
             <div className="flex flex-col justify-between h-full sm:rounded-[2rem] overflow-hidden bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
               <div className="h-fit  flex items-center py-3   justify-between px-3 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
                 <div className="flex items-center space-x-2 ">
-                  <Link href={`/channel`}>
+                
+                  <Link href={`/channel`} className="md:hidden">
                     <ArrowLeftCircle
                       size={24}
                       color="#7ac7c4"
