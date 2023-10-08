@@ -51,7 +51,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 									y: rightBoard.position.y + 10,
 								})
 						}
-					}, 13);
+					}, 17);
 				}
 			}
 		}
@@ -132,7 +132,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 				if (pair.bodyA === leftBoard || pair.bodyB === leftBoard) {
 					clearInterval(leftInterval);
 					Body.setVelocity(ball, { 
-						x: -18,
+						x: -20,
 						y: ballVelocity.y 
 					});
 					audio.play();
@@ -141,7 +141,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 					clearInterval(leftInterval);
 					handleLeftBoard();
 					Body.setVelocity(ball, { 
-						x: 18, 
+						x: 20, 
 						y: ballVelocity.y
 					});
 					audio.play();
@@ -260,37 +260,53 @@ function RobotGame({difficulty} : {difficulty: number}){
 		}, []);
 
 	  return (
-		<main className="w-full h-full grid place-content-center pt-14">
-		{ leftScore < maxScore && rightScore < maxScore &&   
-			<div className="flex flex-col gap-8 p-16 sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg sm:drop-shadow-lg sm:rounded-3xl">
-
-				<PlayersScore 
-				left={leftScore} 
-				right={rightScore}
-				leftPlayer={"robot"}
-				rightPlayer={"me"}
-				/>
-				<div className="relative" >
-					{(PVisible && !leftScore && !rightScore) && <p className="absolute top-[50%] left-[50%] font-bold text-[#ffffff] text-[90px] mb-[150px] z-10 ">{countDownValue}</p>}
-					<div ref={divRef} 
-							className="h-[900px] w-[1700px] mt-20 relative"
-							style={{
-								transform: `scale(${sx}, ${sy})`,
-							}}
-					>
-					</div>
+		<>
+			{(leftScore < maxScore && rightScore < maxScore) && (
+				<div className="flex flex-col h-full justify-center items-center relative">
+				<div className="flex justify-center items-center mt-10">
+					{PVisible && !leftScore && !rightScore && (
+					<p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] z-10">
+						{countDownValue}
+					</p>
+					)}
 				</div>
-				<button 
-					className="ml-auto mt-10  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]" 
+				<div className="relative flex-grow">
+					<div className="pt-8"
+						style={{
+							transform: `scale(${sx}, ${sy})`,
+							transformOrigin: 'center',
+						}}
+					>
+						<PlayersScore
+						left={leftScore}
+						right={rightScore}
+						leftPlayer={"robot"}
+						rightPlayer={"me"}
+						/>
+					</div>
+					<div
+					ref={divRef}
+					className="h-[900px] w-[1700px] mt-20"
+					style={{
+						transform: `scale(${sx}, ${sy})`,
+						transformOrigin: 'center',
+					}}
+					></div>
+				</div>
+				<button
+					className="absolute bottom-10 right-10 text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]"
 					onClick={() => {
-						router.push("/game");
-					}}>
-					leave
+					router.push("/game");
+					}}
+				>
+					Leave
 				</button>
-			</div>}
+				</div>
+			)}
 			{rightScore >= maxScore && <WonOffline />}
 			{leftScore >= maxScore && <LostOffline />}
-		</main>
+		</>
+
 	  );
 	  
 }
