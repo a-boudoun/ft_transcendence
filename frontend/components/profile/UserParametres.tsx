@@ -48,7 +48,6 @@ const Mesage = ({ id }: { id: number }) => {
   const ChannleId =  useMutation({
         mutationFn: async (id: number) => {
         const { data } = await axios.get(`/channels/getChannelId/${id}`);
-        console.log("----------", data);
         return data;
       },
       onSuccess: (data : number) => {
