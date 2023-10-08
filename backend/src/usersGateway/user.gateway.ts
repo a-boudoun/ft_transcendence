@@ -41,6 +41,7 @@ export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (user){
             user.status = Status.OFFLINE;
             await this.userRepo.save(user);
+            this.updeteUser(id);
         }
     }
 
