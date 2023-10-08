@@ -10,8 +10,27 @@ import {
     IsNumber,
     IsEnum,
     MaxLength,
-    IsNumberString
+    IsNumberString,
+    Validate,
   } from 'class-validator';
+
+function is_valid_image(filename: string): boolean {
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+    const fileExtension = filename.split('.').pop();
+
+    if (fileExtension && allowedExtensions.includes(fileExtension.toLowerCase())) {
+        return true;
+    }
+
+    return false;
+}
+
+function IsValidImageFormat(value: string) {
+    if (!is_valid_image(value)) {
+        return false;
+    }
+    return true;
+}
 
 export class UserDTO {
     @IsInt()
@@ -27,9 +46,15 @@ export class UserDTO {
     username: string;
 
     @IsString()
+    @Validate(IsValidImageFormat, {
+        message: 'Invalid image format. Supported formats are: .jpg, .jpeg, .png, and .webp',
+    })
     image: string;
 
     @IsString()
+    @Validate(IsValidImageFormat, {
+        message: 'Invalid banner format. Supported formats are: .jpg, .jpeg, .png, and .webp',
+    })
     baner: string;
 
     @IsEnum(Status)
@@ -55,7 +80,6 @@ export class UserDTO {
 
     ownedChannels: ChannelDTO[];
     memberships?: MembershipDTO[];
-    // channels: ChannelDTO[];
     initiatedFriendships: FriendshipDTO[];
     receivedFriendships: FriendshipDTO[];
     blockedUsers: UserDTO[];
