@@ -11,6 +11,7 @@ import { Blockage, User } from 'src/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { Not } from 'typeorm';
 import con from 'ormconfig';
+import { UpdateUserDTO } from 'src/users/dto/update-user.dto';
 
 @Injectable()
 export class ChannelsService {
@@ -26,7 +27,6 @@ export class ChannelsService {
     async create(channel: ChannelDTO) {
       
       const newChannel = await this.channelRepo.create(channel);
-      console.log("create channel");
       // const newChannel : Channel = new Channel();
       // newChannel.name = channel.name;
       // newChannel.image = channel.image;
@@ -197,7 +197,7 @@ async joinChannel(id: number, user: UserDTO, password: string) {
   return channel1;
 }
 
-async addFriendtoChannel(channelId: number, friend: UserDTO) {
+async addFriendtoChannel(channelId: number, friend: UpdateUserDTO) {
   const member=  await this.membershipRepo.findOne({
     where: {
       channel: { id: channelId},
@@ -359,7 +359,6 @@ async isMuted(channelId: number, username: string) {
         const user2 = await this.userRepo.findOneBy({id: id});
 
         const channelName : string =  (user1.id < user2.id) ? user1.username + user2.username : user2.username + user1.username;
-        console.log(channelName);
         const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, owner: user1, image: "/img/more.svg" });
         const rt = await this.channelRepo.save(channel);
         const membership1 = await this.membershipRepo.create({channel: rt, member: user1, title: MemberTitle.MEMBER});

@@ -73,7 +73,6 @@ async accept(id: number, sender: number) {
     const user1 = await this.userRepo.findOneBy({id: id});
     const user2 = await this.userRepo.findOneBy({id: sender});
 
-    console.log("user1: "  + user1.username, "user2: " +  user2.username);
 
     const channelName : string =  (user1.id < user2.id) ? user1.username + user2.username : user2.username + user1.username;
 

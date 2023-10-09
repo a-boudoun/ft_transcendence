@@ -47,7 +47,6 @@ export default function Won({ setWon, setLost, me, other }: prop) {
     setSenderSocketId(data.senderSocketId);
     setEvent("accept-retry");
     setRetry("Click to retry");
-    console.log(`event: ${event}`);
   });
 
   const { data, isLoading } = useQuery({
