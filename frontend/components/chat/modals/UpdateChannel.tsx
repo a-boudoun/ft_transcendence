@@ -7,6 +7,7 @@ import { Client } from '@/providers/QueryProvider';
 import { useEffect, useState } from 'react';
 import useAmiski from "@/hookes/useAmsiki";
 import Image from 'next/image';
+import { set } from 'zod';
 
 
 interface updateChannel{
@@ -120,6 +121,16 @@ export const UpdateChannel = ({type}:{type:string}) => {
       setTypeCh(channel.type);
       dispatch(setisopen(false));
     }
+
+    useEffect(() => {
+      return () => {
+        setImagePreview(channel.image);
+        setName('');
+        setPassword('');
+        setTypeCh(channel.type);
+        setImageError('');
+      }
+    }, [isopen]);
     
     return(
       <div >
@@ -166,7 +177,7 @@ export const UpdateChannel = ({type}:{type:string}) => {
               </div>
           </div>
           <input  required={typeCh === 'Protected' && channel.type !== 'Protected' } type='password' value={password} className={`${typeCh !== 'Protected' ? 'hidden' : ''} absolute top-[65%] left-0 right-0 mx-auto w-3/4 text-md  rounded-md  py-2 px-2   bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg text-white outline-none z-10`} placeholder='Password'  onChange={(e:any)=> setPassword(e.target.value)}/>
-          <div className='absolute right-0 left-0 mx-auto bottom-20 text-rose-700'>{passwordError}</div>
+          <div className='absolute right-0 left-0 mx-auto bottom-28 text-red'>{passwordError}</div>
           <div className="absolute bottom-0 left-0 right-0 mx-auto ">
               <button className=" w-[46%] absolute bottom-0 left-1 bg-blue text-white font-semibold text-base my-2 py-1  rounded-lg" onClick={()=> dispatch(setisopen(false))} >Cancel</button>
               <button className=" w-[46%] absolute bottom-0 right-1 bg-red text-white font-semibold text-base my-2 py-1 rounded-lg"  >Update</button>
