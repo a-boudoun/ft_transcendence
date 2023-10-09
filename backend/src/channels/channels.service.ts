@@ -27,7 +27,6 @@ export class ChannelsService {
     async create(channel: ChannelDTO) {
       
       const newChannel = await this.channelRepo.create(channel);
-      console.log("create channel");
       // const newChannel : Channel = new Channel();
       // newChannel.name = channel.name;
       // newChannel.image = channel.image;
@@ -360,7 +359,6 @@ async isMuted(channelId: number, username: string) {
         const user2 = await this.userRepo.findOneBy({id: id});
 
         const channelName : string =  (user1.id < user2.id) ? user1.username + user2.username : user2.username + user1.username;
-        console.log(channelName);
         const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, owner: user1, image: "/img/more.svg" });
         const rt = await this.channelRepo.save(channel);
         const membership1 = await this.membershipRepo.create({channel: rt, member: user1, title: MemberTitle.MEMBER});

@@ -39,7 +39,6 @@ export const ProfileComponent = ({ username }: { username: string }) => {
         Client.refetchQueries(["user", username]);
     });
 
-    console.log(user.data);
   return (
     <main className="h-full w-full pt-[56px] sm:p-10 sm:pt-[96px] sm:flex sm:justify-center gap-8">
       <div className="hidden xl:flex w-[340px] flex-col gap-8  bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg p-4 rounded-[2.5rem] shadow-2xl">
