@@ -36,7 +36,7 @@ export class UserDTO {
     @IsInt()
     id: number;
     
-    @IsInt()
+    @IsNumber()
     intraID: number; 
 
     @IsNotEmpty()

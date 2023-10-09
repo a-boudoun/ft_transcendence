@@ -5,7 +5,7 @@ const MAX_FILE_SIZE = 2500000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 export const signInSchema = z.object({
-    id: z
+    intraID: z
     .number()
     .optional(),
     username: z
@@ -38,6 +38,9 @@ export const signInSchema = z.object({
 });
 
 export const userSchema = signInSchema.extend({
+    id: z
+    .number()
+    .optional(),
     baner: z
     .any()
     .optional(),

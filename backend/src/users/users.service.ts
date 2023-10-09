@@ -50,6 +50,14 @@ export class UsersService {
   
       return user;
     }
+    async findOneById2fac(id: number) {
+      const user = await this.userRepo.findOne({
+        where : {id: id},
+        select: ['id', 'username', 'fact2Secret']
+      });
+  
+      return user;
+    }
     
     async findOneByIntraId(intraID: number) {
       const user = await this.userRepo.findOneBy({intraID: intraID});
@@ -64,14 +72,6 @@ export class UsersService {
           return true;
       }
       return false;
-    }
-
-    async findonebyid(id: number) {
-      return this.userRepo.find({
-        where: {
-          id: id,
-        },
-      });
     }
       
       async update(id: number, updateUser: UpdateUserDTO) {

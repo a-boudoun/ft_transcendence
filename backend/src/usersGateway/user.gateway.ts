@@ -23,15 +23,19 @@ export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const decodedJwt = this.jwtService.decode(token) as UserDTO;
         const id = decodedJwt.id;
 
-        const user = await this.userRepo.findOneBy({id});
-        if (user){
-            user.status = Status.ONLINE;
-            await this.userRepo.save(user);
-            this.updeteUser(id);
-        }
+        if (id) {
 
-        socket.data.username = id.toString();
-        socket.join(id.toString());
+            const user = await this.userRepo.findOneBy({id});
+            if (user){
+                user.status = Status.ONLINE;
+                await this.userRepo.save(user);
+                this.updeteUser(id);
+            }
+
+            socket.data.username = id.toString();
+            socket.join(id.toString());
+            }
+
     }
 
     async handleDisconnect(socket: Socket) {

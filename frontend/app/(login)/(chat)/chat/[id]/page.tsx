@@ -25,7 +25,6 @@ interface MoreProps {
 }
 
 const More = ({ user, setIsOpen }: MoreProps) => {
-  c
   const { divref } = useCloseOutSide({ setIsOpen });
   const [isChallenge, setIsChallenge] = useState<boolean>(false);
 
@@ -83,7 +82,7 @@ const page = ({ params }: { params: { id: any } }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["direct", params.id],
     queryFn: async () => {
-      if(!parseInt(params.id))
+      if(!parseInt(params.id) || params.id.length > 8)
       {
         router.push("/chat");
         return null;
@@ -110,7 +109,7 @@ const page = ({ params }: { params: { id: any } }) => {
   }, [data, user]);
 
   const blocked = useQuery({
-    queryKey: ['blocked'],
+    queryKey: ['blocked', otherUser?.id],
     queryFn: async () => {
       if (!otherUser) 
         return null;
@@ -172,7 +171,7 @@ const page = ({ params }: { params: { id: any } }) => {
     },
   });
 
-  if (isLoading || !data || !user.id || !otherUser)
+  if (isLoading || !data || !user.id || !otherUser||!blocked.data)
     return (
       <div className="w-full  md:w-1/2 lg:w-8/12 h-full bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:rounded-[2.5rem] sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:p-4">
         <div className="w-full h-full bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:rounded-[2rem] flex justify-center items-center text-blue">

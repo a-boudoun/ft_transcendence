@@ -5,6 +5,7 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 import { UseGuards } from '@nestjs/common';
 import { UserDTO } from 'src/users/dto/create-user.dto';
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
+import { UpdateUserDTO } from 'src/users/dto/update-user.dto';
 
 @Controller('channels')
 @UseGuards(Jwt2faAuthGuard)
@@ -49,7 +50,7 @@ export class ChannelsController {
   }
 
   @Patch(':id/addFriendtoChannel')
-  async addFriendtoChannel(@Param('id') id: number, @Body() friend: UserDTO) {
+  async addFriendtoChannel(@Param('id') id: number, @Body() friend: UpdateUserDTO) {
     return this.channelsService.addFriendtoChannel(id, friend);
   }
 

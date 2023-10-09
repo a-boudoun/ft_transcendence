@@ -28,7 +28,7 @@ const Page =  ({ params }: { params: {id:any} }) => {
       queryKey: ['channel'],
       queryFn: async () => {
 
-        if(!parseInt(params.id))
+        if(!parseInt(params.id) || params.id.length > 8)
         {
           router.push('/channel');
           return null;

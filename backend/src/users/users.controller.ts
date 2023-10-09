@@ -58,7 +58,7 @@ export class UsersController {
   @Get('signin')
   @UseGuards(JwtSigninGuard)
   async signin(@Req() req) {
-    return req.user;
+    return {username: req.user.username, image: req.user.image };
   }
   
   @Patch('updateMe')

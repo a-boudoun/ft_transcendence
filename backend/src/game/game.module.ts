@@ -6,12 +6,12 @@ import { gameSimulation } from "./gameSimulation.service";
 import { AuthModule } from "src/auth/auth.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { GameHistory, User } from "src/entities/user.entity";
-import { UsersGateway } from "src/usersGateway/user.gateway";
-import { JwtService } from "@nestjs/jwt";
+import { UsersGateway } from '../usersGateway/user.gateway';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
-	imports: [AuthModule, TypeOrmModule.forFeature([GameHistory, User])],
-	providers: [gameService, GameGateway, engineService, gameSimulation,  UsersGateway, JwtService],
+	imports: [TypeOrmModule.forFeature([GameHistory, User])],
+	providers: [gameService, GameGateway, engineService, gameSimulation, UsersGateway, JwtService],
 	exports: [gameService, GameGateway, engineService]
 })
 export class GameModule{}
