@@ -21,12 +21,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @UseGuards(Jwt2faAuthGuard)
   handleConnection(client: Socket) {
-    // const cookie: string = client.handshake.headers.cookie;
-    // if (!cookie || cookie === undefined)
-    //   return;
-    // const id: string = this.auth.getId(cookie).toString();
-    // client.data.username = id;
-    // client.join(id);
   }
   
   handleDisconnect(client: Socket) {

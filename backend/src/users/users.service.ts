@@ -4,6 +4,8 @@ import { UpdateUserDTO } from './dto/update-user.dto';
 import { Blockage, User, Friendship } from '../entities/user.entity'
 import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UsersGateway } from '../usersGateway/user.gateway';
+
 
 @Injectable()
 export class UsersService {
@@ -12,6 +14,7 @@ export class UsersService {
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Blockage) private blockRepo: Repository<Blockage>,
     @InjectRepository(Friendship) private friendshipRepo: Repository<Friendship>,
+    private usersGateway: UsersGateway,
     ) {}
     
     create(userDTO: UserDTO) {
@@ -73,7 +76,9 @@ export class UsersService {
       
       async update(id: number, updateUser: UpdateUserDTO) {
         const user = await this.findOneById(id);
-        return await this.userRepo.save({...user, ...updateUser})
+        const updetedUser = await this.userRepo.save({...user, ...updateUser});
+        this.usersGateway.updeteUser(id);
+        return updetedUser;
       }
       
       async set2FAsecret(secret: string, id: number) {
