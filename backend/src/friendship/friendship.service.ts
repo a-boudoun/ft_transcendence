@@ -17,6 +17,7 @@ export class FriendshipService {
     ) {}
     
     async friendReq(username : string) {
+      
       const friendship = await this.friendshipRepo.find({
         where: [
           { receiver: { username: username }  , status: Fstatus.PENDING},
@@ -63,7 +64,6 @@ export class FriendshipService {
     }
 
 async accept(id: number, sender: number) {
-
   const friendship = await this.friendshipRepo.findOne({
       where: [ { initiater: { id: sender }, receiver: { id: id } } ],
     });
@@ -73,6 +73,8 @@ async accept(id: number, sender: number) {
     const user1 = await this.userRepo.findOneBy({id: id});
     const user2 = await this.userRepo.findOneBy({id: sender});
 
+    console.log("user1: "  + user1.username, "user2: " +  user2.username);
+
     const channelName : string =  (user1.id < user2.id) ? user1.username + user2.username : user2.username + user1.username;
 
     const ch = await this.channelRepo.findOne({
@@ -80,7 +82,7 @@ async accept(id: number, sender: number) {
     });
 
     if (!ch) {
-      const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" });
+      const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT,owner: user1, image: "/img/more.svg" });
       const rt = await this.channelRepo.save(channel);
       const membership1 = await this.memRepo.create({channel: rt, member: user1, title: MemberTitle.MEMBER});
       const membership2 = await this.memRepo.create({channel: rt, member: user2, title: MemberTitle.MEMBER});
@@ -88,7 +90,8 @@ async accept(id: number, sender: number) {
       await this.memRepo.save(membership2);      
     }
 
-    return await this.friendshipRepo.save(friendship);
+    await this.friendshipRepo.save(friendship);
+    return  this.usersGateway.updeteFriendList(sender);
   }
 
   async status(id: number, receiver: number) {
@@ -109,14 +112,16 @@ async accept(id: number, sender: number) {
 
   }
 
-  async remove(id: number, sender: number) {
+  async remove(sender: number, receiver: number) {
     const friendship = await this.friendshipRepo.find({
       where: [
-        { initiater: { id: id } ,  receiver: { id: sender } },
-        { initiater: { id: sender } ,  receiver: { id: id } }
+        { initiater: { id: receiver } ,  receiver: { id: sender } },
+        { initiater: { id: sender } ,  receiver: { id: receiver  } }
       ],
     });
 
+    this.usersGateway.sendFriedRequest(receiver);
+    this.usersGateway.updeteFriendList(receiver);
     return await this.friendshipRepo.remove(friendship);
   }
 

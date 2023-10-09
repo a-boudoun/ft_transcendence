@@ -23,29 +23,41 @@ export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const decodedJwt = this.jwtService.decode(token) as UserDTO;
         const id = decodedJwt.id;
 
-        const user = await this.userRepo.findOneBy({id});
-        if (user){
-            user.status = Status.ONLINE;
-            await this.userRepo.save(user);
-        }
+        if (id) {
 
-        socket.data.username = id.toString();
-        socket.join(id.toString());
+            const user = await this.userRepo.findOneBy({id});
+            if (user){
+                user.status = Status.ONLINE;
+                await this.userRepo.save(user);
+                this.updeteUser(id);
+            }
 
-        console.log("connected", id);
+            socket.data.username = id.toString();
+            socket.join(id.toString());
+            }
+
     }
 
     async handleDisconnect(socket: Socket) {
         const id =  socket.data.username
-        console.log("disconnected", id);
+
         const user =  await this.userRepo.findOneBy({id});
         if (user){
             user.status = Status.OFFLINE;
             await this.userRepo.save(user);
+            this.updeteUser(id);
         }
     }
 
     sendFriedRequest(id: number) {
         this.server.to(id.toString()).emit('friendRequest');
+    }
+
+    updeteFriendList(id: number) {
+        this.server.to(id.toString()).emit('friends');
+    }
+
+    updeteUser(id: number) {
+        this.server.emit('profile', id);
     }
 }

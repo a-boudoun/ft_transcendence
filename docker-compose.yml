@@ -41,7 +41,6 @@ services:
     networks:
       - web
     restart: always
-
 networks:
   web:
     name: web

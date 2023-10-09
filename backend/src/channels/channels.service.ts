@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { ChannelType } from '../entities/channel.entity';
 import { MembershipDTO } from './dto/create-channel.dto';
 import { UserDTO } from 'src/users/dto/create-user.dto';
-import { User } from 'src/entities/user.entity';
+import { Blockage, User } from 'src/entities/user.entity';
 
 import * as bcrypt from 'bcrypt';
 import { Not } from 'typeorm';
@@ -21,10 +21,12 @@ export class ChannelsService {
     @InjectRepository(Bannation) private bannationRepo: Repository<Bannation>,
     @InjectRepository(Mutation) private mutationRepo: Repository<Mutation>,
     @InjectRepository(User) private userRepo: Repository<User>,
+    @InjectRepository(Blockage) private blockRepo: Repository<Blockage>,
     ) { }
     async create(channel: ChannelDTO) {
       
       const newChannel = await this.channelRepo.create(channel);
+      console.log("create channel");
       // const newChannel : Channel = new Channel();
       // newChannel.name = channel.name;
       // newChannel.image = channel.image;
@@ -86,10 +88,23 @@ export class ChannelsService {
     return channels;
   }
   
+  async block(username: string) {
   
+      const blockedUsers = (await this.blockRepo.find({
+        where: {blocker : {username: username }},
+        relations: ['blocked']}))
+        .map(b => b.blocked.id);
+
+      const blockedByUsers = (await this.blockRepo.find({
+        where: {blocked : {username: username }},  
+        relations: ['blocker']}))
+        .map(b => b.blocker.id);
+
+        return [...blockedUsers, ...blockedByUsers];
+  }
   
   async findChannel(id: number, username: string) {
-    
+
     let channel= await this.channelRepo.findOne({
       where: [
         { id: id, type: Not(ChannelType.DIRECT) },
@@ -118,6 +133,12 @@ export class ChannelsService {
       if(!membership)
         return null;
     }
+
+    const block =( await this.block(username));
+
+    channel.messages = channel.messages.filter((message) => !block.includes(message.sender.id));
+    
+
   return channel;
 }
 
@@ -219,12 +240,13 @@ async banner(channelId: number, username: string) {
       channel: { id: channelId},
       member: { username: username},
     },
+    relations: ['channel', 'member']
+  });
+  const bannation = await this.bannationRepo.create({
+    channel: memship.channel,
+    member: memship.member,
   });
   await this.membershipRepo.delete(memship.id);
-  const bannation = await this.bannationRepo.create({
-      channel: memship.channel,
-      member: memship.member,
-  });
   return this.bannationRepo.save(bannation);
   }
   
@@ -256,7 +278,7 @@ async mut(channelId: number, id: number, duration: number) {
   });
   return this.mutationRepo.save(mut);
 }
-    
+     
 async isMuted(channelId: number, username: string) {
   if(!username || !channelId)
     return false;
@@ -276,7 +298,7 @@ async isMuted(channelId: number, username: string) {
   return false;
 }
   
-  async getDirectChannel(username: string) {
+  async getDirectChannels(username: string) {
     const channels = await this.channelRepo.find({
       where: {
         type: ChannelType.DIRECT, memberships: { member: { username: username } },
@@ -293,8 +315,6 @@ async isMuted(channelId: number, username: string) {
         id: channel.id, member:  member,
       };
     }));
-    
-  
   }
   
   async unban(banId: number) {
@@ -321,22 +341,26 @@ async isMuted(channelId: number, username: string) {
 }
     
    async getChannelId(me: number, id: number) {
-      const channel = await this.membershipRepo.createQueryBuilder('membership')
-      .innerJoin('membership.channel', 'channel')
-      .where('membership.member = :me', { me })
-      .groupBy('membership.channel') // should be removed
-      .where('channel.type = :type', { type: ChannelType.DIRECT })
-      .andWhere('membership.member = :id', { id })
-      .select('membership.channel')
-      .getRawOne();
+      const membership = await this.membershipRepo.findOne({
+        where: [{
+          member: { id: me},
+          channel: { type: ChannelType.DIRECT , owner: { id: id}},
+        },
+        {
+          member: { id: id},
+          channel: { type: ChannelType.DIRECT , owner: { id: me}},
+        },
+      ],
+        relations: ['channel.owner', 'member', 'channel'],
+      })
 
-      if(!channel){
+      if(!membership?.channel){
         const user1 = await this.userRepo.findOneBy({id: me});
         const user2 = await this.userRepo.findOneBy({id: id});
 
         const channelName : string =  (user1.id < user2.id) ? user1.username + user2.username : user2.username + user1.username;
-
-        const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, image: "/img/more.svg" });
+        console.log(channelName);
+        const channel = await this.channelRepo.create({name: channelName, type: ChannelType.DIRECT, owner: user1, image: "/img/more.svg" });
         const rt = await this.channelRepo.save(channel);
         const membership1 = await this.membershipRepo.create({channel: rt, member: user1, title: MemberTitle.MEMBER});
         const membership2 = await this.membershipRepo.create({channel: rt, member: user2, title: MemberTitle.MEMBER});
@@ -346,6 +370,6 @@ async isMuted(channelId: number, username: string) {
         return rt.id;
       }
         
-      return channel.channelId;
+      return membership.channel.id;
     }
   }

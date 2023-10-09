@@ -5,12 +5,14 @@ import { Server } from "socket.io";
 import { InjectRepository } from "@nestjs/typeorm";
 import { GameHistory, Status, User } from "src/entities/user.entity";
 import { Repository } from "typeorm";
+import { UsersGateway } from "src/usersGateway/user.gateway";
 
 @Injectable()
 export class engineService {
 	constructor(
 		@InjectRepository(GameHistory) private gameHistoryRepo: Repository<GameHistory>,
 		@InjectRepository(User) private userRepo: Repository<User>,
+		private usersGateway: UsersGateway,
 	) { }
 	
 	private gameSimulations: Map<string, gameSimulation> = new Map<string, gameSimulation>();
@@ -21,6 +23,8 @@ export class engineService {
 
 		userA.status = Status.INGAME;
 		userB.status = Status.INGAME;
+		this.usersGateway.updeteUser(userA.id);
+		this.usersGateway.updeteUser(userB.id);
 		await this.userRepo.save(userA);
 		await this.userRepo.save(userB);
 		const game: gameSimulation = new gameSimulation();
@@ -85,6 +89,8 @@ export class engineService {
 			await this.userRepo.save(winner);
 			await this.userRepo.save(loser);
 			this.gameSimulations.delete(roomId);
+			this.usersGateway.updeteUser(loser.id);
+			this.usersGateway.updeteUser(winner.id);
 			}
 		}
 	}

@@ -16,12 +16,13 @@ import {
 import { AppDispatch } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import Message from "@/dto/Message";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "@/apis/axios";
 import { socket } from "./chatSocket";
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import { ArrowLeftCircle, Info } from "lucide-react";
+import { Client } from "@/providers/QueryProvider";
 
 function Mid() {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,6 +30,7 @@ function Mid() {
   const channel = useSelector((state: any) => state.globalState.channel);
   const user = useSelector((state: any) => state.globalState.user);
   const isMid = useSelector((state: any) => state.globalState.isMid);
+  const [blocked, setBlocked] = useState<number[]>([])
   const messages = useSelector(
     (state: any) => state.globalState.channel.messages
   );
@@ -96,25 +98,40 @@ function Mid() {
     });
     setInput("");
   };
-
-  useEffect(() => {
-    const onMsg = (msg: any) => {
+  const block = useQuery({
+    queryKey: ["blockedandblocker", user.id],
+    queryFn: async () => {
+      if (!user.id) return;
+      const { data } = await axios.get(`/channels/blockedandblocker/${user.id}`);
+      return data;
+    },
+    onSuccess: (data: any) => {
+      setBlocked(data);
+    },
+  });
+  useEffect( () => {
+   
+    const onMsg = async (msg: any) => {
       function ss(member: any) {
         return member.member.username === msg.from;
       }
       const member = channel.memberships?.find(ss);
       const createdAt = moment().format("yyyy-MM-DDTHH:mm:ssZ");
-      dispatch(
-        setMessage({
-          content: msg.content,
-          sender: member?.member,
-          date: createdAt,
-        })
-      );
+      Client.refetchQueries(["blockedandblocker", user.id]);
+      if(!blocked.includes(member?.member.id))
+      {
+        dispatch(
+          setMessage({
+            content: msg.content,
+            sender: member?.member,
+            date: createdAt,
+          })
+          );
+      }
     };
-    socket.on("message", onMsg);
+    socket.on(`message/${channel.id}`, onMsg);
     return () => {
-      socket.off("message", onMsg);
+      socket.off(`message/${channel.id}`, onMsg);
     };
   }, [channel]);
 
@@ -146,7 +163,8 @@ function Mid() {
             <div className="flex flex-col justify-between h-full sm:rounded-[2rem] overflow-hidden bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
               <div className="h-fit  flex items-center py-3   justify-between px-3 bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
                 <div className="flex items-center space-x-2 ">
-                  <Link href={`/channel`}>
+                
+                  <Link href={`/channel`} className="md:hidden">
                     <ArrowLeftCircle
                       size={24}
                       color="#7ac7c4"
@@ -203,9 +221,9 @@ function Mid() {
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       className="lucide lucide-send-horizontal"
                     >
                       <path d="m3 3 3 9-3 9 19-9Z" />
@@ -243,8 +261,8 @@ export const Message = (msg: any) => {
       }`
     );
     setDate(moment.duration(moment().diff(msg.date)).humanize());
-  }, []);
-
+  }, [msg]);
+  if(!msg.id) return(<></>)
   return (
     <div className={`w-full flex flex-col `}>
       <div className={` w-full flex ${style} text-[10px] px-3  text-blue`}>

@@ -64,7 +64,7 @@ export class ChannelsController {
   }
   @Get('direct/:username')
   async getDirectChannel(@Param('username') username: string) {
-    return this.channelsService.getDirectChannel(username);
+    return this.channelsService.getDirectChannels(username);
   }
   @Patch('unban/:banId')
   async unban(@Param('banId') banId: string) {
@@ -81,6 +81,10 @@ export class ChannelsController {
   @Get('getChannelId/:id')
   getChannelId(@Param('id') id: number, @Req() req) {
     return this.channelsService.getChannelId(req.user.id, id);
+  }
+  @Get('blockedandblocker/:id')
+  getBlockedAndBlocker(@Req() req) {
+    return this.channelsService.block(req.user.username);
   }
 
 

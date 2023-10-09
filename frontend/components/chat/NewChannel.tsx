@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import axios from '@/apis/axios';
 import { useRouter } from 'next/navigation';
+import { set } from 'zod';
 
 const NewChannel = () => {
     const router = useRouter();
@@ -23,6 +24,8 @@ const NewChannel = () => {
     const [image, setImage] = useState<any>(null);
     const [imagePreview, setImagePreview] = useState<string>('/img/a.jpeg');
     const [passwordError, setPasswordError] = useState('');
+    const [imageError, setImageError] = useState('');
+    const [imageExtention, setImageExtention] = useState<string[]>(['png', 'jpg', 'jpeg', 'webp']);
     
     const handleclick = () => {
         setIsclicked(!isclicked);
@@ -34,6 +37,13 @@ const NewChannel = () => {
     }
 
     const handleChange = (e: any) => {
+        if(e.target.files[0] && !imageExtention.includes(e.target.files[0].name.split('.')[e.target.files[0].name.split('.').length - 1]))
+        {
+            setImageError('Only .jpg, .jpeg, .png and .webp formats are supported.')
+            e.target.value = null;
+            return;
+        }
+            setImageError('');
           setImage(e.target.files[0]);
           setImagePreview(URL.createObjectURL(e.target.files[0]));
       };
@@ -100,6 +110,7 @@ const NewChannel = () => {
               </label> 
               <input type="file" className="hidden" id='id' onChange={handleChange} />
             </div>
+            <span className='text-center text-red'>{imageError}</span>
             <input required id={'name'} className='w-full  rounded-lg px-5 py-2 text-lg bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg my-2 outline-none placeholder-white'  placeholder='Name of channel' value={name} onChange={(e:any)=> setName(e.target.value)}/>
             <button type='button'  className="hover:opacity-60 text-white w-full  rounded-lg text-lg px-5 py-2.5 text-center inline-flex items-center justify-center bg-blue" onClick={handleclick}>
                 {type}
@@ -130,7 +141,7 @@ const NewChannel = () => {
 
                 </div>
             </div>
-            <input  required={type === 'Protected'} type='password' value={password} className={`${type !== 'Protected' ? 'hidden' : ''} w-full rounded-lg px-5 py-2 text-lg bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg placeholder-white my-2 outline-none`} placeholder='Password' onChange={(e:any)=> setPassword(e.target.value)}/>
+            <input  required={type === 'Protected'} type='password' value={password} className={`${type !== 'Protected' ? 'hidden' : ''} w-full rounded-lg px-5 py-2 text-lg bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg placeholder-white my-2 outline-none`} placeholder='Password' autoComplete="current-password" onChange={(e:any)=> setPassword(e.target.value)}/>
             <div className='w-full text-black'>{passwordError}</div>
             <button className='bg-red w-full mt-5 rounded-lg py-2 hover:opacity-60'>Create</button>
         </form>
