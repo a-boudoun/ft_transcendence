@@ -36,7 +36,7 @@ const UserDetails = (props: UserDetailsProps) => {
   }, []);
 
   return (
-    <div className="flex-[0.5] grow flex flex-col overflow-hidden  sm:rounded-3xl sm:shadow-2xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg">
+    <div className="flex-[0.5] grow flex flex-col sm:rounded-3xl sm:shadow-2xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg overflow-hidden">
       <div className="flex justify-around xl:p-4 sm:rounded-t-3xl">
         <button
           aria-label="stats"
@@ -53,9 +53,7 @@ const UserDetails = (props: UserDetailsProps) => {
             }`}
           >
             <BarChart3 size={28} color="#7ac7c4" strokeWidth={2} />
-            <h2 className="hidden lg:inline text-[28px] ml-4">
-              Stats
-            </h2>
+            <h2 className="hidden lg:inline text-[28px] ml-4">Stats</h2>
           </div>
         </button>
         <button
@@ -74,9 +72,7 @@ const UserDetails = (props: UserDetailsProps) => {
             }`}
           >
             <Award size={28} color="#7ac7c4" strokeWidth={2} />
-            <h2 className="hidden lg:inline text-[28px] ml-4">
-              Achievements
-            </h2>
+            <h2 className="hidden lg:inline text-[28px] ml-4">Achievements</h2>
           </div>
         </button>
         <button
@@ -95,9 +91,7 @@ const UserDetails = (props: UserDetailsProps) => {
             }`}
           >
             <History size={28} color="#7ac7c4" strokeWidth={2} />
-            <h2 className="hidden lg:inline text-[28px] ml-4">
-              Matches
-            </h2>
+            <h2 className="hidden lg:inline text-[28px] ml-4">Matches</h2>
           </div>
         </button>
         <button
@@ -116,13 +110,11 @@ const UserDetails = (props: UserDetailsProps) => {
             }`}
           >
             <User2 size={28} color="#7ac7c4" strokeWidth={2} />
-            <h2 className="hidden lg:inline text-[28px] ml-4">
-              Friends
-            </h2>
+            <h2 className="hidden lg:inline text-[28px] ml-4">Friends</h2>
           </div>
         </button>
       </div>
-      <div className="h-full grow p-4 overflow-scroll sm:rounded-b-3xl">
+      <div className="h-full p-4 overflow-auto scrollbar sm:rounded-b-3xl">
         {stats && props.Stats}
         {achievements && props.Archievement}
         {matches && props.Matches}

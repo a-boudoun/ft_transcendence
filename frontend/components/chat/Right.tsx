@@ -67,9 +67,9 @@ const Right = () => {
         isMid === false
           ? "w-full md:w-1/2  lg:w-4/12 "
           : "hidden lg:w-5/12 lg:flex lg:flex-col max-w-xs"
-      } h-full sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:rounded-[2.5rem] sm:p-4 `}
+      } h-full sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:rounded-[2.5rem] sm:p-4 min-w-[300px]`}
     >
-      <div className="overflow-y-scroll bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-full sm:rounded-[2rem] relative">
+      <div className="overflow-auto scrollbar bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg h-full sm:rounded-[2rem] relative">
         <button
           className="absolute top-4 left-4  hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg w-[36px] h-[36px] rounded-full flex justify-center items-center lg:hidden "
           onClick={() => dispatch(setisMid(true))}
@@ -258,15 +258,7 @@ const More = ({
   );
 };
 
-const Mute = ({
-  member,
-  user,
-  id,
-}: {
-  member: any;
-  user: any;
-  id: number;
-}) => {
+const Mute = ({ member, user, id }: { member: any; user: any; id: number }) => {
   const dispatch = useDispatch<AppDispatch>();
   const handelClick = () => {
     dispatch(setmodaltype("mute"));
@@ -309,7 +301,9 @@ export const Admin = ({
   }, [member]);
   const addAdmin = useMutation({
     mutationFn: async (memberid: number) => {
-      const { data } = await axios.patch(`/channels/${id}/updateMembershipTitle/${memberid}`);
+      const { data } = await axios.patch(
+        `/channels/${id}/updateMembershipTitle/${memberid}`
+      );
       return data;
     },
     onSuccess: () => {
@@ -331,15 +325,7 @@ export const Admin = ({
   );
 };
 
-const Kick = ({
-  member,
-  user,
-  id,
-}: {
-  member: any;
-  user: any;
-  id: number;
-}) => {
+const Kick = ({ member, user, id }: { member: any; user: any; id: number }) => {
   const kick = useMutation({
     mutationFn: async (memberid: number) => {
       const { data } = await axios.delete(`/channels/${id}/${memberid}`);
@@ -373,9 +359,7 @@ const BanUser = ({
 }) => {
   const ban = useMutation({
     mutationFn: async (username: string) => {
-      const { data } = await axios.patch(
-        `/channels/${id}/ban/${username}`,
-      );
+      const { data } = await axios.patch(`/channels/${id}/ban/${username}`);
       return data;
     },
     onSuccess: () => {
