@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import {Engine, Render, Body, Events, Composite, Runner} from "matter-js";
+import {Engine, Render, Bodies, Body, Events, Composite, Runner} from "matter-js";
 import PlayersScore from "@/components/game/score";
 import WonOffline from "@/components/game/winnerOffline";
 import LostOffline from "@/components/game/loserOffline";
-import { drawRect, drawCircle } from "@/components/game/draw";
+import { drawRect } from "@/components/game/draw";
 import { useRouter } from "next/navigation";
 
 function RobotGame({difficulty} : {difficulty: number}){
@@ -22,7 +22,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 	let keyClicked : boolean = false;;
 	let leftInterval : NodeJS.Timeout;
 	let keyInterval : NodeJS.Timeout;
-	const maxScore = 30;
+	const maxScore = 5;
 
 	useEffect(() => {
 		if (!divRef.current) return;
@@ -51,8 +51,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 									y: rightBoard.position.y + 10,
 								})
 						}
-					}, 15);
-
+					}, 17);
 				}
 			}
 		}
@@ -68,7 +67,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 			gravity:{
 				x:0,
 				y:0,
-				scale:0.1,
+				scale:0.01,
 			},
 		}),
 		render = Render.create({
@@ -87,9 +86,23 @@ function RobotGame({difficulty} : {difficulty: number}){
 		
 		const rightBoard = drawRect(W - 35, H / 2, 20, 120, '#FFFFFF');
 		const leftBoard = drawRect(35, H / 2, 20, 120, '#FFFFFF');
-		const ball = drawCircle(W / 2, H / 2, 15, '#FFFFFF');
 		const floor = drawRect(W / 2, H, 5000, 20, '#000000');
 		const ceiling = drawRect(W / 2, 0, 5000, 20, '#000000');
+		
+		const ball = Bodies.circle(W / 2, H / 2, 15,{
+			restitution: 1, // Make the ball fully elastic
+			friction: 0, // Remove friction
+			frictionAir: 0, // Remove air friction
+			inertia: Infinity, // prevent ball from slowing down
+			render: {
+				// fillStyle: color,
+				sprite: {
+					texture: '/game/default-ball.webp',
+					xScale: 0.07,
+					yScale: 0.07,
+				}
+		},
+		});
 		
 		function handleLeftBoard(): void {
 			leftInterval = setInterval(() => {
@@ -119,7 +132,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 				if (pair.bodyA === leftBoard || pair.bodyB === leftBoard) {
 					clearInterval(leftInterval);
 					Body.setVelocity(ball, { 
-						x: -15,
+						x: -20,
 						y: ballVelocity.y 
 					});
 					audio.play();
@@ -128,7 +141,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 					clearInterval(leftInterval);
 					handleLeftBoard();
 					Body.setVelocity(ball, { 
-						x: 15, 
+						x: 20, 
 						y: ballVelocity.y
 					});
 					audio.play();
@@ -148,14 +161,14 @@ function RobotGame({difficulty} : {difficulty: number}){
 					handleLeftBoard();
 					rScore++;
 					setRightScore((prevScore) => prevScore + 1);
-					vx = -8;
+					vx = -10;
 					vy = -4;
 				}
 				else {
 					clearInterval(leftInterval);
 					setLeftScore((prevScore) => prevScore + 1);
 					lScore++;
-					vx = 8;
+					vx = 10;
 					vy = 4;
 				}
 				if (lScore === maxScore || rScore === maxScore)
@@ -183,7 +196,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 		document.addEventListener('keydown', handleKeyDown);
 		
 		setTimeout(() => {
-			Body.setVelocity(ball, {x: 8, y: 4});
+			Body.setVelocity(ball, {x: 10, y: 5});
 		}, 3000);
 
 		Events.on(engine, 'collisionStart', (event) => {
@@ -217,14 +230,14 @@ function RobotGame({difficulty} : {difficulty: number}){
 	  }, [countDownValue]);
 
 	  useEffect(() => {
-		let canvasWidth: number = 1700;
-		let canvasHeight: number = 900;
-	  
+		let canvasWidth: number = 1750;
+		let canvasHeight: number = 1200;
+		
 		let windowWidth: number = window.innerWidth;
 		let windowHeight: number = window.innerHeight;
-	  
+		
 		let scaleFactor: number = Math.min(windowWidth / canvasWidth, windowHeight / canvasHeight);
-	  
+		
 		let scalex: number = scaleFactor > 1 ? 1 : scaleFactor * 0.95;
 		let scaley: number = scaleFactor > 0.95 ? 1 : scaleFactor * 0.85; // adding the navbar height
 		setSx(scalex);
@@ -244,37 +257,59 @@ function RobotGame({difficulty} : {difficulty: number}){
 		return () => {
 		  window.removeEventListener("resize", handleResize);
 		}
-	  }, []);
+		}, []);
 
-	return (
-	<>
-		{ leftScore < maxScore && rightScore < maxScore && <div className="flex justify-center  items-center h-full w-full">
-			{(PVisible && !leftScore && !rightScore) && <p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] z-10 ">{countDownValue}</p>}
-			<PlayersScore 
-			left={leftScore} 
-			right={rightScore}
-			leftPlayer={"robot"}
-			rightPlayer={"me"}
-			/>
-			<div ref={divRef} 
-					className="h-[900px] w-[1700px] mt-20 relative"
+		
+	  return (
+		<>
+			{(leftScore < maxScore && rightScore < maxScore) && (
+				<div className="flex flex-col h-full justify-center items-center relative overflow-hidden">
+				<div className="flex justify-center items-center mt-10 z-10">
+					{PVisible && !leftScore && !rightScore && (
+					<p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px]">
+						{countDownValue}
+					</p>
+					)}
+				</div>
+				<div className="relative flex-grow">
+					<div className="mt-12 pt-12"
+						style={{
+							transform: `scale(${sx}, ${sy})`,
+							transformOrigin: 'center',
+						}}
+					>
+						<PlayersScore
+						left={leftScore}
+						right={rightScore}
+						leftPlayer={"robot"}
+						rightPlayer={"me"}
+						/>
+					</div>
+					<div
+					ref={divRef}
+					className="mt-20 shadow-[0px_20px_50px_0px_#86c3bb,0px_-10px_50px_0px_#d3455c]"
 					style={{
-				transform: `scale(${sx}, ${sy})`,
-			}}
-			>
-			</div>
-			<button 
-				className="absolute bottom-[50px] right-[50px]  m-4  text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]" 
-				onClick={() => {
+						transform: `scale(${sx}, ${sy})`,
+						transformOrigin: 'center',
+					}}
+					></div>
+				</div>
+				<button
+					className="absolute bottom-10 right-10 text-white text-[20px] bg-red w-[150px] h-[40px] rounded-[10px] hover:bg-[#FBACB3]"
+					onClick={() => {
 					router.push("/game");
-				}}>
-				leave
-			</button>
-		</div>}
-		{rightScore >= maxScore && <WonOffline/>}
-		{leftScore >=  maxScore && <LostOffline/>}
-	</>
-	);
+					}}
+				>
+					Leave
+				</button>
+				</div>
+			)}
+			{rightScore >= maxScore && <WonOffline />}
+			{leftScore >= maxScore && <LostOffline />}
+		</>
+
+	  );
+	  
 }
 
 export default RobotGame;

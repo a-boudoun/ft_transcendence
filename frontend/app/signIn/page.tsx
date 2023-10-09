@@ -11,7 +11,6 @@ const singIn = () => {
     queryKey: ['signin'],
     queryFn: async ()=> {
       const {data} = await axios.get(`/users/signin`,)
-      console.log(data);
       return data;
     },
   });

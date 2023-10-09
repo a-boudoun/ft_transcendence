@@ -4,12 +4,9 @@ import {
     Column,
     ManyToOne,
     OneToMany,
-    ManyToMany,
-    JoinTable,
-    Index,
-    DataSource,
     CreateDateColumn,
   } from 'typeorm';
+  
 import { User } from './user.entity';
   
 export enum ChannelType {
@@ -103,17 +100,11 @@ export class Membership {
     })
     channel: Channel;
     
-    @ManyToOne(() => User, (user) => user.channels)
+    @ManyToOne(() => User, (user) => user.memberships)
     member: User;
 
     @Column({ length: 25 })
     title: MemberTitle;
-}
-
-export enum SanctionType {
-    KICKED = 'kicked',
-    BANNED = 'banned',
-    MUTED = 'muted'
 }
 
 @Entity({ name: 'Mutation' })

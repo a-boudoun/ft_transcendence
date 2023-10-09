@@ -17,15 +17,22 @@ import { channel } from 'diagnostics_channel';
 
 
 
-const Page =  ({ params }: { params: {id:number} }) => {
+const Page =  ({ params }: { params: {id:any} }) => {
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
  
+  
   const {data, isLoading} = useQuery(
   {
       queryKey: ['channel'],
       queryFn: async () => {
+
+        if(!parseInt(params.id) || params.id.length > 8)
+        {
+          router.push('/channel');
+          return null;
+        }
         const channel = await axios.get(`/channels/${params.id}`);
         const user = await axios.get(`/users/getUser/me`);
         
@@ -42,14 +49,14 @@ const Page =  ({ params }: { params: {id:number} }) => {
         return channel.data;
       }
   });
-  if (isLoading)
+  if (isLoading || !data)
     return( 
     <div className='w-full  md:w-1/2 lg:w-8/12 h-full rounded-[2.5rem] bg-white bg-opacity-20 ackdrop-blur-lg  drop-shadow-lg p-4'>
       <div className='w-full h-full bg-white bg-opacity-20 ackdrop-blur-lg  drop-shadow-lg rounded-[2rem] flex justify-center items-center text-blue'>
             Loading...
       </div>
     </div>);
-  else if(data.type !== 'Direct')
+  else if(data && data.type !== 'Direct')
   return (
     <>
       <Mid />

@@ -22,9 +22,9 @@ services:
       - 8000:8000
     networks:
       - web
-    volumes:
-      - ./backend:/trans
-      - /trans/node_modules
+    # volumes:
+    #   - ./backend:/trans
+    #   - /trans/node_modules
     restart: always
   nextjs:
     build: ./frontend
@@ -35,13 +35,12 @@ services:
       - .env
     ports:
       - 3000:3000
-    volumes:
-      - ./frontend:/trans
-      - /trans/node_modules
+    # volumes:
+    #   - ./frontend:/trans
+    #   - /trans/node_modules
     networks:
       - web
     restart: always
-
 networks:
   web:
     name: web

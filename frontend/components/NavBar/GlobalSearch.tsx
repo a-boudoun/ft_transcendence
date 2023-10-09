@@ -13,7 +13,6 @@ const User = ({ user }: { user: userDto }) => {
   return (
     <div className="flex items-center gap-4 px-4 py-2 rounded-xl bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg ">
       <Image
-      
         className="sm:w-[48px] sm:h-[48px] rounded-full self-center"
         src={user.image}
         width={36}
@@ -36,7 +35,7 @@ const SearchBarDropDown = ({ search }: { search: string }) => {
   });
 
   return (
-    <div className="absolute top-11 w-52 sm:w-72 max-h-56  p-4 flex flex-col gap-1 overflow-y-scroll rounded-2xl bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg">
+    <div className="absolute top-11 w-52 sm:w-72 max-h-56  p-4 flex flex-col gap-1 rounded-2xl bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg overflow-auto scrollbar scrollbar">
       {users.data?.users?.length === 0 ? (
         <p className="text-center">No user found</p>
       ) : (

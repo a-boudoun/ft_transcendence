@@ -17,7 +17,7 @@ import { AppDispatch } from "@/redux/store";
 import { MoreHorizontal, Gamepad2, ArrowLeftCircle } from "lucide-react";
 import ChallengeDropDown from "@/components/common/ChallengeDropDown";
 import useCloseOutSide from "@/hookes/useCloseOutSide";
-
+import { channel } from "diagnostics_channel";
 
 interface MoreProps {
   user: any;
@@ -30,8 +30,10 @@ const More = ({ user, setIsOpen }: MoreProps) => {
 
   const router = useRouter();
   return (
-    <div ref= {divref}
-    className="absolute w-60  rounded-[1.4rem]   top-4 right-3  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg p-3 ">
+    <div
+      ref={divref}
+      className="absolute w-60  rounded-[1.4rem]   top-4 right-3  bg-black bg-opacity-50 ackdrop-blur-lg drop-shadow-lg p-3 "
+    >
       <div className="bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg rounded-[1.2rem] overflow-hidden">
         <button
           className="flex items-center justify-start px-4 py-2 w-full hover:bg-white hover:bg-opacity-20 hover:ackdrop-blur-lg rounded-t-lg"
@@ -53,17 +55,21 @@ const More = ({ user, setIsOpen }: MoreProps) => {
           onClick={() => setIsChallenge(!isChallenge)}
         >
           <Gamepad2 size={32} color="#7ac7c4" strokeWidth={1.5} />
-          <span className="px-6 text-base font-semibold text-blue">Challenge</span>
+          <span className="px-6 text-base font-semibold text-blue">
+            Challenge
+          </span>
         </button>
       </div>
       <div className="relative text-sm top-[-46px] right-[-24px]">
-        {isChallenge && <ChallengeDropDown id={user.id} setIsOpen={setIsChallenge} />}
+        {isChallenge && (
+          <ChallengeDropDown id={user.id} setIsOpen={setIsChallenge} />
+        )}
       </div>
     </div>
   );
 };
 
-const page = ({ params }: { params: { id: number } }) => {
+const page = ({ params }: { params: { id: any } }) => {
   const dispatsh = useDispatch<AppDispatch>();
 
   const router = useRouter();
@@ -76,10 +82,14 @@ const page = ({ params }: { params: { id: number } }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["direct", params.id],
     queryFn: async () => {
+      if(!parseInt(params.id) || params.id.length > 8)
+      {
+        router.push("/chat");
+        return null;
+      }
       const { data } = await axios.get(`/channels/directchannel/${params.id}`);
 
       setMessages(data.messages);
-      console.log("data", data.messages);
       socket.emit("join", { channel: data.id });
       if (!data || data.type !== "Direct") {
         router.push("/chat");
@@ -99,11 +109,11 @@ const page = ({ params }: { params: { id: number } }) => {
   }, [data, user]);
 
   const blocked = useQuery({
-    queryKey: ["blocked", otherUser?.id],
+    queryKey: ['blocked', otherUser?.id],
     queryFn: async () => {
-      if (!otherUser) return;
+      if (!otherUser) 
+        return null;
       const { data } = await axios.get(`/users/isBlocked/${otherUser.id}`);
-      console.log("data", user.id, data);
       return data;
     },
   });
@@ -127,9 +137,9 @@ const page = ({ params }: { params: { id: number } }) => {
         { content: msg.content, sender: member, date: createdAt },
       ]);
     };
-    socket.on("message", onMsg);
+    socket.on(`message/${data.id}`, onMsg);
     return () => {
-      socket.off("message", onMsg);
+      socket.off(`message/${data.id}`, onMsg);
     };
   }, [data, socket, user, otherUser]);
 
@@ -156,11 +166,12 @@ const page = ({ params }: { params: { id: number } }) => {
       return data;
     },
     onSuccess: () => {
-      Client.refetchQueries(["blocked", otherUser?.id]);
+      Client.refetchQueries(['blocked']);
+      Client.refetchQueries(["channel"]);
     },
   });
 
-  if (isLoading || !data || !user.id || !otherUser)
+  if (isLoading || !data || !user.id || !otherUser||!blocked.data)
     return (
       <div className="w-full  md:w-1/2 lg:w-8/12 h-full bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:rounded-[2.5rem] sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg  sm:drop-shadow-lg sm:p-4">
         <div className="w-full h-full bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg sm:rounded-[2rem] flex justify-center items-center text-blue">
@@ -179,7 +190,7 @@ const page = ({ params }: { params: { id: number } }) => {
         >
           <div className="h-fit bg-white bg-opacity-20 ackdrop-blur-lg drop-shadow-lg flex items-center py-3  rounded-xl  justify-between ">
             <div className="flex items-center space-x-2 ">
-              <Link href={`/chat`}>
+              <Link href={`/chat`} className="md:hidden">
                 <ArrowLeftCircle size={32} color="#7ac7c4" strokeWidth={1.5} />
               </Link>
               {otherUser?.image && (
@@ -205,7 +216,7 @@ const page = ({ params }: { params: { id: number } }) => {
               </div>
             </div>
           </div>
-          <div className="overflow-y-auto flex-grow py-3 px-2">
+          <div className="overflow-auto scrollbar flex-grow py-3 px-2">
             {messages.map((message: MessageDto, id: number) => (
               <Message
                 key={id}
@@ -237,9 +248,9 @@ const page = ({ params }: { params: { id: number } }) => {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="lucide lucide-send-horizontal"
                   >
                     <path d="m3 3 3 9-3 9 19-9Z" />

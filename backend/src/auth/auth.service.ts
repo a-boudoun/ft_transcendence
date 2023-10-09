@@ -7,6 +7,7 @@ import { toDataURL } from 'qrcode';
 import { JwtService } from '@nestjs/jwt';
 import { config } from 'dotenv';
 import { Status } from 'src/entities/user.entity';
+import { UpdateUserDTO } from 'src/users/dto/update-user.dto';
 
 config();
   @Injectable()
@@ -16,9 +17,8 @@ config();
       private jwtService: JwtService
       ) {}
       
-      async signin(user: UserDTO, res: Response, body: any) {
-        
-        
+      async signin(user: UserDTO, res: Response, body: UpdateUserDTO) {
+    
         user.image = body.image;
         user.username = body.username;
         user.baner = '/img/baner.webp';
@@ -103,12 +103,34 @@ config();
       }
       
       async validate2FA(code: string, id: number) {
-        const user = await this.userService.findOneById(id);
+        const user = await this.userService.findOneById2fac(id);
 
         const valid = await authenticator.verify({token: code, secret: user.fact2Secret});
         if (valid === false)
           throw new Error('Invalid 2FA code');
-        await this.userService.turnON2FA(id);
+    }
+
+    async turnOn2FA(id: number, code: string, res: Response) {
+      const user = await this.userService.findOneById(id);
+      
+      try {
+        await this.validate2FA(code, user.id);
+      }
+      catch (e) {
+        if (e instanceof Error)
+          return {valid: false, message: e.message};
+      }
+
+      await this.userService.turnON2FA(id);
+
+      const payload = {id: user.id, image: user.image, fact2Auth: true}
+      const token = await this.jwtService.signAsync(payload, {secret: process.env.ACCESS_TOKEN_SECRET, expiresIn: process.env.ACCESS_TOKEN_EXP_D});  
+      res.cookie('access_token', token, {
+        httpOnly: true,
+        maxAge: 604800000,
+      });
+
+      return {valid: true, message: 'Valid 2FA code'};
     }
     
     async confirm2FA(id: number, res: any) {
@@ -123,13 +145,5 @@ config();
       });
       
       res.clearCookie('tow_fact_token');
-    }
-
-    getId(cookie: string) {
-      const token = cookie.split('=')[1];
-      
-      const decodedJwt = this.jwtService.decode(token) as UserDTO;
-
-      return decodedJwt?.id;
     }
 }

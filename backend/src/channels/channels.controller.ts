@@ -5,6 +5,7 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 import { UseGuards } from '@nestjs/common';
 import { UserDTO } from 'src/users/dto/create-user.dto';
 import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
+import { UpdateUserDTO } from 'src/users/dto/update-user.dto';
 
 @Controller('channels')
 @UseGuards(Jwt2faAuthGuard)
@@ -49,7 +50,7 @@ export class ChannelsController {
   }
 
   @Patch(':id/addFriendtoChannel')
-  async addFriendtoChannel(@Param('id') id: number, @Body() friend: UserDTO) {
+  async addFriendtoChannel(@Param('id') id: number, @Body() friend: UpdateUserDTO) {
     return this.channelsService.addFriendtoChannel(id, friend);
   }
 
@@ -64,7 +65,7 @@ export class ChannelsController {
   }
   @Get('direct/:username')
   async getDirectChannel(@Param('username') username: string) {
-    return this.channelsService.getDirectChannel(username);
+    return this.channelsService.getDirectChannels(username);
   }
   @Patch('unban/:banId')
   async unban(@Param('banId') banId: string) {
@@ -72,7 +73,7 @@ export class ChannelsController {
   }
   @Patch('muteUser/:channelId')
    mute( @Param('channelId') channelId: number, @Body() dt: any) {
-    return this.channelsService.mut(channelId,+dt.id, 1);
+    return this.channelsService.mut(channelId,+dt.id, dt.duration);
   }
   @Get('isMuted/:channelId/:username')
   isMuted(@Param('channelId') channelId: number, @Param('username') username: string) {
@@ -81,6 +82,10 @@ export class ChannelsController {
   @Get('getChannelId/:id')
   getChannelId(@Param('id') id: number, @Req() req) {
     return this.channelsService.getChannelId(req.user.id, id);
+  }
+  @Get('blockedandblocker/:id')
+  getBlockedAndBlocker(@Req() req) {
+    return this.channelsService.block(req.user.username);
   }
 
 
