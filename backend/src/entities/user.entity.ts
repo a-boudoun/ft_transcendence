@@ -58,7 +58,7 @@ export class User {
     @Column({ type: 'boolean', nullable: true})
     fact2Auth: boolean;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true , select: false})
     fact2Secret: string;
     
     @OneToMany(() => Channel, channel => channel.owner)

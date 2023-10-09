@@ -5,28 +5,19 @@ import { engineService } from './engine.service';
 import { Room } from './interfaces/room.interface';
 import { AuthService } from 'src/auth/auth.service';
 import {UseGuards} from '@nestjs/common'
-import { Jwt2faAuthGuard } from 'src/auth/guards/jwt-2fa-auth.guard';
 
 @WebSocketGateway()
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private gameService: gameService,
     private engineService: engineService,
-    private auth: AuthService,
   ) {}
 @WebSocketServer()
   server: Server;
   
   recentRomm: string | null;
 
-  @UseGuards(Jwt2faAuthGuard)
   handleConnection(client: Socket) {
-    // const cookie: string = client.handshake.headers.cookie;
-    // if (!cookie || cookie === undefined)
-    //   return;
-    // const id: string = this.auth.getId(cookie).toString();
-    // client.data.username = id;
-    // client.join(id);
   }
   
   handleDisconnect(client: Socket) {
