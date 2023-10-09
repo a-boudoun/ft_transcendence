@@ -22,7 +22,8 @@ const AddFriend = ({ type }: { type: string }) => {
   const getFriends = useQuery({
     queryKey: ["searchFriend", debouncedSearchQuery],
     queryFn: async () => {
-      if (!channel.id || !debouncedSearchQuery) return;
+      if (!channel.id || !debouncedSearchQuery) 
+        return null; 
       const { data } = await axios.get(
         `/friendship/search/${channel.id}/${debouncedSearchQuery}`
       );

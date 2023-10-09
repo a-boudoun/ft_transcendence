@@ -4,6 +4,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Jwt2faAuthGuard } from './guards/jwt-2fa-auth.guard';
 import { JwtSigninGuard } from './guards/jwt-signin.guard';
 import { AuthGuard } from '@nestjs/passport';
+import { UpdateUserDTO } from 'src/users/dto/update-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -23,9 +24,10 @@ export class AuthController {
 
   @Patch('singin')
   @UseGuards(JwtSigninGuard)
-  signin(@Req() req, @Res({ passthrough: true }) res, @Body() body) {
+  signin(@Req() req, @Res({ passthrough: true }) res, @Body() body:  UpdateUserDTO) {
     return this.authService.signin(req.user, res, body);
   }  
+
 
   @Delete('logout')
   @UseGuards(Jwt2faAuthGuard)

@@ -11,6 +11,7 @@ import { Blockage, User } from 'src/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { Not } from 'typeorm';
 import con from 'ormconfig';
+import { UpdateUserDTO } from 'src/users/dto/update-user.dto';
 
 @Injectable()
 export class ChannelsService {
@@ -197,7 +198,7 @@ async joinChannel(id: number, user: UserDTO, password: string) {
   return channel1;
 }
 
-async addFriendtoChannel(channelId: number, friend: UserDTO) {
+async addFriendtoChannel(channelId: number, friend: UpdateUserDTO) {
   const member=  await this.membershipRepo.findOne({
     where: {
       channel: { id: channelId},
