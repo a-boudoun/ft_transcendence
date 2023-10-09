@@ -14,7 +14,7 @@ const Difficulty = () => {
       {gameStarted ? (
         <RobotGame difficulty={difficulty} />
       ) : (
-        <main className="min-h-screen  grid place-content-center pt-14 bg-bg bg-cover">
+        <main className="min-h-screen  grid place-content-center pt-14 bg-bg bg-cover ">
           <div className="flex flex-wrap flex-col items-center gap-8  sm:p-16 sm:gap-24  sm:bg-white sm:bg-opacity-20 sm:ackdrop-blur-lg sm:drop-shadow-lg sm:rounded-3xl">
             <div className="bg-[#4b5468a0] rounded-[10px] p-4 ">
               <h3 className="text-[#B5B3BD] tracking-wide [word-spacing:3px] font-medium text-xl sm:text-3xl">
