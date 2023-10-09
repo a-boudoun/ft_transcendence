@@ -263,7 +263,7 @@ function RobotGame({difficulty} : {difficulty: number}){
 	  return (
 		<>
 			{(leftScore < maxScore && rightScore < maxScore) && (
-				<div className="flex flex-col h-full justify-center items-center relative">
+				<div className="flex flex-col h-full justify-center items-center relative overflow-hidden">
 				<div className="flex justify-center items-center mt-10 z-10">
 					{PVisible && !leftScore && !rightScore && (
 					<p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px]">
