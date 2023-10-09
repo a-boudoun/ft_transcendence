@@ -50,6 +50,7 @@ export class UsersService {
   
       return user;
     }
+    
     async findOneById2fac(id: number) {
       const user = await this.userRepo.findOne({
         where : {id: id},
