@@ -7,6 +7,7 @@ import { toDataURL } from 'qrcode';
 import { JwtService } from '@nestjs/jwt';
 import { config } from 'dotenv';
 import { Status } from 'src/entities/user.entity';
+import { UpdateUserDTO } from 'src/users/dto/update-user.dto';
 
 config();
   @Injectable()
@@ -16,9 +17,8 @@ config();
       private jwtService: JwtService
       ) {}
       
-      async signin(user: UserDTO, res: Response, body: any) {
-        
-        
+      async signin(user: UserDTO, res: Response, body: UpdateUserDTO) {
+    
         user.image = body.image;
         user.username = body.username;
         user.baner = '/img/baner.webp';
@@ -103,7 +103,7 @@ config();
       }
       
       async validate2FA(code: string, id: number) {
-        const user = await this.userService.findOneById(id);
+        const user = await this.userService.findOneById2fac(id);
 
         const valid = await authenticator.verify({token: code, secret: user.fact2Secret});
         if (valid === false)
