@@ -10,7 +10,7 @@ import { UsersGateway } from '../usersGateway/user.gateway';
 import { JwtService } from '@nestjs/jwt';
 
 @Module({
-	imports: [AuthModule, TypeOrmModule.forFeature([GameHistory, User])],
+	imports: [TypeOrmModule.forFeature([GameHistory, User])],
 	providers: [gameService, GameGateway, engineService, gameSimulation, UsersGateway, JwtService],
 	exports: [gameService, GameGateway, engineService]
 })
