@@ -2,7 +2,7 @@
 
 const nextConfig = {
   images: {
-    domains: ['cdn.intra.42.fr', 'res.cloudinary.com']
+    domains: ['cdn.intra.42.fr', 'res.cloudinary.com', 'lh3.googleusercontent.com']
   },
 }
 

@@ -60,8 +60,8 @@ export class UsersService {
       return user;
     }
     
-    async findOneByIntraId(intraID: number) {
-      const user = await this.userRepo.findOneBy({intraID: intraID});
+    async findOneByemail(email: string) {
+      const user = await this.userRepo.findOneBy({email: email});
   
       return user;
     }

@@ -21,7 +21,7 @@ function is_valid_image(filename: string): boolean {
     if (fileExtension && allowedExtensions.includes(fileExtension.toLowerCase())) {
         return true;
     }
-
+ 
     return false;
 }
 
@@ -36,8 +36,8 @@ export class UserDTO {
     @IsInt()
     id: number;
     
-    @IsNumber()
-    intraID: number; 
+    @IsString()
+    email: string; 
 
     @IsNotEmpty()
     @IsString()

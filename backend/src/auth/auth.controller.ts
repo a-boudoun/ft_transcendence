@@ -11,14 +11,15 @@ export class AuthController {
 
   constructor(private readonly authService: AuthService) {}
 
-  // @Get('42')
-  // @UseGuards(OAuthGuard)
-  // async Auth(@Req() req) {
-  // }
-
   @Get('42')  
   @UseGuards(AuthGuard('42'))
   AuthCallback(@Req() req, @Res({ passthrough: true }) res) {
+    return this.authService.login(req.user, res, false);
+  }
+
+  @Get('google')  
+  @UseGuards(AuthGuard('google'))
+  GoogleAuthCallback(@Req() req, @Res({ passthrough: true }) res) {
     return this.authService.login(req.user, res, false);
   }
 
@@ -27,7 +28,6 @@ export class AuthController {
   signin(@Req() req, @Res({ passthrough: true }) res, @Body() body:  UpdateUserDTO) {
     return this.authService.signin(req.user, res, body);
   }  
-
 
   @Delete('logout')
   @UseGuards(Jwt2faAuthGuard)

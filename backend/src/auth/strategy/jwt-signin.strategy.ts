@@ -26,6 +26,6 @@ export class JwtSigninStrategy extends PassportStrategy(Strategy, 'jwt-signin') 
     }
 
     async validate(payload: any) {
-        return {intraID: payload.intraID, username: payload.username, image: payload.image };
+        return {email: payload.email, username: payload.username, image: payload.image };
     }
 }

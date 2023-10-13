@@ -25,7 +25,7 @@ export class User {
 
     @Column({nullable: true})
     @Index({unique: true})
-    intraID: number;
+    email: string;
 
     @Column({ length: 10, nullable: true})
     @Index({unique: true})
