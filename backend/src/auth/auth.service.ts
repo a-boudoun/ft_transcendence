@@ -42,10 +42,10 @@ config();
       
       async login(user : UserDTO, res: Response, fact2Auth: boolean) {
 
-        const userExists : UserDTO =  await this.userService.findOneByIntraId(user.intraID);
+        const userExists : UserDTO =  await this.userService.findOneByemail(user.email);
    
         if (!userExists){
-          const payload = {intraID: user.intraID, username: user.username, image: user.image}
+          const payload = {email: user.email, username: user.username, image: user.image}
           const token = await this.jwtService.signAsync(payload, {secret: process.env.SIGNIN_TOKEN_SECRET, expiresIn: process.env.SIGNIN_TOKEN_EXP_D});
           
           await res.cookie('signin_token', token, {

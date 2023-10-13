@@ -62,12 +62,19 @@ Before starting, you need to configure your environment:
 1. Rename `.env_template` to `.env` and rename `./frontend/.env.local_template` to `./frontend/.env.local`.
 
 2. Set the `CLIENT_ID` and `SECRET` variables for your 42 API `ID` and `SECRET`:
-
-   ```sh
-   # 42 API
-    CLIENT_ID=""
-    SECRET=""
-   ```
+   
+   - For 42 API:
+     ```sh
+     # 42 API
+     CLIENT_ID=""
+     SECRET=""
+     ```
+   - For Google OAuth:
+     ```sh
+     # Google API
+     CLIENT_ID_GOOGLE=""
+     SECRET_GOOGLE=""
+     ```
 
    You can also customize other environment variables to suit your needs.
 
@@ -89,7 +96,7 @@ docker-compose up --build
 
 ### `Authentication and Authorization`
 
-Authentication in this project is handled through OAuth using the 42 API. This means that users can log in to the website using their 42 intranet credentials. It's a secure and efficient way to verify a user's identity.
+Authentication in this project is handled through OAuth using the 42 or Google API. This means that users can log in to the website using their 42 or Google credentials. It's a secure and efficient way to verify a user's identity.
 
 Authorization, on the other hand, is about controlling what users can and cannot do within the application. We've implemented a robust authorization system using JSON Web Tokens (JWT). These tokens are issued to authenticated users and contain information about their permissions. By checking the JWT, the application ensures that users have the appropriate access to different parts of the site.
 

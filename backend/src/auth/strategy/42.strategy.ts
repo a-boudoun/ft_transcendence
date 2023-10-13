@@ -11,8 +11,8 @@ export class AuthStratedy extends PassportStrategy(Strategy, '42') {
 
   constructor() {
     super({
-      clientID: process.env.CLIENT_ID,
-      clientSecret: process.env.SECRET,
+      clientID: process.env.CLIENT_ID_42,
+      clientSecret: process.env.SECRET_42,
       callbackURL: process.env.REDIRECT_URI,
     });
   }
@@ -21,8 +21,10 @@ export class AuthStratedy extends PassportStrategy(Strategy, '42') {
 
     const image = profile._json.image.link ? profile._json.image.link : '../../assets/avatar.png';
 
+    console.log(profile.emails[0].value);
+
     const user = {
-      intraID: profile.id,
+      email: profile.emails[0].value,
       username: profile.username,
       image: image,
       baner: '/img/baner.webp',
