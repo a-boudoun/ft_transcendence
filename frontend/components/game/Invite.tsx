@@ -17,7 +17,7 @@ interface prop {
 const InviteDisplay = ({socketId, setdisplay, userid, map}: prop) => {
 
 	const [timeLeft, setTimeLeft] = useState(4);
-	const [image, setImage] = useState<string>('/game/unknown.svg');
+	const [image, setImage] = useState<string>('/game/unknown.webp');
 	const [name, setName] = useState<string>('');
 	let loadingBarWidth: string = '0%';
 	useQuery({
