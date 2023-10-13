@@ -264,13 +264,6 @@ function RobotGame({difficulty} : {difficulty: number}){
 		<>
 			{(leftScore < maxScore && rightScore < maxScore) && (
 				<div className="flex flex-col h-full justify-center items-center relative overflow-hidden">
-				<div className="flex justify-center items-center mt-10 z-10">
-					{PVisible && !leftScore && !rightScore && (
-					<p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px]">
-						{countDownValue}
-					</p>
-					)}
-				</div>
 				<div className="relative flex-grow">
 					<div className="mt-12 pt-12"
 						style={{
@@ -285,6 +278,13 @@ function RobotGame({difficulty} : {difficulty: number}){
 						rightPlayer={"me"}
 						/>
 					</div>
+						<div className="flex justify-center items-center mt-10 z-20">
+							{PVisible && !leftScore && !rightScore && (
+							<p className="absolute font-bold text-[#ffffff] text-[90px] mb-[150px] z-20">
+								{countDownValue}
+							</p>
+							)}
+						</div>
 					<div
 					ref={divRef}
 					className="mt-20 shadow-[0px_20px_50px_0px_#86c3bb,0px_-10px_50px_0px_#d3455c]"
