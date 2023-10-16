@@ -11,8 +11,8 @@ export class AuthStratedy extends PassportStrategy(Strategy, '42') {
 
   constructor() {
     super({
-      clientID: process.env.CLIENT_ID_42,
-      clientSecret: process.env.SECRET_42,
+      clientID: process.env.CLIENT_ID,
+      clientSecret: process.env.SECRET,
       callbackURL: process.env.REDIRECT_URI,
     });
   }

@@ -137,6 +137,49 @@ We've incorporated a matchmaking system to ensure that users can find opponents 
 
 We've strived to stay true to the original Pong game from 1972, offering a faithful experience. In addition to the classic version, we've also added customization options. Users can choose from various power-ups or different maps to enhance their gaming experience. However, if they prefer, they can stick to the default version of the game without any additional features.
 
+## Screenshots
+
+```
+Online Offline selection
+```
+![text](./frontend/public/game/picturs/offline-online.webp)
+
+```
+Offline game
+```
+![text](./frontend/public/game/picturs/offline-robots.webp)
+
+![text](./frontend/public/game/picturs/offline-game.webp)
+
+![text](./frontend/public/game/picturs/offline-game.mp4)
+
+```
+Online game maps
+```
+![text](./frontend/public/game/picturs/online-maps.webp)
+
+```
+Default game
+```
+![text](./frontend/public/game/picturs/online-default.webp)
+
+```
+Football game
+```
+![text](./frontend/public/game/picturs/football-mode.webp)
+
+```
+Space game
+```
+![text](./frontend/public/game/picturs/space-mode.webp)
+
+```
+Gameplay
+```
+![text](./frontend/public/game/picturs/online-games.mp4)
+
+
+
 ### `Database`
 
 ![dataBase Screen Shot](./frontend/public/img/DataBase.png)
