@@ -179,6 +179,17 @@ Gameplay
 ![text](./frontend/public/game/picturs/online-games.mp4)
 
 
+```
+Lost game
+```
+![text](./frontend/public/game/picturs/lost.webp)
+
+```
+Won game
+```
+![text](./frontend/public/game/picturs/won.webp)
+
+
 
 ### `Database`
 
