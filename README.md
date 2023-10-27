@@ -151,7 +151,11 @@ Offline game
 
 ![text](./frontend/public/game/picturs/offline-game.webp)
 
-![text](./frontend/public/game/picturs/offline-game.mp4)
+
+
+https://github.com/a-boudoun/ft_transcendence/assets/84498539/a1022cbf-4c37-4a4f-aebd-4ffbf39bc473
+
+
 
 ```
 Online game maps
@@ -176,7 +180,10 @@ Space game
 ```
 Gameplay
 ```
-![text](./frontend/public/game/picturs/online-games.mp4)
+
+
+https://github.com/a-boudoun/ft_transcendence/assets/84498539/5d9f64b3-b639-4193-bf41-41ce3ab92b50
+
 
 
 ```
