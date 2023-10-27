@@ -10,27 +10,24 @@
 </div>
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#env">Env</a></li>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-  </ol>
-</details>
+<ol>
+  <li><a href="#about-the-project">About The Project</a>
+    <ul>
+      <li><a href="#built-with">Built With</a></li>
+    </ul>
+  </li>
+  <li><a href="#getting-started">Getting Started</a>
+    <ul>
+      <li><a href="#env">Env</a></li>
+      <li><a href="#prerequisites">Prerequisites</a></li>
+      <li><a href="#installation">Installation</a></li>
+    </ul>
+  </li>
+  <li><a href="#usage">Usage</a></li>
+  <li><a href="#contributing">Contributing</a></li>
+  <li><a href="#Gameplay">Gameplay</a></li>
+</ol>
+
 
 <!-- ABOUT THE PROJECT -->
 
@@ -178,15 +175,6 @@ Space game
 ![text](./frontend/public/game/picturs/space-mode.webp)
 
 ```
-Gameplay
-```
-
-
-https://github.com/a-boudoun/ft_transcendence/assets/84498539/5d9f64b3-b639-4193-bf41-41ce3ab92b50
-
-
-
-```
 Lost game
 ```
 ![text](./frontend/public/game/picturs/lost.webp)
@@ -195,6 +183,13 @@ Lost game
 Won game
 ```
 ![text](./frontend/public/game/picturs/won.webp)
+
+## Gameplay
+
+```
+Gameplay
+```
+https://github.com/a-boudoun/ft_transcendence/assets/84498539/5d9f64b3-b639-4193-bf41-41ce3ab92b50
 
 
 
