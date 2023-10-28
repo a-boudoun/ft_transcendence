@@ -24,8 +24,9 @@
     </ul>
   </li>
   <li><a href="#usage">Usage</a></li>
-  <li><a href="#contributing">Contributing</a></li>
+  <li><a href="#Screenshots">Screenshots</a></li>
   <li><a href="#Gameplay">Gameplay</a></li>
+  <li><a href="#contributing">Contributing</a></li>
 </ol>
 
 
